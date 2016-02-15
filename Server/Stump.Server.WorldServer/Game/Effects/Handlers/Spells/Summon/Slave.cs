@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
     [EffectHandler(EffectsEnum.Effect_SummonSlave)]
     public class Slave : SpellEffectHandler
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public Slave(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
@@ -34,13 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             if (monster.Template.UseSummonSlot && !Caster.CanSummon())
                 return false;
 
-            var stateRooted = SpellManager.Instance.GetSpellState((int) SpellStatesEnum.ENRACINE_6);
-            var stateUnlockable = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.INTACLABLE_96);
-
             var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
-
-            AddStateBuff(slave, false, true, stateRooted);
-            AddStateBuff(slave, false, true, stateUnlockable);
 
             ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, slave);
 

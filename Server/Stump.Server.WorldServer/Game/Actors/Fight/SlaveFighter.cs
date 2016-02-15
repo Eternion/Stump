@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -13,13 +12,12 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Handlers.Shortcuts;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SlaveFighter : FightActor, INamedActor
     {
-        private readonly StatsFields m_stats;
+        readonly StatsFields m_stats;
         
         public SlaveFighter(int id, FightTeam team, FightActor summoner, MonsterGrade template, Cell cell)
             : base(team)
@@ -36,29 +34,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             AdjustStats();
 
             Fight.TurnStarted += OnTurnStarted;
-            Fight.TurnStopped += OnTurnStopped;
+            Team.FighterAdded += OnFighterAdded;
         }
 
-        private void OnTurnStarted(IFight fight, FightActor player)
+        void OnFighterAdded(FightTeam team, FightActor actor)
+        {
+            if (actor != this)
+                return;
+
+            CastSpell(new Spell((int)SpellIdEnum.INITIALISATION, 1), Cell, true, true, true);
+        }
+
+        void OnTurnStarted(IFight fight, FightActor player)
         {
             if (player != this)
-                return;
-
-            var characterFighter = Summoner as CharacterFighter;
-            if (characterFighter == null)
-                return;
-
-            sbyte slotIndex = 0;
-            ShortcutHandler.SendShortcutBarContentMessage(characterFighter.Character.Client,
-                Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
-        }
-
-        private void OnTurnStopped(IFight fight, FightActor player)
-        {
-            if (player == this && IsAlive())
-                    Die();
-
-            if (player != Summoner)
                 return;
 
             var characterFighter = Summoner as CharacterFighter;
@@ -68,23 +57,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
         }
 
-        protected override void OnTurnPassed()
-        {
-            if (IsAlive())
-                Die();
-        }
-
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
             Fight.TurnStarted -= OnTurnStarted;
-            Fight.TurnStopped -= OnTurnStopped;
 
             base.OnDead(killedBy, false);
 
             Summoner.RemoveSlave(this);
         }
 
-        private void AdjustStats()
+        void AdjustStats()
         {
             // +1% bonus per level
             m_stats.Health.Base = (short)(m_stats.Health.Base * (1 + (Summoner.Level / 100d)));
@@ -93,73 +75,41 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Strength.Base = (short)(m_stats.Strength.Base * (1 + (Summoner.Level / 100d)));
             m_stats.Agility.Base = (short)(m_stats.Agility.Base * (1 + (Summoner.Level / 100d)));
             m_stats.Wisdom.Base = (short)(m_stats.Wisdom.Base * (1 + (Summoner.Level / 100d)));
+
+            m_stats[PlayerFields.TackleEvade].Base = 1000;
         }
 
-        public override int CalculateArmorValue(int reduction)
-        {
-            return (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
-        }
+        public override int CalculateArmorValue(int reduction) => (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
 
         public FightActor Summoner
         {
             get;
-            private set;
         }
 
         public MonsterGrade Monster
         {
             get;
-            private set;
         }
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override ObjectPosition MapPosition => Position;
 
-        public override byte Level
-        {
-            get { return (byte)Monster.Level; }
-        }
+        public override byte Level => (byte)Monster.Level;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
-        public override string GetMapRunningFighterName()
-        {
-            return Monster.Id.ToString(CultureInfo.InvariantCulture);
-        }
+        public override string GetMapRunningFighterName() => Monster.Template.Name;
 
-        public string Name
-        {
-            get { return Monster.Template.Name; }
-        }
+        public string Name => Monster.Template.Name;
 
-        public IEnumerable<Spell> Spells
-        {
-            get { return Monster.Spells; }
-        }
+        public IEnumerable<Spell> Spells => Monster.Spells;
 
-        public override Spell GetSpell(int id)
-        {
-            return Spells.FirstOrDefault(x => x.Template.Id == id);
-        }
+        public override Spell GetSpell(int id) => Spells.FirstOrDefault(x => x.Template.Id == id);
 
-        public override bool HasSpell(int id)
-        {
-            return Spells.Any(x => x.Template.Id == id);
-        }
+        public override bool HasSpell(int id) => Spells.Any(x => x.Template.Id == id);
 
-        public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
-        }
+        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
 
-        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
-        {
-            return new GameFightMonsterInformations(
+        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null) => new GameFightMonsterInformations(
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
@@ -170,7 +120,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 new short[0],
                 (short)Monster.Template.Id,
                 (sbyte)Monster.GradeId);
-        }
 
         public CharacterCharacteristicsInformations GetSlaveCharacteristicsInformations()
         {
@@ -178,12 +127,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (characterFighter == null)
                 return new CharacterCharacteristicsInformations();
 
-            return new CharacterCharacteristicsInformations();
+            var slaveStats = characterFighter.Character.GetCharacterCharacteristicsInformations();
+
+            slaveStats.actionPoints = Stats.AP;
+            slaveStats.actionPointsCurrent = (short)Stats.AP.Total;
+            slaveStats.movementPoints = Stats.MP;
+            slaveStats.movementPointsCurrent = (short)Stats.MP.Total;
+            slaveStats.lifePoints = Stats.Health.Total;
+            slaveStats.maxLifePoints = Stats.Health.TotalMax;
+
+            slaveStats.tackleEvade = Stats[PlayerFields.TackleEvade];
+            slaveStats.intelligence = Stats[PlayerFields.Intelligence];
+            slaveStats.strength = Stats[PlayerFields.Strength];
+            slaveStats.chance = Stats[PlayerFields.Chance];
+            slaveStats.wisdom = Stats[PlayerFields.Wisdom];
+            slaveStats.agility = Stats[PlayerFields.Agility];
+
+            return slaveStats;
         }
 
-        public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
-        {
-            return new GameFightMinimalStats(
+        public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null) => new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
                 Stats.Health.TotalMaxWithoutPermanentDamages,
@@ -223,6 +186,5 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.TackleEvade].Total,
                 (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
             );
-        }
     }
 }
