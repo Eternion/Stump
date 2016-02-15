@@ -1566,9 +1566,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void DecrementAllCastedBuffsDuration()
         {
             foreach (var fighter in Fight.GetAllFighters())
-            {
                 fighter.DecrementBuffsDuration(this);
-            }
+        }
+
+        public void DecrementStaticSummonsCastedBuffsDuration()
+        {
+            foreach (var summon in Summons.Where(x => !x.CanPlay()))
+                summon.DecrementAllCastedBuffsDuration();
+
+            foreach (var bomb in Bombs.Where(x => !x.CanPlay()))
+                bomb.DecrementAllCastedBuffsDuration();
+
+            foreach (var slave in Slaves.Where(x => !x.CanPlay()))
+                slave.DecrementAllCastedBuffsDuration();
         }
 
         public void BuffSpell(Spell spell, short boost)

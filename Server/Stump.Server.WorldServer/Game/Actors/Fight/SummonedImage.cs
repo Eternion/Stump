@@ -6,12 +6,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SummonedImage : SummonedClone
     {
-        private readonly bool m_initialized;
+        readonly bool m_initialized;
 
         public SummonedImage(int id, FightActor caster, Cell cell)
             : base(id, caster, cell)
         {
-            Frozen = true;
             m_stats.Health.DamageTaken = caster.Stats.Health.DamageTaken;
 
             Fight.TurnStarted += OnTurnStarted;
@@ -20,12 +19,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_initialized = true;
         }
 
-        public override bool IsVisibleInTimeline
-        {
-            get { return false; }
-        }
+        public override bool IsVisibleInTimeline => false;
 
-        private void OnTurnStarted(IFight fight, FightActor player)
+        public override bool CanPlay() => false;
+
+        void OnTurnStarted(IFight fight, FightActor player)
         {
             if (player == Summoner)
                 Die();
