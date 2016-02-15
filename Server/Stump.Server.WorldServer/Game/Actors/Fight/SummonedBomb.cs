@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void AdjustStats()
         {
-            m_stats.Health.Base = (int)Math.Floor((m_stats.Health.Base + Summoner.Stats.Vitality.Total + 10) / 4.0);
+            m_stats.Health.Base = (int)Math.Floor(m_stats.Health.Base + 10 + (Summoner.Stats.Vitality.Total / 4.0));
         }
 
         public override sealed int Id
@@ -135,8 +135,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public int DamageBonusPercent => Stats[PlayerFields.ComboBonus].TotalSafe;
-
-        public override bool IsVisibleInTimeline => true;
 
         public override bool CanPlay() => false;
 

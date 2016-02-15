@@ -1229,7 +1229,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (status == PlayerLifeStatusEnum.STATUS_PHANTOM)
             {
-                phoenixMapId = World.Instance.GetNearestPhoenix(Map).Id;
+                phoenixMapId = World.Instance.GetNearestGraveyard(Map).PhoenixMapId;
                 StartRegen();
             }
 
