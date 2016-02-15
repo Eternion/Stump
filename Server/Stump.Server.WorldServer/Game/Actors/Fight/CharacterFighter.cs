@@ -290,14 +290,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
-        {
-            return Character.CriticalMode ? FightSpellCastCriticalEnum.CRITICAL_HIT : base.RollCriticalDice(spell);
-        }
+            => Character.CriticalMode ? FightSpellCastCriticalEnum.CRITICAL_HIT : base.RollCriticalDice(spell);
 
-        public override FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate spell)
-        {
-            return Character.CriticalMode ? FightSpellCastCriticalEnum.CRITICAL_HIT : base.RollCriticalDice(spell);
-        }
+        public override FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate weapon)
+            => Character.CriticalMode ? FightSpellCastCriticalEnum.CRITICAL_HIT : base.RollCriticalDice(weapon);
 
         public override Damage CalculateDamageBonuses(Damage damage)
         {
@@ -330,15 +326,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
         }
 
-        public override Spell GetSpell(int id)
-        {
-            return Character.Spells.GetSpell(id);
-        }
+        public override Spell GetSpell(int id) => Character.Spells.GetSpell(id);
 
-        public override bool HasSpell(int id)
-        {
-            return Character.Spells.HasSpell(id);
-        }
+        public override bool HasSpell(int id) => Character.Spells.HasSpell(id);
 
         public bool IsSlaveTurn()
         {
@@ -371,9 +361,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override bool MustSkipTurn()
-        {
-            return base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
-        }
+            => base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
 
         public void EnterDisconnectedState()
         {
@@ -400,15 +388,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Character = character;
         }
 
-        public override IFightResult GetFightResult(FightOutcomeEnum outcome)
-        {
-            return new FightPlayerResult(this, outcome, Loot);
-        }
+        public override IFightResult GetFightResult(FightOutcomeEnum outcome) => new FightPlayerResult(this, outcome, Loot);
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberCharacterInformations(Id, Name, Character.Level);
-        }
+            => new FightTeamMemberCharacterInformations(Id, Name, Character.Level);
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {

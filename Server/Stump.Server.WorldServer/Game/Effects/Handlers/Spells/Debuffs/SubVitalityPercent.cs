@@ -26,10 +26,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 var bonus = (int)(actor.Stats.Health.TotalSafe * (integerEffect.Value / 100d));
 
-                AddStatBuff(actor, (short)-bonus, PlayerFields.Health, true, (short)EffectsEnum.Effect_1047);
-
-                if (Effect.EffectId == EffectsEnum.Effect_SubVitalityPercent)
-                    ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, actor, actor, (short)bonus, 0);
+                AddStatBuff(actor, (short)-bonus, PlayerFields.Vitality, true,
+                    Effect.EffectId == EffectsEnum.Effect_SubVitalityPercent ?
+                    (short)ActionsEnum.ACTION_CHARACTER_DEBOOST_VITALITY : (short)EffectsEnum.Effect_1047);     
             }
 
             return true;

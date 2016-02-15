@@ -3648,8 +3648,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Stats[PlayerFields.PvpAirElementReduction],
                         Stats[PlayerFields.PvpFireElementReduction],
                         new List<CharacterSpellModification>(),
-                        0
-                        );
+                        0);
         }
         #endregion
 

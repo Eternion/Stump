@@ -1,9 +1,10 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Handlers.Context;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
     [EffectHandler(EffectsEnum.Effect_Kill)]
@@ -18,11 +19,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                actor.Stats.Health.DamageTaken = int.MaxValue;
-                actor.CheckDead(Caster);
+                if (Effect.Duration != 0 || Effect.Delay != 0)
+                {
+                    AddTriggerBuff(actor, true, KillTrigger);
+                }
+                else
+                {
+                    actor.Stats.Health.DamageTaken = int.MaxValue;
+                    actor.CheckDead(Caster);
+
+                    ContextHandler.SendGameActionFightKillMessage(Fight.Clients, Caster, actor);
+                }
             }
 
             return true;
+        }
+
+        void KillTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        {
+            buff.Target.Stats.Health.DamageTaken = int.MaxValue;
+            buff.Target.CheckDead(buff.Caster);
+
+            ContextHandler.SendGameActionFightKillMessage(Fight.Clients, buff.Caster, buff.Target);
         }
     }
 }

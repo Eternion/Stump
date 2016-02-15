@@ -1477,20 +1477,24 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
-            var slaveFighter = FighterPlaying as SlaveFighter;
-            if (slaveFighter != null)
-                ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FighterPlaying.TurnTime/100, slaveFighter.Summoner.Id);
-            else
-                ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime/100);
+            ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime/100);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
 
-            var characterFighter = FighterPlaying as CharacterFighter;
             if (FighterPlaying is CharacterFighter)
             {
+                var characterFighter = FighterPlaying as CharacterFighter;
+
                 ContextHandler.SendGameFightTurnStartPlayingMessage(characterFighter.Character.Client);
                 ContextHandler.SendFighterStatsListMessage(characterFighter.Character.Client, characterFighter.Character);
+            }
+            else if (FighterPlaying is SlaveFighter)
+            {
+                var slaveFighter = FighterPlaying as SlaveFighter;
+                var characterFighter = slaveFighter.Summoner as CharacterFighter;
+
+                ContextHandler.SendGameFightTurnStartPlayingMessage(characterFighter.Character.Client);
             }
 
             FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();

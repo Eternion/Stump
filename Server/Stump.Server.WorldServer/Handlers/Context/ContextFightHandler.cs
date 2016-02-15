@@ -414,11 +414,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightTurnStartMessage(id, waitTime));
         }
 
-        public static void SendGameFightTurnStartSlaveMessage(IPacketReceiver client, int id, int waitTime, int idSummoner)
-        {
-            //client.Send(new GameFightTurnStartSlaveMessage(id, waitTime, idSummoner));
-        }
-
         public static void SendGameFightTurnStartPlayingMessage(IPacketReceiver client)
         {
             client.Send(new GameFightTurnStartPlayingMessage());
@@ -559,7 +554,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
         {
-            //client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
+            sbyte slotIndex = 0;
+            client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()),
+                actor.GetSlaveCharacteristicsInformations(), actor.Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id))));
         }
 
         public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
@@ -573,6 +570,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 fighter.SpellHistory.GetCooldowns(),
                 (sbyte) fighter.SummonedCount,
                 (sbyte) fighter.BombsCount));
+        }
+
+        public static void SendGameActionFightKillMessage(IPacketReceiver client, FightActor source, FightActor target)
+        {
+            client.Send(new GameActionFightKillMessage((short)ActionsEnum.ACTION_CHARACTER_KILL, source.Id, target.Id));
         }
     }
 }
