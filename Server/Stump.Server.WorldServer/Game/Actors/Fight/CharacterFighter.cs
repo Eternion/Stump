@@ -361,7 +361,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override bool MustSkipTurn()
-            => base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
+            => base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.IsAlive() && !x.IsDisconnected));
 
         public void EnterDisconnectedState()
         {

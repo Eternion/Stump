@@ -405,7 +405,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             set;
         }
 
-        public virtual bool IsVisibleInTimeline => true;
+        public virtual bool IsVisibleInTimeline => CanPlay();
 
         #region Stats
 
@@ -2108,7 +2108,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.ENRACINE_6)
                 && !fighter.HasState((int)SpellStatesEnum.ENRACINE_6) && fighter.Position.Cell != Position.Cell;
 
-        public virtual bool CanPlay() => IsAlive();
+        public virtual bool CanPlay() => true;
 
         public virtual bool HasLeft() => false;
 

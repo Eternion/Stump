@@ -19,8 +19,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_initialized = true;
         }
 
-        public override bool IsVisibleInTimeline => false;
-
         public override bool CanPlay() => false;
 
         void OnTurnStarted(IFight fight, FightActor player)

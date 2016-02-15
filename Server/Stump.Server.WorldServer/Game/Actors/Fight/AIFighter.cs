@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             try
             {
-                if (!CanPlay())
+                if (CanPlay())
                     Brain.Play();
             }
             catch (Exception ex)
