@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Initialize(template);
             AdjustStats();
 
-            Fight.TurnStarted += OnTurnStarted;
+            Fight.TurnStopped += OnTurnStopped;
             Team.FighterAdded += OnFighterAdded;
         }
 
@@ -45,9 +45,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             CastSpell(new Spell((int)SpellIdEnum.INITIALISATION, 1), Cell, true, true, true);
         }
 
-        void OnTurnStarted(IFight fight, FightActor player)
+        void OnTurnStopped(IFight fight, FightActor player)
         {
-            if (player != this)
+            if (player != Summoner)
                 return;
 
             var characterFighter = Summoner as CharacterFighter;
@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            Fight.TurnStarted -= OnTurnStarted;
+            Fight.TurnStopped -= OnTurnStopped;
 
             base.OnDead(killedBy, false);
 

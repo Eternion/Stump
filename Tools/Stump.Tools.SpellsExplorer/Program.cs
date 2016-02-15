@@ -76,13 +76,22 @@ namespace Stump.Tools.SpellsExplorer
                     {
                         var target = pattern.Remove(0, "target:".Length);
 
+                        if (!target.Any())
+                        {
+                            var targets = SpellManager.Instance.GetSpellTemplates()
+                                .SelectMany(x => SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0]).Effects.SelectMany(y => y.TargetMask.Split(','))).Select(z => z[0]).Distinct();
+
+                            foreach (var mask in targets)
+                                Console.WriteLine(mask);
+                        }
+
                         foreach (
                             var spell in
                                 SpellManager.Instance.GetSpellTemplates()
                                             .Where(
                                                 x =>
                                                     SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => y.TargetMask.Split(',').Contains(target))))
+                                                                .Effects.Any(y => y.TargetMask.Contains(target))))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
 
