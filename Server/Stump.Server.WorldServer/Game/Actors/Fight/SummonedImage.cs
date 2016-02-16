@@ -37,7 +37,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnBeforeDamageInflicted(Damage damage)
         {
-            damage.Amount = int.MaxValue;
+            Die();
+
+            damage.Amount = 0;
             base.OnBeforeDamageInflicted(damage);
         }
 
@@ -50,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             ActionsHandler.SendGameActionFightVanishMessage(Fight.Clients, Summoner, this);
 
-            base.OnDead(killedBy, passTurn);
+            Summoner.RemoveSummon(this);
 
             if (!Summoner.Summons.Any(x => x is SummonedImage))
                 Summoner.SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
