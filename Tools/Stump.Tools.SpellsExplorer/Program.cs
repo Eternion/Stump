@@ -168,6 +168,22 @@ namespace Stump.Tools.SpellsExplorer
                         }
                         continue;
                     }
+                    if (pattern.StartsWith("casted:"))
+                    {
+                        var spellId = int.Parse(pattern.Remove(0, "casted:".Length));
+
+
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                    .Where(
+                                        x =>
+                                            SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
+                                                .Effects.Any(y => (y.EffectId == EffectsEnum.Effect_TriggerBuff || y.EffectId == EffectsEnum.Effect_TriggerBuff_793 ||
+                                                                   y.EffectId == EffectsEnum.Effect_CastSpell_1160 || y.EffectId == EffectsEnum.Effect_CastSpell_1017) && y.DiceNum == spellId)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+
+                    }
 
                     var critical = pattern.EndsWith("!");
                     if (critical)

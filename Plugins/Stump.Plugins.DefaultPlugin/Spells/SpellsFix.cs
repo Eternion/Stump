@@ -44,8 +44,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 15, (level, effect, critical) => effect.Random = 0);
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Delay = 0);
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Random = 0);
-            
+
             #endregion ECAFLIP
+
+            #region SADIDA
+            // Fix 5667 'Arbre' subVitality All -> new tree only
+            FixEffectOnAllLevels((int) SpellIdEnum.ARBRE, EffectsEnum.Effect_SubVitalityPercent, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P);
+
+            #endregion
         }
 
         #region Methods

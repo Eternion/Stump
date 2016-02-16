@@ -157,6 +157,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_SubLock:
                 case EffectsEnum.Effect_SubDodge:
                 case EffectsEnum.Effect_SubAP:
+                case EffectsEnum.Effect_SubAP_1079:
                 case EffectsEnum.Effect_SubMP:
                 case EffectsEnum.Effect_SubRange:
                 case EffectsEnum.Effect_SubCriticalHit:
