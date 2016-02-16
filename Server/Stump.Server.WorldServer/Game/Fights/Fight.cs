@@ -2036,7 +2036,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnSpellCasting(FightActor caster, Spell spell, Cell targetCell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             var target = GetOneFighter(targetCell);
-            ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
+
+            if (spell.Id == 0)
+            {
+                ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, targetCell, critical,
+                                                                                !caster.IsVisibleFor(entry) || silentCast, 0), true);
+            }
+            else
+                ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
                                                                                 caster, target, targetCell, critical, !caster.IsVisibleFor(entry) || silentCast, spell), true);
         }
 
