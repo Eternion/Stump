@@ -18,6 +18,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         {
             logger.Debug("Apply spells fix");
 
+            #region XELOR
+
+            FixEffectOnAllLevels((int)SpellIdEnum.FRAPPE_DE_XÉLOR, 1, (level, effect, critical) => effect.Priority = -1);
+            FixEffectOnAllLevels((int)SpellIdEnum.FRAPPE_DE_XÉLOR, 1, (level, effect, critical) => effect.Priority = -1);
+
+            #endregion
+
             #region ECAFLIP
 
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Delay = 0);
@@ -48,6 +55,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion ECAFLIP
 
             #region SADIDA
+
             // Fix 5667 'Arbre' subVitality All -> new tree only
             FixEffectOnAllLevels((int) SpellIdEnum.ARBRE, EffectsEnum.Effect_SubVitalityPercent, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P);
 
