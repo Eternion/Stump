@@ -256,7 +256,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             KillAllSummons();
             RemoveAndDispellAllBuffs();
 
-
             var handler = Dead;
             if (handler != null)
                 handler(this, killedBy);
@@ -1810,7 +1809,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    spell.Template.Id == (int)SpellIdEnum.CONCENTRATION_DE_CHAKRA || // chakra concentration
                    spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX || // insidious poison
                    spell.Template.Id == (int)SpellIdEnum.PEUR || //Fear
-                   spell.Template.Id == (int)SpellIdEnum.POISSE; //Jinx
+                   spell.Template.Id == (int)SpellIdEnum.POISSE ||
+                   spell.Template.Id == (int)SpellIdEnum.ROUBLARDISE; //Jinx
         }
 
         public bool DispellInvisibilityBuff()
@@ -1825,12 +1825,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return buffs.Any();
         }
 
-        public VisibleStateEnum GetVisibleStateFor(FightActor fighter)
-        {
-
-            return fighter.IsFriendlyWith(this) && VisibleState != VisibleStateEnum.VISIBLE
+        public VisibleStateEnum GetVisibleStateFor(FightActor fighter) => fighter.IsFriendlyWith(this) && VisibleState != VisibleStateEnum.VISIBLE
                 ? VisibleStateEnum.DETECTED : VisibleState;
-        }
 
         public VisibleStateEnum GetVisibleStateFor(Character character)
         {
@@ -1840,15 +1836,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return character.Fighter.IsFriendlyWith(this) && VisibleState != VisibleStateEnum.VISIBLE ? VisibleStateEnum.DETECTED : VisibleState;
         }
 
-        public bool IsVisibleFor(FightActor fighter)
-        {
-            return GetVisibleStateFor(fighter) != VisibleStateEnum.INVISIBLE;
-        }
+        public bool IsVisibleFor(FightActor fighter) => GetVisibleStateFor(fighter) != VisibleStateEnum.INVISIBLE;
 
-        public bool IsVisibleFor(Character character)
-        {
-            return GetVisibleStateFor(character) != GameActionFightInvisibilityStateEnum.INVISIBLE;
-        }
+        public bool IsVisibleFor(Character character) => GetVisibleStateFor(character) != VisibleStateEnum.INVISIBLE;
 
         protected virtual void OnVisibleStateChanged(FightActor source, VisibleStateEnum lastState)
         {
