@@ -1697,7 +1697,7 @@
         /// <summary>
         /// (not found)
         /// </summary>
-        Effect_1029 = 1029,
+        Effect_Vanish = 1029,
         /// <summary>
         /// Pose de la poudre de rang #2
         /// </summary>

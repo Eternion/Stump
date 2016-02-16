@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightVanishMessage(IPacketReceiver client, FightActor source, FightActor target)
         {
-            client.Send(new GameActionFightVanishMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id));
+            client.Send(new GameActionFightVanishMessage((short)EffectsEnum.Effect_Vanish, source.Id, target.Id));
         }
          
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
