@@ -1,6 +1,11 @@
-﻿using Stump.Server.WorldServer.Database.World;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Linq;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -34,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnBeforeDamageInflicted(Damage damage)
         {
-            damage.Amount = LifePoints;
+            damage.Amount = int.MaxValue;
             base.OnBeforeDamageInflicted(damage);
         }
 
@@ -44,9 +49,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Summoner.DamageInflicted -= OnDamageInflicted;
 
             base.OnDead(killedBy, passTurn);
+
+            ActionsHandler.SendGameActionFightVanishMessage(Fight.Clients, this, this);
+
+            if (!Summoner.Summons.Any(x => x is SummonedImage))
+                Summoner.SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
         }
 
-        private void OnDamageInflicted(FightActor actor, Damage damage)
+        void OnDamageInflicted(FightActor actor, Damage damage)
         {
             Die();
         }

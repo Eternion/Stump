@@ -29,15 +29,15 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
             var fighterInfos = summon.GetGameFightFighterInformations();
-            var action = summon.CanPlay() ? ActionsEnum.ACTION_SUMMON_CREATURE : ActionsEnum.ACTION_SUMMON_STATIC_CREATURE;
+            var action = summon.CanPlay() ? (short)ActionsEnum.ACTION_SUMMON_CREATURE : (short)ActionsEnum.ACTION_SUMMON_STATIC_CREATURE;
 
             if (summon is SummonedClone)
             {
                 fighterInfos = (summon as SummonedClone).GetGameFightFighterNamedInformations();
-                action = ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE;
+                action = summon is SummonedImage ? (short)EffectsEnum.Effect_Illusions : (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE;
             }
 
-            client.Send(new GameActionFightSummonMessage((short)action, summon.Summoner.Id, fighterInfos));
+            client.Send(new GameActionFightSummonMessage(action, summon.Summoner.Id, fighterInfos));
         }
 
         public static void SendGameActionFightReviveMessage(IPacketReceiver client, FightActor caster, FightActor actor)

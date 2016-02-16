@@ -1791,7 +1791,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             EndSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
 
-            foreach (var trigger in m_triggers.ToArray().Where(trigger => trigger.Caster == fighter))
+            foreach (var trigger in m_triggers.Where(trigger => trigger.Caster == fighter).ToArray())
             {
                 RemoveTrigger(trigger);
             }
