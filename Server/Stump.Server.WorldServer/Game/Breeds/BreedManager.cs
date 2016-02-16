@@ -157,7 +157,8 @@ namespace Stump.Server.WorldServer.Game.Breeds
 
             foreach (var breedSpell in character.Breed.Spells.Where(breedSpell => breedSpell.ObtainLevel <= character.Level))
             {
-                character.Spells.LearnSpell(breedSpell.Spell);
+                if (!character.Spells.HasSpell(breedSpell.Spell))
+                    character.Spells.LearnSpell(breedSpell.Spell);
             }
 
             if (character.Spells.HasSpell((int)specialSpell.SpellId))
