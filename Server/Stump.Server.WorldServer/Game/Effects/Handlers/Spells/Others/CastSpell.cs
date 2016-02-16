@@ -3,7 +3,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -38,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     affectedActor.AddBuff(buff);
                 }
                 else
-                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true, true);
+                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true, true, this);
             }
 
             return true;
@@ -47,11 +48,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
-                buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+                buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this);
             else if (buff.Spell.Id == (int)SpellIdEnum.FRIKT)
-                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true);
+                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this);
             else
-                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this);
         }
     }
 }
