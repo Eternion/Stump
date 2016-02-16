@@ -3,8 +3,6 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using System.Linq;
-using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -19,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Health.DamageTaken = caster.Stats.Health.DamageTaken;
 
             Fight.TurnStarted += OnTurnStarted;
-            caster.DamageInflicted += OnDamageInflicted;
+            caster.DamageInflicted += OnCasterDamageInflicted;
 
             m_initialized = true;
         }
@@ -46,17 +44,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
             Fight.TurnStarted -= OnTurnStarted;
-            Summoner.DamageInflicted -= OnDamageInflicted;
+            Summoner.DamageInflicted -= OnCasterDamageInflicted;
+
+            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+
+            ActionsHandler.SendGameActionFightVanishMessage(Fight.Clients, Summoner, this);
 
             base.OnDead(killedBy, passTurn);
 
-            ActionsHandler.SendGameActionFightVanishMessage(Fight.Clients, this, this);
-
             if (!Summoner.Summons.Any(x => x is SummonedImage))
                 Summoner.SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
+
+            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
         }
 
-        void OnDamageInflicted(FightActor actor, Damage damage)
+        void OnCasterDamageInflicted(FightActor actor, Damage damage)
         {
             Die();
         }
