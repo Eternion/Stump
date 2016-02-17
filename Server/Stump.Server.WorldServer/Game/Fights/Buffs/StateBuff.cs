@@ -43,7 +43,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             if (Delay == 0)
                 return new FightTemporaryBoostStateEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH), (short)Spell.Id, Effect.Id, 0, 1, (short)State.Id);
 
-            var values = Effect.GetValues();
+            var values = new object[] { 0, 0, 0 };
+            values = Effect.GetValues();
 
             return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay), (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH), (short)Spell.Id, Effect.Id, 0, (short)values[0], (short)values[1], (short)values[2], Delay);
         }

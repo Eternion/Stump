@@ -150,10 +150,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            var values = Effect.GetValues();
+            var values = new object[] { 0, 0, 0 };
+            values = Effect.GetValues();
+
             return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay),(sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH), (short)ParentSpell.Id, Effect.Id, 0, (short)values[0], (short)values[1], (short)values[2], Delay);
         }
-
 
         public static BuffTrigger GetTriggerFromString(string str)
         {

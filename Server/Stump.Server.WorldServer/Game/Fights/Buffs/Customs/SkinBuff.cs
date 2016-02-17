@@ -54,7 +54,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            var values = Effect.GetValues();
+            var values = new object[] { 0, 0, 0 };
+            values = Effect.GetValues();
 
             if (Delay == 0)
                 return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH), (short) Spell.Id, Effect.Id, 0, (short)values[2]);
