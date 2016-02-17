@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             var target = Fight.GetOneFighter(TargetedCell);
 
             if (target == null)
-                return false;
+                return true;
 
             foreach (var handler in Handlers.OfType<DirectDamage>())
             {
