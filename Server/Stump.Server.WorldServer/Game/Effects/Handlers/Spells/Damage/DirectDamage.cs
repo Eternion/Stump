@@ -81,15 +81,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         static void DamageBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
-            if (buff.Target == triggerrer && trigger != BuffTriggerType.OnBuffEnded)
+            if (buff.Caster == null)
                 return;
 
-            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Target, buff.Spell, buff.Target.Cell)
+            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell, buff.Target.Cell)
             {
-                Buff = buff
+                IsCritical = buff.Critical,
+                School = EffectSchoolEnum.Unknown
             };
 
-            buff.Target.InflictDamage(damages);
+            damage.GenerateDamages();
+            damage.Amount = (short)(damage.Amount * buff.Efficiency);
+
+            buff.Caster.InflictDamage(damage);
         }
 
         static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
