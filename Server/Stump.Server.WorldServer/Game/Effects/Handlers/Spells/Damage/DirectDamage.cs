@@ -84,16 +84,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (buff.Caster == null)
                 return;
 
-            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell, buff.Target.Cell)
+            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, null, buff.Target.Cell)
             {
-                IsCritical = buff.Critical,
-                School = EffectSchoolEnum.Unknown
+                IsCritical = buff.Critical
             };
 
             damage.GenerateDamages();
             damage.Amount = (short)(damage.Amount * buff.Efficiency);
 
-            buff.Caster.InflictDamage(damage);
+            buff.Target.InflictDamage(damage);
         }
 
         static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
