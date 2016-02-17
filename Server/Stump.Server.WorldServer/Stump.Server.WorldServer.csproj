@@ -631,7 +631,6 @@
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Elementary\CawotteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
