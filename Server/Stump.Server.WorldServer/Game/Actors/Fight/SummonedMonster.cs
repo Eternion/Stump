@@ -78,6 +78,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Monster.Template.Name; }
         }
 
+        public override bool CanBePushed()
+        {
+            return base.CanBePushed() && Monster.Template.CanBePushed;
+        }
+
+        public override bool CanSwitchPos()
+        {
+            return base.CanSwitchPos() && Monster.Template.CanSwitchPos;
+        }
+
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
         {
             return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
