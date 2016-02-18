@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
@@ -33,10 +34,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            var values = new object[] { 0, 0, 0 };
-            values = Effect.GetValues();
+            var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay), (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, Effect.Id, 0, (short)values[0], (short)values[1], (short)values[2], Delay);
+            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay),
+                (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH),
+                (short)Spell.Id, Effect.Id, 0,
+                (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
+                (values.Length > 1 ? Convert.ToInt32(values[1]) : 0),
+                (values.Length > 2 ? Convert.ToInt32(values[2]) : 0),
+                Delay);
         }
 
         public int DispatchDamages(Damage damage)
