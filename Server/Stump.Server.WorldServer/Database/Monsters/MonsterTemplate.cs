@@ -139,6 +139,18 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        public Boolean CanSwitchPos
+        {
+            get;
+            set;
+        }
+
+        public Boolean CanBePushed
+        {
+            get;
+            set;
+        }
+
         public Boolean IsBoss
         {
             get;
@@ -165,6 +177,8 @@ namespace Stump.Server.WorldServer.Database.Monsters
             UseBombSlot = monster.useBombSlot;
             CanPlay = monster.canPlay;
             CanTackle = monster.canTackle;
+            CanSwitchPos = monster.canSwitchPos;
+            CanBePushed = monster.canBePushed;
             IsBoss = monster.isBoss;
             IsActive = true;
         }
