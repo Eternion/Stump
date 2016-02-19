@@ -5,7 +5,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
     [EffectHandler(EffectsEnum.Effect_ReviveAndGiveHPToLastDiedAlly)]
@@ -27,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             return base.CanApply();
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var integerEffect = GenerateEffect();
 

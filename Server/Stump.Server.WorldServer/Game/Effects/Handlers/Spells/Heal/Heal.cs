@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (var actor in GetAffectedActors())
             {

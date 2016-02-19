@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var integerEffect = GenerateEffect();
 

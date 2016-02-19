@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter)Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
             {

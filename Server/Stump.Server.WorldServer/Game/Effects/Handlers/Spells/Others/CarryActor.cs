@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (var affectedActor in GetAffectedActors())
             {
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             if (Caster.IsCarrying())
                 Caster.ThrowActor(TargetedCell);

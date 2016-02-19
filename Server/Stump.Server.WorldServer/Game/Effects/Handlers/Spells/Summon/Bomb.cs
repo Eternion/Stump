@@ -8,7 +8,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_SummonsBomb)]
@@ -18,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var bombSpell = SpellManager.Instance.GetSpellBombTemplate(Dice.DiceNum);
             var monsterTemplate = MonsterManager.Instance.GetMonsterGrade(Dice.DiceNum, Dice.DiceFace);

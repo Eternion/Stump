@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
+
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
     public abstract class TargetCriterion
     {
@@ -72,6 +73,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
                         return new SummonerCriterion(true);
                     case 'p':
                         return new SummonerCriterion(false);
+                    case 'U':
+                        return new JustSummonedCriterion();
                 }
 
                 return new UnknownCriterion(str);

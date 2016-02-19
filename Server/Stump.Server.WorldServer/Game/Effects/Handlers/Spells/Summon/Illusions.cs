@@ -7,7 +7,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_Illusions)]
@@ -18,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var distance = CastPoint.ManhattanDistanceTo(TargetedPoint);
             var direction = CastPoint.OrientationTo(TargetedPoint, false);
@@ -48,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 if ((!Fight.IsCellFree(dstCell) && dstCell != TargetedCell) || !dstCell.Walkable)
                     continue;
 
-                var summon = new SummonedImage(Fight.GetNextContextualId(), Caster, dstCell);
+                var summon = new SummonedImage(Fight.GetNextContextualId(), Caster, dstCell) { SummoningEffect = this };
 
                 foreach (var character in Fight.GetAllCharacters(true))
                 {

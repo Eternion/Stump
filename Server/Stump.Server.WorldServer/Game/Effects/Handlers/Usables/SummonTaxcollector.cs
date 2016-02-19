@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             if (Target.Guild == null)
                 return false;
