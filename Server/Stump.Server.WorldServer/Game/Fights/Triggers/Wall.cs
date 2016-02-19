@@ -46,7 +46,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             }
 
             handler.Execute();
-            Caster.SpellHistory.RegisterCastedSpell(CastedSpell.CurrentSpellLevel, trigger);
+
+            if (Fight.FighterPlaying != trigger)
+                Caster.SpellHistory.RegisterCastedSpell(CastedSpell.CurrentSpellLevel, trigger);
         }
 
         public override GameActionMark GetGameActionMark()
@@ -79,8 +81,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             else if (actor.HasState((int)SpellStatesEnum.KABOOM_92) && bomb.IsFriendlyWith(actor))
                 return false;
 
-            if (Fight.FighterPlaying != actor &&
-                Caster.SpellHistory.GetEntries(x => x.Target == actor && x.CastRound == Fight.TimeLine.RoundNumber && x.Spell.SpellId == CastedSpell.Id).Any())
+            if (Fight.FighterPlaying != actor && Caster.SpellHistory.GetEntries(x => x.Target == actor &&
+                x.CastRound == Fight.TimeLine.RoundNumber && x.Spell.SpellId == CastedSpell.Id).Any())
                 return false;
 
             return true;
