@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (var target in GetAffectedActors())
             {

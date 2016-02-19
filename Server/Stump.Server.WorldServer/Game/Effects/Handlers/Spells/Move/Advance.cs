@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var affectedActors = GetAffectedActors();
 
@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             AddAffectedActor(Caster);
 
-            return base.Apply();
+            return base.InternalApply();
         }
     }
 }

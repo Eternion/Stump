@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -29,6 +30,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
             protected set;
+        }
+
+        public SpellEffectHandler SummoningEffect
+        {
+            get;
+            set;
         }
 
         public FightActor Summoner

@@ -6,7 +6,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_Double)]
@@ -19,9 +20,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
-            var summon = new SummonedClone(Fight.GetNextContextualId(), Caster, TargetedCell);
+            var summon = new SummonedClone(Fight.GetNextContextualId(), Caster, TargetedCell)
+            {SummoningEffect=this};
             
             Caster.AddSummon(summon);
             Caster.Team.AddFighter(summon);

@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var containedTraps = Fight.GetTriggers().OfType<Trap>().Where(entry => entry.VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE && 
                 Caster.IsEnnemyWith(entry.Caster) &&

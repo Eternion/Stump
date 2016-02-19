@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var monster = MonsterManager.Instance.GetMonsterGrade(Dice.DiceNum, Dice.DiceFace);
 
@@ -36,8 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             if (monster.Template.Id == 3287 || monster.Template.Id == 3288 || monster.Template.Id == 3289)
             {
-                var summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell);
-
+                var summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell) {SummoningEffect = this};
                 ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 
                 Caster.AddSummon(summon);
@@ -47,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             }
             else
             {
-                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
+                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) {SummoningEffect = this};
 
                 ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 

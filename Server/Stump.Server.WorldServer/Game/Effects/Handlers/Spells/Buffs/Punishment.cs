@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (var actor in GetAffectedActors())
             {

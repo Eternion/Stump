@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var orientation = Caster.Position.Point.OrientationTo(TargetedPoint);
             Distance = Spell.CurrentSpellLevel.Range;
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 break;
             }
 
-            return base.Apply();
+            return base.InternalApply();
         }
     }
 }
