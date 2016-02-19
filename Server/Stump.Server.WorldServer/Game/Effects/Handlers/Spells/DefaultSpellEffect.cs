@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             return true;
         }

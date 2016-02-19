@@ -6,7 +6,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 {
     [EffectHandler(EffectsEnum.Effect_Trap)]
@@ -19,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var trapSpell = new Spell(Dice.DiceNum, (byte)Dice.DiceFace);
 

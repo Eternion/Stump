@@ -5,7 +5,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_DamageIntercept)]
@@ -21,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             return !GetAffectedActors().Any(x => x.GetBuffs(y => y.Effect.EffectId == EffectsEnum.Effect_DamageIntercept).Any());
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (var actor in GetAffectedActors())
             {

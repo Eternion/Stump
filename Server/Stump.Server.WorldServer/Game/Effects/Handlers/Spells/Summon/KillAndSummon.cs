@@ -6,7 +6,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_KillAndSummon)]
@@ -18,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (var actor in GetAffectedActors())
             {
@@ -29,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
                 actor.InflictDirectDamage(actor.LifePoints, Caster);
 
-                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, actor.Cell);
+                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, actor.Cell) {SummoningEffect = this};
 
                 ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 

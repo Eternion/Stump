@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             if (canceled)
                 return;
 
-            foreach (var cell in path.GetPath().Skip(1)) // skip the first cell (=start cell)
+            foreach (var cell in path.GetPath()) // skip the first cell (=start cell)
                 RegisterEntry(cell);
         }
 

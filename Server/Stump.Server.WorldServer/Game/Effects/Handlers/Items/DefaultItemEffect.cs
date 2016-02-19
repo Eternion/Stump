@@ -313,7 +313,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             if (!(Effect is EffectInteger))
                 return false;
