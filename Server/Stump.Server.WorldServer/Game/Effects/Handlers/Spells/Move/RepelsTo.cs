@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var orientation = CastPoint.OrientationTo(TargetedPoint);
             var target = Fight.GetFirstFighter<FightActor>(entry => entry.Position.Cell.Id == CastPoint.GetCellInDirection(orientation, 1).CellId);

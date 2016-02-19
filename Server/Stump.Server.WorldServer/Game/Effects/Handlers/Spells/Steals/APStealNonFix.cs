@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {

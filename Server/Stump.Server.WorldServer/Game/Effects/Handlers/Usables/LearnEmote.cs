@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Item) as EffectInteger;
 

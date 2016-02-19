@@ -16,6 +16,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers
             private set;
         }
 
+        public bool Applied
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Efficiency factor, increase or decrease effect's efficiency. Default is 1.0
         /// </summary>
@@ -30,6 +36,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers
             return true;
         }
 
-        public abstract bool Apply();
+        public bool Apply()
+        {
+            return Applied = InternalApply();
+        }
+
+        protected abstract bool InternalApply();
     }
 }

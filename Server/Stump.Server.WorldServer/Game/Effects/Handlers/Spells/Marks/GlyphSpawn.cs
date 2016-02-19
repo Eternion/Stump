@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
         {
         }
 
-        public override bool Apply()
+        protected override bool InternalApply()
         {
             var glyphSpell = new Spell(Dice.DiceNum, (byte) Dice.DiceFace);
 
