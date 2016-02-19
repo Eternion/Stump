@@ -85,6 +85,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
+
+        public override bool CanTackle(FightActor fighter)
+        {
+            return base.CanTackle(fighter) && Monster.Template.CanTackle;
+        }
+
+        public override bool CanBePushed()
+        {
+            return base.CanBePushed() && Monster.Template.CanBePushed;
+        }
+
+        public override bool CanSwitchPos()
+        {
+            return base.CanSwitchPos() && Monster.Template.CanSwitchPos;
+        }
+
         public override uint GetDroppedKamas()
         {
             var random = new AsyncRandom();

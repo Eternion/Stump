@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             Character dummy;
             if (AccountManager.Instance.IsAccountBlocked(message.Account.Id, out dummy))
             {
-                logger.Error("Account blocked, connection unallowed");
+                logger.Error($"{client} - Account({message.Account.Id}) blocked, connection unallowed");
                 client.Disconnect();
             }
 

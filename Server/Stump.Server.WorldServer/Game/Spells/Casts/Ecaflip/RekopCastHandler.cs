@@ -32,6 +32,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 
             var target = Fight.GetOneFighter(TargetedCell);
 
+            if (target == null)
+                return true;
+
             foreach (var handler in Handlers.OfType<DirectDamage>())
             {
                 handler.SetAffectedActors(new[] { target });

@@ -1870,7 +1870,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
                 return;
 
-            if (target.HasState((int) SpellStatesEnum.ENRACINE_6))
+            if (!target.CanBePushed())
                 return;
 
             var actorBuffId = PopNextBuffId();
@@ -1977,8 +1977,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool Telefrag(FightActor caster, FightActor target)
         {
-            if ((!(target is SummonedMonster) || ((SummonedMonster)target).Monster.Template.Id != 556)
-                && (target.HasState((int)SpellStatesEnum.INDEPLACABLE_97) || target.HasState((int)SpellStatesEnum.ENRACINE_6)))
+            if (!target.CanSwitchPos())
                 return false;
 
             if (HasState((int)SpellStatesEnum.DEPLACE_120))
@@ -2097,6 +2096,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool CanTackle(FightActor fighter)
             => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.ENRACINE_6)
                 && !fighter.HasState((int)SpellStatesEnum.ENRACINE_6) && fighter.Position.Cell != Position.Cell;
+
+        public virtual bool CanBePushed()
+        {
+            return !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
+        }
+
+        public virtual bool CanSwitchPos()
+        {
+            return !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
+        }
 
         public virtual bool CanPlay() => true;
 
