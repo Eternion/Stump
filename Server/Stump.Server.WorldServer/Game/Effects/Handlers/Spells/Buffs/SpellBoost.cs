@@ -9,7 +9,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_SpellBoost)]
     public class SpellBoost : SpellEffectHandler
     {
-        public SpellBoost(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical) : base(effect, caster, castHandler, targetedCell, critical)
+        public SpellBoost(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 
@@ -27,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (boostedSpell == null)
                     return false;
 
-                var buff = new SpellBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, boostedSpell, Dice.Value, false, false);
+                var buff = new SpellBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, boostedSpell, Dice.Value, false, FightDispellableEnum.DISPELLABLE_BY_DEATH);
 
                 actor.AddBuff(buff);
             }

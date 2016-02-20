@@ -23,10 +23,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             {
                 if (Dice.EffectId == EffectsEnum.Effect_RandDownModifier)
                 {
-                    AddTriggerBuff(target, true, BuffTriggerType.AfterRollCritical, RollTrigger);
+                    AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, BuffTriggerType.AfterRollCritical, RollTrigger);
                 }
 
-                AddTriggerBuff(target, true, Dice.EffectId == EffectsEnum.Effect_RandDownModifier ?
+                AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, Dice.EffectId == EffectsEnum.Effect_RandDownModifier ?
                 BuffTriggerType.BeforeAttack : BuffTriggerType.BeforeDamaged, DamageModifier);
             }
 

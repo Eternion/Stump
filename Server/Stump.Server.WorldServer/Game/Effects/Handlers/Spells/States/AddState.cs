@@ -59,7 +59,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 if (state.Id == (int)SpellStatesEnum.TELEFRAG_244 || state.Id == (int)SpellStatesEnum.TELEFRAG_251)
                     affectedActor.NeedTelefragState = false;
 
-                AddStateBuff(affectedActor, DISPELABLE_STATES.Contains((SpellStatesEnum)state.Id), BYPASSMAXSTACK_STATES.Contains((SpellStatesEnum)state.Id), state);
+                AddStateBuff(affectedActor,
+                    DISPELABLE_STATES.Contains((SpellStatesEnum)state.Id) ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH,
+                    BYPASSMAXSTACK_STATES.Contains((SpellStatesEnum)state.Id), state);
             }
 
             return true;
