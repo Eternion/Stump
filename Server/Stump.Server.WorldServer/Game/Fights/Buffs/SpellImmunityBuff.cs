@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay),
+            return new FightTriggeredEffect(Id, Target.Id, Duration,
                 (sbyte)Dispellable,
                 (short)Spell.Id, Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
