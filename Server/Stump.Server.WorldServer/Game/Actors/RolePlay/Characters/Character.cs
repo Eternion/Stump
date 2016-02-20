@@ -2749,7 +2749,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             oldFighter.RestoreFighterFromDisconnection(this);
             Fighter = oldFighter;
 
-            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, Fighter.Fight.ChallengersTeam.Leader.Id, Fighter.Fight.DefendersTeam.Leader.Id);
+            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, Fighter.Fight.ChallengersTeam.Leader.Id,
+                Fighter.Fight.DefendersTeam.Leader.Id);
+
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
 
@@ -3203,9 +3205,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var fight = FightManager.Instance.GetFight(Record.LeftFightId.Value);
 
                 if (fight != null)
-                {
                     fighter = fight.GetLeaver(Id);
-                }
             }
 
             if (fighter != null && fighter.IsDisconnected)
