@@ -1225,7 +1225,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         void OnPlayerLifeStatusChanged(PlayerLifeStatusEnum status)
         {
-            var phoenixMapId = -1;
+            var phoenixMapId = 0;
 
             if (status == PlayerLifeStatusEnum.STATUS_PHANTOM)
             {
@@ -2756,7 +2756,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             OnCharacterContextChanged(true);
 
             if (Fight.Challenge != null)
+            {
                 ContextHandler.SendChallengeInfoMessage(Client, Fight.Challenge);
+                if (Fight.Challenge.Status != ChallengeStatusEnum.RUNNING)
+                    ContextHandler.SendChallengeResultMessage(Client, Fight.Challenge);
+            }
+
 
             return Fighter;
         }
@@ -3251,7 +3256,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private void PerformLoggout()
+        void PerformLoggout()
         {
             lock (LoggoutSync)
             {
@@ -3384,7 +3389,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private void LoadRecord()
+        void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
             Head = BreedManager.Instance.GetHead(Record.Head);
@@ -3445,7 +3450,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_recordLoaded = true;
         }
 
-        private void UnLoadRecord()
+        void UnLoadRecord()
         {
             if (!m_recordLoaded)
                 return;
@@ -3453,13 +3458,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_recordLoaded = false;
         }
 
-        private void BlockAccount()
+        void BlockAccount()
         {
             AccountManager.Instance.BlockAccount(Client.WorldAccount, this);
             IsAccountBlocked = true;
         }
 
-        private void UnBlockAccount()
+        void UnBlockAccount()
         {
             if (!IsAccountBlocked)
                 return;
