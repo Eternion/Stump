@@ -264,20 +264,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             WorldServer.Instance.DBAccessor.Database.Update(client.WorldAccount);
         }
 
-
         [WorldHandler(CharactersListRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
             if (client.Account != null && client.Account.Login != "")
             {
-                //SendCharactersListMessage(client);
-                SendCharactersListWithRemodelingMessage(client);
-
                 var characterInFight = FindCharacterFightReconnection(client);
                 if (characterInFight != null)
                 {
                     client.ForceCharacterSelection = characterInFight;
                     SendCharacterSelectedForceMessage(client, characterInFight.Id);
+                }
+                else
+                {
+                    SendCharactersListWithRemodelingMessage(client);
                 }
 
                 if (client.WorldAccount != null && client.StartupActions.Count > 0)

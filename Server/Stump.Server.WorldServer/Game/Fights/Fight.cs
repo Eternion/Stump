@@ -1338,14 +1338,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (state)
                 RemoveAllSpectators();
 
-            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, ChallengersTeam, 0, SpectatorClosed);
-            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, DefendersTeam, 0, SpectatorClosed);
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, ChallengersTeam, FightOptionsEnum.FIGHT_OPTION_SET_CLOSED, SpectatorClosed);
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, DefendersTeam, FightOptionsEnum.FIGHT_OPTION_SET_CLOSED, SpectatorClosed);
         }
 
-        public virtual bool CanSpectatorJoin(Character spectator)
-        {
-            return !SpectatorClosed && State == FightState.Fighting;
-        }
+        public virtual bool CanSpectatorJoin(Character spectator) => !SpectatorClosed && State == FightState.Fighting;
 
         public bool AddSpectator(FightSpectator spectator)
         {
@@ -1420,7 +1417,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnSpectatorRemoved(FightSpectator spectator)
         {
-            //ContextHandler.SendGameFightLeaveMessage(spectator.Client, spectator);
             spectator.Character.RejoinMap();
         }
 
@@ -2459,7 +2455,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), true, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds/100, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), true, IsStarted, IsStarted ? 0 : (int)GetPlacementTimeLeft().TotalMilliseconds/100, FightType);
         }
 
         protected virtual void SendGameFightSpectatorJoinMessage(FightSpectator spectator)
@@ -2721,7 +2717,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightExternalInformations GetFightExternalInformations()
         {
-            return new FightExternalInformations(Id, (sbyte)FightType, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting,
+            return new FightExternalInformations(Id, (sbyte)FightType, !IsStarted ? 0 : StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting,
                 m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
         }
 

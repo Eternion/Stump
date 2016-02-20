@@ -367,7 +367,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightSpectateMessage(
                 fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
                 fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
-                fight.TimeLine.RoundNumber, fight.StartTime.GetUnixTimeStamp(), new Idol[0]));
+                fight.TimeLine.RoundNumber, !fight.IsStarted ? 0 : fight.StartTime.GetUnixTimeStamp(), new Idol[0]));
         }
 
         public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor fighterPlaying)
@@ -563,7 +563,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                     fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
                     fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
                     fighter.Fight.TimeLine.RoundNumber,
-                    fighter.Fight.StartTime.GetUnixTimeStamp(),
+                    !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
                     new Idol[0],
                     fighter.SpellHistory.GetCooldowns(),
                     (sbyte)fighter.SummonedCount,
@@ -576,7 +576,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                     fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
                     fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
                     fighter.Fight.TimeLine.RoundNumber,
-                    fighter.Fight.StartTime.GetUnixTimeStamp(),
+                    !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
                     new Idol[0],
                     fighter.SpellHistory.GetCooldowns(),
                     (sbyte)fighter.SummonedCount,
