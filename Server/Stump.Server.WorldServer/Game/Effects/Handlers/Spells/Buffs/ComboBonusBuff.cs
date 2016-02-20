@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return false;
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
-                    AddStatBuff(actor, integerEffect.Value, PlayerFields.ComboBonus, false);
+                    AddStatBuff(actor, integerEffect.Value, PlayerFields.ComboBonus, FightDispellableEnum.DISPELLABLE_BY_DEATH);
                 else
                     bomb.IncreaseDamageBonus(integerEffect.Value);
             }

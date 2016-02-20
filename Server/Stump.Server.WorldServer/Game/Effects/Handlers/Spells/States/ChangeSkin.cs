@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     if (Dice.Value == 0)
                         return true;
 
-                    var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
+                    var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, FightDispellableEnum.DISPELLABLE);
                     actor.AddBuff(buff);
                 }
                 else

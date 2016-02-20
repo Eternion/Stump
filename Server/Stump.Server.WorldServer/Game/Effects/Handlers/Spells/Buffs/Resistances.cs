@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 var buff = new ResistancesBuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell, 
                     (short) ((Effect.EffectId == EffectsEnum.Effect_SubResistances) ? -integerEffect.Value : integerEffect.Value),
-                    false, true);
+                    false, FightDispellableEnum.DISPELLABLE);
 
                 actor.AddBuff(buff);
             }

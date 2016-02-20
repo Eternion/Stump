@@ -1496,7 +1496,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var buff in m_buffList.Where(x => x.Spell.Id == spellId).ToArray())
             {
-                RemoveBuff(buff);
+                if (buff.Dispellable == FightDispellableEnum.DISPELLABLE || buff.Dispellable == FightDispellableEnum.DISPELLABLE_BY_DEATH)
+                    RemoveBuff(buff);
             }
         }
 
@@ -1504,7 +1505,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var buff in m_buffList.ToArray())
             {
-                RemoveBuff(buff);
+                if (buff.Dispellable == FightDispellableEnum.DISPELLABLE || buff.Dispellable == FightDispellableEnum.DISPELLABLE_BY_DEATH)
+                    RemoveBuff(buff);
             }
         }
 
@@ -1514,7 +1516,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var buff in copyOfBuffs.Where(buff => buff.Caster == caster))
             {
-                RemoveBuff(buff);
+                if (buff.Dispellable == FightDispellableEnum.DISPELLABLE || buff.Dispellable == FightDispellableEnum.DISPELLABLE_BY_DEATH)
+                    RemoveBuff(buff);
             }
         }
 
@@ -1876,12 +1879,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
 
-            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, false, stateCarrying)
+            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarrying)
             {
                 Duration = -1
             };
 
-            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, false, stateCarried)
+            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarried)
             {
                 Duration = -1
             };

@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, true, BuffTriggerType.Instant, OnBuffTriggered);
+                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, BuffTriggerType.Instant, OnBuffTriggered);
             }
 
             return true;

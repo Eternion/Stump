@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             {
                 if (Effect.Duration != 0 | Effect.Delay != 0)
                 {
-                    AddTriggerBuff(actor, true, MPBuffTrigger);
+                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, MPBuffTrigger);
                 }
                 else
                 {

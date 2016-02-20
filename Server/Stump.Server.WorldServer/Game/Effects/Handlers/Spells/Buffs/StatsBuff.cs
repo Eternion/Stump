@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true);
+                AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), FightDispellableEnum.DISPELLABLE);
             }
 
             return true;
