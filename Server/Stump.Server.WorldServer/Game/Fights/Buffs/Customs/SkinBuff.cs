@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             if (Delay == 0)
                 return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)Dispellable, (short) Spell.Id, Effect.Id, 0, (short)values[2]);
 
-            return new FightTriggeredEffect(Id, Target.Id, Duration,
+            return new FightTriggeredEffect(Id, Target.Id, Delay,
                 (sbyte)Dispellable,
                 (short)Spell.Id, Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
