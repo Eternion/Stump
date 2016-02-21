@@ -27,12 +27,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 handler(this, fighter);
         }
 
-        private void OnFighterDead(FightActor actor, FightActor killer)
+        void OnFighterDead(FightActor actor, FightActor killer)
         {
             m_deadFighters.Add(actor);
         }
 
-        private void OnFighterLeave(FightActor actor)
+        void OnFighterLeave(FightActor actor)
         {
             m_deadFighters.Remove(actor);
         }
@@ -60,10 +60,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         #endregion
 
-        private readonly List<FightActor> m_fighters = new List<FightActor>();
-        private readonly List<FightActor> m_leavers = new List<FightActor>();  
-        private readonly List<FightActor> m_deadFighters = new List<FightActor>();
-        private readonly object m_locker = new object();
+        readonly List<FightActor> m_fighters = new List<FightActor>();
+        readonly List<FightActor> m_leavers = new List<FightActor>();  
+        readonly List<FightActor> m_deadFighters = new List<FightActor>();
+        readonly object m_locker = new object();
                        
         protected FightTeam(TeamEnum id, Cell[] placementCells)
         {
@@ -82,7 +82,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         public TeamEnum Id
         {
             get;
-            private set;
         }
 
         public ObjectPosition BladePosition
@@ -94,13 +93,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         public Cell[] PlacementCells
         {
             get;
-            private set;
         }
 
         public AlignmentSideEnum AlignmentSide
         {
             get;
-            private set;
         }
 
         public abstract TeamTypeEnum TeamType
@@ -114,21 +111,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             internal set;
         }
 
-        public FightTeam OpposedTeam
-        {
-            get { return Fight.DefendersTeam == this ? Fight.ChallengersTeam : Fight.DefendersTeam; }
-        }
+        public FightTeam OpposedTeam => Fight.DefendersTeam == this ? Fight.ChallengersTeam : Fight.DefendersTeam;
 
-        public virtual FightActor Leader
-        {
-            get { return m_fighters.Count > 0 ? m_fighters.First() : null; }
-        }
-
-        public bool IsSecret
-        {
-            get;
-            private set;
-        }
+        public virtual FightActor Leader => m_fighters.Count > 0 ? m_fighters.First() : null;
 
         public bool IsRestrictedToParty
         {
@@ -148,15 +133,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             private set;
         }
 
-        public ReadOnlyCollection<FightActor> Fighters
-        {
-            get { return m_fighters.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<FightActor> Fighters => m_fighters.AsReadOnly();
 
-        public ReadOnlyCollection<FightActor> Leavers
-        {
-            get { return m_leavers.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<FightActor> Leavers => m_leavers.AsReadOnly();
 
         public virtual bool ChangeLeader(FightActor leader)
         {
@@ -189,9 +168,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
                     IsAskingForHelp = !IsAskingForHelp;
                     break;
-                case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
-                    IsSecret = !IsSecret;
-                    break;
                 case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                     IsRestrictedToParty = !IsRestrictedToParty;
                     break;
@@ -209,7 +185,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
                     return IsAskingForHelp;
                 case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
-                    return IsSecret;
+                    return Fight.SpectatorClosed;
                 case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                     return IsRestrictedToParty;
                 default:
@@ -244,15 +220,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             if (IsClosed)
                 return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
 
-            if (IsSecret)
-                return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
-
-            if (AlignmentSide != AlignmentSideEnum.ALIGNMENT_WITHOUT &&
-                character.AlignmentSide != AlignmentSide)
+            if (AlignmentSide != AlignmentSideEnum.ALIGNMENT_WITHOUT && character.AlignmentSide != AlignmentSide)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
-            if (AlignmentSide != AlignmentSideEnum.ALIGNMENT_WITHOUT &&
-                !character.PvPEnabled)
+            if (AlignmentSide != AlignmentSideEnum.ALIGNMENT_WITHOUT && !character.PvPEnabled)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
@@ -389,20 +360,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         }
 
         public FightOptionsInformations GetFightOptionsInformations()
-        {
-            return new FightOptionsInformations(
-                IsSecret,
+            => new FightOptionsInformations(
+                Fight.SpectatorClosed,
                 IsRestrictedToParty,
                 IsClosed,
                 IsAskingForHelp);
-        }
 
         public FightTeamLightInformations GetFightTeamLightInformations()
-        {
-            return new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
+            => new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte)AlignmentSide,
                                                   (sbyte)TeamType, 0, false, false, false, false, false,
                                                   (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)),
                                                   200);
-        }
     }
 }
