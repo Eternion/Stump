@@ -32,8 +32,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
                 var displayedEffects = GetBuffDisplayedEffect(Effect.EffectId);
 
-                AddStatBuff(actor, (short) (-(integerEffect.Value)), GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[1]);
-                AddStatBuff(Caster, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[0]);
+                AddStatBuff(actor, (short) (-(integerEffect.Value)), GetEffectCaracteristic(Effect.EffectId), FightDispellableEnum.DISPELLABLE, (short)displayedEffects[1]);
+                AddStatBuff(Caster, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), FightDispellableEnum.DISPELLABLE, (short)displayedEffects[0]);
             }
 
             return true;

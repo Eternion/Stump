@@ -11,12 +11,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class FractionBuff : Buff
     {
-        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, FightActor[] fighters)
+        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, FightActor[] fighters)
             : this(id, target, caster, effect, spell, critical, dispelable, 0, null, fighters)
         {
         }
 
-        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int priority, short? customActionId, FightActor[] fighters)
+        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId, FightActor[] fighters)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             Fighters = fighters;
@@ -36,8 +36,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay),
-                (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH),
+            return new FightTriggeredEffect(Id, Target.Id, Delay,
+                (sbyte)Dispellable,
                 (short)Spell.Id, Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
                 (values.Length > 1 ? Convert.ToInt32(values[1]) : 0),

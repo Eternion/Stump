@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter)Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
             {
                 if (Dice.Duration != 0 || Dice.Delay != 0)
-                    AddTriggerBuff(bomb, false, BuffTrigger);
+                    AddTriggerBuff(bomb, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTrigger);
                 else
                     ((SummonedBomb)bomb).Explode();
             }

@@ -284,7 +284,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            var timer = (int) GetPlacementTimeLeft(fighter).TotalMilliseconds;
+            var timer = IsStarted ? 0 : (int) GetPlacementTimeLeft(fighter).TotalMilliseconds / 100;
             ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), 
                 (fighter.Team == ChallengersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase),
                 IsStarted, timer, FightType);

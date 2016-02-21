@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (FriendsBook != null)
                 FriendsBook.CheckDC(); // attempt to resolve leaks
 
-            if (Fight != null && Fight.State == FightState.Fighting)
+            if (Fight != null && (Fight.State == FightState.Placement || Fight.State == FightState.Fighting))
                 Record.LeftFightId = Fight.Id;
             else
                 Record.LeftFightId = null;
@@ -1225,7 +1225,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         void OnPlayerLifeStatusChanged(PlayerLifeStatusEnum status)
         {
-            var phoenixMapId = -1;
+            var phoenixMapId = 0;
 
             if (status == PlayerLifeStatusEnum.STATUS_PHANTOM)
             {
@@ -2749,12 +2749,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             oldFighter.RestoreFighterFromDisconnection(this);
             Fighter = oldFighter;
 
-            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, Fighter.Fight.ChallengersTeam.Leader.Id, Fighter.Fight.DefendersTeam.Leader.Id);
+            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, Fighter.Fight.ChallengersTeam.Leader.Id,
+                Fighter.Fight.DefendersTeam.Leader.Id);
+
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
 
             if (Fight.Challenge != null)
+            {
                 ContextHandler.SendChallengeInfoMessage(Client, Fight.Challenge);
+                if (Fight.Challenge.Status != ChallengeStatusEnum.RUNNING)
+                    ContextHandler.SendChallengeResultMessage(Client, Fight.Challenge);
+            }
+
 
             return Fighter;
         }
@@ -3203,9 +3210,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var fight = FightManager.Instance.GetFight(Record.LeftFightId.Value);
 
                 if (fight != null)
-                {
                     fighter = fight.GetLeaver(Id);
-                }
             }
 
             if (fighter != null && fighter.IsDisconnected)
@@ -3251,7 +3256,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private void PerformLoggout()
+        void PerformLoggout()
         {
             lock (LoggoutSync)
             {
@@ -3384,7 +3389,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private void LoadRecord()
+        void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
             Head = BreedManager.Instance.GetHead(Record.Head);
@@ -3445,7 +3450,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_recordLoaded = true;
         }
 
-        private void UnLoadRecord()
+        void UnLoadRecord()
         {
             if (!m_recordLoaded)
                 return;
@@ -3453,13 +3458,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_recordLoaded = false;
         }
 
-        private void BlockAccount()
+        void BlockAccount()
         {
             AccountManager.Instance.BlockAccount(Client.WorldAccount, this);
             IsAccountBlocked = true;
         }
 
-        private void UnBlockAccount()
+        void UnBlockAccount()
         {
             if (!IsAccountBlocked)
                 return;

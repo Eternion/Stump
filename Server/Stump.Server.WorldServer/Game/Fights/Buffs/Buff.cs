@@ -11,12 +11,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
        
         public const int CHARACTERISTIC_STATE = 71;
 
-        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable)
+        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable)
             : this(id, target,caster,effect,spell,critical, dispelable, 0, null)
         {
         }
 
-        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int priority, short? customActionId)
+        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId)
         {
             Id = id;
             Target = target;
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
         }
 
-        public bool Dispellable
+        public FightDispellableEnum Dispellable
         {
             get;
         }

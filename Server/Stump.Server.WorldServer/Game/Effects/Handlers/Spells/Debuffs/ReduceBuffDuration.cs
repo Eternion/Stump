@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 if (Effect.Duration != 0 | Effect.Delay != 0)
                 {
-                    AddTriggerBuff(actor, true, TriggerBuff);
+                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, TriggerBuff);
                 }
                 else
                     ReduceBuffsDuration(actor, integerEffect.Value);
@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         void ReduceBuffsDuration(FightActor actor, short duration)
         {
-            foreach (var buff in actor.GetBuffs().Where(buff => buff.Dispellable).Where(buff => buff.Duration > 0 && buff.Delay == 0).ToArray())
+            foreach (var buff in actor.GetBuffs().Where(buff => buff.Dispellable == FightDispellableEnum.DISPELLABLE).Where(buff => buff.Duration > 0 && buff.Delay == 0).ToArray())
             {
                 buff.Duration -= duration;
 

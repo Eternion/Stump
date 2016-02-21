@@ -9,12 +9,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class InvisibilityBuff : Buff
     {
-        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable)
+        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
         }
 
-        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, int priority, bool dispelable, short customActionId)
+        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, int priority, FightDispellableEnum dispelable, short customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
         }
@@ -34,12 +34,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
             if (Delay == 0)
-                return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH), (short)Spell.Id, Effect.Id, 0, 1);
+                return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)Dispellable, (short)Spell.Id, Effect.Id, 0, 1);
 
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay),
-                (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH),
+            return new FightTriggeredEffect(Id, Target.Id, Delay,
+                (sbyte)Dispellable,
                 (short)Spell.Id, Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
                 (values.Length > 1 ? Convert.ToInt32(values[1]) : 0),

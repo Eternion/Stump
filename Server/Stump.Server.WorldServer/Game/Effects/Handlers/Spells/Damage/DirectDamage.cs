@@ -35,9 +35,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
                     if (BuffTriggerType == BuffTriggerType.Unknown)
-                        AddTriggerBuff(actor, true, DamageBuffTrigger);
+                        AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, DamageBuffTrigger);
                     else
-                        AddTriggerBuff(actor, true, BuffTriggerType, DamageBuffTrigger);
+                        AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, BuffTriggerType, DamageBuffTrigger);
                 }
                 else
                 {
