@@ -116,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, true, !IsStarted, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, true, true, IsStarted, IsStarted ? 0 : (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
         }
 
         protected override bool CanCancelFight() => false;

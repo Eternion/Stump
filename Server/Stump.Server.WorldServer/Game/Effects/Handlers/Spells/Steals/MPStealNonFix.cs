@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddStatBuff(Caster, (short)(value), PlayerFields.MP, true, (short)EffectsEnum.Effect_AddMP_128);
+                    AddStatBuff(Caster, (short)(value), PlayerFields.MP, FightDispellableEnum.DISPELLABLE, (short)EffectsEnum.Effect_AddMP_128);
                 }
                 else
                 {

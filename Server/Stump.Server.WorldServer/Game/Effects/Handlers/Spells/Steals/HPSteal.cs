@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             foreach (var actor in GetAffectedActors())
             {
                 if (IsBuff())
-                    AddTriggerBuff(actor, true, StealHpBuffTrigger);
+                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, StealHpBuffTrigger);
                 else
                     StealHp(actor);
             }

@@ -195,7 +195,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsTriggerBuff() => Effect.Duration != 0 && Effect.Triggers != "I";
 
-        public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
+        public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, FightDispellableEnum dispelable,
             short? customActionId = null)
         {
             if (IsTriggerBuff())
@@ -204,7 +204,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId);
         }
 
-        Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
+        Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, FightDispellableEnum dispelable,
                                     short? customActionId = null, FightActor caster = null, bool noDelay = false)
         {
             var id = target.PopNextBuffId();
@@ -218,7 +218,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public Buff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger)
+        public Buff AddTriggerBuff(FightActor target, FightDispellableEnum dispelable, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger);
@@ -228,7 +228,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType type, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, FightDispellableEnum dispelable, BuffTriggerType type, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger);
@@ -239,7 +239,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, FightDispellableEnum dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger, removeTrigger);
@@ -249,7 +249,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public Buff AddStateBuff(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state)
+        public Buff AddStateBuff(FightActor target, FightDispellableEnum dispelable, bool bypassMaxStack, SpellState state)
         {
             if (IsTriggerBuff())
                 return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStateBuffInternal(target, dispelable, bypassMaxStack, state, triggerrer));
@@ -258,7 +258,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         }
 
-        Buff AddStateBuffInternal(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state, FightActor caster = null)
+        Buff AddStateBuffInternal(FightActor target, FightDispellableEnum dispelable, bool bypassMaxStack, SpellState state, FightActor caster = null)
         {
             var id = target.PopNextBuffId();
             var buff = new StateBuff(id, target, caster ?? Caster, Dice, Spell, dispelable, state);

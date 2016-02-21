@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddTriggerBuff(actor, true, APBuffTrigger);
+                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, APBuffTrigger);
                 }
                 else
                 {

@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                     return false;
 
                 var buffId = actor.PopNextBuffId();
-                var buff = new SpellReflectionBuff(buffId, actor, Caster, Dice, Spell, Critical, true);
+                var buff = new SpellReflectionBuff(buffId, actor, Caster, Dice, Spell, Critical, FightDispellableEnum.DISPELLABLE);
 
                 actor.AddBuff(buff);
             }

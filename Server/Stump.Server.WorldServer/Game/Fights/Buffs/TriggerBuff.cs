@@ -60,12 +60,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         };
 
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, bool dispelable, int priority, TriggerBuffApplyHandler applyTrigger, short? customActionId = null)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority, TriggerBuffApplyHandler applyTrigger, short? customActionId = null)
             : this(id, target, caster, effect, spell, parentSpell, critical, dispelable, priority, applyTrigger, null, customActionId)
         {
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, int priority, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short? customActionId = null)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short? customActionId = null)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             Dice = effect;
@@ -152,8 +152,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay),
-                (sbyte)(Dispellable ? FightDispellableEnum.DISPELLABLE : FightDispellableEnum.DISPELLABLE_BY_DEATH),
+            return new FightTriggeredEffect(Id, Target.Id, Delay,
+                (sbyte)Dispellable,
                 (short)Spell.Id, Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
                 (values.Length > 1 ? Convert.ToInt32(values[1]) : 0),

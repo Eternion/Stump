@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         protected override bool InternalApply()
         {
-            AddTriggerBuff(Caster, false, BuffTriggerType.AfterDamaged, BuffTrigger);
+            AddTriggerBuff(Caster, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.AfterDamaged, BuffTrigger);
 
             return true;
         }

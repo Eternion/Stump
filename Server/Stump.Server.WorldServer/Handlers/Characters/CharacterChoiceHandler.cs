@@ -264,20 +264,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             WorldServer.Instance.DBAccessor.Database.Update(client.WorldAccount);
         }
 
-
         [WorldHandler(CharactersListRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
             if (client.Account != null && client.Account.Login != "")
             {
-                //SendCharactersListMessage(client);
-                SendCharactersListWithRemodelingMessage(client);
-
                 var characterInFight = FindCharacterFightReconnection(client);
                 if (characterInFight != null)
                 {
                     client.ForceCharacterSelection = characterInFight;
                     SendCharacterSelectedForceMessage(client, characterInFight.Id);
+                }
+                else
+                {
+                    SendCharactersListWithRemodelingMessage(client);
                 }
 
                 if (client.WorldAccount != null && client.StartupActions.Count > 0)
@@ -301,16 +301,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 CommonCharacterSelection(client, client.ForceCharacterSelection);
         }
 
-        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
-        {
-            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null)
-                    let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
-                    where fight != null
-                    let fighter = fight.GetLeaver(characterInFight.Id)
-                    where fighter != null
-                    select characterInFight).FirstOrDefault();
-        }
-
+        static CharacterRecord FindCharacterFightReconnection(WorldClient client)
+            => (from characterInFight in client.Characters.Where(x => x.LeftFightId != null)
+                let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
+                where fight != null
+                let fighter = fight.GetLeaver(characterInFight.Id)
+                where fighter != null
+                select characterInFight).FirstOrDefault();
 
         public static void SendCharactersListMessage(WorldClient client)
         {

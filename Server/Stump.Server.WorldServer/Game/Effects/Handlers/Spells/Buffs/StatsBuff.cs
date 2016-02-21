@@ -59,15 +59,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true);
+                AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(), GetSpellDispellableState());
             }
 
             return true;
         }
 
-        public static PlayerFields GetEffectCaracteristic(EffectsEnum effect)
+        FightDispellableEnum GetSpellDispellableState()
         {
-            switch (effect)
+            switch (Spell.Id)
+            {
+                case (int)SpellIdEnum.EXPLOSION_ROUBLARDE:
+                case (int)SpellIdEnum.AVERSE_ROUBLARDE:
+                case (int)SpellIdEnum.TORNADE_ROUBLARDE:
+                    return FightDispellableEnum.DISPELLABLE_BY_STRONG_DISPEL;
+                default:
+                    return FightDispellableEnum.DISPELLABLE;
+            }
+        }
+
+        PlayerFields GetEffectCaracteristic()
+        {
+            switch (Effect.EffectId)
             {
                 case EffectsEnum.Effect_AddVitality:
                     return PlayerFields.Vitality;
@@ -139,7 +152,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case EffectsEnum.Effect_AddWeaponDamageBonus:
                     return PlayerFields.WeaponDamageBonus;
                 default:
-                    throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
+                    throw new Exception(string.Format("'{0}' has no binded caracteristic", Effect.EffectId));
             }
         }
     }

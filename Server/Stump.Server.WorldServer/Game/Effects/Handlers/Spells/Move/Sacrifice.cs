@@ -26,8 +26,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, false, BuffTriggerType.OnDamaged, TriggerBuffApply);
-                AddTriggerBuff(actor, false, BuffTriggerType.AfterDamaged, PostTriggerBuffApply);
+                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.OnDamaged, TriggerBuffApply);
+                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.AfterDamaged, PostTriggerBuffApply);
             }
 
             return true;

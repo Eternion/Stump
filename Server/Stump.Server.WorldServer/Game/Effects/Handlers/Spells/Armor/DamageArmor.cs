@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 if (actor.GetBuffs(x => x.Effect.EffectId == Effect.EffectId && x.Spell.Template.Id == Spell.Template.Id).Any())
                     continue;
 
-                AddTriggerBuff(actor, true, ApplyArmorBuff);
+                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, ApplyArmorBuff);
             }
 
             return true;
