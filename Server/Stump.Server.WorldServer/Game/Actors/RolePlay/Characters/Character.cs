@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (FriendsBook != null)
                 FriendsBook.CheckDC(); // attempt to resolve leaks
 
-            if (Fight != null && Fight.State == FightState.Fighting)
+            if (Fight != null && (Fight.State == FightState.Placement || Fight.State == FightState.Fighting))
                 Record.LeftFightId = Fight.Id;
             else
                 Record.LeftFightId = null;
