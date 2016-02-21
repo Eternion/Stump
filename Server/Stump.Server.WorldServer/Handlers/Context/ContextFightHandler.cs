@@ -209,7 +209,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             if (!client.Character.Fight.IsStarted)
                 client.Character.Team.ToggleOption((FightOptionsEnum)message.option);
-            else if (message.option == 0)
+            else if (message.option == (sbyte)FightOptionsEnum.FIGHT_OPTION_SET_SECRET)
                 client.Character.Fight.ToggleSpectatorClosed(client.Character, !client.Character.Fight.SpectatorClosed);
         }
 
@@ -262,15 +262,13 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 return;
             }
 
-            if (fight.IsStarted)
+            if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character) && !client.Character.IsInFight())
             {
-                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character) && !client.Character.IsInFight())
-                {
-                    fight.AddSpectator(client.Character.CreateSpectator(fight));
-                }
-
-                return;
+                fight.AddSpectator(client.Character.CreateSpectator(fight));
             }
+
+            if (fight.IsStarted)
+                return;
 
             FightTeam team;
             if (fight.ChallengersTeam.Leader.Id == message.fighterId)
@@ -285,13 +283,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             FighterRefusedReasonEnum error;
             if ((error = team.CanJoin(client.Character)) != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
-            {
                 SendChallengeFightJoinRefusedMessage(client, client.Character, error);
-            }
             else
-            {
                 team.AddFighter(client.Character.CreateFighter(team));
-            }
         }
 
         [WorldHandler(GameContextKickMessage.Id)]

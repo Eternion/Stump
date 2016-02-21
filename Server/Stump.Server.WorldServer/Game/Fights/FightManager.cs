@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 {
     public class FightManager : EntityManager<FightManager, IFight>
     {
-        private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
+        readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
 
         public FightDuel CreateDuel(Map map)
         {
@@ -97,9 +97,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_idProvider.Push(fight.Id);
         }
 
-        public IFight GetFight(int id)
-        {
-            return GetEntityOrDefault(id);
-        }
+        public IFight GetFight(int id) => GetEntityOrDefault(id);
     }
 }

@@ -539,10 +539,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public FightActor FighterPlaying
-        {
-            get { return TimeLine.Current; }
-        }
+        public FightActor FighterPlaying => TimeLine.Current;
 
         public DefaultChallenge Challenge
         {
@@ -556,21 +553,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             protected set;
         }
 
-        public TimeSpan TurnTimeLeft
-        {
-            get { return TurnStartTime + TimeSpan.FromMilliseconds(FighterPlaying.TurnTime) - DateTime.Now; }
-        }
-
         public ReadyChecker ReadyChecker
         {
             get;
             protected set;
         }
 
-        public ReadOnlyCollection<FightActor> Fighters
-        {
-            get { return TimeLine.Fighters.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<FightActor> Fighters => TimeLine.Fighters.AsReadOnly();
 
         public ReadOnlyCollection<FightActor> Leavers
         {
@@ -979,7 +968,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightUpdateTeamMessage(Map.Clients, this, team);
         }
 
-        private void OnTeamOptionsChanged(FightTeam team, FightOptionsEnum option)
+        void OnTeamOptionsChanged(FightTeam team, FightOptionsEnum option)
         {
             ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, team, option, team.GetOptionState(option));
             ContextHandler.SendGameFightOptionStateUpdateMessage(Map.Clients, team, option, team.GetOptionState(option));
@@ -1338,11 +1327,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (state)
                 RemoveAllSpectators();
 
-            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, ChallengersTeam, FightOptionsEnum.FIGHT_OPTION_SET_CLOSED, SpectatorClosed);
-            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, DefendersTeam, FightOptionsEnum.FIGHT_OPTION_SET_CLOSED, SpectatorClosed);
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, ChallengersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET, SpectatorClosed);
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, DefendersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET, SpectatorClosed);
         }
 
-        public virtual bool CanSpectatorJoin(Character spectator) => !SpectatorClosed && State == FightState.Fighting;
+        public virtual bool CanSpectatorJoin(Character spectator) => !SpectatorClosed && (State == FightState.Placement || State == FightState.Fighting);
 
         public bool AddSpectator(FightSpectator spectator)
         {
@@ -1366,10 +1355,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             SendGameFightSpectatorJoinMessage(spectator);
 
+            if (State == FightState.Placement || State == FightState.NotStarted)
+                ContextHandler.SendGameFightPlacementPossiblePositionsMessage(spectator.Client, this, 0);
+
             foreach (var fighter in GetAllFighters())
-            {
                 ContextHandler.SendGameFightShowFighterMessage(spectator.Client, fighter);
-            }
 
             ContextHandler.SendGameFightTurnListMessage(spectator.Client, this);
             ContextHandler.SendGameFightSpectateMessage(spectator.Client, this);
@@ -1378,15 +1368,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
             if (Challenge != null)
+            {
                 ContextHandler.SendChallengeInfoMessage(spectator.Client, Challenge);
-
+                if (Challenge.Status != ChallengeStatusEnum.RUNNING)
+                    ContextHandler.SendChallengeResultMessage(spectator.Client, Challenge);
+            }
             // Spectator 'X' joined
             BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
 
             if (TimeLine.Current != null)
-            {
                 ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying);
-            }
         }
 
         protected virtual void OnSpectatorLoggedOut(Character character)
@@ -1447,6 +1438,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTurnStarted()
         {
+            if (TimeLine.NewRound)
+            {
+                ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+            }
+
+            ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime / 100);
+
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
             if (FighterPlaying.CanPlay() && FighterPlaying.IsAlive())
@@ -1465,20 +1463,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (CheckFightEnd())
                 return;
 
-            if (TimeLine.NewRound)
-            {
-                ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
-            }
-
             if (FighterPlaying.MustSkipTurn())
             {
                 FighterPlaying.ResetUsedPoints();
                 PassTurn();
-                
+
                 return;
             }
-
-            ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime/100);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
@@ -2191,19 +2182,19 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var characterFighter = ((CharacterFighter)fighter);
 
-            if (State == FightState.Placement)
+            if (characterFighter.Character.IsLoggedIn)
             {
-                characterFighter.ResetFightProperties();
+                if (State == FightState.Placement)
+                {
+                    characterFighter.ResetFightProperties();
 
-                if (CheckFightEnd())
-                    return;
+                    if (CheckFightEnd())
+                        return;
 
-                fighter.Team.RemoveFighter(fighter);
-                characterFighter.Character.RejoinMap();
-            }
-            else
-            {
-                if (characterFighter.Character.IsLoggedIn)
+                    fighter.Team.RemoveFighter(fighter);
+                    characterFighter.Character.RejoinMap();
+                }
+                else
                 {
                     fighter.Die();
 
@@ -2215,22 +2206,21 @@ namespace Stump.Server.WorldServer.Game.Fights
                     characterFighter.PersonalReadyChecker = readyChecker;
                     readyChecker.Start();
                 }
-                else
-                {
-                    var isfighterTurn = fighter.IsFighterTurn();
-                    characterFighter.EnterDisconnectedState();
+            }
+            else
+            {
+                var isfighterTurn = fighter.IsFighterTurn();
+                characterFighter.EnterDisconnectedState();
 
-                    if (!CheckFightEnd() && isfighterTurn)
-                        StopTurn();
+                if (!CheckFightEnd() && isfighterTurn)
+                    StopTurn();
 
-                    fighter.Team.AddLeaver(fighter);
-                    m_leavers.Add(fighter);
+                fighter.Team.AddLeaver(fighter);
+                m_leavers.Add(fighter);
 
-                    // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
-                    BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182, 
-                        fighter.GetMapRunningFighterName(), FightConfiguration.TurnsBeforeDisconnection);
-
-                } 
+                // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
+                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182,
+                    fighter.GetMapRunningFighterName(), FightConfiguration.TurnsBeforeDisconnection);
             }
         }
 
@@ -2275,7 +2265,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             character.Fighter.LeaveFight();
         }
 
-
         public void RejoinFightFromDisconnection(CharacterFighter fighter)
         {
             fighter.Character.LoggedOut += OnPlayerLoggout;
@@ -2291,6 +2280,9 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameFightShowFighterMessage(fighter.Character.Client, fightMember);
 
             fighter.Character.RefreshStats();
+
+            if (State == FightState.Placement || State == FightState.NotStarted)
+                ContextHandler.SendGameFightPlacementPossiblePositionsMessage(fighter.Character.Client, this, (sbyte)fighter.Team.Id);
 
             ContextHandler.SendGameEntitiesDispositionMessage(fighter.Character.Client, GetAllFighters());
             ContextHandler.SendGameFightResumeMessage(fighter.Character.Client, fighter);
