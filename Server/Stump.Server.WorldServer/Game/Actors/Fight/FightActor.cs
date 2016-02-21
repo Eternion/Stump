@@ -1496,8 +1496,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var buff in m_buffList.Where(x => x.Spell.Id == spellId).ToArray())
             {
-                if (buff.Dispellable == FightDispellableEnum.DISPELLABLE || buff.Dispellable == FightDispellableEnum.DISPELLABLE_BY_DEATH)
-                    RemoveBuff(buff);
+                RemoveBuff(buff);
             }
         }
 
@@ -1505,8 +1504,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var buff in m_buffList.ToArray())
             {
-                if (buff.Dispellable == FightDispellableEnum.DISPELLABLE || buff.Dispellable == FightDispellableEnum.DISPELLABLE_BY_DEATH)
-                    RemoveBuff(buff);
+                RemoveBuff(buff);
             }
         }
 

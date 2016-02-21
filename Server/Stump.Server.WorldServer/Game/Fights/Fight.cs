@@ -2288,11 +2288,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightResumeMessage(fighter.Character.Client, fighter);
             ContextHandler.SendGameFightTurnListMessage(fighter.Character.Client, this);
             ContextHandler.SendGameFightSynchronizeMessage(fighter.Character.Client, this);
+
+            if (fighter.IsSlaveTurn())
+                ContextHandler.SendSlaveSwitchContextMessage(fighter.Character.Client, fighter.GetSlave());
+
+            ContextHandler.SendGameFightTurnResumeMessage(fighter.Character.Client, FighterPlaying);
             ContextHandler.SendGameFightNewRoundMessage(fighter.Character.Client, TimeLine.RoundNumber);
             ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, ChallengersTeam);
             ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, DefendersTeam);
-
-            ContextHandler.SendGameFightTurnResumeMessage(fighter.Character.Client, FighterPlaying);
 
             // <b>%1</b> vient de se reconnecter en combat.
             BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 184, fighter.GetMapRunningFighterName());
