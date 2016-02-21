@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -15,7 +16,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SlaveFighter : FightActor, INamedActor
+    public class SlaveFighter : FightActor, INamedActor, ISummoned
     {
         readonly StatsFields m_stats;
         
@@ -84,6 +85,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public FightActor Summoner
         {
             get;
+        }
+
+        public SpellEffectHandler SummoningEffect
+        {
+            get;
+            set;
         }
 
         public MonsterGrade Monster
