@@ -291,6 +291,7 @@
     <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
     <Compile Include="Game\Actors\Interfaces\IContextDependant.cs" />
     <Compile Include="Game\Actors\Interfaces\ICreature.cs" />
+    <Compile Include="Game\Actors\Interfaces\ISummoned.cs" />
     <Compile Include="Game\Actors\Look\ActorLook.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
