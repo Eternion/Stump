@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
@@ -23,7 +24,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SummonedBomb : FightActor, INamedActor, ICreature
+    public class SummonedBomb : FightActor, INamedActor, ICreature, ISummoned
     {
         [Variable]
         public static int BombLimit = 3;
@@ -114,6 +115,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public MonsterGrade MonsterGrade => MonsterBombTemplate;
 
         public FightActor Summoner
+        {
+            get;
+            set;
+        }
+
+        public SpellEffectHandler SummoningEffect
         {
             get;
             set;

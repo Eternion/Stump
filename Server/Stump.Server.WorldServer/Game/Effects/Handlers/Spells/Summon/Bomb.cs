@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                     return false;
 
                 var bomb = new SummonedBomb(Fight.GetNextContextualId(), Caster.Team, bombSpell, monsterTemplate, Caster,
-                    TargetedCell);
+                    TargetedCell) {SummoningEffect = this};
 
                 Caster.AddBomb(bomb);
                 Caster.Team.AddFighter(bomb);
