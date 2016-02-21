@@ -34,9 +34,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
+            var turnDuration = Delay == 0 ? Duration : Delay;
+
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, Delay,
+            return new FightTriggeredEffect(Id, Target.Id, turnDuration,
                 (sbyte)Dispellable,
                 (short)Spell.Id, Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
