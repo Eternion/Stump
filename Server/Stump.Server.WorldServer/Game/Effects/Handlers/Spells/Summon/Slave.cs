@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             if (monster.Template.UseSummonSlot && !Caster.CanSummon())
                 return false;
 
-            var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
+            var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) { SummoningEffect = this };
 
             ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, slave);
 
