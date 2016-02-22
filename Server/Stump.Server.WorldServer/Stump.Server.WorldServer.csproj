@@ -543,6 +543,7 @@
     <Compile Include="Game\Fights\History\MovementHistory.cs" />
     <Compile Include="Game\Fights\History\MovementHistoryEntry.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
+    <Compile Include="Game\Fights\SwapRequest.cs" />
     <Compile Include="Game\Fights\Teams\FightMonsterTeam.cs" />
     <Compile Include="Game\Fights\Teams\FightPlayerTeam.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />

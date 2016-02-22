@@ -13,10 +13,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void OnOpen()
         {
-            ContextRoleplayHandler.
-                SendGameRolePlayPlayerFightFriendlyRequestedMessage(Source.Client, Target, Source, Target);
-            ContextRoleplayHandler.
-                SendGameRolePlayPlayerFightFriendlyRequestedMessage(Target.Client, Source, Source, Target);
+            ContextRoleplayHandler.SendGameRolePlayPlayerFightFriendlyRequestedMessage(Source.Client, Target, Source, Target);
+            ContextRoleplayHandler.SendGameRolePlayPlayerFightFriendlyRequestedMessage(Target.Client, Source, Source, Target);
         }
 
         protected override void OnAccept()
