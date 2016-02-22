@@ -1329,7 +1329,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (state)
                 RemoveAllSpectators();
 
-            OnTeamOptionsChanged(character.Fighter.Team, FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
+            OnTeamOptionsChanged(ChallengersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
+            OnTeamOptionsChanged(DefendersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
         }
 
         public virtual bool CanSpectatorJoin(Character spectator) => !SpectatorClosed && (State == FightState.Placement || State == FightState.Fighting);
