@@ -19,28 +19,32 @@ namespace Stump.Server.WorldServer.Game.Items
         {
         }
 
-        public void AddKamas(int amount)
+        public int AddKamas(int amount)
         {
             if (amount == 0)
-                return;
+                return 0;
 
-            SetKamas(Kamas + amount);
+            return SetKamas(Kamas + amount);
         }
 
-        public void SubKamas(int amount)
+        public int SubKamas(int amount)
         {
             if (amount == 0)
-                return;
+                return 0;
 
-            SetKamas(Kamas - amount);
+            return SetKamas(Kamas - amount);
         }
 
-        public virtual void SetKamas(int amount)
+        public virtual int SetKamas(int amount)
         {
             var oldKamas = Kamas;
 
+            if (amount < 0)
+                amount = 0;
+
             Kamas = amount;
             NotifyKamasAmountChanged(amount - oldKamas);
+            return amount - oldKamas;
         }
 
         public virtual int Kamas

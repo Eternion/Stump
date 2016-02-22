@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
@@ -33,6 +34,62 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 {
     public partial class InventoryHandler
     {
+        [WorldHandler(ExchangePlayerMultiCraftRequestMessage.Id)]
+        public static void HandleExchangePlayerMultiCraftRequestMessage(WorldClient client, ExchangePlayerMultiCraftRequestMessage message)
+        {
+            var target = client.Character.Map.GetActor<Character>((int) message.target);
+
+            if (target == null)
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.BID_SEARCH_ERROR);
+                return;
+            }
+
+            if (target.Map.Id != client.Character.Map.Id)
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_TOOL_TOO_FAR);
+                return;
+            }
+
+            if (target.IsBusy() || target.IsTrading())
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
+                return;
+            }
+
+            if (target.FriendsBook.IsIgnored(client.Account.Id))
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_RESTRICTED);
+                return;
+            }
+
+            if (!target.IsAvailable(client.Character, false))
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
+                return;
+            }
+
+            if (!client.Character.Map.AllowExchangesBetweenPlayers)
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_IMPOSSIBLE);
+                return;
+            }
+
+            var interactive = client.Character.Map.
+                GetInteractiveObjects().FirstOrDefault(x => x.GetSkills().Any(y => y.SkillTemplate?.Id == message.skillId && y.IsEnabled(client.Character)));
+
+            if (interactive == null)
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_TOOL_TOO_FAR);
+                return;
+            }
+
+            var skill = interactive.GetSkills().First(x => x.SkillTemplate?.Id == message.skillId);
+
+            var dialog = new MultiCraftRequest(client.Character, target, interactive, skill);
+            dialog.Open();
+        }
+
         [WorldHandler(ExchangePlayerRequestMessage.Id)]
         public static void HandleExchangePlayerRequestMessage(WorldClient client, ExchangePlayerRequestMessage message)
         {
@@ -94,7 +151,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeAcceptMessage(WorldClient client, ExchangeAcceptMessage message)
         {
             if (client.Character.IsInRequest() &&
-                client.Character.RequestBox is PlayerTradeRequest)
+                client.Character.RequestBox.IsExchangeRequest)
             {
                 client.Character.AcceptRequest();
             }
@@ -104,6 +161,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeObjectMoveKamaMessage(WorldClient client, ExchangeObjectMoveKamaMessage message)
         {
             if (!client.Character.IsInExchange())
+                return;
+
+            client.Character.Exchanger.SetKamas(message.quantity);
+        }
+
+        [WorldHandler(ExchangeCraftPaymentModificationRequestMessage.Id)]
+        public static void HandleExchangeCraftPaymentModificationRequestMessage(WorldClient client, ExchangeCraftPaymentModificationRequestMessage message)
+        {
+            if (!(client.Character.Dialoger is CraftCustomer))
                 return;
 
             client.Character.Exchanger.SetKamas(message.quantity);
@@ -414,8 +480,13 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!JobManager.Instance.Recipes.ContainsKey(message.objectGID))
                 return;
 
+            var craftActor = client.Character.Dialoger as CraftingActor;
+
+            if (craftActor == null)
+                return;
+
             var recipe = JobManager.Instance.Recipes[message.objectGID];
-            (client.Character.Dialog as CraftDialog)?.ChangeRecipe(recipe);
+            craftActor.CraftDialog.ChangeRecipe(craftActor, recipe);
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
@@ -625,6 +696,26 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeCraftInformationObjectMessage(IPacketReceiver client, BasePlayerItem item, Character owner)
         {
             client.Send(new ExchangeCraftInformationObjectMessage((sbyte)ExchangeCraftResultEnum.CRAFT_SUCCESS, (short)item.Template.Id, owner.Id));
+        }
+
+        public static void SendExchangeOkMultiCraftMessage(IPacketReceiver client, Character initiator, Character other, ExchangeTypeEnum role)
+        {
+            client.Send(new ExchangeOkMultiCraftMessage(initiator.Id, other.Id, (sbyte)role));
+        }
+
+        public static void SendExchangeStartOkMulticraftCrafterMessage(IPacketReceiver client, InteractiveSkillTemplate skillTemplate)
+        {
+            client.Send(new ExchangeStartOkMulticraftCrafterMessage(skillTemplate.Id));
+        }
+
+        public static void SendExchangeStartOkMulticraftCustomerMessage(IPacketReceiver client, InteractiveSkillTemplate skillTemplate, Job job)
+        {
+            client.Send(new ExchangeStartOkMulticraftCustomerMessage(skillTemplate.Id, (byte)job.Level));
+        }
+
+        public static void SendExchangeCraftPaymentModifiedMessage(IPacketReceiver client, int kamas)
+        {
+            client.Send(new ExchangeCraftPaymentModifiedMessage(kamas));
         }
     }
 }

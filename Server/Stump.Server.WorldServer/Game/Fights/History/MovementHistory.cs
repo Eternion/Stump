@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         void OnPositionChanged(ContextActor actor, ObjectPosition position)
         {
             // compare if the last cell is the same in case the actor moved by itself
-            if (!actor.IsMoving())
+            if (!actor.IsMoving() && Owner.Fight.State == FightState.Fighting)
                 RegisterEntry(position.Cell);
         }
 

@@ -26,6 +26,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs
             Target = target;
         }
 
+        public virtual bool IsExchangeRequest => false;
+
         public Character Source
         {
             get;
