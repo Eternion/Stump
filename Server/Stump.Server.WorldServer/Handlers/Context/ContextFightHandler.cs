@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Core.Extensions;
+using Stump.Server.WorldServer.Game.Actors;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -127,9 +128,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 return;
 
             if (client.Character.Fighter.Position.Cell.Id != message.cellId)
-            {
                 client.Character.Fighter.ChangePrePlacement(client.Character.Fight.Map.Cells[message.cellId]);
-            }
         }
 
         [WorldHandler(GameRolePlayPlayerFightRequestMessage.Id)]
@@ -150,10 +149,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 else
                 {
                     var fightRequest = new FightRequest(client.Character, target);
-
-                    client.Character.OpenRequestBox(fightRequest);
-                    target.OpenRequestBox(fightRequest);
-
                     fightRequest.Open();
                 }
             }
@@ -186,8 +181,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameRolePlayPlayerFightFriendlyAnswerMessage.Id)]
         public static void HandleGameRolePlayPlayerFightFriendlyAnswerMessage(WorldClient client, GameRolePlayPlayerFightFriendlyAnswerMessage message)
         {
-            if (!client.Character.IsInRequest() ||
-                !(client.Character.RequestBox is FightRequest))
+            if (!client.Character.IsInRequest() || !(client.Character.RequestBox is FightRequest))
                 return;
 
             if (message.accept)

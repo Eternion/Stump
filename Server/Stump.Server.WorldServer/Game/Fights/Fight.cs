@@ -34,6 +34,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -975,11 +976,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         #endregion
-        
-        public virtual TimeSpan GetPlacementTimeLeft()
-        {
-            return TimeSpan.Zero;
-        }
+
+        public virtual TimeSpan GetPlacementTimeLeft() => TimeSpan.Zero;
 
         #region Placement methods
 
@@ -1131,10 +1129,15 @@ namespace Stump.Server.WorldServer.Game.Fights
                    (figtherOnCell == fighter || figtherOnCell == null);
         }
 
+        protected virtual void OnSwapPreplacementPosition(FightActor fighter, FightActor actor)
+        {
+            UpdateFightersPlacementDirection();
+            ContextRoleplayHandler.SendGameFightPlacementSwapPositionsMessage(Clients, new[] { fighter, actor });
+        }
+
         protected virtual void OnChangePreplacementPosition(FightActor fighter, ObjectPosition objectPosition)
         {
             UpdateFightersPlacementDirection();
-
             ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
         }
 
@@ -1678,10 +1681,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        private void UnBindFighterEvents(FightActor actor)
+        void UnBindFighterEvents(FightActor actor)
         {
             actor.ReadyStateChanged -= OnSetReady;
             actor.PrePlacementChanged -= OnChangePreplacementPosition;
+            actor.PrePlacementSwapped -= OnSwapPreplacementPosition;
             actor.FighterLeft -= OnPlayerLeft;
 
             actor.StartMoving -= OnStartMoving;
@@ -1723,6 +1727,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 actor.ReadyStateChanged += OnSetReady;
                 actor.PrePlacementChanged += OnChangePreplacementPosition;
+                actor.PrePlacementSwapped += OnSwapPreplacementPosition;
             }
 
             if (State == FightState.Fighting)
@@ -2272,27 +2277,37 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_leavers.Remove(fighter);
             fighter.LeaveDisconnectedState();
 
-            Clients.Add(fighter.Character.Client);
+            var client = fighter.Character.Client;
+
+            Clients.Add(client);
 
             SendGameFightJoinMessage(fighter);
             
             foreach (var fightMember in GetAllFighters())
-                ContextHandler.SendGameFightShowFighterMessage(fighter.Character.Client, fightMember);
+                ContextHandler.SendGameFightShowFighterMessage(client, fightMember);
 
             fighter.Character.RefreshStats();
 
             if (State == FightState.Placement || State == FightState.NotStarted)
-                ContextHandler.SendGameFightPlacementPossiblePositionsMessage(fighter.Character.Client, this, (sbyte)fighter.Team.Id);
+                ContextHandler.SendGameFightPlacementPossiblePositionsMessage(client, this, (sbyte)fighter.Team.Id);
 
-            ContextHandler.SendGameEntitiesDispositionMessage(fighter.Character.Client, GetAllFighters());
-            ContextHandler.SendGameFightResumeMessage(fighter.Character.Client, fighter);
-            ContextHandler.SendGameFightTurnListMessage(fighter.Character.Client, this);
-            ContextHandler.SendGameFightSynchronizeMessage(fighter.Character.Client, this);
-            ContextHandler.SendGameFightNewRoundMessage(fighter.Character.Client, TimeLine.RoundNumber);
-            ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, ChallengersTeam);
-            ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, DefendersTeam);
+            ContextHandler.SendGameEntitiesDispositionMessage(client, GetAllFighters());
+            ContextHandler.SendGameFightResumeMessage(client, fighter);
+            ContextHandler.SendGameFightTurnListMessage(client, this);
+            ContextHandler.SendGameFightSynchronizeMessage(client, this);
 
-            ContextHandler.SendGameFightTurnResumeMessage(fighter.Character.Client, FighterPlaying);
+            if (fighter.IsSlaveTurn())
+                ContextHandler.SendSlaveSwitchContextMessage(client, fighter.GetSlave());
+
+            ContextHandler.SendGameFightTurnResumeMessage(client, FighterPlaying);
+            ContextHandler.SendGameFightNewRoundMessage(client, TimeLine.RoundNumber);
+            ContextHandler.SendGameFightUpdateTeamMessage(client, this, ChallengersTeam);
+            ContextHandler.SendGameFightUpdateTeamMessage(client, this, DefendersTeam);
+
+            ContextHandler.SendGameFightOptionStateUpdateMessage(client, fighter.Team, FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP, fighter.Team.GetOptionState(FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP));
+            ContextHandler.SendGameFightOptionStateUpdateMessage(client, fighter.Team, FightOptionsEnum.FIGHT_OPTION_SET_CLOSED, fighter.Team.GetOptionState(FightOptionsEnum.FIGHT_OPTION_SET_CLOSED));
+            ContextHandler.SendGameFightOptionStateUpdateMessage(client, fighter.Team, FightOptionsEnum.FIGHT_OPTION_SET_SECRET, fighter.Team.GetOptionState(FightOptionsEnum.FIGHT_OPTION_SET_SECRET));
+            ContextHandler.SendGameFightOptionStateUpdateMessage(client, fighter.Team, FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY, fighter.Team.GetOptionState(FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY));
 
             // <b>%1</b> vient de se reconnecter en combat.
             BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 184, fighter.GetMapRunningFighterName());
