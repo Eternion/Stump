@@ -203,7 +203,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             if (!client.Character.Fight.IsStarted)
                 client.Character.Team.ToggleOption((FightOptionsEnum)message.option);
-            else if (message.option == (sbyte)FightOptionsEnum.FIGHT_OPTION_SET_SECRET)
+
+            if (message.option == (sbyte)FightOptionsEnum.FIGHT_OPTION_SET_SECRET)
                 client.Character.Fight.ToggleSpectatorClosed(client.Character, !client.Character.Fight.SpectatorClosed);
         }
 

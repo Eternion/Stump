@@ -171,6 +171,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                     IsRestrictedToParty = !IsRestrictedToParty;
                     break;
+                default:
+                    return;
             }
 
             OnTeamOptionsChanged(option);

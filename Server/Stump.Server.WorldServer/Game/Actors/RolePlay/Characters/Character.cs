@@ -366,7 +366,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Dialog
 
-        private IDialoger m_dialoger;
+        IDialoger m_dialoger;
 
         public IDialoger Dialoger
         {
@@ -378,7 +378,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private IDialog m_dialog;
+        IDialog m_dialog;
 
         public IDialog Dialog
         {
@@ -413,9 +413,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void SetDialog(IDialog dialog)
         {
             if (Dialog != null)
-            {
                 Dialog.Close();
-            }
 
             Dialog = dialog;
         }
@@ -442,45 +440,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             RequestBox = null;
         }
 
-        public bool IsBusy()
-        {
-            return IsInRequest() || IsDialoging();
-        }
+        public bool IsBusy() => IsInRequest() || IsDialoging();
 
-        public bool IsDialoging()
-        {
-            return Dialog != null;
-        }
+        public bool IsDialoging() => Dialog != null;
 
-        public bool IsInRequest()
-        {
-            return RequestBox != null;
-        }
+        public bool IsInRequest() => RequestBox != null;
 
-        public bool IsRequestSource()
-        {
-            return IsInRequest() && RequestBox.Source == this;
-        }
+        public bool IsRequestSource() => IsInRequest() && RequestBox.Source == this;
 
-        public bool IsRequestTarget()
-        {
-            return IsInRequest() && RequestBox.Target == this;
-        }
+        public bool IsRequestTarget() => IsInRequest() && RequestBox.Target == this;
 
-        public bool IsTalkingWithNpc()
-        {
-            return Dialog is NpcDialog;
-        }
+        public bool IsTalkingWithNpc() => Dialog is NpcDialog;
 
-        public bool IsInZaapDialog()
-        {
-            return Dialog is ZaapDialog;
-        }
+        public bool IsInZaapDialog() => Dialog is ZaapDialog;
 
-        public bool IsInZaapiDialog()
-        {
-            return Dialog is ZaapiDialog;
-        }
+        public bool IsInZaapiDialog() => Dialog is ZaapiDialog;
 
         #endregion
 
@@ -2222,13 +2196,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return false;
         }
 
-        public override bool IsGonnaChangeZone()
-        {
-            return base.IsGonnaChangeZone() || !IsLoggedIn;
-        }
+        public override bool IsGonnaChangeZone() => base.IsGonnaChangeZone() || !IsLoggedIn;
 
         public override bool StartMove(Path movementPath)
         {
+            LeaveDialog(); //Close Dialog && RequestBox when moving
+
             if (IsFighting() || MustBeJailed() || !IsInJail())
                 return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
@@ -2236,20 +2209,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return false;
         }
 
-        public override bool StopMove()
-        {
-            return IsFighting() ? Fighter.StopMove() : base.StopMove();
-        }
+        public override bool StopMove() => IsFighting() ? Fighter.StopMove() : base.StopMove();
 
-        public override bool MoveInstant(ObjectPosition destination)
-        {
-            return IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
-        }
+        public override bool MoveInstant(ObjectPosition destination) => IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
 
-        public override bool StopMove(ObjectPosition currentObjectPosition)
-        {
-            return IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
-        }
+        public override bool StopMove(ObjectPosition currentObjectPosition) => IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
 
         public override bool Teleport(MapNeighbour mapNeighbour)
         {
@@ -2299,6 +2263,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+
         protected override void OnTeleported(ObjectPosition position)
         {
             base.OnTeleported(position);
