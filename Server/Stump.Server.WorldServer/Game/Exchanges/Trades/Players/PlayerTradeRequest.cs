@@ -13,6 +13,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             Source = source;
             Target = target;
         }
+        public override bool IsExchangeRequest => true;
 
         protected override void OnOpen()
         {

@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override int StartExecute(Character character)
         {
-            var dialog = new CraftDialog(character, InteractiveObject, this);
+            var dialog = new SingleCraftDialog(character, InteractiveObject, this);
             dialog.Open();
 
             return base.StartExecute(character);

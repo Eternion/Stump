@@ -358,16 +358,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #endregion
 
-        public override void SetKamas(int amount)
+        public override int SetKamas(int amount)
         {
             if (amount >= MaxInventoryKamas)
             {
-                Kamas = MaxInventoryKamas;            
+                amount = MaxInventoryKamas;            
                 //344	Vous avez atteint le seuil maximum de kamas dans votre inventaire.
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 344);
             }
 
-            base.SetKamas(amount);
+            return base.SetKamas(amount);
         }
 
         public BasePlayerItem AddItem(ItemTemplate template, List<EffectBase> effects, int amount = 1, bool addItemMsg = true)

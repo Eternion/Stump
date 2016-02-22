@@ -431,8 +431,13 @@
     <Compile Include="Game\Exchanges\Bank\BankCustomer.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchanger.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchange.cs" />
+    <Compile Include="Game\Exchanges\Craft\CraftCustomer.cs" />
     <Compile Include="Game\Exchanges\Craft\CraftDialog.cs" />
+    <Compile Include="Game\Exchanges\Craft\MultiCraftDialog.cs" />
+    <Compile Include="Game\Exchanges\Craft\MultiCraftRequest.cs" />
+    <Compile Include="Game\Exchanges\Craft\SingleCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\Crafter.cs" />
+    <Compile Include="Game\Exchanges\Craft\CraftingActor.cs" />
     <Compile Include="Game\Exchanges\IExchange.cs" />
     <Compile Include="Game\Exchanges\Exchanger.cs" />
     <Compile Include="Game\Exchanges\Merchant\CharacterMerchant.cs" />

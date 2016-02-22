@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
@@ -46,6 +47,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var paddock = PaddockManager.Instance.GetPaddock(message.mapId);
             if (paddock != null)
                 client.Send(paddock.GetPaddockPropertiesMessage());
+
+            var skills = client.Character.Map.GetInteractiveObjects().SelectMany(x => x.GetSkills().OfType<SkillCraft>().Where(y => y.IsEnabled(client.Character)).Select(y => y.SkillTemplate)).Distinct();
+
+            SendJobMultiCraftAvailableSkillsMessage(client, client.Character, skills, true);
         }
 
         [WorldHandler(MapRunningFightListRequestMessage.Id)]

@@ -23,9 +23,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
     public abstract class Trader : Exchanger
     {
         public delegate void ItemMovedHandler(Trader trader, TradeItem item, bool modified, int difference);
-
         public delegate void KamasChangedHandler(Trader trader, uint kamasAmount);
-
         public delegate void ReadyStatusChangedHandler(Trader trader, bool isReady);
 
         public event ItemMovedHandler ItemMoved;
@@ -103,6 +101,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
 
         protected bool RemoveItem(TradeItem item)
         {
+            item.Stack = 0;
             return m_items.Remove(item);
         }
 
