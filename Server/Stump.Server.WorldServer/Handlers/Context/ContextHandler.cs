@@ -135,8 +135,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameEntitiesDispositionMessage(IPacketReceiver client, IEnumerable<ContextActor> actors)
         {
-            client.Send(new GameEntitiesDispositionMessage(
-                    actors.Select(entry => entry.GetIdentifiedEntityDispositionInformations())));
+            client.Send(new GameEntitiesDispositionMessage(actors.Select(entry => entry.GetIdentifiedEntityDispositionInformations())));
         }
     }
 }

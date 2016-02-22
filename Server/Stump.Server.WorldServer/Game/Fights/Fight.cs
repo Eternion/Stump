@@ -34,6 +34,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -1128,10 +1129,15 @@ namespace Stump.Server.WorldServer.Game.Fights
                    (figtherOnCell == fighter || figtherOnCell == null);
         }
 
+        protected virtual void OnSwapPreplacementPosition(FightActor fighter, FightActor actor)
+        {
+            UpdateFightersPlacementDirection();
+            ContextRoleplayHandler.SendGameFightPlacementSwapPositionsMessage(Clients, new[] { fighter, actor });
+        }
+
         protected virtual void OnChangePreplacementPosition(FightActor fighter, ObjectPosition objectPosition)
         {
             UpdateFightersPlacementDirection();
-
             ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
         }
 
@@ -1675,10 +1681,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        private void UnBindFighterEvents(FightActor actor)
+        void UnBindFighterEvents(FightActor actor)
         {
             actor.ReadyStateChanged -= OnSetReady;
             actor.PrePlacementChanged -= OnChangePreplacementPosition;
+            actor.PrePlacementSwapped -= OnSwapPreplacementPosition;
             actor.FighterLeft -= OnPlayerLeft;
 
             actor.StartMoving -= OnStartMoving;
@@ -1720,6 +1727,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 actor.ReadyStateChanged += OnSetReady;
                 actor.PrePlacementChanged += OnChangePreplacementPosition;
+                actor.PrePlacementSwapped += OnSwapPreplacementPosition;
             }
 
             if (State == FightState.Fighting)

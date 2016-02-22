@@ -131,6 +131,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler?.Invoke(this, position);
         }
 
+        public event Action<FightActor, FightActor> PrePlacementSwapped;
+
+        protected virtual void OnPrePlacementSwapped(FightActor actor)
+        {
+            var handler = PrePlacementSwapped;
+            handler?.Invoke(this, actor);
+        }
+
         public event Action<FightActor> TurnPassed;
 
         protected virtual void OnTurnPassed()
@@ -490,10 +498,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnPrePlacementChanged(Position);
         }
 
-        public virtual ObjectPosition GetLeaderBladePosition()
+        public void SwapPrePlacement(FightActor actor)
         {
-            return MapPosition.Clone();
+            var oldCell = Position.Cell;
+
+            Position.Cell = actor.Cell;
+            actor.Position.Cell = oldCell;
+
+            OnPrePlacementSwapped(actor);
         }
+
+        public virtual ObjectPosition GetLeaderBladePosition() => MapPosition.Clone();
 
         #endregion
 
