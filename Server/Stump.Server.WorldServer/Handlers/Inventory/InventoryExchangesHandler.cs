@@ -75,8 +75,16 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            var interactive = client.Character.Map.
-                GetInteractiveObjects().FirstOrDefault(x => x.GetSkills().Any(y => y.SkillTemplate?.Id == message.skillId && y.IsEnabled(client.Character)));
+            var interactives = client.Character.Map.
+                GetInteractiveObjects().Where(x => x.GetSkills().Any(y => y.SkillTemplate?.Id == message.skillId && y.IsEnabled(client.Character))).ToArray();
+
+            if (interactives.All(x => x.Position.Point.EuclideanDistanceTo(client.Character.Position.Point) >= 2))
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_TOOL_TOO_FAR);
+                return;
+            }
+
+            var interactive = interactives.FirstOrDefault();
 
             if (interactive == null)
             {

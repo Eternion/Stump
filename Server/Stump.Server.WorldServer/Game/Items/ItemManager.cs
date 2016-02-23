@@ -200,6 +200,11 @@ namespace Stump.Server.WorldServer.Game.Items
             return new BankItem(character, record);
         }
 
+        public bool HasToBeGenerated(ItemTemplate template)
+        {
+            return template.Effects.Any(x => !EffectManager.Instance.IsUnRandomableWeaponEffect(x.EffectId) && (!(x is EffectDice) || (((EffectDice) x).DiceFace != 0 && ((EffectDice) x).DiceNum != 0)));
+        }
+
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
         {
             var effects = template.Effects.Select(effect => EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId) ? effect : effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();

@@ -299,10 +299,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public long GetJobNextLevelExperience(byte level)
         {
             if (!m_records.ContainsKey((byte)(level + 1)))
-                return long.MaxValue;
+                return int.MaxValue;
 
             if (m_records[(byte)(level + 1)].JobExp == null)
-                return long.MaxValue;
+                return int.MaxValue;
 
             var exp = m_records[(byte)(level + 1)].JobExp;
 
