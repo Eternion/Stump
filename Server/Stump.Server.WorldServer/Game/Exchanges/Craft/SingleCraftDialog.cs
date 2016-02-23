@@ -50,7 +50,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         private void OnReady(Trader trader, bool isready)
         {
             if (isready)
+            {
                 Craft();
+
+                trader.ToggleReady(false);
+            }
         }
 
         private void OnItemMoved(Trader trader, TradeItem item, bool modified, int difference)

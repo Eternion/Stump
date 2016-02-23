@@ -16,7 +16,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SlaveFighter : FightActor, INamedActor, ISummoned
+    public class SlaveFighter : FightActor, INamedActor, ISummoned, ICreature
     {
         readonly StatsFields m_stats;
         
@@ -27,8 +27,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Summoner = summoner;
             Position = summoner.Position.Clone();
             Cell = cell;
-            Monster = template;
-            Look = Monster.Template.EntityLook;
+            MonsterGrade = template;
+            Look = MonsterGrade.Template.EntityLook;
 
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
@@ -93,28 +93,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             set;
         }
 
-        public MonsterGrade Monster
+        public MonsterGrade MonsterGrade
         {
             get;
         }
 
         public override ObjectPosition MapPosition => Position;
 
-        public override byte Level => (byte)Monster.Level;
+        public override byte Level => (byte)MonsterGrade.Level;
 
         public override StatsFields Stats => m_stats;
 
-        public override string GetMapRunningFighterName() => Monster.Template.Name;
+        public override string GetMapRunningFighterName() => MonsterGrade.Template.Name;
 
-        public string Name => Monster.Template.Name;
+        public string Name => MonsterGrade.Template.Name;
 
-        public IEnumerable<Spell> Spells => Monster.Spells;
+        public IEnumerable<Spell> Spells => MonsterGrade.Spells;
 
         public override Spell GetSpell(int id) => Spells.FirstOrDefault(x => x.Template.Id == id);
 
         public override bool HasSpell(int id) => Spells.Any(x => x.Template.Id == id);
 
-        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
+        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberMonsterInformations(Id, MonsterGrade.Template.Id, (sbyte)MonsterGrade.GradeId);
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null) => new GameFightMonsterInformations(
                 Id,
@@ -125,8 +125,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 IsAlive(),
                 GetGameFightMinimalStats(client),
                 new short[0],
-                (short)Monster.Template.Id,
-                (sbyte)Monster.GradeId);
+                (short)MonsterGrade.Template.Id,
+                (sbyte)MonsterGrade.GradeId);
 
         public CharacterCharacteristicsInformations GetSlaveCharacteristicsInformations()
         {

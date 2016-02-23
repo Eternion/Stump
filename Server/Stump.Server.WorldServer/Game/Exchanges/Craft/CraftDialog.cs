@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -149,10 +150,22 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             var xp = JobManager.Instance.GetCraftJobXp(recipe, Job.Level) * Amount;
             Job.Experience += xp;
 
-            var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, Amount, false);
-            InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
-                ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, Amount);
-            InventoryHandler.SendExchangeCraftInformationObjectMessage(Clients, createdItem, Receiver.Character);
+            if (ItemManager.Instance.HasToBeGenerated(recipe.ItemTemplate))
+                for (int i = 0; i < Amount; i++)
+                {
+                    var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, 1, false);
+                    InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
+                        ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, 1);
+                    InventoryHandler.SendExchangeCraftInformationObjectMessage(Clients, createdItem, Receiver.Character);
+                }
+            else
+            {
+                var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, Amount, false);
+                InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
+                    ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, Amount);
+                InventoryHandler.SendExchangeCraftInformationObjectMessage(Clients, createdItem, Receiver.Character);
+            }
+
             ChangeAmount(1);
 
             return true;

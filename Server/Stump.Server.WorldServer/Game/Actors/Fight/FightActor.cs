@@ -1633,7 +1633,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public int SummonedCount
-            => m_summons.Count(x => x is SummonedMonster && (x as SummonedMonster).Monster.Template.UseSummonSlot) + m_slaves.Count(x => x.Monster.Template.UseSummonSlot);
+            => m_summons.Count(x => x is SummonedMonster && (x as SummonedMonster).Monster.Template.UseSummonSlot) + m_slaves.Count(x => x.MonsterGrade.Template.UseSummonSlot);
 
         public int BombsCount => m_bombs.Count(x => x.MonsterBombTemplate.Template.UseBombSlot);
 
