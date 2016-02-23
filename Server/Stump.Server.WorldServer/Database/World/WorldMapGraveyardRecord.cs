@@ -33,6 +33,12 @@
                 set;
             }
 
+            public int SubAreaId
+            {
+                get;
+                set;
+            }
+
             public int PhoenixMapId
             {
                 get;

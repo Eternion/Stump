@@ -268,7 +268,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         event Action<IFight, FightActor> BeforeTurnStopped;
         event Action<IFight, FightActor> TurnStopped;
         event Action<FightActor, int, int> Tackled;
-        void SwitchFighters(FightActor fighter1, FightActor fighter2);
         IEnumerable<Buff> GetBuffs();
         void UpdateBuff(Buff buff, bool updateAction = true);
         bool StartSequence(SequenceTypeEnum sequenceType);
@@ -1330,8 +1329,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (state)
                 RemoveAllSpectators();
 
-            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, ChallengersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET, SpectatorClosed);
-            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, DefendersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET, SpectatorClosed);
+            OnTeamOptionsChanged(ChallengersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
+            OnTeamOptionsChanged(DefendersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
         }
 
         public virtual bool CanSpectatorJoin(Character spectator) => !SpectatorClosed && (State == FightState.Placement || State == FightState.Fighting);
@@ -2217,7 +2216,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 var isfighterTurn = fighter.IsFighterTurn();
                 characterFighter.EnterDisconnectedState();
 
-                if (!CheckFightEnd() && isfighterTurn)
+                if (!CheckFightEnd() && isfighterTurn && characterFighter.MustSkipTurn())
                     StopTurn();
 
                 fighter.Team.AddLeaver(fighter);
@@ -2724,13 +2723,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightExternalInformations GetFightExternalInformations()
         {
-            return new FightExternalInformations(Id, (sbyte)FightType, !IsStarted ? 0 : StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting,
+            return new FightExternalInformations(Id, (sbyte)FightType, !IsStarted ? 0 : StartTime.GetUnixTimeStamp(), SpectatorClosed,
                 m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
-        }
-
-        public void SwitchFighters(FightActor fighter1, FightActor fighter2)
-        {
-            throw new NotImplementedException();
         }
 
 
