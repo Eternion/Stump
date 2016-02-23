@@ -35,15 +35,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             AdjustStats();
 
             Fight.TurnStopped += OnTurnStopped;
-            Team.FighterAdded += OnFighterAdded;
-        }
-
-        void OnFighterAdded(FightTeam team, FightActor actor)
-        {
-            if (actor != this)
-                return;
-
-            CastSpell(new Spell((int)SpellIdEnum.INITIALISATION, 1), Cell, true, true, true);
         }
 
         void OnTurnStopped(IFight fight, FightActor player)
