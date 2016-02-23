@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
+namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
     [BrainIdentifier(2727)]
     public class BarrelBrain : Brain

@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
+namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
     [BrainIdentifier((int)MonsterIdEnum.LA_SACRIFIE_116)]
     public class SacrifiedBrain : Brain

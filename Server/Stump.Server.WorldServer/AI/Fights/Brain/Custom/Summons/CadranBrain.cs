@@ -2,9 +2,8 @@
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
-using System.Linq;
 
-namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
+namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
     [BrainIdentifier(3960)]
     public class CadranBrain : Brain
