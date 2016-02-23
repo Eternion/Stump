@@ -909,7 +909,7 @@ namespace DBSynchroniser
             foreach (ID2ORecord row in rows)
             {
                 var monster = row.CreateObject() as Monster;
-
+                
                 ParseMonsterSpells(monster.Id);
                 Thread.Sleep(1000);
 
@@ -949,7 +949,7 @@ namespace DBSynchroniser
             }
 
             var spellsNames = resultat.DocumentNode.Descendants()
-                .Where(x => (x.Name == "a"
+                .Where(x => ((x.Name == "a" || x.Name == "span")
                             && x.Attributes["href"] != null
                             && x.Attributes["href"].Value.StartsWith("http://staticns.ankama.com/dofus/renderer/look/")
                             && x.ParentNode.Name == "div"
