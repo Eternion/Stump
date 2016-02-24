@@ -27,13 +27,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
 
-            var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.ENRACINE_6);
-            AddState(state);
-
             m_stats.MP.Modified += OnMPModified;
 
             AdjustStats();
-            KillOtherTurrets();
         }
 
         private void AdjustStats()
@@ -71,14 +67,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats[PlayerFields.PushDamageBonus].Base = Summoner.Stats[PlayerFields.PushDamageBonus].Equiped;
         }
 
-        private void KillOtherTurrets()
-        {
-            var turrets = Team.GetAllFighters<SummonedTurret>(x => x.IsAlive() && x.Monster.Template == Monster.Template);
-            foreach (var turret in turrets)
-                turret.Die();
-        }
-
-        private void OnMPModified(StatsData mpStats, int amount)
+        void OnMPModified(StatsData mpStats, int amount)
         {
             if (amount == 0)
                 return;
@@ -106,13 +95,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public FightActor Caster
         {
             get;
-            private set;
         }
 
         public MonsterGrade Monster
         {
             get;
-            private set;
         }
 
         public MonsterGrade MonsterGrade

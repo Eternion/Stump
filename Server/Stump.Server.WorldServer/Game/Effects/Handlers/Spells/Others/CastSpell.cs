@@ -39,7 +39,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     affectedActor.AddBuff(buff);
                 }
                 else
-                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true, true, this);
+                {
+                    var spell = new Spell(Dice.DiceNum, (byte)Dice.DiceFace);
+
+                    if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
+                        Caster.CastSpell(spell, affectedActor.Cell, true, true, true, this);
+                    else
+                        affectedActor.CastSpell(spell, affectedActor.Cell, true, true, true, this);
+                }
             }
 
             return true;
