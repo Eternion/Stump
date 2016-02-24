@@ -8,7 +8,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
     [SpellCastHandler(SpellIdEnum.BOTTE)]
     public class KickSpellCastHandler : DefaultSpellCastHandler
     {
-        public KickSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(caster, spell, targetedCell, critical)
+        public KickSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
+            : base(caster, spell, targetedCell, critical)
         {
         }
 

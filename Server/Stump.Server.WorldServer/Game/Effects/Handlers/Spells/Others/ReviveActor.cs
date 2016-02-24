@@ -23,11 +23,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             private set;
         }
 
-        public override bool CanApply()
-        {
-            return base.CanApply();
-        }
-
         protected override bool InternalApply()
         {
             var integerEffect = GenerateEffect();
