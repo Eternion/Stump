@@ -128,6 +128,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
+        public virtual int TotalWithoutContext => Total - Context;
+
         public virtual int? Limit
         {
             get { return m_limit; }

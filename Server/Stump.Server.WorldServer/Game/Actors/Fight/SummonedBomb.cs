@@ -96,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void AdjustStats()
         {
-            m_stats.Health.Base = (int)Math.Floor(m_stats.Health.Base + 10 + (Summoner.Stats.Vitality.Total / 4.0));
+            m_stats.Health.Base = (int)Math.Floor(m_stats.Health.Base + 10 + (Summoner.Stats.Vitality.TotalWithoutContext / 4.0));
         }
 
         public override sealed int Id
