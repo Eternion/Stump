@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Handlers;
