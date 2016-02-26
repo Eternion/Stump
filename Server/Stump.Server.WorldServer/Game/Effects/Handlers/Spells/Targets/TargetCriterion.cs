@@ -38,6 +38,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
         public virtual bool IsDisjonction => true;
 
+        public virtual bool CheckWhenExecute => false;
+
         public static TargetCriterion ParseCriterion(string str)
         {
             try
