@@ -21,10 +21,17 @@ namespace Stump.Server.BaseServer.Network
         public static bool LogPackets = false;
 
         [Variable(DefinableRunning = true)]
-        public static int HistoryEntriesLimit = 20;
+        public static int MessagesEntriesLimit = 20;
 
         [Variable(DefinableRunning = true)]
         public static double FloodMinTime = 3.0;
+
+        [Variable(DefinableRunning = true)]
+        public readonly static List<string> MessagesWhitelist = new List<string>
+            {
+                "GameActionAcknowledgementMessage",
+                "GameFightTurnReadyMessage"
+            };
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -40,7 +47,7 @@ namespace Stump.Server.BaseServer.Network
         private BufferSegment m_bufferSegment;
         private long m_totalBytesReceived;
 
-        private readonly LimitedStack<Pair<DateTime, Message>> m_messagesHistory = new LimitedStack<Pair<DateTime, Message>>(HistoryEntriesLimit);
+        private readonly LimitedStack<Pair<DateTime, Message>> m_messagesHistory = new LimitedStack<Pair<DateTime, Message>>(MessagesEntriesLimit);
 
         protected BaseClient(Socket socket)
         {
@@ -269,7 +276,8 @@ namespace Stump.Server.BaseServer.Network
                     throw;
                 }
 
-                m_messagesHistory.Push(new Pair<DateTime, Message>(DateTime.Now, message));
+                if (!MessagesWhitelist.Contains(message.ToString()))
+                    m_messagesHistory.Push(new Pair<DateTime, Message>(DateTime.Now, message));
 
                 var time = m_messagesHistory.Last.Value.First.Subtract(m_messagesHistory.First.Value.First);
 

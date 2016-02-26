@@ -27,7 +27,6 @@ using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Jobs;
-using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Database.Items.Templates;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
