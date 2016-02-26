@@ -247,7 +247,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
 
             //Avoid StackOverflow when using Poudre
-            RemoveAndDispellAllBuffs();
+            //RemoveAndDispellAllBuffs();
 
             handler.Initialize();
 

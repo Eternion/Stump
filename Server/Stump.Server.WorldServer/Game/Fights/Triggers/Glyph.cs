@@ -56,10 +56,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
-            // Allies can't trigger glyph
-            if (trigger.IsFriendlyWith(Caster) && !SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id))
-                return;
-
             NotifyTriggered(trigger, GlyphSpell);
             
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);
@@ -67,7 +63,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             handler.Initialize();
 
             foreach (var effectHandler in handler.GetEffectHandlers())
-                effectHandler.SetAffectedActors(new[] { trigger });
+            {
+                if (effectHandler.IsValidTarget(trigger))
+                    effectHandler.SetAffectedActors(new[] { trigger });
+            }
 
             handler.Execute();
         }
