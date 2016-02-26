@@ -121,7 +121,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (PersonalReadyChecker != null)
                 PersonalReadyChecker.ToggleReady(this, ready);
-
             else if (Fight.ReadyChecker != null)
                 Fight.ReadyChecker.ToggleReady(this, ready);
         }
