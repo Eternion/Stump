@@ -892,6 +892,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
         public void RefreshActor(FightActor actor)
         {
+            if (actor.HasLeft())
+                return;
+
             ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
         }
         
