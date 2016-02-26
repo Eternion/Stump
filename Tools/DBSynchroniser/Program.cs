@@ -911,7 +911,7 @@ namespace DBSynchroniser
                 var monster = row.CreateObject() as Monster;
                 
                 ParseMonsterSpells(monster.Id);
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
 
                 i++;
                 UpdateCounter(i, rows.Count);
