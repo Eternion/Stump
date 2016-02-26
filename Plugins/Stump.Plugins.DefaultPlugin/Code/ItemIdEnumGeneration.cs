@@ -11,9 +11,10 @@ namespace Stump.Plugins.DefaultPlugin.Code
 {
     class ItemIdEnumGeneration
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         [Variable]
-        public static bool Active = true;
+        public static bool Active;
 
         [Variable]
         public static string Output = "Gen/ItemIdEnum.cs";

@@ -2023,19 +2023,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        bool ApplyEffect(SpellCastHandler castHandler, EffectDice effect, FightActor caster, FightActor target)
-        {
-            var handler = EffectManager.Instance.GetSpellEffectHandler(effect, caster, castHandler, target.Position.Cell, false);
-            handler.AddAffectedActor(target);
-
-            if (!handler.CanApply())
-                return false;
-
-            handler.Apply();
-
-            return true;
-        }
-
         #endregion
 
         #endregion

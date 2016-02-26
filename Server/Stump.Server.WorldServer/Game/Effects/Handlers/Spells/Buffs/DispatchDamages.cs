@@ -7,7 +7,6 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using System.Linq;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using System;
-using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {

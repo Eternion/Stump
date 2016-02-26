@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using TreeSharp;
 
@@ -14,7 +13,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
         public AIFighter Fighter
         {
             get;
-            private set;
         }
 
         public RunStatus YieldExecute(object context)
@@ -25,9 +23,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             return Run(context);
         }
 
-        protected override RunStatus Run(object context)
-        {
-            return RunStatus.Failure;
-        }
+        protected override RunStatus Run(object context) => RunStatus.Failure;
     }
 }
