@@ -1,6 +1,7 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Fights.Teams;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
@@ -11,17 +12,17 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
         public RoyalMouthBrain(AIFighter fighter)
             : base(fighter)
         {
-            fighter.Team.FighterAdded += OnFighterAdded;
+            fighter.Fight.TurnStarted += OnTurnStarted;
         }
 
-        void OnFighterAdded(FightTeam team, FightActor fighter)
+        void OnTurnStarted(IFight fight, FightActor fighter)
         {
             if (fighter != Fighter)
                 return;
 
-            Fighter.CastSpell(new Spell((int)SpellIdEnum.INIMOUTH, 1), Fighter.Cell, true);
+            Fighter.CastSpell(new Spell((int)SpellIdEnum.INIMOUTH, 1), Fighter.Cell, true, true);
 
-            fighter.Team.FighterAdded -= OnFighterAdded;
+            fighter.Fight.TurnStarted -= OnTurnStarted;
         }
     }
 }

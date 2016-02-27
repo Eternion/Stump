@@ -488,6 +488,7 @@
     <Compile Include="Game\Exchanges\Trades\TradeItem.cs" />
     <Compile Include="Game\Exchanges\Trades\Trader.cs" />
     <Compile Include="Game\Fights\Buffs\BuffTrigger.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\DisableStateBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\FractionBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />

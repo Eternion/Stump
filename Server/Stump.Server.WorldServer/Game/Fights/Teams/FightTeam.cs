@@ -206,10 +206,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 All(entry => entry.IsDead() || (entry.HasLeft() && (!(entry is CharacterFighter) || !((CharacterFighter)entry).IsDisconnected)));
         }
 
-        public bool IsFull()
-        {
-            return Fight.State == FightState.Placement && (m_fighters.Count > PlacementCells.Count() || m_fighters.Count >= 8);
-        }
+        public bool IsFull() => Fight.State == FightState.Placement && (m_fighters.Count > PlacementCells.Count() || m_fighters.Count >= 8);
 
         public virtual FighterRefusedReasonEnum CanJoin(Character character)
         {
