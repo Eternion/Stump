@@ -89,6 +89,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                         if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]) || Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                         {
+                            if (nextCell == null)
+                                stopCell = lastCell;
+
                             if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                             {
                                 DamagesDisabled = true;
