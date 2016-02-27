@@ -309,15 +309,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, amount);
         }
 
-        public event Action<FightActor, FightActor, bool> ActorMoved;
-
-        public virtual void OnActorMoved(FightActor source, bool takeDamage)
-        {
-            var handler = ActorMoved;
-            if (handler != null)
-                handler(source, this, takeDamage);
-        }
-
         #endregion
 
         #region Constructor
@@ -2017,8 +2008,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             ExchangePositions(target);
 
-            target.OnActorMoved(this, false);
-            OnActorMoved(this, false);
+            TriggerBuffs(this, BuffTriggerType.OnMoved);
+            target.TriggerBuffs(this, BuffTriggerType.OnMoved);
 
             return true;
         }
