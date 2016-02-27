@@ -7,14 +7,12 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Actors;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
-        private static readonly int[] SPELLS_GLYPH_END_TURN =
+        static readonly int[] SPELLS_GLYPH_END_TURN =
         {
             (int)SpellIdEnum.GLYPHE_DE_RÉPULSION,
             (int)SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL,
@@ -33,7 +31,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public Spell GlyphSpell
         {
             get;
-            private set;
         }
 
         public int Duration

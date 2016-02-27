@@ -135,6 +135,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Summons\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BlockBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\CadranBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Summons\LivingBagBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SacrifiedBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SynchroBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\TreeBrain.cs" />
@@ -633,7 +634,6 @@
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />
@@ -644,7 +644,6 @@
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
-    <Compile Include="Game\Spells\Casts\Enutrof\LivingChestCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\RoublabotCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\RonceCastHandler.cs" />
@@ -957,6 +956,7 @@
   <ItemGroup>
     <Folder Include="AI\Fights\Brain\Custom\Monsters\" />
     <Folder Include="Commands\Matching\Items\" />
+    <Folder Include="Game\Spells\Casts\Enutrof\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
