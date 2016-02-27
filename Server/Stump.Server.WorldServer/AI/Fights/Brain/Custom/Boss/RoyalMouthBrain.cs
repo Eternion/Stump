@@ -8,7 +8,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier(2854)]
+    [BrainIdentifier((int)MonsterIdEnum.ROYALMOUTH_2854)]
     public class RoyalMouthBrain : Brain
     {
         private SpellEffectHandler[] m_iniMouthHandlers;

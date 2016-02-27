@@ -8,7 +8,7 @@ using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier(1194)]
+    [BrainIdentifier((int)MonsterIdEnum.PRE_FWETAR_1194)]
     public class PereFwetarBrain : Brain
     {
         public PereFwetarBrain(AIFighter fighter)

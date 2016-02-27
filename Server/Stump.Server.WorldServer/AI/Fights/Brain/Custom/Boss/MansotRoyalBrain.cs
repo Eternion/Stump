@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Effects;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier(2848)]
+    [BrainIdentifier((int)MonsterIdEnum.MANSOT_ROYAL_2848)]
     public class MansotRoyalBrain : Brain
     {
         public MansotRoyalBrain(AIFighter fighter)
