@@ -2383,6 +2383,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
             foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)).OrderByDescending(x => x.Priority))
             {
+                if (!trigger.CanPlay() && (triggerType == TriggerType.OnTurnBegin || triggerType == TriggerType.OnTurnEnd)
+                    && (markTrigger is Wall || markTrigger is Glyph))
+                    continue;
+
                 StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
                 markTrigger.Trigger(trigger);
                 EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
