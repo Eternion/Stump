@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Monsters
 {
-    [BrainIdentifier(2969)]
+    [BrainIdentifier((int)MonsterIdEnum.SPORAKNE_2969)]
     public class SporakneBrain : Brain
     {
         public SporakneBrain(AIFighter fighter)

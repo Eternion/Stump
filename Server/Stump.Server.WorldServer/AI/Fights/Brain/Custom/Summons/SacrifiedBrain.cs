@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             fighter.Team.FighterAdded += OnFighterAdded;
         }
 
-        private void OnFighterAdded(FightTeam team, FightActor fighter)
+        void OnFighterAdded(FightTeam team, FightActor fighter)
         {
             if (fighter != Fighter)
                 return;

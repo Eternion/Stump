@@ -7,7 +7,7 @@ using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Monsters
 {
-    [BrainIdentifier(2856)]
+    [BrainIdentifier((int)MonsterIdEnum.MANSOBSE_2856)]
     public class MansobeseBrain : Brain
     {
         public MansobeseBrain(AIFighter fighter)

@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier(2968)]
+    [BrainIdentifier((int)MonsterIdEnum.KORRIANDRE_2968)]
     public class KorriandreBrain : Brain
     {
         public KorriandreBrain(AIFighter fighter) : base(fighter)

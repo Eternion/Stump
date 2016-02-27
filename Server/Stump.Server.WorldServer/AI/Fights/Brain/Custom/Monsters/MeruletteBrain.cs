@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Monsters
 {
-    [BrainIdentifier(2900)]
+    [BrainIdentifier((int)MonsterIdEnum.MRULETTE_2900)]
     public class MeruletteBrain : Brain
     {
         public MeruletteBrain(AIFighter fighter)
@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Monsters
             fighter.Fight.TurnStarted += OnTurnStarted;
         }
 
-        private void OnTurnStarted(IFight fight, FightActor fighter)
+        void OnTurnStarted(IFight fight, FightActor fighter)
         {
             if (fighter != Fighter)
                 return;

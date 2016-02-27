@@ -10,7 +10,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier(2864)]
+    [BrainIdentifier((int)MonsterIdEnum.GLOURSLESTE_2864)]
     public class GlourselesteBrain : Brain
     {
         public GlourselesteBrain(AIFighter fighter)
