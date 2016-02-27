@@ -3,9 +3,9 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_SwitchPosition)]
@@ -34,8 +34,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             Caster.ExchangePositions(target);
 
-            target.OnActorMoved(Caster, false);
-            Caster.OnActorMoved(Caster, false);
+            Caster.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
+            target.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
 
             return true;
         }

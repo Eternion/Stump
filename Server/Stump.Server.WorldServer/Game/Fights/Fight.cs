@@ -1923,7 +1923,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             fighter.UseMP((short) path.MPCost);
-            fighter.TriggerBuffs(fighter, BuffTriggerType.OnMoved, path);
         }
 
         protected virtual void OnPositionChanged(ContextActor actor, ObjectPosition objectPosition)
@@ -1932,7 +1931,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (fighter == null)
                 return;
-
 
             TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
         }

@@ -78,9 +78,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
-                actor.OnActorMoved(Caster, false);
 
-                Caster.TriggerBuffs(Caster, BuffTriggerType.OnPush);
+                actor.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
             }
 
             return true;
