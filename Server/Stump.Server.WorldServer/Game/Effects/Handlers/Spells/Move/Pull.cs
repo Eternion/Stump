@@ -5,8 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
-
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using System;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_PullForward)]
@@ -46,6 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var pushDirection = actor.Position.Point.OrientationTo(referenceCell);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
+                Distance = ((uint)(actor.Position.Point.IsOnSameDiagonal(referenceCell) ? Math.Ceiling(Distance / 2.0) : Distance));
 
                 for (var i = 0; i < Distance; i++)
                 {
