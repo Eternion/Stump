@@ -1353,34 +1353,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
-            var tacklers = GetTacklers();
-
-            // no tacklers, then no tackle possible
-            if (tacklers.Length <= 0)
-                return 0;
-
-            var percentLost = 0d;
-            for (var i = 0; i < tacklers.Length; i++)
-            {
-                var fightActor = tacklers[i];
-
-                if (i == 0)
-                    percentLost = GetTacklePercent(fightActor);
-                else
-                {
-                    percentLost *= GetTacklePercent(fightActor);
-                }
-            }
-
-            if (percentLost > 0)
-                percentLost = 1 - percentLost;
-
-            if (percentLost < 0)
-                percentLost = 0d;
-            else if (percentLost > 1)
-                percentLost = 1;
-
-            return (int) (Math.Ceiling(MP*percentLost));
+            return MP - (int) (Math.Round(MP* GetTacklePercent()));
         }
 
         public virtual int GetTackledAP()
@@ -1391,37 +1364,39 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
+            return AP - (int) (Math.Round(AP* GetTacklePercent()));
+        }
+
+        private double GetTacklePercent()
+        {
             var tacklers = GetTacklers();
 
             // no tacklers, then no tackle possible
             if (tacklers.Length <= 0)
                 return 0;
 
-            var percentLost = 0d;
+            var percentRemaining = 0d;
             for (var i = 0; i < tacklers.Length; i++)
             {
                 var fightActor = tacklers[i];
 
                 if (i == 0)
-                    percentLost = GetTacklePercent(fightActor);
+                    percentRemaining = GetSingleTacklerPercent(fightActor);
                 else
                 {
-                    percentLost *= GetTacklePercent(fightActor);
+                    percentRemaining *= GetSingleTacklerPercent(fightActor);
                 }
             }
 
-            if (percentLost > 0)
-                percentLost = 1 - percentLost;
+            if (percentRemaining < 0)
+                percentRemaining = 0d;
+            else if (percentRemaining > 1)
+                percentRemaining = 1;
 
-            if (percentLost < 0)
-                percentLost = 0d;
-            else if (percentLost > 1)
-                percentLost = 1;
-
-            return (int) (Math.Ceiling(AP*percentLost));
+            return percentRemaining;
         }
 
-        private double GetTacklePercent(IStatsOwner tackler)
+        private double GetSingleTacklerPercent(IStatsOwner tackler)
         {
             var tackleBlock = tackler.Stats[PlayerFields.TackleBlock].Total;
             var tackleEvade = Stats[PlayerFields.TackleEvade].Total;
