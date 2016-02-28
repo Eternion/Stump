@@ -1373,20 +1373,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             // no tacklers, then no tackle possible
             if (tacklers.Length <= 0)
-                return 0;
+                return 1d;
 
-            var percentRemaining = 0d;
-            for (var i = 0; i < tacklers.Length; i++)
-            {
-                var fightActor = tacklers[i];
-
-                if (i == 0)
-                    percentRemaining = GetSingleTacklerPercent(fightActor);
-                else
-                {
-                    percentRemaining *= GetSingleTacklerPercent(fightActor);
-                }
-            }
+            var percentRemaining = tacklers.Aggregate(1d, (current, fightActor) => current*GetSingleTacklerPercent(fightActor));
 
             if (percentRemaining < 0)
                 percentRemaining = 0d;
