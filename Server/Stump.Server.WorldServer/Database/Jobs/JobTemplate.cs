@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Jobs;
 using Job = Stump.DofusProtocol.D2oClasses.Job;
 
@@ -21,7 +23,10 @@ namespace Stump.Server.WorldServer.Database.Jobs
     {
         private string m_name;
         private InteractiveSkillTemplate[] m_skills;
-        
+        private List<Character> m_availableCrafters = new List<Character>();
+        public event Action<JobTemplate, Character> CrafterSubscribed;
+        public event Action<JobTemplate, Character> CrafterUnSubscribed;
+
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -55,6 +60,35 @@ namespace Stump.Server.WorldServer.Database.Jobs
             set;
         }
 
+        public IReadOnlyCollection<Character> AvailableCrafters => m_availableCrafters.AsReadOnly();
+
+        public bool AddOrRemoveAvailableCrafter(Character character)
+        {
+            if (m_availableCrafters.Contains(character))
+            {
+                RemoveAvaiableCrafter(character);
+                return false;
+            }
+            else
+            {
+                AddAvailableCrafter(character);
+                return true;
+            }
+        }
+
+        public void AddAvailableCrafter(Character character)
+        {
+            m_availableCrafters.Add(character);
+            OnCrafterSubscribed(character);
+        }
+
+        public void RemoveAvaiableCrafter(Character character)
+        {
+            m_availableCrafters.Remove(character);
+            OnCrafterUnSubscribed(character);
+        }
+        
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)
@@ -74,5 +108,19 @@ namespace Stump.Server.WorldServer.Database.Jobs
         }
 
         #endregion
+
+        protected virtual void OnCrafterSubscribed(Character character)
+        {
+            var evnt = CrafterSubscribed;
+            if (evnt != null)
+                evnt(this, character);
+        }
+
+        protected virtual void OnCrafterUnSubscribed(Character character)
+        {
+            var evnt = CrafterUnSubscribed;
+            if (evnt != null)
+                evnt(this, character);
+        }
     }
 }

@@ -2,7 +2,9 @@
 using System.Linq;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Jobs;
 
@@ -10,6 +12,25 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
     public partial class ContextRoleplayHandler
     {
+        [WorldHandler(JobCrafterDirectoryDefineSettingsMessage.Id)]
+        public static void HandleJobCrafterDirectoryDefineSettingsMessage(WorldClient client, JobCrafterDirectoryDefineSettingsMessage message)
+        {
+            var job = client.Character.Jobs[message.settings.jobId];
+            job.WorkForFree = message.settings.free;
+            job.MinLevelCraftSetting = message.settings.minLevel;
+
+            SendJobCrafterDirectorySettingsMessage(client, client.Character);
+        }
+
+        [WorldHandler(JobBookSubscribeRequestMessage.Id)]
+        public static void HandleJobBookSubscribeRequestMessage(WorldClient client, JobBookSubscribeRequestMessage message)
+        {
+            var job = client.Character.Jobs[message.jobId];
+
+            var addedOrRemoved = job.Template.AddOrRemoveAvailableCrafter(client.Character);
+            SendJobBookSubscriptionMessage(client, addedOrRemoved, job.Template);
+        }
+
         public static void SendJobMultiCraftAvailableSkillsMessage(IPacketReceiver client, Character character, IEnumerable<InteractiveSkillTemplate> skills, bool enabled)
         {
             client.Send(new JobMultiCraftAvailableSkillsMessage(enabled, character.Id, skills.Select(x => (short)x.Id)));
@@ -43,6 +64,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendJobLevelUpMessage(IPacketReceiver client, Job job)
         {
             client.Send(new JobLevelUpMessage((byte) job.Level, job.GetJobDescription()));
+        }
+
+        public static void SendJobBookSubscriptionMessage(IPacketReceiver client, bool addOrRemoved, JobTemplate job)
+        {
+            client.Send(new JobBookSubscriptionMessage(addOrRemoved, (sbyte)job.Id));
         }
     }
 }

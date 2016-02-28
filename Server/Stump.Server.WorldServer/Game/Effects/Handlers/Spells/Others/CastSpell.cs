@@ -56,7 +56,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
                 buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this);
-            else if (buff.Spell.Id == (int)SpellIdEnum.FRIKT)
+            else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
+                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this);
+            else if (buff.Spell.Id == (int)SpellIdEnum.FRIKT) // hot fix
                 buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this);
             else
                 buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this);
