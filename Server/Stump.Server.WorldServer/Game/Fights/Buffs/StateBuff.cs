@@ -27,16 +27,26 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
         }
 
+        public bool IsDisabled
+        {
+            get;
+            set;
+        }
+
         public override void Apply()
         {
             base.Apply();
-            Target.AddState(State);
+
+            Target.TriggerBuffs(Target, BuffTriggerType.OnStateAdded);
+            Target.TriggerBuffs(Target, BuffTriggerType.OnSpecificStateAdded, State.Id);
         }
 
         public override void Dispell()
         {
             base.Dispell();
-            Target.RemoveState(State);
+
+            Target.TriggerBuffs(Target, BuffTriggerType.OnStateRemoved);
+            Target.TriggerBuffs(Target, BuffTriggerType.OnSpecificStateRemoved, State.Id);
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()

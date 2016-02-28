@@ -66,7 +66,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     if (!handler.CanApply())
                         return false;
 
-                    handler.SetAffectedActors(handler.GetAffectedActors());
+                    if (handler.Targets.All(x => !x.CheckWhenExecute))
+                        handler.SetAffectedActors(handler.GetAffectedActors());
+
                     handlers.Add(handler);
                 }
             }

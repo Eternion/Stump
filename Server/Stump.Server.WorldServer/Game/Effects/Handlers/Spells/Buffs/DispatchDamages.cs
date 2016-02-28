@@ -2,10 +2,7 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using System.Linq;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
 using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs

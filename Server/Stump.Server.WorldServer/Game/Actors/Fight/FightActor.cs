@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.Core.Collections;
 using Stump.Core.Mathematics;
 using Stump.Core.Memory;
 using Stump.Core.Pool;
@@ -39,7 +38,6 @@ using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
-using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -307,15 +305,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var handler = MpUsed;
             if (handler != null)
                 handler(this, amount);
-        }
-
-        public event Action<FightActor, FightActor, bool> ActorMoved;
-
-        public virtual void OnActorMoved(FightActor source, bool takeDamage)
-        {
-            var handler = ActorMoved;
-            if (handler != null)
-                handler(source, this, takeDamage);
         }
 
         #endregion
@@ -1619,10 +1608,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool MustSkipTurn() => GetBuffs(x => x is SkipTurnBuff).Any();
 
-        public bool IsImmuneToSpell(int id)
-        {
-            return GetBuffs(x => x is SpellImmunityBuff && id == ((SpellImmunityBuff) x).SpellImmune).Any();
-        }
+        public bool IsImmuneToSpell(int id) => GetBuffs(x => x is SpellImmunityBuff && id == ((SpellImmunityBuff)x).SpellImmune).Any();
 
         #endregion
 
@@ -1706,43 +1692,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region States
 
-        readonly List<SpellState> m_states = new List<SpellState>();
-
-        public void AddState(SpellState state)
-        {
-            m_states.Add(state);
-
-            TriggerBuffs(this, BuffTriggerType.OnStateAdded);
-            TriggerBuffs(this, BuffTriggerType.OnSpecificStateAdded, state.Id);
-        }
-
-        public void RemoveState(SpellState state)
-        {
-            m_states.Remove(state);
-
-            TriggerBuffs(this, BuffTriggerType.OnStateRemoved);
-            TriggerBuffs(this, BuffTriggerType.OnSpecificStateRemoved, state.Id);
-        }
+        public IEnumerable<StateBuff> GetStates() => GetBuffs(x => x is StateBuff).Select(x => x as StateBuff);
 
         public bool HasState(int stateId)
-        {
-            return m_states.Any(entry => entry.Id == stateId);
-        }
+            => GetStates().Any(x => x.State.Id == stateId && !x.IsDisabled);
 
-        public bool HasState(SpellState state)
-        {
-            return HasState(state.Id);
-        }
+        public bool HasState(SpellState state) => HasState(state.Id);
 
-        public bool HasSpellBlockerState()
-        {
-            return m_states.Any(entry => entry.PreventsSpellCast);
-        }
+        public bool HasSpellBlockerState() => GetStates().Any(x => x.State.PreventsSpellCast);
 
-        public bool HasFightBlockerState()
-        {
-            return m_states.Any(entry => entry.PreventsFight);
-        }
+        public bool HasFightBlockerState() => GetStates().Any(x => x.State.PreventsFight);
 
         #region Invisibility
 
@@ -2017,8 +1976,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             ExchangePositions(target);
 
-            target.OnActorMoved(this, false);
-            OnActorMoved(this, false);
+            TriggerBuffs(this, BuffTriggerType.OnMoved);
+            target.TriggerBuffs(this, BuffTriggerType.OnMoved);
 
             return true;
         }
@@ -2100,15 +2059,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.ENRACINE_6)
                 && !fighter.HasState((int)SpellStatesEnum.ENRACINE_6) && fighter.Position.Cell != Position.Cell;
 
-        public virtual bool CanBePushed()
-        {
-            return !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
-        }
+        public virtual bool CanBePushed() => !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
 
-        public virtual bool CanSwitchPos()
-        {
-            return !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
-        }
+        public virtual bool CanSwitchPos() => !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
 
         public virtual bool CanPlay() => true;
 

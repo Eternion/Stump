@@ -7,14 +7,12 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Actors;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
-        private static readonly int[] SPELLS_GLYPH_END_TURN =
+        static readonly int[] SPELLS_GLYPH_END_TURN =
         {
             (int)SpellIdEnum.GLYPHE_DE_RÉPULSION,
             (int)SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL,
@@ -33,7 +31,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public Spell GlyphSpell
         {
             get;
-            private set;
         }
 
         public int Duration
@@ -56,10 +53,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
-            // Allies can't trigger glyph
-            if (trigger.IsFriendlyWith(Caster) && !SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id))
-                return;
-
             NotifyTriggered(trigger, GlyphSpell);
             
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);
@@ -67,7 +60,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             handler.Initialize();
 
             foreach (var effectHandler in handler.GetEffectHandlers())
-                effectHandler.SetAffectedActors(new[] { trigger });
+            {
+                if (effectHandler.IsValidTarget(trigger))
+                    effectHandler.SetAffectedActors(new[] { trigger });
+            }
 
             handler.Execute();
         }
