@@ -2,6 +2,7 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -22,17 +23,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
                 fighter.DamageInflicted += OnDamageInflicted;
-            }
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllFighters<MonsterFighter>().Count() > 1;
-        }
+        public override bool IsEligible() => Fight.GetAllFighters<MonsterFighter>().Count() > 1;
 
-        private void OnDamageInflicted(FightActor fighter, Damage damage)
+        void OnDamageInflicted(FightActor fighter, Damage damage)
         {
             var source = (damage.Source is SummonedFighter) ? ((SummonedFighter) damage.Source).Summoner : damage.Source;
 
@@ -52,6 +48,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED, source);
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+                fighter.DamageInflicted -= OnDamageInflicted;
         }
     }
 }

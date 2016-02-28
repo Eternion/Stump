@@ -38,6 +38,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             OnBeforeTurnStopped(fight, fight.FighterPlaying);
 
             base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            Fight.BeforeTurnStopped -= OnBeforeTurnStopped;
         }
     }
 }

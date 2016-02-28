@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             Fight.TurnStopped += OnTurnStopped;
         }
 
-        private void OnTurnStopped(IFight fight, FightActor fighter)
+        void OnTurnStopped(IFight fight, FightActor fighter)
         {
             if (!(fighter is CharacterFighter))
                 return;
@@ -39,6 +39,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             OnTurnStopped(fight, fight.FighterPlaying);
 
             base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            Fight.TurnStopped -= OnTurnStopped;
         }
     }
 }

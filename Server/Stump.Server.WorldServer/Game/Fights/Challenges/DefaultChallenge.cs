@@ -28,7 +28,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
         public IFight Fight
         {
             get;
-            private set;
         }
 
         public ChallengeStatusEnum Status
@@ -74,10 +73,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             Fight.WinnersDetermined += OnWinnersDetermined;
         }
 
-        public virtual bool IsEligible()
-        {
-            return true;
-        }
+        public virtual bool IsEligible() => true;
 
         public void UpdateStatus(ChallengeStatusEnum status, FightActor from = null)
         {
@@ -98,6 +94,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
                 UpdateStatus(ChallengeStatusEnum.FAILED);
 
             UpdateStatus(ChallengeStatusEnum.SUCCESS);
+
+            Fight.WinnersDetermined -= OnWinnersDetermined;
         }
     }
 }

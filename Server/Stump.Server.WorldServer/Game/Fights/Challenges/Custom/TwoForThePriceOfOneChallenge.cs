@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -23,19 +24,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
                 fighter.Dead += OnDead;
-            }
 
             Fight.BeforeTurnStopped += OnBeforeTurnStopped;
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllFighters<MonsterFighter>().Count() % 2 == 0;
-        }
+        public override bool IsEligible() => Fight.GetAllFighters<MonsterFighter>().Count() % 2 == 0;
 
-        private void OnBeforeTurnStopped(IFight fight, FightActor fighter)
+        void OnBeforeTurnStopped(IFight fight, FightActor fighter)
         {
             if (fighter is SummonedFighter && m_kills > 1)
                 UpdateStatus(ChallengeStatusEnum.FAILED, fighter);
@@ -55,12 +51,22 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             m_kills = 0;
         }
 
-        private void OnDead(FightActor fighter, FightActor killer)
+        void OnDead(FightActor fighter, FightActor killer)
         {
             if (fighter.IsFriendlyWith(killer))
                 return;
 
             m_kills++;
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+                fighter.Dead -= OnDead;
+
+            Fight.BeforeTurnStopped -= OnBeforeTurnStopped;
         }
     }
 }
