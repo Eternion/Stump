@@ -7,6 +7,7 @@ using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
@@ -14,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.VERSATILE)]
     public class VersatileChallenge : DefaultChallenge
     {
-        private readonly List<Pair<FightActor, int>> m_weaponsUsed = new List<Pair<FightActor, int>>();
+        readonly List<Pair<FightActor, int>> m_weaponsUsed = new List<Pair<FightActor, int>>();
 
         public VersatileChallenge(int id, IFight fight)
             : base(id, fight)
@@ -34,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             }
         }
 
-        private void OnWeaponUsed(FightActor fighter, WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
+        void OnWeaponUsed(FightActor fighter, WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 return;
@@ -45,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 m_weaponsUsed.Add(new Pair<FightActor, int>(fighter, Fight.TimeLine.RoundNumber));
         }
 
-        private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 return;
@@ -56,6 +57,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
+            {
+                fighter.SpellCasting -= OnSpellCasting;
+                fighter.WeaponUsed -= OnWeaponUsed;
+            }
         }
     }
 }

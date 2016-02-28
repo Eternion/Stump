@@ -15,6 +15,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 
         public override bool Initialize()
         {
+            CheckWhenExecute = true;
+
             base.Initialize();
 
             Handlers = Handlers.OrderByDescending(entry => entry.EffectZone.MinRadius).ToArray();

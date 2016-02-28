@@ -73,25 +73,13 @@ namespace Stump.Server.WorldServer.Game.Maps
             set { Position.Map = value; }
         }
 
-        public SubArea SubArea
-        {
-            get { return Position != null && Position.Map != null ? Position.Map.SubArea : null; }
-        }
+        public SubArea SubArea => Position != null && Position.Map != null ? Position.Map.SubArea : null;
 
-        public Area Area
-        {
-            get { return Position != null && Position.Map != null? Position.Map.Area : null; }
-        }
+        public Area Area => Position != null && Position.Map != null ? Position.Map.Area : null;
 
-        public SuperArea SuperArea
-        {
-            get { return Position != null && Position.Map != null ? Position.Map.SuperArea : null; }
-        }
+        public SuperArea SuperArea => Position != null && Position.Map != null ? Position.Map.SuperArea : null;
 
-        public virtual bool IsInWorld
-        {
-            get { return Position != null && Map != null && Area != null; }
-        }
+        public virtual bool IsInWorld => Position != null && Map != null && Area != null;
 
         public bool IsTeleporting
         {
@@ -111,25 +99,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             protected set;
         }
 
-        public virtual bool BlockSight
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public virtual bool BlockSight => true;
 
-        public LockFreeQueue<IMessage> MessageQueue
-        {
-            get { return m_messageQueue; }
-        }
+        public LockFreeQueue<IMessage> MessageQueue => m_messageQueue;
 
-        public virtual IContextHandler Context
-        {
-            get { return Area; }
-        }
-
-      
+        public virtual IContextHandler Context => Area;
 
         #region IDisposable Members
 
@@ -155,20 +129,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             Dispose();
         }
 
-        public virtual bool IsGonnaChangeZone()
-        {
-            return NextMap == null || NextMap.Area.Id != Area.Id;
-        }
+        public virtual bool IsGonnaChangeZone() => NextMap == null || NextMap.Area.Id != Area.Id;
 
-        public bool HasChangedZone()
-        {
-            return LastMap == null || LastMap.Area.Id != Area.Id;
-        }
+        public bool HasChangedZone() => LastMap == null || LastMap.Area.Id != Area.Id;
 
-        public virtual bool CanBeSee(WorldObject byObj)
-        {
-            return byObj != null && !IsDeleted && !IsDisposed && byObj.Map != null && byObj.Map == Map;
-        }
+        public virtual bool CanBeSee(WorldObject byObj) => byObj != null && !IsDeleted && !IsDisposed && byObj.Map != null && byObj.Map == Map;
 
         public virtual bool CanSee(WorldObject obj)
         {

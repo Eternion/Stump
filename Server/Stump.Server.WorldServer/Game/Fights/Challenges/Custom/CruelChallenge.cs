@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -31,19 +32,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             m_monsters = Fight.GetAllFighters<MonsterFighter>().ToArray();
             foreach (var fighter in m_monsters)
-            {
                 fighter.Dead += OnDead;
-            }
 
             Target = GetNextTarget();
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllFighters<MonsterFighter>().Count() > 1;
-        }
+        public override bool IsEligible() => Fight.GetAllFighters<MonsterFighter>().Count() > 1;
 
-        private void OnDead(FightActor victim, FightActor killer)
+        void OnDead(FightActor victim, FightActor killer)
         {
             if (Target == null)
                 return;
@@ -57,13 +53,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             UpdateStatus(ChallengeStatusEnum.FAILED, killer);
         }
 
-        private MonsterFighter GetNextTarget()
+        MonsterFighter GetNextTarget()
         {
             var monsters = m_monsters.OrderBy(x => x.Level);
             if (Id == (int)ChallengeEnum.ORDONNÉ)
                 monsters = m_monsters.OrderByDescending(x => x.Level);
 
             return monsters.FirstOrDefault(x => x.IsAlive());
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in m_monsters)
+                fighter.Dead -= OnDead;
         }
     }
 }

@@ -22,17 +22,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
                 fighter.Stats[PlayerFields.Range].Modified += OnRangeModified;
-            }
         }
 
         public override bool IsEligible()
-        {
-            return Fight.GetAllCharacters().Any(x => x.BreedId == PlayableBreedEnum.Enutrof || x.BreedId == PlayableBreedEnum.Ecaflip || x.BreedId == PlayableBreedEnum.Cra);
-        }
+            => Fight.GetAllCharacters().Any(x => x.BreedId == PlayableBreedEnum.Enutrof ||
+                                                 x.BreedId == PlayableBreedEnum.Ecaflip ||
+                                                 x.BreedId == PlayableBreedEnum.Cra);
 
-        private void OnRangeModified(StatsData stats, int amount)
+        void OnRangeModified(StatsData stats, int amount)
         {
             if (amount >= 0)
                 return;
@@ -43,12 +41,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {
-            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
-                fighter.Stats[PlayerFields.Range].Modified -= OnRangeModified;
-            }
-
             base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+                fighter.Stats[PlayerFields.Range].Modified -= OnRangeModified;
         }
     }
 }

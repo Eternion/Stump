@@ -3447,20 +3447,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Exceptions
 
-        private readonly List<KeyValuePair<string, Exception>> m_commandsError =
-            new List<KeyValuePair<string, Exception>>();
+        readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
 
-        public List<KeyValuePair<string, Exception>> CommandsErrors
-        {
-            get { return m_commandsError; }
-        }
-
-        private readonly List<Exception> m_errors = new List<Exception>();
-
-        public List<Exception> Errors
-        {
-            get { return m_errors; }
-        }
+        public List<KeyValuePair<string, Exception>> CommandsErrors => m_commandsError;
 
         #endregion
 
@@ -3766,15 +3755,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
-        public CharacterRecord Record
-        {
-            get { return m_record; }
-        }
+        public CharacterRecord Record => m_record;
 
-        public override bool CanBeSee(WorldObject byObj)
-        {
-            return base.CanBeSee(byObj) && (byObj == this || !Invisible);
-        }
+        public override bool CanBeSee(WorldObject byObj) => base.CanBeSee(byObj) && (byObj == this || !Invisible);
 
         protected override void OnDisposed()
         {
@@ -3787,11 +3770,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             base.OnDisposed();
         }
 
-        public override string ToString()
-        {
-            return string.Format("{0} ({1})", Name, Id);
-        }
-
-
+        public override string ToString() => string.Format("{0} ({1})", Name, Id);
     }
 }

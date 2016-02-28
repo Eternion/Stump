@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.PARTAGE)]
     public class SharingChallenge : DefaultChallenge
     {
-        private readonly List<CharacterFighter> m_killers = new List<CharacterFighter>();
+        readonly List<CharacterFighter> m_killers = new List<CharacterFighter>();
 
         public SharingChallenge(int id, IFight fight)
             : base(id, fight)
@@ -23,18 +23,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
                 fighter.Dead += OnDead;
-            }
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllFighters<CharacterFighter>().Count() > 1
+        public override bool IsEligible() => Fight.GetAllFighters<CharacterFighter>().Count() > 1
                 && Fight.GetAllFighters<MonsterFighter>().Count() >= Fight.GetAllFighters<CharacterFighter>().Count();
-        }
 
-        private void OnDead(FightActor fighter, FightActor killer)
+        void OnDead(FightActor fighter, FightActor killer)
         {
             if (killer is CharacterFighter)
                 m_killers.Add((CharacterFighter)killer);
@@ -49,11 +44,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             }
 
             foreach (var winner in winners.Fighters.OfType<CharacterFighter>().Where(winner => !m_killers.Contains(winner)))
-            {
                 UpdateStatus(ChallengeStatusEnum.FAILED, winner);
-            }
 
             UpdateStatus(ChallengeStatusEnum.SUCCESS);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+                fighter.Dead -= OnDead;
         }
     }
 }

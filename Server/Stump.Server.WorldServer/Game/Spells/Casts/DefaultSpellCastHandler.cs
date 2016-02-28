@@ -26,6 +26,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
         public override bool SilentCast => m_initialized && Handlers.Any(entry => entry.RequireSilentCast());
 
+        protected bool CheckWhenExecute = false;
+
         public override bool Initialize()
         {
             var random = new AsyncRandom();
@@ -66,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     if (!handler.CanApply())
                         return false;
 
-                    if (handler.Targets.All(x => !x.CheckWhenExecute))
+                    if (!CheckWhenExecute && handler.Targets.All(x => !x.CheckWhenExecute))
                         handler.SetAffectedActors(handler.GetAffectedActors());
 
                     handlers.Add(handler);

@@ -506,7 +506,6 @@
     <Compile Include="Game\Fights\Challenges\Custom\HermitChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\ImpertinenceChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\MulesChallenge.cs" />
-    <Compile Include="Game\Fights\Challenges\Custom\PigHeadChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\KeepMovingChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\ContractKillerChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\CruelChallenge.cs" />
