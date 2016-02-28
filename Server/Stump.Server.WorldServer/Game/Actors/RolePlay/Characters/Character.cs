@@ -407,6 +407,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SetDialoger(IDialoger dialoger)
         {
+            if (Dialog != null)
+                Dialog.Close();
+
             Dialoger = dialoger;
         }
 

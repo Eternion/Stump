@@ -37,6 +37,47 @@ namespace Stump.Server.WorldServer.Database.Characters
     {
         private ActorLook m_entityLook;
 
+        public CharacterRecord()
+        {
+            TitleParam = string.Empty;
+        }
+
+        public CharacterRecord(Breed breed)
+          : this()
+        {
+            Breed = (PlayableBreedEnum)breed.Id;
+
+            BaseHealth = (ushort)(breed.StartHealthPoint + breed.StartLevel * 5);
+            AP = breed.StartActionPoints;
+            MP = breed.StartMovementPoints;
+            Prospection = breed.StartProspection;
+            SpellsPoints = breed.StartSpellsPoints;
+            StatsPoints = breed.StartStatsPoints;
+            Strength = breed.StartStrength;
+            Vitality = breed.StartVitality;
+            Wisdom = breed.StartWisdom;
+            Chance = breed.StartChance;
+            Intelligence = breed.StartIntelligence;
+            Agility = breed.StartAgility;
+
+            MapId = breed.StartMap;
+            CellId = breed.StartCell;
+            Direction = breed.StartDirection;
+
+            SpellsPoints = (ushort)(breed.StartLevel - 1);
+            StatsPoints = (ushort)((breed.StartLevel - 1) * 5);
+            Kamas = breed.StartKamas;
+
+            CanRestat = true;
+
+            if (breed.StartLevel > 100)
+                AP++;
+
+            PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
+            Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
+            SmileyPacks = new List<SmileyPacksEnum> { SmileyPacksEnum.BASIC_PACK };
+        }
+
         #region Record Properties
 
         private string m_customEntityLookString;
@@ -44,10 +85,6 @@ namespace Stump.Server.WorldServer.Database.Characters
         private byte[] m_knownZaapsBin;
         private int? m_spawnMapId;
 
-        public CharacterRecord()
-        {
-            TitleParam = string.Empty;
-        }
 
         // Primitive properties
 
@@ -554,41 +591,7 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         #endregion
 
-        public CharacterRecord(Breed breed)
-            : this()
-        {
-            Breed = (PlayableBreedEnum) breed.Id;
-
-            BaseHealth = (ushort) (breed.StartHealthPoint + breed.StartLevel*5);
-            AP = breed.StartActionPoints;
-            MP = breed.StartMovementPoints;
-            Prospection = breed.StartProspection;
-            SpellsPoints = breed.StartSpellsPoints;
-            StatsPoints = breed.StartStatsPoints;
-            Strength = breed.StartStrength;
-            Vitality = breed.StartVitality;
-            Wisdom = breed.StartWisdom;
-            Chance = breed.StartChance;
-            Intelligence = breed.StartIntelligence;
-            Agility = breed.StartAgility;
-
-            MapId = breed.StartMap;
-            CellId = breed.StartCell;
-            Direction = breed.StartDirection;
-
-            SpellsPoints = (ushort) (breed.StartLevel - 1);
-            StatsPoints = (ushort) ((breed.StartLevel - 1) * 5);
-            Kamas = breed.StartKamas;
-
-            CanRestat = true;
-
-            if (breed.StartLevel > 100)
-                AP++;
-
-            PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
-            Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
-            SmileyPacks = new List<SmileyPacksEnum> { SmileyPacksEnum.BASIC_PACK };
-        }
+      
 
 
         [Ignore]

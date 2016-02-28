@@ -203,5 +203,12 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
         public JobCrafterDirectorySettings GetJobCrafterDirectorySettings()
             => new JobCrafterDirectorySettings((sbyte) Template.Id, (byte)MinLevelCraftSetting, WorkForFree);
+
+        public JobCrafterDirectoryListEntry GetJobCrafterDirectoryListEntry()
+            =>
+                new JobCrafterDirectoryListEntry(
+                    new JobCrafterDirectoryEntryPlayerInfo(Owner.Id, Owner.Name, (sbyte) Owner.AlignmentSide, (sbyte) Owner.Breed.Id, Owner.Sex == SexTypeEnum.SEX_FEMALE, false,
+                        (short) Owner.Map.Position.X, (short) Owner.Map.Position.Y, Owner.Map.Id, (short) Owner.SubArea.Id, Owner.Status),
+                    new JobCrafterDirectoryEntryJobInfo((sbyte) Template.Id, (byte) Level, WorkForFree, (byte) MinLevelCraftSetting));
     }
 }

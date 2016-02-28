@@ -28,6 +28,8 @@ using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.Jobs;
+using Stump.Server.WorldServer.Game.Dialogs.Jobs;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -495,6 +497,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             var recipe = JobManager.Instance.Recipes[message.objectGID];
             craftActor.CraftDialog.ChangeRecipe(craftActor, recipe);
         }
+        
+        [WorldHandler(JobCrafterDirectoryListRequestMessage.Id)]
+        public static void HandleJobCrafterDirectoryListRequestMessage(WorldClient client, JobCrafterDirectoryListRequestMessage message)
+        {
+            (client.Character.Dialog as JobIndexDialog)?.RequestAvailableCrafters(message.jobId);
+        }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
@@ -723,6 +731,26 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeCraftPaymentModifiedMessage(IPacketReceiver client, int kamas)
         {
             client.Send(new ExchangeCraftPaymentModifiedMessage(kamas));
+        }
+
+        public static void SendExchangeStartOkJobIndexMessage(IPacketReceiver client, IEnumerable<JobTemplate> jobs)
+        {
+            client.Send(new ExchangeStartOkJobIndexMessage(jobs.Select(x => x.Id)));
+        }
+
+        public static void SendJobCrafterDirectoryListMessage(IPacketReceiver client, IEnumerable<Job> entries)
+        {
+            client.Send(new JobCrafterDirectoryListMessage(entries.Select(x => x.GetJobCrafterDirectoryListEntry())));
+        }
+
+        public static void SendJobCrafterDirectoryAddMessage(IPacketReceiver client, Job entry)
+        {
+            client.Send(new JobCrafterDirectoryAddMessage(entry.GetJobCrafterDirectoryListEntry()));
+        }
+
+        public static void SendJobCrafterDirectoryRemoveMessage(IPacketReceiver client, Job entry)
+        {
+            client.Send(new JobCrafterDirectoryRemoveMessage((sbyte)entry.Template.Id, entry.Owner.Id));
         }
     }
 }

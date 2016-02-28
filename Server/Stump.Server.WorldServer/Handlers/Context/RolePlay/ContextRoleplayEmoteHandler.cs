@@ -7,6 +7,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Jobs;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
