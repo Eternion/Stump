@@ -17,30 +17,15 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
         }
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_PVP_ARENA; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PVP_ARENA;
 
-        public override bool IsPvP
-        {
-            get { return false; } // don't know why
-        }
+        public override bool IsPvP => false;
 
-        public override bool IsMultiAccountRestricted
-        {
-            get { return true; }
-        }
+        public override bool IsMultiAccountRestricted => true;
 
-        public override bool IsDeathTemporarily
-        {
-            get { return true; }
-        }
+        public override bool IsDeathTemporarily => true;
 
-        public override bool CanKickPlayer
-        {
-            get { return false; }
-        }
+        public override bool CanKickPlayer => false;
 
         public override void StartPlacement()
         {            
@@ -144,12 +129,9 @@ namespace Stump.Server.WorldServer.Game.Arena
                 characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
         }
 
-        protected override bool CanCancelFight()
-        {
-            return false;
-        }
+        protected override bool CanCancelFight() => false;
 
-        protected int CalculateRankLoose(CharacterFighter character)
+        protected static int CalculateRankLoose(CharacterFighter character)
         {
             var opposedTeamRank = (int)character.OpposedTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             return ArenaRankFormulas.AdjustRank(character.Character.ArenaRank, opposedTeamRank, false);

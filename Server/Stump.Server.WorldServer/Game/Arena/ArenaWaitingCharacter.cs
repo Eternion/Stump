@@ -14,13 +14,11 @@ namespace Stump.Server.WorldServer.Game.Arena
         public Character Character
         {
             get;
-            private set;
         }
 
         public ArenaPreFightTeam Team
         {
             get;
-            private set;
         }
 
         public bool Ready
@@ -33,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected virtual void OnReadyChanged(bool arg2)
         {
-            Action<ArenaWaitingCharacter, bool> handler = ReadyChanged;
+            var handler = ReadyChanged;
             if (handler != null) handler(this, arg2);
         }
 
@@ -41,10 +39,9 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected virtual void OnFightDenied()
         {
-            Action<ArenaWaitingCharacter> handler = FightDenied;
+            var handler = FightDenied;
             if (handler != null) handler(this);
         }
-
 
         public void ToggleReady(bool rdy)
         {

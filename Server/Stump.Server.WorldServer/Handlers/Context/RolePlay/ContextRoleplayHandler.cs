@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
+using Stump.Server.WorldServer.Game.Arena;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
@@ -33,16 +34,20 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         {
             SendMapComplementaryInformationsDataMessage(client);
 
-            var fightCount = client.Character.Map.GetFightCount();
             var objectItems = client.Character.Map.GetObjectItems();
 
-            if (fightCount > 0)
-                SendMapFightCountMessage(client, fightCount);
+            if (client.Character.Map.Id == ArenaManager.KolizeumMapId)
+            {
+                var arenaCount = ArenaManager.Instance.Arenas.Sum(x => x.Value.Map.GetFightCount());
+
+                if (arenaCount > 0)
+                    SendMapFightCountMessage(client, (short)arenaCount);
+            }
+            else if (client.Character.Map.GetFightCount() > 0)
+                    SendMapFightCountMessage(client, client.Character.Map.GetFightCount());
 
             foreach (var objectItem in objectItems.ToArray())
-            {
                 SendObjectGroundAddedMessage(client, objectItem);
-            }
 
             var paddock = PaddockManager.Instance.GetPaddock(message.mapId);
             if (paddock != null)
@@ -56,15 +61,18 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(MapRunningFightListRequestMessage.Id)]
         public static void HandleMapRunningFightListRequestMessage(WorldClient client, MapRunningFightListRequestMessage message)
         {
-            SendMapRunningFightListMessage(client, client.Character.Map.Fights);
+            if (client.Character.Map.Id == ArenaManager.KolizeumMapId)
+                SendMapRunningFightListMessage(client, ArenaManager.Instance.Arenas.SelectMany(x => x.Value.Map.Fights));
+            else
+                SendMapRunningFightListMessage(client, client.Character.Map.Fights);
         }
 
         [WorldHandler(MapRunningFightDetailsRequestMessage.Id)]
         public static void HandleMapRunningFightDetailsRequestMessage(WorldClient client, MapRunningFightDetailsRequestMessage message)
         {
-            var fight = Singleton<FightManager>.Instance.GetFight(message.fightId);
+            var fight = FightManager.Instance.GetFight(message.fightId);
 
-            if (fight == null || fight.Map != client.Character.Map)
+            if (fight == null || (fight.Map != client.Character.Map && client.Character.Map.Id != ArenaManager.KolizeumMapId))
                 return;
 
             SendMapRunningFightDetailsMessage(client, fight);

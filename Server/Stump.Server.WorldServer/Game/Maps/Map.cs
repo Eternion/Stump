@@ -1128,15 +1128,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Fights
 
-        public ReadOnlyCollection<IFight> Fights
-        {
-            get { return m_fights.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<IFight> Fights => m_fights.AsReadOnly();
 
-        public short GetFightCount()
-        {
-            return (short)m_fights.Count;
-        }
+        public short GetFightCount() => (short)m_fights.Count;
 
         public void AddFight(IFight fight)
         {
@@ -1159,15 +1153,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             OnFightRemoved(fight);
         }
 
-        public Cell[] GetBlueFightPlacement()
-        {
-            return m_bluePlacement;
-        }
+        public Cell[] GetBlueFightPlacement() => m_bluePlacement;
 
-        public Cell[] GetRedFightPlacement()
-        {
-            return m_redPlacement;
-        }
+        public Cell[] GetRedFightPlacement() => m_redPlacement;
 
         #endregion
 
@@ -1299,7 +1287,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 });
         }
 
-        private void CleanObjets()
+        void CleanObjets()
         {
             foreach (var item in m_objectItems.Where(x => (DateTime.Now - x.SpawnDate).TotalMinutes >= 5).ToArray())
             {
@@ -1307,7 +1295,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        private void OnObjectEnter(WorldObjectItem objectItem)
+        void OnObjectEnter(WorldObjectItem objectItem)
         {
             ForEach(x =>
             {
@@ -1318,7 +1306,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 DroppedItemsCleaner = Area.CallPeriodically(30000, CleanObjets);
         }
 
-        private void OnObjectLeave(WorldObjectItem objectItem)
+        void OnObjectLeave(WorldObjectItem objectItem)
         {
             ForEach(x =>
             {
@@ -1332,7 +1320,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             DroppedItemsCleaner = null;
         }
 
-        private void OnEnter(RolePlayActor actor)
+        void OnEnter(RolePlayActor actor)
         {
             // if the actor change from area we notify it
             if (actor.HasChangedZone())
@@ -1368,16 +1356,16 @@ namespace Stump.Server.WorldServer.Game.Maps
                         MoveRandomlyActors);
             }
 
+            actor.OnEnterMap(this);
+
             ForEach(x =>
             {
                 if (actor.CanBeSee(x))
                     ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, x, actor);
             });
-
-            actor.OnEnterMap(this);
         }
 
-        private void OnLeave(RolePlayActor actor)
+        void OnLeave(RolePlayActor actor)
         {
             if (actor == TaxCollector)
             {
@@ -1413,7 +1401,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Actor Actions
 
-        private void OnActorStartMoving(ContextActor actor, Path path)
+        void OnActorStartMoving(ContextActor actor, Path path)
         {
             var movementsKey = path.GetServerPathKeys();
 
