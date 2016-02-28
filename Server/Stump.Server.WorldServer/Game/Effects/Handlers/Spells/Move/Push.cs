@@ -5,8 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
-
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using System;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_PushBack)]
@@ -45,11 +46,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var pushDirection = referenceCell.OrientationTo(actor.Position.Point);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
-                var range = integerEffect.Value;
-                var takeDamage = false;
+
+                var range = (short)(referenceCell.IsOnSameDiagonal(startCell) ? Math.Ceiling(integerEffect.Value / 2.0) : integerEffect.Value);
                 var stopCell = startCell.GetCellInDirection(pushDirection, range);
                 var fightersInline = Fight.GetAllFightersInLine(startCell, range, pushDirection);
-
 
                 if (fightersInline.Any())
                 {
@@ -122,7 +122,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                             IgnoreDamageReduction = false
                         };
 
-                        takeDamage = true;
                         actor.InflictDamage(damage);
                     }
                 }
