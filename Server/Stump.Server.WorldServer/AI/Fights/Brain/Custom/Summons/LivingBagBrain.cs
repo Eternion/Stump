@@ -5,10 +5,10 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
-    [BrainIdentifier((int)MonsterIdEnum.CADRAN_DE_XLOR_3960)]
-    public class CadranBrain : Brain
+    [BrainIdentifier((int)MonsterIdEnum.SAC_ANIM_237)]
+    public class LivingBagBrain : Brain
     {
-        public CadranBrain(AIFighter fighter)
+        public LivingBagBrain(AIFighter fighter)
             : base(fighter)
         {
             fighter.Team.FighterAdded += OnFighterAdded;
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             if (fighter != Fighter)
                 return;
 
-            fighter.CastSpell(new Spell((int)SpellIdEnum.OSCILLATION, 1), fighter.Cell, true, true);
+            fighter.CastSpell(new Spell((int)SpellIdEnum.SAC_RIFICE, fighter.Level), fighter.Cell, true, true);
         }
     }
 }

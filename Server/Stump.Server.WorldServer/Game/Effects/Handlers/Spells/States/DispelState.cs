@@ -1,19 +1,20 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
+using System.Linq;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
     [EffectHandler(EffectsEnum.Effect_DispelState)]
     [EffectHandler(EffectsEnum.Effect_DisableState)]
     public class DispelState : SpellEffectHandler
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public DispelState(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
@@ -22,30 +23,76 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
         protected override bool InternalApply()
         {
-            foreach (var affectedActor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
-                var state = SpellManager.Instance.GetSpellState((uint) Dice.Value);
-
-                if (state == null)
+                if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    logger.Error("Spell state {0} not found", Dice.Value);
-                    return false;
+                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTrigger);
                 }
-
-                if (Effect.EffectId == EffectsEnum.Effect_DisableState)
+                else
                 {
-                    var stateBuff = affectedActor.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == state.Id).FirstOrDefault();
-                    if (stateBuff == null)
+                    var state = SpellManager.Instance.GetSpellState((uint)Dice.Value);
+
+                    if (state == null)
+                    {
+                        logger.Error("Spell state {0} not found", Dice.Value);
+                        return false;
+                    }
+
+                    if (!actor.HasState(state.Id))
                         return false;
 
-                    stateBuff.Delay = (short)Dice.Duration;
-                    affectedActor.AddBuff(stateBuff);
-                }
+                    if (Effect.EffectId == EffectsEnum.Effect_DisableState)
+                    {
+                        var actualState = actor.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == state.Id).FirstOrDefault() as StateBuff;
+                        if (actualState == null)
+                            return false;
 
-                RemoveStateBuff(affectedActor, (SpellStatesEnum)state.Id);
+                        var id = actor.PopNextBuffId();
+                        var stateBuff = new DisableStateBuff(id, actor, Caster, Dice, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState)
+                        {
+                            Duration = 1
+                        };
+
+                        actor.AddBuff(stateBuff);
+                    }
+                    else
+                        RemoveStateBuff(actor, (SpellStatesEnum)state.Id);
+                }
             }
 
             return true;
+        }
+
+        void BuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        {
+            var state = SpellManager.Instance.GetSpellState((uint)Dice.Value);
+
+            if (state == null)
+            {
+                logger.Error("Spell state {0} not found", Dice.Value);
+                return;
+            }
+
+            if (!buff.Target.HasState(state.Id))
+                return;
+
+            if (Effect.EffectId == EffectsEnum.Effect_DisableState)
+            {
+                var actualState = buff.Target.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == state.Id).FirstOrDefault() as StateBuff;
+                if (actualState == null)
+                    return;
+
+                var id = buff.Target.PopNextBuffId();
+                var stateBuff = new DisableStateBuff(id, buff.Target, Caster, Dice, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState)
+                {
+                    Duration = 1
+                };
+
+                buff.Target.AddBuff(stateBuff);
+            }
+            else
+                RemoveStateBuff(buff.Target, (SpellStatesEnum)state.Id);
         }
     }
 }

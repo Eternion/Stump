@@ -14,12 +14,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             fighter.Team.FighterAdded += OnFighterAdded;
         }
 
-        private void OnFighterAdded(FightTeam team, FightActor fighter)
+        void OnFighterAdded(FightTeam team, FightActor fighter)
         {
             if (fighter != Fighter)
                 return;
 
-            Fighter.CastSpell(new Spell((int) SpellIdEnum.PRÉPARATION_POUPESQUE, 1), Fighter.Cell, true);
+            Fighter.CastSpell(new Spell((int) SpellIdEnum.PRÉPARATION_POUPESQUE, 1), Fighter.Cell, true, true);
 
             fighter.Team.FighterAdded -= OnFighterAdded;
         }

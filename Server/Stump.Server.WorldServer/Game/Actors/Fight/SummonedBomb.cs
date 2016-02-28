@@ -44,9 +44,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         static readonly Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
         {
-            {2, Color.Red},
-            {3, Color.Green},
-            {4, Color.Blue}
+            {2, Color.FromArgb(255, 0, 0)},
+            {3, Color.FromArgb(128, 128, 0)},
+            {4, Color.FromArgb(128, 128, 255)}
         };
 
         readonly List<WallsBinding> m_wallsBinding = new List<WallsBinding>();
@@ -247,7 +247,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
 
             //Avoid StackOverflow when using Poudre
-            RemoveAndDispellAllBuffs();
+            //RemoveAndDispellAllBuffs();
 
             handler.Initialize();
 

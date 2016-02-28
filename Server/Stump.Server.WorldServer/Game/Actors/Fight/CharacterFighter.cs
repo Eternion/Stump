@@ -121,7 +121,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (PersonalReadyChecker != null)
                 PersonalReadyChecker.ToggleReady(this, ready);
-
             else if (Fight.ReadyChecker != null)
                 Fight.ReadyChecker.ToggleReady(this, ready);
         }
@@ -164,7 +163,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
 
             // weapon attack
-            if (Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
+            if (spell.Id != 0 || Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
                 return base.CastSpell(spell, cell, force, apFree, silent, castSpellEffect);
 
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);

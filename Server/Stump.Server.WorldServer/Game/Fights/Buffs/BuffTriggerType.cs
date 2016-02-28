@@ -52,22 +52,20 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         /* UNKNOWN */
         Unknown_1, //d
-        OnPush, //M
+        OnMoved, //M
         Unknown_3, //mA
         Unknown_4, //ML
-        Unknown_5, //MP
+        OnPushed, //MP
         Unknown_6, //MS
         Unknown_7, //P
         Unknown_8, //R
-        Unknown_9, //tF
+        OnTackled, //tF
         OnTackle, //tS
         OnDeath, //X
 
         /* CUSTOM */
         BeforeDamaged,
         AfterDamaged,
-        OnTackled,
-        OnMoved,
         BeforeAttack,
         AfterAttack,
         AfterHealed,

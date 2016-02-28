@@ -8,28 +8,19 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
     [BrainIdentifier((int)MonsterIdEnum.ARBRE_282)]
     public class TreeBrain : Brain
     {
-        private static Spell m_transformationSpell;
-
         public TreeBrain(AIFighter fighter)
             : base(fighter)
         {
-            if (m_transformationSpell == null)
-                m_transformationSpell = new Spell((int) SpellIdEnum.FEUILLAGE, 1);
-
             fighter.Team.FighterAdded += OnFighterAdded;
         }
 
-        private void OnFighterAdded(FightTeam team, FightActor fighter)
+        void OnFighterAdded(FightTeam team, FightActor fighter)
         {
             if (Fighter != fighter)
                 return;
 
-            Fighter.CastSpell(m_transformationSpell, Fighter.Cell, true);
+            Fighter.CastSpell(new Spell((int)SpellIdEnum.FEUILLAGE, 1), Fighter.Cell, true);
             fighter.Team.FighterAdded -= OnFighterAdded;
-        }
-
-        public override void Play()
-        {
         }
     }
 }

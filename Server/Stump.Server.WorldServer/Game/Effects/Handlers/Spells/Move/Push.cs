@@ -89,6 +89,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                         if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]) || Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                         {
+                            if (nextCell == null)
+                                stopCell = lastCell;
+
                             if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                             {
                                 DamagesDisabled = true;
@@ -131,9 +134,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actor, startCell.CellId, stopCell.CellId);
 
                 actor.Position.Cell = Map.Cells[stopCell.CellId];
-                actor.OnActorMoved(Caster, takeDamage);
 
-                actor.TriggerBuffs(actor, BuffTriggerType.OnPush);
+                actor.TriggerBuffs(actor, BuffTriggerType.OnPushed);
+                actor.TriggerBuffs(actor, BuffTriggerType.OnMoved);
             }
 
             return true;

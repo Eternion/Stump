@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         }
 
         public override GameActionMarkTypeEnum Type => GameActionMarkTypeEnum.WALL;
-
+         
         public override TriggerType TriggerType => TriggerType.MOVE | TriggerType.OnTurnBegin | TriggerType.OnTurnEnd;
 
         public SummonedBomb[] Bombs => new[] { WallBinding.Bomb1, WallBinding.Bomb2 };
