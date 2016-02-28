@@ -16,14 +16,14 @@ namespace Stump.Server.WorldServer.Game.Social
 {
     public class FriendsBook : IDisposable
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [Variable(true)] public static int MaxFriendsNumber = 30;
 
-        private readonly ConcurrentDictionary<int, Friend> m_friends = new ConcurrentDictionary<int, Friend>();
-        private readonly ConcurrentDictionary<int, Ignored> m_ignoreds = new ConcurrentDictionary<int, Ignored>();
-        private readonly ConcurrentStack<AccountRelation> m_relationsToRemove = new ConcurrentStack<AccountRelation>();
-        private ConcurrentDictionary<int, AccountRelation> m_relations;
+        readonly ConcurrentDictionary<int, Friend> m_friends = new ConcurrentDictionary<int, Friend>();
+        readonly ConcurrentDictionary<int, Ignored> m_ignoreds = new ConcurrentDictionary<int, Ignored>();
+        readonly ConcurrentStack<AccountRelation> m_relationsToRemove = new ConcurrentStack<AccountRelation>();
+        ConcurrentDictionary<int, AccountRelation> m_relations;
 
         public FriendsBook(Character owner)
         {
@@ -36,15 +36,9 @@ namespace Stump.Server.WorldServer.Game.Social
             set;
         }
 
-        public IEnumerable<Friend> Friends
-        {
-            get { return m_friends.Values; }
-        }
+        public IEnumerable<Friend> Friends => m_friends.Values;
 
-        public IEnumerable<Ignored> Ignoreds
-        {
-            get { return m_ignoreds.Values; }
-        }
+        public IEnumerable<Ignored> Ignoreds => m_ignoreds.Values;
 
         public bool WarnOnConnection
         {
@@ -85,15 +79,9 @@ namespace Stump.Server.WorldServer.Game.Social
             return null;
         }
 
-        public bool IsFriend(int accountId)
-        {
-            return m_friends.Values.Any(x => x.Account.Id == accountId);
-        }
+        public bool IsFriend(int accountId) => m_friends.Values.Any(x => x.Account.Id == accountId);
 
-        public bool IsIgnored(int accountId)
-        {
-            return m_ignoreds.Values.Any(x => x.Account.Id == accountId);
-        }
+        public bool IsIgnored(int accountId) => m_ignoreds.Values.Any(x => x.Account.Id == accountId);
 
         public bool AddFriend(WorldAccount friendAccount)
         {
@@ -234,7 +222,7 @@ namespace Stump.Server.WorldServer.Game.Social
             return false;
         }
 
-        private void OnCharacterLogIn(Character character)
+        void OnCharacterLogIn(Character character)
         {
             Friend friend;
             if (m_friends.TryGetValue(character.Client.WorldAccount.Id, out friend))
@@ -256,19 +244,19 @@ namespace Stump.Server.WorldServer.Game.Social
             }
         }
 
-        private void OnFriendOnline(Friend friend)
+        void OnFriendOnline(Friend friend)
         {
             friend.Character.LoggedOut += OnFriendLogout;
             friend.Character.LevelChanged += OnLevelChanged;
             friend.Character.ContextChanged += OnContextChanged;
         }
 
-        private void OnIgnoredOnline(Ignored ignored)
+        void OnIgnoredOnline(Ignored ignored)
         {
             ignored.Character.LoggedOut += OnIgnoredLogout;
         }
 
-        private void OnContextChanged(Character character, bool infight)
+        void OnContextChanged(Character character, bool infight)
         {
             var friend = TryGetFriend(character);
 
@@ -281,7 +269,7 @@ namespace Stump.Server.WorldServer.Game.Social
             FriendHandler.SendFriendUpdateMessage(Owner.Client, friend);
         }
 
-        private void OnLevelChanged(Character character, byte currentlevel, int difference)
+        void OnLevelChanged(Character character, byte currentlevel, int difference)
         {
             var friend = TryGetFriend(character);
 
@@ -300,7 +288,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 CharacterHandler.SendCharacterLevelUpInformationMessage(Owner.Client, character, character.Level);
         }
 
-        private void OnFriendLogout(Character character)
+        void OnFriendLogout(Character character)
         {
             var friend = TryGetFriend(character);
 
@@ -316,7 +304,7 @@ namespace Stump.Server.WorldServer.Game.Social
             }
         }
 
-        private void OnIgnoredLogout(Character character)
+        void OnIgnoredLogout(Character character)
         {
             Ignored ignored;
             if (!m_ignoreds.TryGetValue(character.Id, out ignored))
