@@ -16,7 +16,7 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Core.Extensions;
-using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Arena;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -219,7 +219,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!friend.IsFighting())
                 return;
 
-            var fight = Singleton<FightManager>.Instance.GetFight(friend.Fight.Id);
+            var fight = FightManager.Instance.GetFight(friend.Fight.Id);
 
             if (fight == null)
             {
@@ -243,7 +243,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (client.Character.IsFighting())
                 return;
 
-            var fight = Singleton<FightManager>.Instance.GetFight(message.fightId);
+            var fight = FightManager.Instance.GetFight(message.fightId);
 
             if (fight == null)
             {
@@ -251,7 +251,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 return;
             }
 
-            if (fight.Map != client.Character.Map)
+            if (client.Character.Map.Id != ArenaManager.KolizeumMapId && fight.Map != client.Character.Map)
             {
                 SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.WRONG_MAP);
                 return;
@@ -259,6 +259,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character) && !client.Character.IsInFight())
             {
+                if (client.Character.Map.Id == ArenaManager.KolizeumMapId)
+                    ContextRoleplayHandler.SendCurrentMapMessage(client, fight.Map.Id);
+
                 fight.AddSpectator(client.Character.CreateSpectator(fight));
             }
 

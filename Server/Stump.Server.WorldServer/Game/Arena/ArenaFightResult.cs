@@ -16,21 +16,16 @@ namespace Stump.Server.WorldServer.Game.Arena
             ShowLoot = showLoot;
         }
 
-        public override bool CanLoot(FightTeam team)
-        {
-            return Outcome == FightOutcomeEnum.RESULT_VICTORY && !Fighter.HasLeft() && ShowLoot;
-        }
+        public override bool CanLoot(FightTeam team) => Outcome == FightOutcomeEnum.RESULT_VICTORY && !Fighter.HasLeft() && ShowLoot;
 
         public int Rank
         {
             get;
-            private set;
         }
 
         public bool ShowLoot
         {
             get;
-            private set;
         }
 
         public override FightResultListEntry GetFightResultListEntry()

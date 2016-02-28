@@ -45,19 +45,19 @@ namespace Stump.Server.WorldServer.Game.Arena
         [Variable]
         public static int ArenaWaitTime = 10;
 
-        public ItemTemplate TokenItemTemplate
-        {
-            get
-            {
-                return m_tokenTemplate ??
-                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int) ItemIdEnum.KOLIZETON_12736));
-            }
-        }
+        /// <summary>
+        /// Kolizeum MapId that show all Arena Fights
+        /// </summary>
+        [Variable]
+        public static int KolizeumMapId = 81788928;
 
-        private Dictionary<int, ArenaRecord> m_arenas;
-        private readonly SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
-        private readonly List<ArenaQueueMember> m_queue = new List<ArenaQueueMember>();
-        private ItemTemplate m_tokenTemplate;
+        public ItemTemplate TokenItemTemplate => m_tokenTemplate ??
+                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.KOLIZETON_12736));
+
+        Dictionary<int, ArenaRecord> m_arenas;
+        readonly SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
+        readonly List<ArenaQueueMember> m_queue = new List<ArenaQueueMember>();
+        ItemTemplate m_tokenTemplate;
 
         [Initialization(InitializationPass.Fifth)]
         public override void Initialize()
@@ -67,15 +67,9 @@ namespace Stump.Server.WorldServer.Game.Arena
             m_arenaTaskPool.Start();
         }
 
-        public SelfRunningTaskPool ArenaTaskPool
-        {
-            get { return m_arenaTaskPool; }
-        }
+        public SelfRunningTaskPool ArenaTaskPool => m_arenaTaskPool;
 
-        public Dictionary<int, ArenaRecord> Arenas
-        {
-            get { return m_arenas; }
-        }
+        public Dictionary<int, ArenaRecord> Arenas => m_arenas;
 
         public bool CanJoinQueue(Character character)
         {
@@ -89,20 +83,11 @@ namespace Stump.Server.WorldServer.Game.Arena
             return character.CanEnterArena();
         }
 
-        public bool IsInQueue(Character character)
-        {
-            return m_queue.Exists(x => x.Character == character);
-        }
+        public bool IsInQueue(Character character) => m_queue.Exists(x => x.Character == character);
 
-        public bool IsInQueue(ArenaParty party)
-        {
-            return m_queue.Exists(x => x.Party == party);
-        }
+        public bool IsInQueue(ArenaParty party) => m_queue.Exists(x => x.Party == party);
 
-        public ArenaQueueMember GetQueueMember(Character character)
-        {
-            return m_queue.FirstOrDefault(x => x.Character == character);
-        }
+        public ArenaQueueMember GetQueueMember(Character character) => m_queue.FirstOrDefault(x => x.Character == character);
 
         public void AddToQueue(Character character)
         {
@@ -151,6 +136,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, false, 
                 PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
+
         public void ComputeMatchmaking()
         {
             List<ArenaQueueMember> queue;
@@ -211,7 +197,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             }
         }
 
-        private void StartFight(IEnumerable<ArenaQueueMember> team1, IEnumerable<ArenaQueueMember> team2)
+        void StartFight(IEnumerable<ArenaQueueMember> team1, IEnumerable<ArenaQueueMember> team2)
         {
             var arena = m_arenas.RandomElementOrDefault().Value;
             var preFight = FightManager.Instance.CreateArenaPreFight(arena);

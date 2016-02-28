@@ -2143,10 +2143,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             ContextRoleplayHandler.SendCurrentMapMessage(Client, map.Id);
 
-            if (map.Fights.Count > 0)
-                ContextRoleplayHandler.SendMapFightCountMessage(Client, (short)map.Fights.Count);
-
-            // send actor actions     
+            // send actor actions
             foreach (var actor in map.Actors)
             {
                 if (!actor.IsMoving())
@@ -2154,7 +2151,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 var moveKeys = actor.MovementPath.GetServerPathKeys();
                 var actorMoving = actor;
-
 
                 if (actor.MovementPath.Walk)
                     ContextHandler.SendGameCautiousMapMovementMessage(Client, moveKeys, actorMoving);

@@ -4,6 +4,8 @@ using Stump.Server.WorldServer.Database.Arena;
 using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -57,19 +59,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             AddEntity(fight.Id, fight);
 
             return fight;
-        }
-
-        public ArenaFight CreateArenaFight(Map map)
-        {
-            var challengersTeam = new ArenaTeam(TeamEnum.TEAM_CHALLENGER, map.GetRedFightPlacement());
-            var defendersTeam = new ArenaTeam(TeamEnum.TEAM_DEFENDER, map.GetBlueFightPlacement());
-
-            var fight = new ArenaFight(m_idProvider.Pop(), map, defendersTeam, challengersTeam);
-
-            AddEntity(fight.Id, fight);
-
-            return fight;
-        }        
+        }      
         
         public ArenaFight CreateArenaFight(ArenaPreFight preFight)
         {
@@ -79,6 +69,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fight = new ArenaFight(preFight.Id, preFight.Arena.Map, defendersTeam, challengersTeam);
 
             AddEntity(fight.Id, fight);
+
+            var kolizeumMap = World.Instance.GetMap(ArenaManager.KolizeumMapId);
+            ContextRoleplayHandler.SendMapFightCountMessage(kolizeumMap.Clients, (short)ArenaManager.Instance.Arenas.Sum(x => x.Value.Map.GetFightCount()));
 
             return fight;
         }

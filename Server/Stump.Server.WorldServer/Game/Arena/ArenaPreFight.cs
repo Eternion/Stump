@@ -9,7 +9,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -17,13 +16,12 @@ namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaPreFight
     {
+        readonly WorldClientCollection m_clients = new WorldClientCollection();
 
-        private readonly WorldClientCollection m_clients = new WorldClientCollection();
+        readonly Dictionary<Character, Map> m_charactersMaps = new Dictionary<Character, Map>();
+        int m_readyPlayersCount;
 
-        private readonly Dictionary<Character, Map> m_charactersMaps = new Dictionary<Character, Map>();
-        private int m_readyPlayersCount;
-
-        private ArenaFight m_fight;
+        ArenaFight m_fight;
 
         public ArenaPreFight(int id, ArenaRecord arena)
         {
@@ -42,46 +40,35 @@ namespace Stump.Server.WorldServer.Game.Arena
         public int Id
         {
             get;
-            private set;
         }
 
-        public WorldClientCollection Clients
-        {
-            get { return m_clients; }
-        }
+        public WorldClientCollection Clients => m_clients;
 
         public ArenaRecord Arena
         {
             get;
-            private set;
         }
 
         public ArenaPreFightTeam DefendersTeam
         {
             get;
-            private set;
         }
 
         public ArenaPreFightTeam ChallengersTeam
         {
             get;
-            private set;
         }
 
         public void ShowPopups()
         {
             foreach (var popup in DefendersTeam.Members.ToArray().Select(character => new ArenaPopup(character)))
-            {
                 popup.Display();
-            }
 
             foreach (var popup in ChallengersTeam.Members.ToArray().Select(character => new ArenaPopup(character)))
-            {
                 popup.Display();
-            }
         }
 
-        private void OnMemberRemoved(ArenaPreFightTeam arg1, ArenaWaitingCharacter arg2)
+        void OnMemberRemoved(ArenaPreFightTeam arg1, ArenaWaitingCharacter arg2)
         {
             arg2.ReadyChanged -= OnReadyChanged;
             arg2.FightDenied -= OnFightDenied;
@@ -93,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         }
 
-        private void OnMemberAdded(ArenaPreFightTeam arg1, ArenaWaitingCharacter arg2)
+        void OnMemberAdded(ArenaPreFightTeam arg1, ArenaWaitingCharacter arg2)
         {
             arg2.ReadyChanged += OnReadyChanged;
             arg2.FightDenied += OnFightDenied;
@@ -101,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             m_clients.Add(arg2.Character.Client);
         }
 
-        private void OnFightDenied(ArenaWaitingCharacter obj)
+        void OnFightDenied(ArenaWaitingCharacter obj)
         {
             ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
             {                
@@ -134,14 +121,10 @@ namespace Stump.Server.WorldServer.Game.Arena
                 }
                 
                 foreach (var character in DefendersTeam.Members.Concat(ChallengersTeam.Members).Where(character => character.Character.ArenaPopup != null))
-                {
                     character.Character.ArenaPopup.Cancel();
-                }
 
                 foreach (var character in obj.Team.Members.Where(character => character.Character.ArenaParty == null))
-                {
                     ArenaManager.Instance.AddToQueue(character.Character);
-                }
 
                 var once = false;
                 foreach (var character in opposedTeam.Members)
@@ -157,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             });
         }
 
-        private void OnReadyChanged(ArenaWaitingCharacter character, bool ready)
+        void OnReadyChanged(ArenaWaitingCharacter character, bool ready)
         {
             ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
             {
@@ -173,7 +156,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             });
         }
 
-        private void TeleportFighters()
+        void TeleportFighters()
         {
             // it's a mess to manage all these contexts together
             m_readyPlayersCount = ChallengersTeam.Members.Count + DefendersTeam.Members.Count;
@@ -215,15 +198,13 @@ namespace Stump.Server.WorldServer.Game.Arena
             }
         }
 
-        private static void RemoveShield(IInventoryOwner character)
+        static void RemoveShield(IInventoryOwner character)
         {
             foreach (var item in character.Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD))
-            {
                 character.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-            }
         }
 
-        private void OnFightLeft(RolePlayActor rolePlayActor, Map map)
+        void OnFightLeft(RolePlayActor rolePlayActor, Map map)
         {
             if (map != m_fight.Map)
                 return;
@@ -238,7 +219,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             }
         }
 
-        private void PrepareFight()
+        void PrepareFight()
         {
             foreach (var character in ChallengersTeam.Members.Select(x => x.Character))
             {
