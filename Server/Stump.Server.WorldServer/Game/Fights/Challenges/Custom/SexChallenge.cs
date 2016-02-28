@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -9,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.NI_PIOUS_NI_SOUMIS)]
     public class SexChallenge : DefaultChallenge
     {
-        private readonly SexTypeEnum m_sexType;
+        readonly SexTypeEnum m_sexType;
 
         public SexChallenge(int id, IFight fight)
             : base(id, fight)
@@ -25,18 +26,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
                 fighter.Dead += OnDead;
-            }
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllCharacters().Any(x => x.Sex == SexTypeEnum.SEX_MALE) &&
+        public override bool IsEligible() => Fight.GetAllCharacters().Any(x => x.Sex == SexTypeEnum.SEX_MALE) &&
                    Fight.GetAllCharacters().Any(x => x.Sex == SexTypeEnum.SEX_FEMALE);
-        }
 
-        private void OnDead(FightActor fighter, FightActor killer)
+        void OnDead(FightActor fighter, FightActor killer)
         {
             if (!(killer is CharacterFighter))
                 return;
@@ -45,6 +41,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+                fighter.Dead -= OnDead;
         }
     }
 }

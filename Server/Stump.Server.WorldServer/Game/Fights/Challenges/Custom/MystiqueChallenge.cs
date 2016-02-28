@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -21,14 +22,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
-            {
                 fighter.WeaponUsed += OnWeaponUsed;
-            }
         }
 
-        private void OnWeaponUsed(FightActor caster, WeaponTemplate weapon, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        void OnWeaponUsed(FightActor caster, WeaponTemplate weapon, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+            => UpdateStatus(ChallengeStatusEnum.FAILED);
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {
-            UpdateStatus(ChallengeStatusEnum.FAILED);
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
+                fighter.WeaponUsed -= OnWeaponUsed;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ARAKNOPHILE)]
     public class SpellUseChallenge : DefaultChallenge
     {
-        private readonly int m_spell;
+        readonly int m_spell;
 
         public SpellUseChallenge(int id, IFight fight)
             : base(id, fight)
@@ -52,12 +52,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             Fight.TurnStopped += OnTurnStopped;
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllFighters<CharacterFighter>().Any(x => x.HasSpell(m_spell));
-        }
+        public override bool IsEligible() => Fight.GetAllFighters<CharacterFighter>().Any(x => x.HasSpell(m_spell));
 
-        private void OnTurnStopped(IFight fight, FightActor fighter)
+        void OnTurnStopped(IFight fight, FightActor fighter)
         {
             if (!(fighter is CharacterFighter))
                 return;
@@ -80,6 +77,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             OnTurnStopped(fight, fight.FighterPlaying);
 
             base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            Fight.TurnStopped -= OnTurnStopped;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -19,19 +20,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
                 fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
-            }
 
             Fight.TurnStarted += OnTurnStarted;
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllFighters<MonsterFighter>().Count() > 1;
-        }
+        public override bool IsEligible() => Fight.GetAllFighters<MonsterFighter>().Count() > 1;
 
-        private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
+        void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
         {
             if (fighter.IsFriendlyWith(damage.Source))
                 return;
@@ -39,10 +35,20 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             Target = fighter;
         }
 
-        private void OnTurnStarted(IFight fight, FightActor fighter)
+        void OnTurnStarted(IFight fight, FightActor fighter)
         {
             if (fighter == Target)
                 UpdateStatus(ChallengeStatusEnum.FAILED);
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+                fighter.BeforeDamageInflicted -= OnBeforeDamageInflicted;
+
+            Fight.TurnStarted -= OnTurnStarted;
         }
     }
 }
