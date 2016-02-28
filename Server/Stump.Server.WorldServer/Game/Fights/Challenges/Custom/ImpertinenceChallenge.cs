@@ -37,12 +37,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             Fight.BeforeTurnStopped += OnBeforeTurnStopped;
         }
 
-        public override bool IsEligible()
-        {
-            return m_team.GetAllFighters().Count() > 1;
-        }
+        public override bool IsEligible() => m_team.GetAllFighters().Count() > 1;
 
-        private void OnBeforeTurnStopped(IFight fight, FightActor fighter)
+        void OnBeforeTurnStopped(IFight fight, FightActor fighter)
         {
             if (!(fighter is CharacterFighter))
                 return;
@@ -59,6 +56,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             OnBeforeTurnStopped(fight, fight.FighterPlaying);
 
             base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            Fight.BeforeTurnStopped -= OnBeforeTurnStopped;
         }
     }
 }

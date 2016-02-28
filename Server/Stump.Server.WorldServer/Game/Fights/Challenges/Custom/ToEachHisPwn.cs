@@ -30,13 +30,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             }
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllFighters<MonsterFighter>().Count() > 1 && Fight.GetAllFighters<CharacterFighter>().Count() > 1
+        public override bool IsEligible() => Fight.GetAllFighters<MonsterFighter>().Count() > 1 && Fight.GetAllFighters<CharacterFighter>().Count() > 1
                 && Fight.GetAllFighters<MonsterFighter>().Count() >= Fight.GetAllFighters<CharacterFighter>().Count();
-        }
 
-        private void OnDamageInflicted(FightActor fighter, Damage damage)
+        void OnDamageInflicted(FightActor fighter, Damage damage)
         {
             var source = (damage.Source is SummonedFighter) ? ((SummonedFighter)damage.Source).Summoner : damage.Source;
 
@@ -58,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             UpdateStatus(ChallengeStatusEnum.FAILED, source);
         }
 
-        private void OnDead(FightActor fighter, FightActor killer)
+        void OnDead(FightActor fighter, FightActor killer)
         {
             if (killer is CharacterFighter)
                 m_killers.Add((CharacterFighter)killer);
@@ -78,6 +75,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             }
 
             UpdateStatus(ChallengeStatusEnum.SUCCESS);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+            {
+                fighter.DamageInflicted -= OnDamageInflicted;
+                fighter.Dead -= OnDead;
+            }
         }
     }
 }

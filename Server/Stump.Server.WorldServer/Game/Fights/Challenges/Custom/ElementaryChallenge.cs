@@ -1,6 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -23,12 +24,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
-            {
                 fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
-            }
         }
 
-        private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
+        void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
         {
             if (!(damage.Source is CharacterFighter))
                 return;
@@ -40,6 +39,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 m_element = damage.School;
             else if (m_element != damage.School)
                 UpdateStatus(ChallengeStatusEnum.FAILED, damage.Source);
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
+                fighter.BeforeDamageInflicted -= OnBeforeDamageInflicted;
         }
     }
 }

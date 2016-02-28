@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
@@ -32,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             }
         }
 
-        private void OnWeaponUsed(FightActor fighter, WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
+        void OnWeaponUsed(FightActor fighter, WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 return;
@@ -43,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 m_weaponsUsed.Add(fighter);
         }
 
-        private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 return;
@@ -53,6 +54,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            base.OnWinnersDetermined(fight, winners, losers, draw);
+
+            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
+            {
+                fighter.SpellCasting -= OnSpellCasting;
+                fighter.WeaponUsed -= OnWeaponUsed;
+            }
         }
     }
 }

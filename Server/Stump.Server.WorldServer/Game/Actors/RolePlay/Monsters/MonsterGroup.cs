@@ -13,16 +13,14 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Core.Extensions;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
     public sealed class MonsterGroup : RolePlayActor, IContextDependant, IAutoMovedEntity
     {
         [Variable(true)]
-        public static int StarsBonusInterval = 300;
-
-        [Variable(true)]
-        public static short StarsBonusIncrementation = 2;
+        public static int StarsBonusRate = 1800;
 
         [Variable(true)]
         public static short StarsBonusLimit = 200;
@@ -32,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public event Action<MonsterGroup, Character> EnterFight;
         public event Action<MonsterGroup, IFight> ExitFight;
 
-        private readonly List<Monster> m_monsters = new List<Monster>();
+        readonly List<Monster> m_monsters = new List<Monster>();
 
         public MonsterGroup(int id, ObjectPosition position, SpawningPoolBase spawningPool = null)
         {
@@ -82,14 +80,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             get
             {
-                var bonus = ( DateTime.Now - CreationDate ).TotalSeconds / ((double)StarsBonusInterval / StarsBonusIncrementation);
+                var bonus = ( DateTime.Now - CreationDate ).TotalSeconds / (StarsBonusRate);
 
                 if (bonus > StarsBonusLimit)
                     bonus = StarsBonusLimit;
 
                 return (short) bonus;
             }
-            set { CreationDate = DateTime.Now - TimeSpan.FromSeconds(value*StarsBonusInterval/(double) StarsBonusIncrementation); }
+            set { CreationDate = DateTime.Now - TimeSpan.FromSeconds(value*StarsBonusRate); }
         }
         
         public DateTime NextMoveDate
@@ -109,6 +107,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             get;
             private set;
         }
+
         public override bool CanMove()
         {
             return true;
@@ -136,25 +135,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return true;
         }
 
-        public override bool StopMove()
-        {
-            return false;
-        }
+        public override bool StopMove() => false;
 
-        public override bool StopMove(ObjectPosition currentObjectPosition)
-        {
-            return false;
-        }
+        public override bool StopMove(ObjectPosition currentObjectPosition) => false;
 
-        public override bool MoveInstant(ObjectPosition destination)
-        {
-            return false;
-        }
+        public override bool MoveInstant(ObjectPosition destination) => false;
 
-        public override bool Teleport(ObjectPosition destination, bool performCheck = true)
-        {
-            return false;
-        }
+        public override bool Teleport(ObjectPosition destination, bool performCheck = true) => false;
 
         public void FightWith(Character character)
         {
@@ -192,18 +179,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             Fight.FightEnded += OnFightEnded;
         }
 
-        private void OnFightEnded(IFight fight)
+        void OnFightEnded(IFight fight)
         {
             OnExitFight(fight);
         }
 
-        private void OnEnterFight(Character character)
+        void OnEnterFight(Character character)
         {
             var handler = EnterFight;
             if (handler != null)
                 handler(this, character);
         }
-        private void OnExitFight(IFight fight)
+
+        void OnExitFight(IFight fight)
         {
             Fight = null;
 
@@ -211,10 +199,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             if (handler != null) handler(this, fight);
         }
 
-        public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team)
-        {
-            return m_monsters.Select(monster => monster.CreateFighter(team));
-        }
+        public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team) => m_monsters.Select(monster => monster.CreateFighter(team));
 
         public void AddMonster(Monster monster)
         {
@@ -247,35 +232,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return m_monsters.Where(entry => entry != Leader);
         }
 
-        public int Count()
-        {
-            return m_monsters.Count;
-        }
+        public int Count() => m_monsters.Count;
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)
-        {
-            return new GameRolePlayGroupMonsterInformations(Id,
+                                                        => new GameRolePlayGroupMonsterInformations(Id,
                                                             Leader.Look.GetEntityLook(),
                                                             GetEntityDispositionInformations(),
                                                             false,
                                                             false,
                                                             false,
                                                             GetGroupMonsterStaticInformations(),
+                                                            (CreationDate.GetUnixTimeStampLong() + (TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds * 1000)),
+                                                            (StarsBonusRate * 1000),
                                                             0,
-                                                            AgeBonus > ClientStarsBonusLimit ? ClientStarsBonusLimit : AgeBonus,
-                                                            0,
-                                                            -1);
-        }
+                                                            0);
 
         public GroupMonsterStaticInformations GetGroupMonsterStaticInformations()
-        {
-            return new GroupMonsterStaticInformations(Leader.GetMonsterInGroupLightInformations(), GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()));
-        }
+            => new GroupMonsterStaticInformations(Leader.GetMonsterInGroupLightInformations(),
+                GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()));
 
-        public override string ToString()
-        {
-            return string.Format("{0} monsters ({1})", m_monsters.Count, Id);
-        }
-
+        public override string ToString() => string.Format("{0} monsters ({1})", m_monsters.Count, Id);
     }
 }
