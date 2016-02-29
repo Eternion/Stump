@@ -188,6 +188,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (ArenaPopup != null)
                 ArenaPopup.Deny();
 
+            if (Jobs != null)
+                foreach (var job in Jobs.Where(x => x.IsIndexed))
+                    job.Template.RemoveAvaiableCrafter(this);
+
             var document = new BsonDocument
             {
                 { "AcctId", Client.Account.Id },

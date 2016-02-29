@@ -26,6 +26,7 @@ namespace Stump.Server.WorldServer.Database.Jobs
         private List<Character> m_availableCrafters = new List<Character>();
         public event Action<JobTemplate, Character> CrafterSubscribed;
         public event Action<JobTemplate, Character> CrafterUnSubscribed;
+        public event Action<JobTemplate, Character> CrafterRefreshed;
 
         [PrimaryKey("Id", false)]
         public int Id
@@ -87,6 +88,12 @@ namespace Stump.Server.WorldServer.Database.Jobs
             m_availableCrafters.Remove(character);
             OnCrafterUnSubscribed(character);
         }
+
+        public void RefreshCrafter(Character character)
+        {
+            if (m_availableCrafters.Contains(character))
+                OnCrafterRefreshed(character);
+        }
         
 
         #region IAssignedByD2O Members
@@ -119,6 +126,13 @@ namespace Stump.Server.WorldServer.Database.Jobs
         protected virtual void OnCrafterUnSubscribed(Character character)
         {
             var evnt = CrafterUnSubscribed;
+            if (evnt != null)
+                evnt(this, character);
+        }
+
+        protected virtual void OnCrafterRefreshed(Character character)
+        {
+            var evnt = CrafterRefreshed;
             if (evnt != null)
                 evnt(this, character);
         }

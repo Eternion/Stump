@@ -54,13 +54,20 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Jobs
             {
                 m_lastRequestedJob.CrafterUnSubscribed -= LastRequestedJobOnCrafterUnSubscribed;
                 m_lastRequestedJob.CrafterSubscribed -= LastRequestedJobOnCrafterSubscribed;
+                m_lastRequestedJob.CrafterRefreshed -= LastRequestedJobOnCrafterRefreshed;
             }
 
             m_lastRequestedJob = job;
             m_lastRequestedJob.CrafterUnSubscribed += LastRequestedJobOnCrafterUnSubscribed;
             m_lastRequestedJob.CrafterSubscribed += LastRequestedJobOnCrafterSubscribed;
+            m_lastRequestedJob.CrafterRefreshed += LastRequestedJobOnCrafterRefreshed;
 
             InventoryHandler.SendJobCrafterDirectoryListMessage(Character.Client, job.AvailableCrafters.Select(x => x.Jobs[job.Id]));
+        }
+
+        private void LastRequestedJobOnCrafterRefreshed(JobTemplate jobTemplate, Character character)
+        {
+            InventoryHandler.SendJobCrafterDirectoryAddMessage(Character.Client, character.Jobs[jobTemplate.Id]);
         }
 
         private void LastRequestedJobOnCrafterSubscribed(JobTemplate jobTemplate, Character character)
@@ -79,6 +86,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Jobs
             {
                 m_lastRequestedJob.CrafterUnSubscribed -= LastRequestedJobOnCrafterUnSubscribed;
                 m_lastRequestedJob.CrafterSubscribed -= LastRequestedJobOnCrafterSubscribed;
+                m_lastRequestedJob.CrafterRefreshed -= LastRequestedJobOnCrafterRefreshed;
             }
             Character.ResetDialog();
         }

@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
             private set;
         }
 
-        public bool IsDirty
+        private bool IsDirty
         {
             get;
             set;
@@ -89,6 +89,12 @@ namespace Stump.Server.WorldServer.Game.Jobs
         {
             get;
             private set;
+        }
+
+        public bool IsIndexed
+        {
+            get;
+            set;
         }
 
         public long Experience
@@ -207,7 +213,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
         public JobCrafterDirectoryListEntry GetJobCrafterDirectoryListEntry()
             =>
                 new JobCrafterDirectoryListEntry(
-                    new JobCrafterDirectoryEntryPlayerInfo(Owner.Id, Owner.Name, (sbyte) Owner.AlignmentSide, (sbyte) Owner.Breed.Id, Owner.Sex == SexTypeEnum.SEX_FEMALE, false,
+                    new JobCrafterDirectoryEntryPlayerInfo(Owner.Id, Owner.Name, (sbyte) Owner.AlignmentSide, (sbyte) Owner.Breed.Id, Owner.Sex != SexTypeEnum.SEX_FEMALE, Owner.Map.AvailableJobs.Contains(Template),
                         (short) Owner.Map.Position.X, (short) Owner.Map.Position.Y, Owner.Map.Id, (short) Owner.SubArea.Id, Owner.Status),
                     new JobCrafterDirectoryEntryJobInfo((sbyte) Template.Id, (byte) Level, WorkForFree, (byte) MinLevelCraftSetting));
     }

@@ -20,6 +20,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             job.MinLevelCraftSetting = message.settings.minLevel;
 
             SendJobCrafterDirectorySettingsMessage(client, client.Character);
+            if (job.IsIndexed)
+                job.Template.RefreshCrafter(client.Character);
         }
 
         [WorldHandler(JobBookSubscribeRequestMessage.Id)]
@@ -28,6 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var job = client.Character.Jobs[message.jobId];
 
             var addedOrRemoved = job.Template.AddOrRemoveAvailableCrafter(client.Character);
+            job.IsIndexed = addedOrRemoved;
             SendJobBookSubscriptionMessage(client, addedOrRemoved, job.Template);
         }
 
