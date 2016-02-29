@@ -70,9 +70,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             AddEntity(fight.Id, fight);
 
-            var kolizeumMap = World.Instance.GetMap(ArenaManager.KolizeumMapId);
-            ContextRoleplayHandler.SendMapFightCountMessage(kolizeumMap.Clients, (short)ArenaManager.Instance.Arenas.Sum(x => x.Value.Map.GetFightCount()));
-
             return fight;
         }
         

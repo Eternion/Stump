@@ -1456,10 +1456,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool AddBuff(Buff buff, bool bypassMaxStack = false)
         {
-            if (!CanAddBuff(buff) || (!bypassMaxStack && BuffMaxStackReached(buff)))
+            if (!CanAddBuff(buff))
             {
                 FreeBuffId(buff.Id);
                 return false;
+            }
+
+            if (!bypassMaxStack && BuffMaxStackReached(buff))
+            {
+                var oldBuff = m_buffList.Where(x => x.Spell.Id == buff.Spell.Id
+                                            && x.Effect.EffectId == buff.Effect.EffectId
+                                            && x.GetType() == buff.GetType()).OrderBy(x => x.Duration).FirstOrDefault();
+
+                if (oldBuff == null)
+                {
+                    FreeBuffId(buff.Id);
+                    return false;
+                }
+
+                RemoveBuff(oldBuff);
             }
 
             m_buffList.Add(buff);

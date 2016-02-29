@@ -1,16 +1,14 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
-    internal class GuildCommand : SubCommandContainer
+    class GuildCommand : SubCommandContainer
     {
         public GuildCommand()
         {
