@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         protected override void OnOpen()
         {
             InventoryHandler.SendExchangeOkMultiCraftMessage(Source.Client, Source, Target, ExchangeTypeEnum.MULTICRAFT_CRAFTER);
-            InventoryHandler.SendExchangeOkMultiCraftMessage(Target.Client, Source, Target, ExchangeTypeEnum.MULTICRAFT_CUSTOMER);
+            InventoryHandler.SendExchangeOkMultiCraftMessage(Target.Client, Source, Source, ExchangeTypeEnum.MULTICRAFT_CUSTOMER);
         }
 
         protected override void OnAccept()

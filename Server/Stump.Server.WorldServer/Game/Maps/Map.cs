@@ -16,6 +16,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
@@ -31,6 +32,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
@@ -219,6 +221,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             var middle = new MapPoint((int)MapPoint.MapWidth / 2, (int)MapPoint.MapHeight / 2);
             m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).
                 OrderBy(x => middle.ManhattanDistanceTo(x)).ToArray();
+        }
+
+        public void UpdateAvailableJobs()
+        {
+            AvailableJobs = m_interactives.Values.SelectMany(x => x.GetSkills()).OfType<SkillCraft>().
+                Select(x => JobManager.Instance.GetJobTemplate(x.SkillTemplate.ParentJobId)).ToArray();
         }
 
         #endregion
@@ -457,6 +465,12 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get;
             set;
+        }
+
+        public JobTemplate[] AvailableJobs
+        {
+            get;
+            private set;
         }
 
         #endregion

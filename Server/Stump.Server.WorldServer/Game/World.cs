@@ -265,6 +265,9 @@ namespace Stump.Server.WorldServer.Game
 
                 map.SpawnInteractive(interactive);
             }
+
+            foreach (var map in m_maps)
+                map.Value.UpdateAvailableJobs();
         }
 
         public void UnSpawnInteractives()
