@@ -16,7 +16,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SlaveFighter : FightActor, INamedActor, ISummoned, ICreature
+    public class SlaveFighter : FightActor, INamedActor, ICreature
     {
         readonly StatsFields m_stats;
         
@@ -72,18 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override int CalculateArmorValue(int reduction) => (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
-
-        public FightActor Summoner
-        {
-            get;
-        }
-
-        public SpellEffectHandler SummoningEffect
-        {
-            get;
-            set;
-        }
-
+        
         public MonsterGrade MonsterGrade
         {
             get;

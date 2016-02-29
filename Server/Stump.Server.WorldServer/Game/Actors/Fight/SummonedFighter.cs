@@ -7,7 +7,7 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public abstract class SummonedFighter : AIFighter, ISummoned
+    public abstract class SummonedFighter : AIFighter
     {
         protected SummonedFighter(int id, FightTeam team, IEnumerable<Spell> spells, FightActor summoner, Cell cell)
             : base(team, spells)
@@ -28,18 +28,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override sealed int Id
-        {
-            get;
-            protected set;
-        }
-
-        public SpellEffectHandler SummoningEffect
-        {
-            get;
-            set;
-        }
-
-        public FightActor Summoner
         {
             get;
             protected set;

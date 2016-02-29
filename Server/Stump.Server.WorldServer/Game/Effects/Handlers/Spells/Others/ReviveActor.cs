@@ -46,7 +46,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             if (!Fight.IsCellFree(cell))
                 cell = Map.GetRandomAdjacentFreeCell(TargetedPoint, true);
 
-            HealHpPercent(actor, heal);
+            actor.Revive(heal, Caster);
+            actor.SummoningEffect = this;
             actor.Position.Cell = cell;
 
             ActionsHandler.SendGameActionFightReviveMessage(Fight.Clients, Caster, actor);
@@ -61,16 +62,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 LastDeadFighter.Die();
 
             Caster.Dead -= OnCasterDead;
-        }
-
-        void HealHpPercent(FightActor actor, int percent)
-        {
-            var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
-
-            if (healAmount <= 0)
-                healAmount = 1;
-
-            actor.Heal(healAmount, Caster, false);
         }
     }
 }

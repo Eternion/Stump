@@ -10,9 +10,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
         public override bool IsTargetValid(FightActor actor, SpellEffectHandler handler)
         {
-            var summon = actor as ISummoned;
-            return summon != null && handler.CastHandler.GetEffectHandlers()
-                .Any(x => summon.SummoningEffect == x);
+            return actor.IsSummoned() && handler.CastHandler.GetEffectHandlers()
+                .Any(x => actor.SummoningEffect == x);
         }
     }
 }

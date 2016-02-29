@@ -24,7 +24,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SummonedBomb : FightActor, INamedActor, ICreature, ISummoned
+    public class SummonedBomb : FightActor, INamedActor, ICreature
     {
         [Variable]
         public static int BombLimit = 3;
@@ -113,18 +113,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public MonsterGrade MonsterGrade => MonsterBombTemplate;
-
-        public FightActor Summoner
-        {
-            get;
-            set;
-        }
-
-        public SpellEffectHandler SummoningEffect
-        {
-            get;
-            set;
-        }
 
         public SpellBombTemplate SpellBombTemplate
         {
