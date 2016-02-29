@@ -79,7 +79,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
             var dist = point.ManhattanDistanceTo(Center);
 
             if (AllDirections)
-                return point.IsOnSameLine(Center) || point.IsOnSameDiagonal(Center) && dist >= MinRange && dist <= MaxRange;
+                return (point.IsOnSameLine(Center) && dist >= MinRange && dist <= MaxRange) || 
+                    (point.IsOnSameDiagonal(Center) && dist / 2 >= MinRange && dist / 2 <= MaxRange);
 
             if (Diagonal) // dist/2 because we mesaure distances in diagonal
                 return point.IsOnSameDiagonal(Center) && dist/2 >= MinRange && dist/2 <= MaxRange;
