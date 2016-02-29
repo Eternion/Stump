@@ -137,6 +137,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
                     x += vectorX;
                     y += vectorY;
                     n--;
+                    error += dx - dy;
                 }
                 else
                 {
