@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
@@ -402,6 +403,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public virtual bool IsVisibleInTimeline => CanPlay();
+
+        public bool IsRevived
+        {
+            get;
+            private set;
+        }
 
         #region Stats
 
@@ -1024,6 +1031,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return HealDirect(healPoints, from);
         }
 
+        public void Revive()
+        {
+            Revive(100, this);
+        }
+
+        public void Revive(int percentHp, FightActor caster)
+        {
+            var healAmount = (int)(MaxLifePoints * (percentHp / 100d));
+
+            if (healAmount <= 0)
+                healAmount = 1;
+
+            Heal(healAmount, caster, false);
+            IsRevived = true;
+            Summoner = caster;
+        }
+
         public void ExchangePositions(FightActor with)
         {
             var cell = Cell;
@@ -1353,7 +1377,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
-            return MP - (int) (Math.Round(MP* GetTacklePercent()));
+            return (int) Math.Round(MP* (1 - GetTacklePercent()));
         }
 
         public virtual int GetTackledAP()
@@ -1364,7 +1388,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
-            return AP - (int) (Math.Round(AP* GetTacklePercent()));
+            return (int) Math.Round(AP* (1-GetTacklePercent()));
         }
 
         private double GetTacklePercent()
@@ -1592,6 +1616,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public ReadOnlyCollection<SlaveFighter> Slaves => m_slaves.AsReadOnly();
 
         public ReadOnlyCollection<SummonedBomb> Bombs => m_bombs.AsReadOnly();
+
+        public FightActor Summoner
+        {
+            get;
+            protected set;
+        }
+
+        public SpellEffectHandler SummoningEffect
+        {
+            get;
+            set;
+        }
+
+        public virtual bool IsSummoned() => Summoner != null;
 
         public bool CanSummon() => SummonedCount < Stats[PlayerFields.SummonLimit].Total;
 
