@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             buff.Target.AddBuff(statBuff, true);
         }
 
-        private static PlayerFields GetPunishmentBoostType(short punishementAction)
+        static PlayerFields GetPunishmentBoostType(short punishementAction)
         {
             switch ((ActionsEnum)punishementAction)
             {
