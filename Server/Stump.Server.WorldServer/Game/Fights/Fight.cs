@@ -1452,10 +1452,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
-            if (FighterPlaying.CanPlay() && FighterPlaying.IsAlive())
+            if (!FighterPlaying.IsSummoned() && FighterPlaying.IsAlive())
             {
                 FighterPlaying.DecrementAllCastedBuffsDuration();
-                FighterPlaying.DecrementStaticSummonsCastedBuffsDuration();
+                FighterPlaying.DecrementSummonsCastedBuffsDuration();
             }
 
             DecrementGlyphDuration(FighterPlaying);
