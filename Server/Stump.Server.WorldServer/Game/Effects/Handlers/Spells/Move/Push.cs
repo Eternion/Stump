@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                     if (!DamagesDisabled)
                     {
-                        var distance = range - (fightersInline.First().Position.Point.ManhattanDistanceTo(startCell) - 1);
+                        var distance = integerEffect.Value - (fightersInline.First().Position.Point.ManhattanDistanceTo(startCell) - 1);
                         var targets = 0;
 
                         foreach (var fighter in fightersInline)
@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 if (!DamagesDisabled)
                 {
-                    var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, (range - (int)(startCell.ManhattanDistanceTo(stopCell))), 0);
+                    var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, (integerEffect.Value - (int)(startCell.ManhattanDistanceTo(stopCell))), 0);
 
                     if (pushbackDamages > 0)
                     {

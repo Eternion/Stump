@@ -2541,7 +2541,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         void OnDied()
         {
-            Energy -= (short)(10 * Level);
+            var energylost = (short)(10 * Level);
+
+            if (SuperArea.Id == 5) //Dimensions divines
+                energylost *= 2;
+
+            Energy -= energylost;
 
             if (!IsGhost())
             {
