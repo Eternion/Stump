@@ -1576,15 +1576,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 fighter.DecrementBuffsDuration(this);
         }
 
-        public void DecrementStaticSummonsCastedBuffsDuration()
+        public void DecrementSummonsCastedBuffsDuration()
         {
-            foreach (var summon in Summons.Where(x => !x.CanPlay()))
+            foreach (var summon in Summons)
                 summon.DecrementAllCastedBuffsDuration();
 
-            foreach (var bomb in Bombs.Where(x => !x.CanPlay()))
+            foreach (var bomb in Bombs)
                 bomb.DecrementAllCastedBuffsDuration();
 
-            foreach (var slave in Slaves.Where(x => !x.CanPlay()))
+            foreach (var slave in Slaves)
                 slave.DecrementAllCastedBuffsDuration();
         }
 
