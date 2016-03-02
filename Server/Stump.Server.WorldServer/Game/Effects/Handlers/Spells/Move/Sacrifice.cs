@@ -49,19 +49,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             target.IsSacrificeProtected = true;
 
-            if (Caster is SummonedTurret)
-            {
-                target.IsSacrificeProtected = false;
-
-                var source = damage.Source;
-
-                if (!source.Position.Point.IsAdjacentTo(target.Position.Point))
-                    return;
-
-                if (!Caster.Position.Point.IsAdjacentTo(target.Position.Point))
-                    return;
-            }
-
             // first, apply damage to sacrifier
             Caster.InflictDamage(damage);
 

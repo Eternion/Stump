@@ -86,6 +86,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             mpStats.Context = 0;
         }
 
+        public override bool CanSwitchPos() => false;
+
+        public override bool CanTackle(FightActor fighter) => false;
+
         public FightActor Caster
         {
             get;

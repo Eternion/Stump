@@ -67,21 +67,20 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         [Variable] public static int RemotePort = 9100;
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static IPCAccessor m_instance;
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static IPCAccessor m_instance;
 
-        private readonly Dictionary<Type, IPCMessageHandler> m_additionalsHandlers =
+        readonly Dictionary<Type, IPCMessageHandler> m_additionalsHandlers =
             new Dictionary<Type, IPCMessageHandler>();
 
-        private readonly TimedTimerEntry m_updateTimer;
-        private bool m_requestingAccess;
-        private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
-        private bool m_wasConnected;
+        readonly TimedTimerEntry m_updateTimer;
+        bool m_requestingAccess;
+        bool m_wasConnected;
 
-        private BufferSegment m_bufferSegment;
-        private IPCMessagePart m_messagePart;
-        private int m_writeOffset;
-        private int m_readOffset;
+        BufferSegment m_bufferSegment;
+        IPCMessagePart m_messagePart;
+        int m_writeOffset;
+        int m_readOffset;
         private int m_remainingLength;
         private SocketAsyncEventArgs m_readArgs;
 
@@ -108,7 +107,6 @@ namespace Stump.Server.WorldServer.Core.IPC
         public SelfRunningTaskPool TaskPool
         {
             get;
-            private set;
         }
 
         public Socket Socket
@@ -123,20 +121,11 @@ namespace Stump.Server.WorldServer.Core.IPC
             private set;
         }
 
-        public bool IsReacheable
-        {
-            get { return Socket != null && Socket.Connected; }
-        }
+        public bool IsReacheable => Socket != null && Socket.Connected;
 
-        public bool IsConnected
-        {
-            get { return IsReacheable && AccessGranted; }
-        }
+        public bool IsConnected => IsReacheable && AccessGranted;
 
-        protected override int RequestTimeout
-        {
-            get { return DefaultRequestTimeout; }
-        }
+        protected override int RequestTimeout => DefaultRequestTimeout;
 
         public event Action<IPCAccessor, IPCMessage> MessageReceived;
         public event Action<IPCAccessor, IPCMessage> MessageSent;

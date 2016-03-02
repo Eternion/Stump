@@ -1451,6 +1451,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             => buff.Spell.CurrentSpellLevel.MaxStack > 0
                 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell.Id == buff.Spell.Id
                 && entry.Effect.EffectId == buff.Effect.EffectId
+                && entry.Effect.GetValues() == buff.Effect.GetValues()
                 && entry.GetType() == buff.GetType()
                 && buff.Delay == 0);
 
@@ -1466,6 +1467,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 var oldBuff = m_buffList.Where(x => x.Spell.Id == buff.Spell.Id
                                             && x.Effect.EffectId == buff.Effect.EffectId
+                                            && x.Effect.GetValues() == buff.Effect.GetValues()
                                             && x.GetType() == buff.GetType()).OrderBy(x => x.Duration).FirstOrDefault();
 
                 if (oldBuff == null)
@@ -1976,9 +1978,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
 
             if (target.IsCarrying())
-                return false;
-
-            if ((target is SummonedTurret) && !(this is SummonedTurret))
                 return false;
 
             if (target == this)

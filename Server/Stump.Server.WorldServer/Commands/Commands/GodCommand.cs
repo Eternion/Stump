@@ -189,7 +189,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "heal", "hp" };
             RequiredRole = RoleEnum.Administrator;
-            Description = "Restore Heal";
+            Description = "Restore Heal and Energy";
             AddTargetParameter(true);
         }
 
@@ -198,6 +198,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             foreach (var target in GetTargets(trigger))
             {
                 target.Stats.Health.DamageTaken = 0;
+                target.Energy = target.EnergyMax;
+
                 target.RefreshStats();
             }
         }
