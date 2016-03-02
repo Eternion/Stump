@@ -1288,6 +1288,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 case FightState.Placement:
                     ContextHandler.SendGameFightRemoveTeamMemberMessage(Clients, actor);
+                    ContextHandler.SendGameFightRemoveTeamMemberMessage(Map.Clients, actor);
                     break;
                 case FightState.Fighting:
                     ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);

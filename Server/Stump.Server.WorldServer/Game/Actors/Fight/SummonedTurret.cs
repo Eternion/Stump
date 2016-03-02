@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.Stats;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -30,21 +30,32 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.MP.Modified += OnMPModified;
 
             AdjustStats();
+
+            if (Monster.Template.Id == (int)MonsterIdEnum.TACTIRELLE_3289)
+                Team.FighterAdded += OnFighterAdded;
         }
 
-        private void AdjustStats()
+        void OnFighterAdded(FightTeam team, FightActor actor)
+        {
+            if (actor != this)
+                return;
+
+            CastSpell(new Spell((int)SpellIdEnum.TRANSKO, 1), Cell, true, true, true);
+        }
+
+        void AdjustStats()
         {
             var baseCoef = 0.0;
 
             switch (Monster.Template.Id)
             {
-                case 3287:
+                case (int)MonsterIdEnum.HARPONNEUSE_3287:
                     baseCoef = 0.3;
                     break;
-                case 3288:
+                case (int)MonsterIdEnum.GARDIENNE_3288:
                     baseCoef = 0.25;
                     break;
-                case 3289:
+                case (int)MonsterIdEnum.TACTIRELLE_3289:
                     baseCoef = 0.2;
                     break;
             }
@@ -67,29 +78,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats[PlayerFields.PushDamageBonus].Base = Summoner.Stats[PlayerFields.PushDamageBonus].Equiped;
         }
 
-        void OnMPModified(StatsData mpStats, int amount)
+        static void OnMPModified(StatsData mpStats, int amount)
         {
             if (amount == 0)
                 return;
 
             mpStats.Context = 0;
-        }
-
-        public override bool CanAddBuff(Buff buff)
-        {
-            if (!(buff is StateBuff))
-                return true;
-
-            var state = ((StateBuff)buff).State;
-
-            if ((state.Id == (int)SpellStatesEnum.FEU_290 || state.Id == (int)SpellStatesEnum.EAU_291
-                 || state.Id == (int)SpellStatesEnum.TERRE_292) && Monster.Template.Id != 3287)
-                return false;
-
-            if (state.Id == (int)SpellStatesEnum.MAGNETOR_126 && Monster.Template.Id != 3289)
-                return false;
-
-            return true;
         }
 
         public FightActor Caster
@@ -102,40 +96,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
         }
 
-        public MonsterGrade MonsterGrade
-        {
-            get { return Monster; }
-        }
+        public MonsterGrade MonsterGrade => Monster;
 
-        public override string Name
-        {
-            get { return Monster.Template.Name; }
-        }
+        public override string Name => Monster.Template.Name;
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override ObjectPosition MapPosition => Position;
 
-        public override byte Level
-        {
-            get { return (byte)Monster.Level; }
-        }
+        public override byte Level => (byte)Monster.Level;
 
-        public override ActorLook Look
-        {
-            get { return Monster.Template.EntityLook; }
-        }
+        public override ActorLook Look => Monster.Template.EntityLook;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
-        public override string GetMapRunningFighterName()
-        {
-            return Name;
-        }
+        public override string GetMapRunningFighterName() => Name;
 
         protected override void OnDisposed()
         {

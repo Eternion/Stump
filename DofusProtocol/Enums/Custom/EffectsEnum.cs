@@ -2293,7 +2293,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_2160 = 2160,
+        Effect_CastSpell_2160 = 2160,
         /// <summary>
         /// #1
         /// </summary>
