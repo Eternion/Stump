@@ -161,28 +161,32 @@ namespace Stump.Tools.SpellsExplorer
                     {
                         pattern = pattern.Remove(0, 1);
 
-                        foreach (var spell in SpellManager.Instance.GetSpellTemplates() .Where(
-                            x => SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0]).Effects.Any(y => y.Id == int.Parse(pattern))))
-                        {
-                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
-                        }
-                        continue;
+                        var spells = SpellManager.Instance.GetSpellLevels()
+                                        .Where(x => x.Effects.Any(y => y.Id == int.Parse(pattern)));
+
+                        foreach (var spell in spells.Distinct())
+                            Console.WriteLine("Spell:{0} ({1})", spell.Spell.Name, spell.SpellId);
                     }
                     if (pattern.StartsWith("casted:"))
                     {
                         var spellId = int.Parse(pattern.Remove(0, "casted:".Length));
 
+                        var spells = SpellManager.Instance.GetSpellLevels()
+                                        .Where(x => x.Effects.Any(y => (y.EffectId == EffectsEnum.Effect_TriggerBuff || y.EffectId == EffectsEnum.Effect_TriggerBuff_793 ||
+                                                                   y.EffectId == EffectsEnum.Effect_CastSpell_1160 || y.EffectId == EffectsEnum.Effect_CastSpell_1017) && y.DiceNum == spellId));
 
-                        foreach (
-                            var spell in
-                                SpellManager.Instance.GetSpellTemplates()
-                                    .Where(
-                                        x =>
-                                            SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                .Effects.Any(y => (y.EffectId == EffectsEnum.Effect_TriggerBuff || y.EffectId == EffectsEnum.Effect_TriggerBuff_793 ||
-                                                                   y.EffectId == EffectsEnum.Effect_CastSpell_1160 || y.EffectId == EffectsEnum.Effect_CastSpell_1017) && y.DiceNum == spellId)))
-                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                        foreach (var spell in spells.Distinct())
+                            Console.WriteLine("Spell:{0} ({1})", spell.Spell.Name, spell.SpellId);
+                    }
+                    if (pattern.StartsWith("state:"))
+                    {
+                        var stateId = int.Parse(pattern.Remove(0, "state:".Length));
 
+                        var spells = SpellManager.Instance.GetSpellLevels()
+                                        .Where(x => x.Effects.Any(y => y.EffectId == EffectsEnum.Effect_AddState && y.Value == stateId));
+
+                        foreach (var spell in spells.Distinct())
+                            Console.WriteLine("Spell:{0} ({1})", spell.Spell.Name, spell.SpellId);
                     }
 
                     var critical = pattern.EndsWith("!");

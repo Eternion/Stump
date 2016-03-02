@@ -17,23 +17,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         protected override bool InternalApply()
         {
-            foreach (var actor in GetAffectedActors())
+            var fight = Caster.Fight;
+            var triggers = fight.GetTriggersByCell(Caster.Cell);
+
+            foreach (var trigger in triggers.Where(x => x is Glyph))
             {
-                var fight = actor.Fight;
-                var triggers = fight.GetTriggersByCell(actor.Cell);
+                fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
 
-                foreach (var trigger in triggers.Where(x => x is Glyph))
+                foreach (var fighter in fight.GetAllFighters(x => trigger.ContainsCell(x.Cell)))
                 {
-                    fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-
-                    foreach (var fighter in fight.GetAllFighters(x => trigger.ContainsCell(x.Cell)))
-                    {
-                        trigger.Trigger(fighter);   
-                    }
-
-                    fight.EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-
+                    trigger.Trigger(fighter);
                 }
+
+                fight.EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+
             }
 
             return true;
