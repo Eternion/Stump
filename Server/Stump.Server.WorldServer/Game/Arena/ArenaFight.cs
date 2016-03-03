@@ -62,10 +62,8 @@ namespace Stump.Server.WorldServer.Game.Arena
             return TimeSpan.FromMilliseconds(timeleft);
         }
 
-        protected override IEnumerable<IFightResult> GenerateResults()
+        protected override List<IFightResult> GetResults()
         {
-            base.GenerateResults();
-
             var challengersRank =
                 (int) ChallengersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             var defendersRank =
@@ -74,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             return (from fighter in GetFightersAndLeavers().OfType<CharacterFighter>() let outcome = fighter.GetFighterOutcome() select new ArenaFightResult(fighter, outcome, fighter.Loot,
                 ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
                     fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
-                    outcome == FightOutcomeEnum.RESULT_VICTORY)));
+                    outcome == FightOutcomeEnum.RESULT_VICTORY)) as IFightResult).ToList();
         }
 
         protected override IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver, out IFightResult leaverResult)

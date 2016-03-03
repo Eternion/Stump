@@ -245,21 +245,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.OnWinnersDetermined(winners, losers, draw);
         }
 
-        protected override IEnumerable<IFightResult> GenerateResults()
+        protected override List<IFightResult> GetResults()
         {
-            base.GenerateResults();
-
             var results = new List<IFightResult>();
 
-            var looters = ChallengersTeam.GetAllFightersWithLeavers<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
+            var looters = ChallengersTeam.GetAllFightersWithLeavers().Where(entry => entry.HasResult).
+                Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
 
             results.AddRange(looters);
-            results.AddRange(DefendersTeam.GetAllFightersWithLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(entry => entry.GetFightResult()));
+            results.AddRange(DefendersTeam.GetAllFightersWithLeavers().Where(entry => entry.HasResult).Select(entry => entry.GetFightResult()));
 
             if (Winners != ChallengersTeam)
                 return results;
 
-            var teamPP = ChallengersTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var teamPP = ChallengersTeam.GetAllFighters().Where(entry => entry.HasResult).Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
             var kamas = TaxCollector.Kamas;
 
             foreach (var looter in looters)

@@ -28,6 +28,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (damage == null)
                 return;
 
+            if (damage.ReflectedDamages)
+                return;
+
             if (damage.IsWeaponAttack)
                 return;
 
@@ -45,7 +48,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     IsCritical = damage.IsCritical,
                     IgnoreDamageBoost = true,
                     IgnoreDamageReduction = false,
-                    Spell = null
+                    Spell = null,
+                    ReflectedDamages = true,
                 };
 
                 actor.InflictDamage(reflectDamage);

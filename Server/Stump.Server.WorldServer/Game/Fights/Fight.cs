@@ -39,6 +39,7 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 namespace Stump.Server.WorldServer.Game.Fights
 {
     public delegate void FightWinnersDelegate(IFight fight, FightTeam winners, FightTeam losers, bool draw);
+    public delegate void ResultsGeneratedDelegate(IFight fight, List<IFightResult> results);
 
     public interface IFight : ICharacterContainer
     {
@@ -238,7 +239,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         void CancelFight();
         void EndFight();
         event FightWinnersDelegate WinnersDetermined;
-        event Action<IFight> ResultGenerated;
+        event ResultsGeneratedDelegate ResultsGenerated;
+        event Action<IFight> GeneratingResults;
         void StartPlacement();
         void ShowBlades();
         void HideBlades();
@@ -740,12 +742,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             ReadyChecker = null;
             DeterminsWinners();
+            GenerateResults();
 
-            var results = GenerateResults().ToList();
+            ApplyResults();
 
-            ApplyResults(results);
-
-            ContextHandler.SendGameFightEndMessage(Clients, this, results.Select(entry => entry.GetFightResultListEntry()));
+            ContextHandler.SendGameFightEndMessage(Clients, this, Results.Select(entry => entry.GetFightResultListEntry()));
 
             ResetFightersProperties();
             foreach (var character in GetCharactersAndSpectators())
@@ -796,15 +797,35 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        public event Action<IFight> ResultGenerated;
 
-        protected virtual IEnumerable<IFightResult> GenerateResults()
+        public event Action<IFight> GeneratingResults;
+        public event ResultsGeneratedDelegate ResultsGenerated;
+
+        protected List<IFightResult> Results
         {
-            var handler = ResultGenerated;
+            get;
+            set;
+        } 
+
+        protected void GenerateResults()
+        {
+            var handler = GeneratingResults;
             if (handler != null)
                 handler(this);
 
-            return new IFightResult[0];
+            var results = GetResults();
+
+            var handler2 = ResultsGenerated;
+            if (handler2 != null)
+                handler2(this, results);
+
+            Results = results;
+        }
+        
+
+        protected virtual List<IFightResult> GetResults()
+        {
+            return new List<IFightResult>();
         }
 
         protected virtual IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver,
@@ -812,7 +833,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             leaverResult = null;
             var list = new List<IFightResult>();
-            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)))
+            foreach (var fighter in GetFightersAndLeavers().Where(entry => entry.HasResult))
             {
                 var result =
                     fighter.GetFightResult(fighter.Team == leaver.Team
@@ -828,9 +849,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             return list;
         }
 
-        protected virtual void ApplyResults(IEnumerable<IFightResult> results)
+        protected virtual void ApplyResults()
         {
-            foreach (var fightResult in results.Where(fightResult => !fightResult.HasLeft ||
+            foreach (var fightResult in Results.Where(fightResult => !fightResult.HasLeft ||
                 !(fightResult is FightPlayerResult) ||
                 ((FightPlayerResult) fightResult).Fighter.IsDisconnected))
             {

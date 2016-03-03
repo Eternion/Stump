@@ -11,7 +11,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public sealed class SummonedMonster : SummonedFighter, ICreature
+    public class SummonedMonster : SummonedFighter, ICreature
     {
         readonly StatsFields m_stats;
 

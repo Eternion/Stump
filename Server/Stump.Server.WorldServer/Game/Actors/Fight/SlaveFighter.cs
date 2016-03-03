@@ -77,6 +77,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
         }
+        public override bool HasResult => false;
 
         public override ObjectPosition MapPosition => Position;
 

@@ -43,6 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddNeutralResistPercent)]
     [EffectHandler(EffectsEnum.Effect_IncreaseGlyphDamages)]
     [EffectHandler(EffectsEnum.Effect_AddWeaponDamageBonus)]
+    [EffectHandler(EffectsEnum.Effect_AddProspecting)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
@@ -151,8 +152,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.GlyphBonusPercent;
                 case EffectsEnum.Effect_AddWeaponDamageBonus:
                     return PlayerFields.WeaponDamageBonus;
+                case EffectsEnum.Effect_AddProspecting:
+                    return PlayerFields.Prospecting;
                 default:
-                    throw new Exception(string.Format("'{0}' has no binded caracteristic", Effect.EffectId));
+                    throw new Exception($"'{Effect.EffectId}' has no binded caracteristic");
             }
         }
     }
