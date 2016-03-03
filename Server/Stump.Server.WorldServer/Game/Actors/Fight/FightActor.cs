@@ -2026,6 +2026,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public IFightResult GetFightResult() => GetFightResult(GetFighterOutcome());
 
+        public virtual bool HasResult => true;
+
         public FightOutcomeEnum GetFighterOutcome()
         {
             var teamDead = Team.AreAllDead();

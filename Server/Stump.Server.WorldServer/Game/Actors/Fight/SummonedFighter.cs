@@ -33,6 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set;
         }
 
+        public override bool HasResult => false;
 
         public override int GetTackledAP()
         {

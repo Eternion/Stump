@@ -39,11 +39,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override bool IsMultiAccountRestricted => false;
 
-        protected override IEnumerable<IFightResult> GenerateResults()
+        protected override List<IFightResult> GetResults()
         {
-            base.GenerateResults();
-
-            return GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(fighter => fighter.GetFightResult());
+            return GetFightersAndLeavers().Where(entry => entry.HasResult).Select(fighter => fighter.GetFightResult()).ToList();
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)

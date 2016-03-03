@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Fight.Customs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
@@ -33,28 +34,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             if (monster.Template.UseSummonSlot && !Caster.CanSummon())
                 return false;
 
-            if (monster.Template.Id == 3287 || monster.Template.Id == 3288 || monster.Template.Id == 3289)
-            {
-                var summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell) {SummoningEffect = this};
-                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
-
-                Caster.AddSummon(summon);
-                Caster.Team.AddFighter(summon);
-
-                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
-            }
+            SummonedFighter summon;
+            if (monster.Template.Id == (int)MonsterIdEnum.HARPONNEUSE_3287 || monster.Template.Id == (int)MonsterIdEnum.GARDIENNE_3288 || monster.Template.Id == (int)MonsterIdEnum.TACTIRELLE_3289)
+                summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell) {SummoningEffect = this};
+            else if (monster.Template.Id == (int)MonsterIdEnum.COFFRE_ANIM_285)
+                summon = new LivingChest(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) { SummoningEffect = this };             
             else
-            {
-                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) {SummoningEffect = this};
+                summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) {SummoningEffect = this};
 
-                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+            ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 
-                Caster.AddSummon(summon);
-                Caster.Team.AddFighter(summon);
+            Caster.AddSummon(summon);
+            Caster.Team.AddFighter(summon);
 
-                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
-            }
-
+            Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
 
             return true;
         }

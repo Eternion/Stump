@@ -49,11 +49,11 @@ namespace ArkalysPlugin
         {
             if (fight is FightPvM)
             {
-                fight.ResultGenerated += OnResultGenerated;
+                fight.GeneratingResults += OnGeneratingResults;
             }
         }
 
-        private static void OnResultGenerated(IFight fight)
+        private static void OnGeneratingResults(IFight fight)
         {
             var monsters = fight.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             var players = fight.GetAllFighters<CharacterFighter>().ToList();
