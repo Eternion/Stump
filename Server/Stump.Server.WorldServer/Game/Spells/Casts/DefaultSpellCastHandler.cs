@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
             var random = new AsyncRandom();
 
-            var effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
+            var effects = Critical && SpellLevel.CriticalEffects.Any() ? SpellLevel.CriticalEffects : SpellLevel.Effects;
             var handlers = new List<SpellEffectHandler>();
 
             var groups = effects.GroupBy(x => x.Group);

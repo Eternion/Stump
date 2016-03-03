@@ -107,15 +107,30 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
-        private void InitializeCharacterFighter()
+        void InitializeCharacterFighter()
         {
             m_damageTakenBeforeFight = Stats.Health.DamageTaken;
+
+            Fight.TurnStarted += OnTurnStarted;
         }
 
-        public override ObjectPosition GetLeaderBladePosition()
+        void OnTurnStarted(IFight fight, FightActor actor)
         {
-            return Character.GetPositionBeforeMove();
+            if (fight.TimeLine.RoundNumber != 1)
+            {
+                fight.TurnStarted -= OnTurnStarted;
+                return;
+            }
+
+            if (actor != this)
+                return;
+
+            foreach (var effect in Character.Inventory.GetEquipedItems().SelectMany(x => x.Effects).Where(y => y.EffectId == EffectsEnum.Effect_CastSpell_1175))
+                EffectManager.Instance.GetSpellEffectHandler((EffectDice)effect, this,
+                    new DefaultSpellCastHandler(this, null, Cell, false), Cell, false).Apply();
         }
+
+        public override ObjectPosition GetLeaderBladePosition() => Character.GetPositionBeforeMove();
 
         public void ToggleTurnReady(bool ready)
         {

@@ -208,6 +208,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (history)
                 SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
 
+            if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
+                TriggerBuffs(this, BuffTriggerType.OnCriticalHit);
+
             var handler = SpellCasted;
             if (handler != null)
                 handler(this, spell, target.Cell, critical, silentCast);

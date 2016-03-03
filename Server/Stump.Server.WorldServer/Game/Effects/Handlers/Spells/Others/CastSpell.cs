@@ -13,6 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
     [EffectHandler(EffectsEnum.Effect_CastSpell_1160)]
     [EffectHandler(EffectsEnum.Effect_CastSpell_1017)]
     [EffectHandler(EffectsEnum.Effect_CastSpell_2160)]
+    [EffectHandler(EffectsEnum.Effect_CastSpell_1175)]
     public class CastSpell : SpellEffectHandler
     {
         public CastSpell(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)

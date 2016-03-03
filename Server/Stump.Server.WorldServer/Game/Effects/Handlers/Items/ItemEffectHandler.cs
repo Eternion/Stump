@@ -3,12 +3,11 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Spells.Casts;
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 {
     public abstract class ItemEffectHandler : EffectHandler
     {
-        private HandlerOperation? m_operation;
+        HandlerOperation? m_operation;
 
         public enum HandlerOperation
         {
