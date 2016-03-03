@@ -1031,19 +1031,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return HealDirect(healPoints, from);
         }
 
-        public void Revive()
-        {
-            Revive(100, this);
-        }
-
         public void Revive(int percentHp, FightActor caster)
         {
-            var healAmount = (int)(MaxLifePoints * (percentHp / 100d));
+            var healAmount = (int)(MaxLifePoints * (percentHp / 100.0));
 
             if (healAmount <= 0)
                 healAmount = 1;
 
-            Heal(healAmount, caster, false);
+            DamageTaken -= healAmount;
+
             IsRevived = true;
             Summoner = caster;
         }

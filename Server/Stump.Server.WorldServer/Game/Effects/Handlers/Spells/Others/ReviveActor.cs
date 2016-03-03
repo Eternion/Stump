@@ -7,6 +7,9 @@ using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
 
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
+using System;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
     [EffectHandler(EffectsEnum.Effect_ReviveAndGiveHPToLastDiedAlly)]
@@ -49,19 +52,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             actor.Revive(heal, Caster);
             actor.SummoningEffect = this;
             actor.Position.Cell = cell;
+            actor.BuffRemoved += OnBuffRemoved;
+
+            if (Spell.Id == (int)SpellIdEnum.LAISSE_SPIRITUELLE_420)
+                AddStateBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, true, SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.ZOMBI_74));
 
             ActionsHandler.SendGameActionFightReviveMessage(Fight.Clients, Caster, actor);
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
-
-            Caster.Dead += OnCasterDead;
         }
 
-        public void OnCasterDead(FightActor actor, FightActor killer)
+        static void OnBuffRemoved(FightActor actor, Buff buff)
         {
-            if (LastDeadFighter != null && LastDeadFighter.IsAlive())
-                LastDeadFighter.Die();
-
-            Caster.Dead -= OnCasterDead;
+            if ((buff as StateBuff)?.State.Id == (uint)SpellStatesEnum.ZOMBI_74)
+                actor.Die();
         }
     }
 }
