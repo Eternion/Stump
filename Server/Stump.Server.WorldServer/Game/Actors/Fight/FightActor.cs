@@ -1866,12 +1866,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
 
-            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarrying)
+            var actorBuff = new StateBuff(actorBuffId, this, this, new EffectInteger(EffectsEnum.Effect_AddState, (short)stateCarrying.Id),
+                spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarrying)
             {
                 Duration = -1
             };
 
-            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarried)
+            var targetBuff = new StateBuff(targetBuffId, target, this, new EffectInteger(EffectsEnum.Effect_AddState, (short)stateCarried.Id),
+                spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarried)
             {
                 Duration = -1
             };

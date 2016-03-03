@@ -55,7 +55,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             actor.BuffRemoved += OnBuffRemoved;
 
             if (Spell.Id == (int)SpellIdEnum.LAISSE_SPIRITUELLE_420)
-                AddStateBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, true, SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.ZOMBI_74));
+            {
+                var actorBuffId = actor.PopNextBuffId();
+
+                var actorBuff = new StateBuff(actorBuffId, actor, Caster, new EffectInteger(EffectsEnum.Effect_AddState, (short)SpellStatesEnum.ZOMBI_74),
+                    Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.ZOMBI_74))
+                {
+                    Duration = -1
+                };
+
+                actor.AddBuff(actorBuff, true);
+            }
 
             ActionsHandler.SendGameActionFightReviveMessage(Fight.Clients, Caster, actor);
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
