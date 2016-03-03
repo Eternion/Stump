@@ -2,9 +2,8 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
     [EffectHandler(EffectsEnum.Effect_IncreaseFinalDamages)]
@@ -20,10 +19,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach(var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.BeforeAttack, ModifyDamages);
+                if (Dice.Delay != 0 || Dice.Duration != 0)
+                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, OnBuffTriggered);
+                else
+                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.BeforeAttack, ModifyDamages);
             }
 
             return true;
+        }
+
+        void OnBuffTriggered(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
+        {
+            AddTriggerBuff(buff.Target, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.BeforeAttack, ModifyDamages);
         }
 
         void ModifyDamages(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
