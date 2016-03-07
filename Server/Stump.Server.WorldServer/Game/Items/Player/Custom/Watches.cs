@@ -30,14 +30,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             if (map == null || cell == null || !cell.Walkable)
             {
-                //Téléportation impossible, il n'existe pas de destination possible.
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 493);
+                //Téléportation impossible, il n'existe pas de destination possible. (493)
+                //Téléportation impossible, la destination n'est pas libre. (492)
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, (short)(map == null ? 493 : 492));
                 return 0;
             }
 
             Owner.Teleport(map, cell);
 
-            return 1;
+            return 0;
         }
     }
 }
