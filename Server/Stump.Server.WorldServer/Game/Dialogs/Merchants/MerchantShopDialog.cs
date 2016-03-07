@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
         {
             var item = Merchant.Bag.FirstOrDefault(x => x.Guid == itemGuid);
 
-            if (item == null || quantity <= 0 || !CanBuy(item, quantity))
+            if (item == null || item.Stack <= 0 || quantity <= 0 || !CanBuy(item, quantity))
             {
                 Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
                 return false;
@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, removed, item.Effects);
             Character.Inventory.AddItem(newItem);
 
-            var finalPrice = item.Price* removed;
+            var finalPrice = item.Price * removed;
             Character.Inventory.SubKamas((int)finalPrice);
 
             Character.Client.Send(new ExchangeBuyOkMessage());

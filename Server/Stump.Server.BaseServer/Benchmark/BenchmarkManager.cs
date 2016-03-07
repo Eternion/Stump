@@ -15,7 +15,7 @@ namespace Stump.Server.BaseServer.Benchmark
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
 
         [Variable(true)]
-        public static bool Enable = true;
+        public static bool Enable = false;
 
         [Variable(true)]
         public static BenchmarkingType BenchmarkingType = BenchmarkingType.Complete;

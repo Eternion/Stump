@@ -1,6 +1,5 @@
 using System;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.AI.Fights.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers
 {

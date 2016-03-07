@@ -369,12 +369,12 @@ namespace Stump.Server.BaseServer
 
         private void OnClientConnected(BaseClient client)
         {
-            //logger.Info("Client {0} connected", client);
+            logger.Info("Client {0} connected", client);
         }
 
         private void OnClientDisconnected(BaseClient client)
         {
-            //logger.Info("Client {0} disconnected", client);
+            logger.Info("Client {0} disconnected", client);
         }
 
         private static void InitializeGarbageCollector()

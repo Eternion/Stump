@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
@@ -15,22 +16,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
         }
 
+        int IncreasePercent
+        {
+            get;
+            set;
+        }
+
         protected override bool InternalApply()
         {
             foreach(var actor in GetAffectedActors())
             {
-                if (Dice.Delay != 0 || Dice.Duration != 0)
-                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, OnBuffTriggered);
-                else
-                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.BeforeAttack, ModifyDamages);
+                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, ModifyDamages);
             }
 
             return true;
-        }
-
-        void OnBuffTriggered(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
-        {
-            AddTriggerBuff(buff.Target, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.BeforeAttack, ModifyDamages);
         }
 
         void ModifyDamages(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
@@ -44,10 +43,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (effect == null)
                 return;
 
+            IncreasePercent += effect.Value;
+
             if (Effect.EffectId == EffectsEnum.Effect_IncreaseFinalDamages)
-                damage.Amount += (int) (damage.Amount * effect.Value/100d);
+                damage.Amount += (int)Math.Ceiling(damage.Amount * IncreasePercent / 100.0);
             else if (Effect.EffectId == EffectsEnum.Effect_ReduceFinalDamages)
-                damage.Amount -= (int)(damage.Amount * effect.Value / 100d);
+                damage.Amount -= (int)Math.Ceiling(damage.Amount * IncreasePercent / 100.0);
         }
     }
 }

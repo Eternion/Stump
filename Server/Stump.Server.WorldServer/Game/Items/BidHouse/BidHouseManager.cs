@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public int GetAveragePriceForItem(int itemId)
         {
-            var items = m_bidHouseItems.Where(x => x.Template.Id == itemId && !x.Sold).Select(x => (int)(x.Price / x.Stack)).ToArray();
+            var items = m_bidHouseItems.Where(x => x.Template.Id == itemId && !x.Sold && x.Stack != 0).Select(x => (int)(x.Price / x.Stack)).ToArray();
 
             if (!items.Any())
                 return 0;

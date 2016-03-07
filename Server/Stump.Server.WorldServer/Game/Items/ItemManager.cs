@@ -236,19 +236,22 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof (BasePlayerItem).IsAssignableFrom(x)))
             {
-                var idAttr = type.GetCustomAttribute<ItemIdAttribute>();
+                var idAttrs = type.GetCustomAttributes<ItemIdAttribute>();
 
-                if (idAttr != null)
+                if (idAttrs != null)
                 {
-                    if (m_itemCtorById.ContainsKey(idAttr.ItemId))
+                    foreach (var idAttr in idAttrs)
                     {
-                        logger.Error("Item Constructor with ID {0} defined twice or more !", idAttr.ItemId);
-                        continue;
-                    }
+                        if (m_itemCtorById.ContainsKey(idAttr.ItemId))
+                        {
+                            logger.Error("Item Constructor with ID {0} defined twice or more !", idAttr.ItemId);
+                            continue;
+                        }
 
-                    m_itemCtorById.Add(idAttr.ItemId,
-                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
-                            .CreateDelegate<PlayerItemConstructor>());
+                        m_itemCtorById.Add(idAttr.ItemId,
+                            type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) })
+                                .CreateDelegate<PlayerItemConstructor>());
+                    }
                 }
 
                 var typeAttrs = type.GetCustomAttributes<ItemTypeAttribute>();

@@ -423,7 +423,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\StealHpFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Move\Sacrifice.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Damage\DamageIntercept.cs" />
     <Compile Include="Game\Exchanges\Bank\BankCustomer.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchanger.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchange.cs" />
@@ -590,6 +590,7 @@
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MimisymbicItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Watches.cs" />
     <Compile Include="Game\Items\Player\Custom\WrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
