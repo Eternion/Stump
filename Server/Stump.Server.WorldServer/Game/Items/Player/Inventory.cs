@@ -590,15 +590,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK, unlinkedPosition);
 
             foreach (var item in itemsToMove)
-            {
                 MoveItem(item.First, item.Second);
-            }
         }
 
-        public PlayerPresetRecord[] GetPresetsByItemGuid(int itemGuid)
-        {
-            return Presets.Where(x => x.Objects.Exists(y => y.objUid == itemGuid)).ToArray();
-        }
+        public PlayerPresetRecord[] GetPresetsByItemGuid(int itemGuid) => Presets.Where(x => x.Objects.Exists(y => y.objUid == itemGuid)).ToArray();
 
         public BasePlayerItem RefreshItemInstance(BasePlayerItem item)
         {

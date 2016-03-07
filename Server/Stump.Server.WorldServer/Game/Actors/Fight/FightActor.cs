@@ -179,10 +179,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (history)
                 SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
 
-            if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                TriggerBuffs(this, BuffTriggerType.OnCriticalHit);
-
-
             var handler = SpellCasted;
             if (handler != null)
                 handler(this, spell, target, critical, silentCast);
@@ -207,9 +203,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (history)
                 SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
-
-            if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                TriggerBuffs(this, BuffTriggerType.OnCriticalHit);
 
             var handler = SpellCasted;
             if (handler != null)
@@ -874,6 +867,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnBeforeDamageInflicted(damage);
             damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.BeforeAttack, damage);
             TriggerBuffs(damage.Source, BuffTriggerType.BeforeDamaged, damage);
+
+            if (damage.IsCritical)
+                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.OnCriticalHit, damage);
 
             damage.GenerateDamages();
 
