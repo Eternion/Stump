@@ -36,12 +36,6 @@ namespace Stump.Server.BaseServer.Network
         public static int? MaxIPConnexions = 10;
 
         /// <summary>
-        /// Min interval between two received message or NULL for unlimited ( in ms )
-        /// </summary>
-        [Variable]
-        public static int? MinMessageInterval = 1;
-
-        /// <summary>
         /// Buffer size /!\ Advanced users only /!\
         /// </summary>
         [Variable]
@@ -367,7 +361,7 @@ namespace Stump.Server.BaseServer.Network
         {
             lock (m_clients)
             {
-                int count = 0;
+                var count = 0;
                 foreach (var t in m_clients)
                 {
                     if (t.Socket != null && t.Socket.Connected && t.Socket.RemoteEndPoint != null)

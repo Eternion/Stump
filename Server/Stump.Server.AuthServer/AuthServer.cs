@@ -31,6 +31,12 @@ namespace Stump.Server.AuthServer
         /// Current server address. Used if HostAutoDefined = false
         /// </summary>
         [Variable]
+        public static readonly string Host = "127.0.0.1";
+
+        /// <summary>
+        /// Public server address. Used for AntiBotMesure
+        /// </summary>
+        [Variable]
         public static readonly string CustomHost = "127.0.0.1";
 
         /// <summary>
@@ -146,7 +152,7 @@ namespace Stump.Server.AuthServer
             ConsoleInterface.Start();
 
             logger.Info("Start listening on port : " + Port + "...");
-            m_host = HostAutoDefined ? IPAddress.Loopback.ToString() : CustomHost;
+            m_host = HostAutoDefined ? IPAddress.Loopback.ToString() : Host;
 
             ClientManager.Start(m_host, Port);
 
