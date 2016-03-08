@@ -25,10 +25,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             }
 
             var posY = Template.Id == (int)ItemIdEnum.MONTRE_EN_AVANCE_15910 ? (Owner.Map.Position.Y - 5) : (Owner.Map.Position.Y + 5);
-            var map = World.Instance.GetMaps(Owner.Map, Owner.Map.Position.X, posY).FirstOrDefault(x => x.Area.Id == Owner.Area.Id);
+            var map = World.Instance.GetMaps(Owner.Map, Owner.Map.Position.X, posY, true).FirstOrDefault(x => x.Area.Id == Owner.Area.Id);
             var cell = map?.Cells[Owner.Cell.Id];
 
-            if (map == null || cell == null || !cell.Walkable)
+            if (map == null || cell == null || (!cell.Walkable))
             {
                 //Téléportation impossible, il n'existe pas de destination possible. (493)
                 //Téléportation impossible, la destination n'est pas libre. (492)
