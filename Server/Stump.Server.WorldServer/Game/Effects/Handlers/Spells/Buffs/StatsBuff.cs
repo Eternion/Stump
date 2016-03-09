@@ -104,7 +104,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case EffectsEnum.Effect_AddDamageBonus_121:
                     return PlayerFields.DamageBonus;
                 case EffectsEnum.Effect_IncreaseDamage_138:
-                case EffectsEnum.Effect_IncreaseDamage_1054:
                 case EffectsEnum.Effect_AddDamageBonusPercent:
                     return PlayerFields.DamageBonusPercent;
                 case EffectsEnum.Effect_AddHealBonus:
@@ -152,6 +151,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.GlyphBonusPercent;
                 case EffectsEnum.Effect_AddWeaponDamageBonus:
                     return PlayerFields.WeaponDamageBonus;
+                case EffectsEnum.Effect_IncreaseDamage_1054:
+                    return PlayerFields.SpellDamageBonus;
                 case EffectsEnum.Effect_AddProspecting:
                     return PlayerFields.Prospecting;
                 default:
