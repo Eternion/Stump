@@ -1068,6 +1068,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var stats = 0;
             var eltBonus = 0;
             var weaponBonus = 0;
+            var spellBonus = 0;
 
             if (m_isUsingWeapon)
                 weaponBonus = Stats[PlayerFields.WeaponDamageBonus].TotalSafe;
@@ -1105,19 +1106,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 criticalBonus += Stats[PlayerFields.CriticalDamageBonus].Total;
 
             if (damage.MarkTrigger is Glyph)
-            {
                 bonusPercent += Stats[PlayerFields.GlyphBonusPercent].TotalSafe;
-            }
 
             if (damage.MarkTrigger is Trap)
-            {
                 bonusPercent += Stats[PlayerFields.TrapBonusPercent].TotalSafe;
-            }
 
             if (damage.Spell != null)
+            {
+                spellBonus = Stats[PlayerFields.SpellDamageBonus].TotalSafe;
                 bonus += damage.Source.GetSpellBoost(damage.Spell);
+            }
 
-            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + mult * 100) / 100d
+            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus + mult * 100) / 100d
                 + (bonus + criticalBonus + phyMgkBonus + eltBonus)));
 
             return damage;
