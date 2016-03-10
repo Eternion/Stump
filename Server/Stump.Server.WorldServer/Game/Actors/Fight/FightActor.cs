@@ -1058,7 +1058,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual Damage CalculateDamageBonuses(Damage damage)
         {
             // formulas :
-            // DAMAGE * [(100 + STATS + %BONUS + MULT*100)/100 + (BONUS + PHS/MGKBONUS + ELTBONUS)]
+            // DAMAGE * [(100 + STATS + %BONUS + MULT)/100 + (BONUS + PHS/MGKBONUS + ELTBONUS)]
 
             var bonusPercent = Stats[PlayerFields.DamageBonusPercent].TotalSafe;
             var mult = Stats[PlayerFields.DamageMultiplicator].TotalSafe;
@@ -1117,7 +1117,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 bonus += damage.Source.GetSpellBoost(damage.Spell);
             }
 
-            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus + mult * 100) / 100d
+            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus + mult) / 100d
                 + (bonus + criticalBonus + phyMgkBonus + eltBonus)));
 
             return damage;
