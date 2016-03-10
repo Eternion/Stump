@@ -21,9 +21,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             foreach (var target in GetAffectedActors())
             {
                 if (Dice.EffectId == EffectsEnum.Effect_RandDownModifier)
+                {
                     AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, BuffTriggerType.AfterRollCritical, RollTrigger);
+                }
 
-                AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, BuffTriggerType.BeforeAttack, DamageModifier);
+                AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, Spell.Template.Id == SpellIdEnum.POISSE ?
+                BuffTriggerType.BeforeDamaged : BuffTriggerType.BeforeAttack, DamageModifier);
             }
 
             return true;
