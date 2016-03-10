@@ -107,6 +107,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     return PlayerFields.AirResistPercent;
                 case EffectsEnum.Effect_SubFireResistPercent:
                     return PlayerFields.FireResistPercent;
+                case EffectsEnum.Effect_ReduceFinalDamages:
+                    return PlayerFields.DamageMultiplicator;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }

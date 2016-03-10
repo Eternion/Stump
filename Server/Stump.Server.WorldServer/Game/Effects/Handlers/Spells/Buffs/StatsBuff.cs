@@ -155,6 +155,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.SpellDamageBonus;
                 case EffectsEnum.Effect_AddProspecting:
                     return PlayerFields.Prospecting;
+                case EffectsEnum.Effect_IncreaseFinalDamages:
+                    return PlayerFields.DamageMultiplicator;
                 default:
                     throw new Exception($"'{Effect.EffectId}' has no binded caracteristic");
             }

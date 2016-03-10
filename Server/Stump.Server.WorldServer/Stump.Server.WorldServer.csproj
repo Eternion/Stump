@@ -366,7 +366,6 @@
     <Compile Include="Game\Effects\Handlers\Items\OrnamentEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Items\TitleEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Damage\DamageModificator.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
@@ -374,7 +373,7 @@
     <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreEnergy.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\SummonTaxcollector.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Buffs\DamageSustained.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\DamageMultiplier.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />

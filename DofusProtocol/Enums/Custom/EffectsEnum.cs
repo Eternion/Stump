@@ -2157,7 +2157,7 @@
         /// <summary>
         /// Dommages subis x#1%
         /// </summary>
-        Effect_DamageSustained = 1163,
+        Effect_DamageMultiplier = 1163,
         /// <summary>
         /// Les dommages reçus soignent.
         /// </summary>

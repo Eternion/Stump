@@ -651,7 +651,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
 
         private static void AddDamageMultiplicator(Character target, EffectInteger effect, bool isBoost)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given += effect.Value; else target.Stats[PlayerFields.DamageMultiplicator].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given += (effect.Value * 100); else target.Stats[PlayerFields.DamageMultiplicator].Equiped += (effect.Value * 100);
         }
 
         private static void AddPhysicalDamage(Character target, EffectInteger effect, bool isBoost)
@@ -980,7 +980,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
 
         private static void SubDamageMultiplicator(Character target, EffectInteger effect, bool isBoost)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given -= effect.Value; else target.Stats[PlayerFields.DamageMultiplicator].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given -= (effect.Value * 100); else target.Stats[PlayerFields.DamageMultiplicator].Equiped -= (effect.Value * 100);
         }
 
         private static void SubPhysicalDamage(Character target, EffectInteger effect, bool isBoost)

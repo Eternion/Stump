@@ -7,10 +7,10 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
-    [EffectHandler(EffectsEnum.Effect_DamageSustained)]
-    public class DamageSustained : SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_DamageMultiplier)]
+    public class DamageMultiplier : SpellEffectHandler
     {
-        public DamageSustained(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+        public DamageMultiplier(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
