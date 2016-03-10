@@ -1072,6 +1072,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (m_isUsingWeapon)
                 weaponBonus = Stats[PlayerFields.WeaponDamageBonus].TotalSafe;
+            else
+                spellBonus = Stats[PlayerFields.SpellDamageBonus].TotalSafe;
 
             switch (damage.School)
             {
@@ -1112,10 +1114,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 bonusPercent += Stats[PlayerFields.TrapBonusPercent].TotalSafe;
 
             if (damage.Spell != null)
-            {
-                spellBonus = Stats[PlayerFields.SpellDamageBonus].TotalSafe;
                 bonus += damage.Source.GetSpellBoost(damage.Spell);
-            }
 
             damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus + mult) / 100d
                 + (bonus + criticalBonus + phyMgkBonus + eltBonus)));
