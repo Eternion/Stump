@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, BuffTriggerType.AfterRollCritical, RollTrigger);
                 }
 
-                AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, Spell.Template.Id == SpellIdEnum.POISSE ?
+                AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, Spell.Template.Id == (int)SpellIdEnum.POISSE ?
                 BuffTriggerType.BeforeDamaged : BuffTriggerType.BeforeAttack, DamageModifier);
             }
 
