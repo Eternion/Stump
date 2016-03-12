@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 var actorBuff = new StateBuff(actorBuffId, actor, Caster, new EffectInteger(EffectsEnum.Effect_AddState, (short)SpellStatesEnum.ZOMBI_74),
                     Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.ZOMBI_74))
                 {
-                    Duration = -1
+                    Duration = -1000
                 };
 
                 actor.AddBuff(actorBuff, true);

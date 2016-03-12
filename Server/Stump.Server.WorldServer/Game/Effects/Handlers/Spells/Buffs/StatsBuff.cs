@@ -44,6 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_IncreaseGlyphDamages)]
     [EffectHandler(EffectsEnum.Effect_AddWeaponDamageBonus)]
     [EffectHandler(EffectsEnum.Effect_AddProspecting)]
+    [EffectHandler(EffectsEnum.Effect_IncreaseFinalDamages)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)

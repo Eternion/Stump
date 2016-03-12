@@ -30,6 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
     [EffectHandler(EffectsEnum.Effect_SubWaterResistPercent)]
     [EffectHandler(EffectsEnum.Effect_SubAirResistPercent)]
     [EffectHandler(EffectsEnum.Effect_SubFireResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_ReduceFinalDamages)]
     public class StatsDebuff : SpellEffectHandler
     {
         public StatsDebuff(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
