@@ -25,14 +25,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, BuffTriggerType.AfterRollCritical, RollTrigger);
                 }
 
-                AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, Spell.Template.Id == (int)SpellIdEnum.POISSE ?
-                BuffTriggerType.BeforeDamaged : BuffTriggerType.BeforeAttack, DamageModifier);
+                AddTriggerBuff(target, FightDispellableEnum.DISPELLABLE, Dice.EffectId == EffectsEnum.Effect_RandDownModifier ?
+                BuffTriggerType.BeforeAttack : BuffTriggerType.BeforeDamaged, DamageModifier);
             }
 
             return true;
         }
 
-        static void RollTrigger(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
+        void RollTrigger(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var @ref = token as Ref<FightSpellCastCriticalEnum>;
             if (@ref != null)

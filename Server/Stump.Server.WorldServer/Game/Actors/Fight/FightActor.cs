@@ -1116,8 +1116,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (damage.Spell != null)
                 bonus += damage.Source.GetSpellBoost(damage.Spell);
 
-            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus + mult) / 100d
-                + (bonus + criticalBonus + phyMgkBonus + eltBonus)));
+            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus) / 100d
+                + (bonus + criticalBonus + phyMgkBonus + eltBonus)) * ((100 + mult) / 100.0));
 
             return damage;
         }
@@ -1867,13 +1867,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var actorBuff = new StateBuff(actorBuffId, this, this, new EffectInteger(EffectsEnum.Effect_AddState, (short)stateCarrying.Id),
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarrying)
             {
-                Duration = -1
+                Duration = -1000
             };
 
             var targetBuff = new StateBuff(targetBuffId, target, this, new EffectInteger(EffectsEnum.Effect_AddState, (short)stateCarried.Id),
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarried)
             {
-                Duration = -1
+                Duration = -1000
             };
 
             AddBuff(actorBuff);

@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Dispellable = dispelable;
             CustomActionId = customActionId;
 
-            Duration = (short)Effect.Duration;
+            Duration = (short)(Effect.Duration == -1 ? -1000 : Effect.Duration);
             Delay = (short)Effect.Delay;
 
             Efficiency = 1.0d;
@@ -152,7 +152,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                 return false;
             }
 
-            if (Duration == -1) // Duration = -1 => unlimited buff
+            if (Duration == -1000) // Duration = -1000 => unlimited buff
                 return false;
 
             return --Duration == 0;
