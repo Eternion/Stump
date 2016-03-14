@@ -1474,10 +1474,16 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
-            if (!FighterPlaying.IsSummoned() && FighterPlaying.IsAlive())
+            if (!FighterPlaying.IsSummoned())
             {
                 FighterPlaying.DecrementAllCastedBuffsDuration();
                 FighterPlaying.DecrementSummonsCastedBuffsDuration();
+            }
+
+            foreach(var passedFighter in TimeLine.PassedActors)
+            {
+                passedFighter.DecrementAllCastedBuffsDuration();
+                passedFighter.DecrementSummonsCastedBuffsDuration();
             }
 
             DecrementGlyphDuration(FighterPlaying);
@@ -1802,8 +1808,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
 
             fighter.KillAllSummons();
-            fighter.RemoveAndDispellAllBuffs();
-            fighter.RemoveAllCastedBuffs();
+            fighter.RemoveAndDispellAllBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
+            fighter.RemoveAllCastedBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
 
             EndSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
 
