@@ -1061,7 +1061,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             // DAMAGE * [(100 + STATS + %BONUS + MULT)/100 + (BONUS + PHS/MGKBONUS + ELTBONUS)]
 
             var bonusPercent = Stats[PlayerFields.DamageBonusPercent].TotalSafe;
-            var mult = Stats[PlayerFields.DamageMultiplicator].TotalSafe;
+            var mult = Stats[PlayerFields.DamageMultiplicator].Total;
             var bonus = Stats[PlayerFields.DamageBonus].Total;
             var criticalBonus = 0;
             var phyMgkBonus = 0;
