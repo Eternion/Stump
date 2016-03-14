@@ -1503,30 +1503,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        public void RemoveAndDispellAllBuffs()
+        public void RemoveAndDispellAllBuffs(FightDispellableEnum dispellable = FightDispellableEnum.REALLY_NOT_DISPELLABLE)
         {
-            foreach (var buff in m_buffList.ToArray())
+            foreach (var buff in m_buffList.Where(x => x.Dispellable <= dispellable).ToArray())
             {
                 RemoveBuff(buff);
             }
         }
 
-        public void RemoveAndDispellAllBuffs(FightActor caster)
+        public void RemoveAndDispellAllBuffs(FightActor caster, FightDispellableEnum dispellable = FightDispellableEnum.REALLY_NOT_DISPELLABLE)
         {
             var copyOfBuffs = m_buffList.ToArray();
 
-            foreach (var buff in copyOfBuffs.Where(buff => buff.Caster == caster))
+            foreach (var buff in copyOfBuffs.Where(buff => buff.Caster == caster && buff.Dispellable <= dispellable))
             {
-                if (buff.Dispellable == FightDispellableEnum.DISPELLABLE || buff.Dispellable == FightDispellableEnum.DISPELLABLE_BY_DEATH)
-                    RemoveBuff(buff);
+                RemoveBuff(buff);
             }
         }
 
-        public void RemoveAllCastedBuffs()
+        public void RemoveAllCastedBuffs(FightDispellableEnum dispellable = FightDispellableEnum.REALLY_NOT_DISPELLABLE)
         {
             foreach (var fighter in Fight.GetAllFighters())
             {
-                fighter.RemoveAndDispellAllBuffs(this);
+                fighter.RemoveAndDispellAllBuffs(this, dispellable);
             }
         }
 

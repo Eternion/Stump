@@ -7,6 +7,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 {
     public class TimeLine
     {
+        private List<FightActor> m_passedActors = new List<FightActor>();  
+
         public TimeLine(IFight fight)
         {
             Fight = fight;
@@ -58,6 +60,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
+        public IReadOnlyCollection<FightActor> PassedActors => m_passedActors.AsReadOnly(); 
+
         public bool RemoveFighter(FightActor fighter)
         {
             if (!Fighters.Contains(fighter))
@@ -95,6 +99,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool SelectNextFighter()
         {
+            m_passedActors.Clear();
+
             if (Fighters.Count == 0)
             {
                 Index = -1;
@@ -116,6 +122,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             while (!Fighters[index].IsAlive() && counter < Fighters.Count)
             {
+                m_passedActors.Add(Fighters[index]);
                 index = ( index + 1 ) < Fighters.Count ? index + 1 : 0;
 
                 if (index == 0)

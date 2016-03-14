@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             get;
             set;
         }
-
+        
         public virtual int Priority => Effect.Priority;
 
         public Cell CastCell
