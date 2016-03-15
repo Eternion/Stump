@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                AddStatBuff(actor, integerEffect.Value, PlayerFields.Erosion, FightDispellableEnum.DISPELLABLE);
+                AddStatBuff(actor, integerEffect.Value, PlayerFields.Erosion);
             }
 
             return true;

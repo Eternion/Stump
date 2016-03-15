@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 var bonus = (int)(actor.Stats.Health.TotalSafe * (integerEffect.Value / 100d));
 
-                AddStatBuff(actor, (short)-bonus, PlayerFields.Vitality, FightDispellableEnum.DISPELLABLE,
+                AddStatBuff(actor, (short)-bonus, PlayerFields.Vitality,
                     Effect.EffectId == EffectsEnum.Effect_SubVitalityPercent ?
                     (short)ActionsEnum.ACTION_CHARACTER_DEBOOST_VITALITY : (short)EffectsEnum.Effect_1047);     
             }

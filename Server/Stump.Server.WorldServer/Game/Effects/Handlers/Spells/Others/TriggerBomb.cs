@@ -12,6 +12,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
     {
         public TriggerBomb(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical) : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE_BY_DEATH;
         }
 
         protected override bool InternalApply()
@@ -19,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter)Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
             {
                 if (Dice.Duration != 0 || Dice.Delay != 0)
-                    AddTriggerBuff(bomb, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTrigger);
+                    AddTriggerBuff(bomb, BuffTrigger);
                 else
                     ((SummonedBomb)bomb).Explode();
             }

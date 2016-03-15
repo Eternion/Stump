@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, BuffTriggerType.AfterDamaged, OnActorAttacked);
+                AddTriggerBuff(actor,BuffTriggerType.AfterDamaged, OnActorAttacked);
             }
 
             return true;

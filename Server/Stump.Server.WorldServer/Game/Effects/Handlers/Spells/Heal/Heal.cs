@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                             break;
                     }
 
-                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, triggerType, HealBuffTrigger);
+                    AddTriggerBuff(actor, triggerType, HealBuffTrigger);
                 }
                 else
                 {
