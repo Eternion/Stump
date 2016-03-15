@@ -66,6 +66,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
                 {
                     Id = skillId,
                     Type = "Teleport",
+                    CustomTemplateId = 339,
                     Parameter0 = trigger.Parameter1, //MapId
                     Parameter1 = trigger.Parameter0, //CellId
                     Condition = trigger.Condition
