@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddStatBuff(actor, shieldAmount, PlayerFields.Shield, FightDispellableEnum.DISPELLABLE, (short)EffectsEnum.Effect_AddShield);
+                    AddStatBuff(actor, shieldAmount, PlayerFields.Shield, (short)EffectsEnum.Effect_AddShield);
                 }
                 else
                 {

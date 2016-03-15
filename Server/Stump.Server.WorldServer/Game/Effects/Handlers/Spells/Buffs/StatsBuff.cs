@@ -61,25 +61,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(), GetSpellDispellableState());
+                AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic());
             }
 
             return true;
         }
-
-        FightDispellableEnum GetSpellDispellableState()
-        {
-            switch (Spell.Id)
-            {
-                case (int)SpellIdEnum.EXPLOSION_ROUBLARDE:
-                case (int)SpellIdEnum.AVERSE_ROUBLARDE:
-                case (int)SpellIdEnum.TORNADE_ROUBLARDE:
-                    return FightDispellableEnum.DISPELLABLE_BY_STRONG_DISPEL;
-                default:
-                    return FightDispellableEnum.DISPELLABLE;
-            }
-        }
-
+        
         PlayerFields GetEffectCaracteristic()
         {
             switch (Effect.EffectId)

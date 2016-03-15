@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddStatBuff(actor, integerEffect.Value, PlayerFields.MP, FightDispellableEnum.DISPELLABLE);
+                    AddStatBuff(actor, integerEffect.Value, PlayerFields.MP);
                 }
                 else
                 {
