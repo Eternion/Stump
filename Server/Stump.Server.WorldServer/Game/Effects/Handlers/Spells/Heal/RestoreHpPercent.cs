@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, BuffTriggerType.OnTurnBegin, OnBuffTriggered);
+                    AddTriggerBuff(actor, BuffTriggerType.OnTurnBegin, OnBuffTriggered);
                 }
                 else
                     HealHpPercent(actor, integerEffect.Value);

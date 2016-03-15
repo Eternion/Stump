@@ -13,11 +13,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         public DispatchDamages(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE_BY_DEATH;
         }
 
         protected override bool InternalApply()
         {
-            AddTriggerBuff(Caster, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.AfterDamaged, BuffTrigger);
+            AddTriggerBuff(Caster, BuffTriggerType.AfterDamaged, BuffTrigger);
 
             return true;
         }

@@ -24,12 +24,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 if (integerEffect == null)
                     return false;
 
-                AddStatBuff(actor, (short)( -( integerEffect.Value ) ), PlayerFields.MP, FightDispellableEnum.DISPELLABLE, (short)EffectsEnum.Effect_SubMP);
+                AddStatBuff(actor, (short)( -( integerEffect.Value ) ), PlayerFields.MP, (short)EffectsEnum.Effect_SubMP);
                 actor.TriggerBuffs(actor, BuffTriggerType.OnMPLost);
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddStatBuff(Caster, integerEffect.Value, PlayerFields.MP, FightDispellableEnum.DISPELLABLE, (short)EffectsEnum.Effect_AddMP_128);
+                    AddStatBuff(Caster, integerEffect.Value, PlayerFields.MP, (short)EffectsEnum.Effect_AddMP_128);
                 }
                 else
                 {

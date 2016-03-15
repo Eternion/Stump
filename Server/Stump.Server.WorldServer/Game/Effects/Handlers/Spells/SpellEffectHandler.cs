@@ -38,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             Critical = critical;
             Targets = effect.Targets;
             Category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE;
         }
 
         public EffectDice Dice
@@ -80,6 +81,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         }
 
         public MarkTrigger MarkTrigger
+        {
+            get;
+            set;
+        }
+
+        public FightDispellableEnum DefaultDispellableStatus
         {
             get;
             set;
@@ -195,20 +202,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsTriggerBuff() => Effect.Duration != 0 && Effect.Triggers != "I";
 
-        public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, FightDispellableEnum dispelable,
-            short? customActionId = null)
+        public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId, triggerrer, true));
+                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStatBuffInternal(target, value, caracteritic, customActionId, triggerrer, true));
             
-            return AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId);
+            return AddStatBuffInternal(target, value, caracteritic, customActionId);
         }
 
-        Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, FightDispellableEnum dispelable,
-                                    short? customActionId = null, FightActor caster = null, bool noDelay = false)
+        Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null, FightActor caster = null, bool noDelay = false)
         {
             var id = target.PopNextBuffId();
-            var buff = new StatBuff(id, target, caster ?? Caster, Effect, Spell, value, caracteritic, Critical, dispelable, Priority, customActionId);
+            var buff = new StatBuff(id, target, caster ?? Caster, Effect, Spell, value, caracteritic, Critical, DefaultDispellableStatus, Priority, customActionId);
 
             if (noDelay)
                 buff.Delay = 0;
@@ -218,20 +223,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public Buff AddTriggerBuff(FightActor target, FightDispellableEnum dispelable, TriggerBuffApplyHandler applyTrigger)
+        public Buff AddTriggerBuff(FightActor target, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, DefaultDispellableStatus, Priority, applyTrigger);
 
             target.AddBuff(buff);
 
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, FightDispellableEnum dispelable, BuffTriggerType type, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, BuffTriggerType type, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, DefaultDispellableStatus, Priority, applyTrigger);
             buff.SetTrigger(type);
 
             target.AddBuff(buff);
@@ -239,29 +244,29 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, FightDispellableEnum dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target,  TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger, removeTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, DefaultDispellableStatus, Priority, applyTrigger, removeTrigger);
 
             target.AddBuff(buff);
 
             return buff;
         }
 
-        public Buff AddStateBuff(FightActor target, FightDispellableEnum dispelable, bool bypassMaxStack, SpellState state)
+        public Buff AddStateBuff(FightActor target, bool bypassMaxStack, SpellState state)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStateBuffInternal(target, dispelable, bypassMaxStack, state, triggerrer));
+                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStateBuffInternal(target, bypassMaxStack, state, triggerrer));
 
-            return AddStateBuffInternal(target, dispelable, bypassMaxStack, state);
+            return AddStateBuffInternal(target, bypassMaxStack, state);
 
         }
 
-        Buff AddStateBuffInternal(FightActor target, FightDispellableEnum dispelable, bool bypassMaxStack, SpellState state, FightActor caster = null)
+        Buff AddStateBuffInternal(FightActor target,  bool bypassMaxStack, SpellState state, FightActor caster = null)
         {
             var id = target.PopNextBuffId();
-            var buff = new StateBuff(id, target, caster ?? Caster, Dice, Spell, dispelable, state);
+            var buff = new StateBuff(id, target, caster ?? Caster, Dice, Spell, DefaultDispellableStatus, state);
 
             target.AddBuff(buff, bypassMaxStack);
 

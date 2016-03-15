@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, KillTrigger);
+                    AddTriggerBuff(actor, KillTrigger);
                 }
                 else
                 {

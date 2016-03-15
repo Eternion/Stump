@@ -19,6 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         public DispelState(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE_BY_DEATH;
         }
 
         protected override bool InternalApply()
@@ -27,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
             {
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTrigger);
+                    AddTriggerBuff(actor, BuffTrigger);
                 }
                 else
                 {
@@ -49,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                             return false;
 
                         var id = actor.PopNextBuffId();
-                        var stateBuff = new DisableStateBuff(id, actor, Caster, Dice, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState)
+                        var stateBuff = new DisableStateBuff(id, actor, Caster, Dice, Spell, DefaultDispellableStatus, actualState)
                         {
                             Duration = 1
                         };
