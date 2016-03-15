@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddStatBuff(target, (short)(-(integerEffect.Value)), PlayerFields.AP, FightDispellableEnum.DISPELLABLE, (short)EffectsEnum.Effect_SubAP);
+                    AddStatBuff(target, (short)(-(integerEffect.Value)), PlayerFields.AP, (short)EffectsEnum.Effect_SubAP);
                 }
                 else
                 {

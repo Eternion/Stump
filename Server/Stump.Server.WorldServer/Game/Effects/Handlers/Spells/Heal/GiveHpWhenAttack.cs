@@ -13,6 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         public GiveHpWhenAttack(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE_BY_DEATH;
         }
 
         protected override bool InternalApply()
@@ -24,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 if (integerEffect == null)
                     return false;
 
-                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.OnDamaged, OnBuffTriggered);
+                AddTriggerBuff(actor, BuffTriggerType.OnDamaged, OnBuffTriggered);
             }
 
             return true;
@@ -58,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 if (integerEffect == null)
                     return false;
 
-                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE, BuffTriggerType.AfterDamaged, OnBuffTriggered);
+                AddTriggerBuff(actor, BuffTriggerType.AfterDamaged, OnBuffTriggered);
             }
 
             return true;

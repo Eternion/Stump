@@ -14,6 +14,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         public DamageIntercept(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE_BY_DEATH;
+
         }
 
         public override bool CanApply() => !GetAffectedActors().Any(x => x.GetBuffs(y => y.Effect.EffectId == EffectsEnum.Effect_DamageIntercept).Any());
@@ -22,8 +24,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, TriggerBuffApply);
-                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, BuffTriggerType.AfterDamaged, PostTriggerBuffApply);
+                AddTriggerBuff(actor, TriggerBuffApply);
+                AddTriggerBuff(actor, BuffTriggerType.AfterDamaged, PostTriggerBuffApply);
             }
 
             return true;

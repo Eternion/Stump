@@ -13,13 +13,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         public DamageMultiplier(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE_BY_DEATH;
         }
 
         protected override bool InternalApply()
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, FightDispellableEnum.DISPELLABLE_BY_DEATH, OnBuffTriggered);
+                AddTriggerBuff(actor, OnBuffTriggered);
             }
 
             return true;

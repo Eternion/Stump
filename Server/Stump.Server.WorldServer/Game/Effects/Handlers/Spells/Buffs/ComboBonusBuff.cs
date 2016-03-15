@@ -12,7 +12,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         public ComboBonusBuff(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DefaultDispellableStatus = FightDispellableEnum.DISPELLABLE_BY_DEATH;
         }
+
 
         protected override bool InternalApply()
         {
@@ -28,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return false;
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
-                    AddStatBuff(actor, integerEffect.Value, PlayerFields.ComboBonus, FightDispellableEnum.DISPELLABLE_BY_DEATH);
+                    AddStatBuff(actor, integerEffect.Value, PlayerFields.ComboBonus);
                 else
                     bomb.IncreaseDamageBonus(integerEffect.Value);
             }
