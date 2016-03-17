@@ -9,12 +9,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public class ExperienceManager : DataManager<ExperienceManager>
     {
-        private readonly Dictionary<byte, ExperienceTableEntry> m_records = new Dictionary<byte, ExperienceTableEntry>();
-        private KeyValuePair<byte, ExperienceTableEntry> m_highestCharacterLevel;
-        private KeyValuePair<byte, ExperienceTableEntry> m_highestGrade;
-        private KeyValuePair<byte, ExperienceTableEntry> m_highestGuildLevel;
-        private KeyValuePair<byte, ExperienceTableEntry> m_highestMountLevel;
-        private KeyValuePair<byte, ExperienceTableEntry> m_highestJobLevel;
+        readonly Dictionary<byte, ExperienceTableEntry> m_records = new Dictionary<byte, ExperienceTableEntry>();
+        KeyValuePair<byte, ExperienceTableEntry> m_highestCharacterLevel;
+        KeyValuePair<byte, ExperienceTableEntry> m_highestGrade;
+        KeyValuePair<byte, ExperienceTableEntry> m_highestGuildLevel;
+        KeyValuePair<byte, ExperienceTableEntry> m_highestMountLevel;
+        KeyValuePair<byte, ExperienceTableEntry> m_highestJobLevel;
 
         public byte HighestCharacterLevel => m_highestCharacterLevel.Key;
 
@@ -178,10 +178,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public long GetGuildNextLevelExperience(byte level)
         {
             if (!m_records.ContainsKey((byte)(level + 1)))
-                return long.MaxValue;
+                return -1;
 
             if (m_records[(byte) (level + 1)].GuildExp == null)
-                return long.MaxValue;
+                return -1;
 
             var exp = m_records[(byte) (level + 1)].GuildExp;
 
@@ -238,10 +238,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public long GetMountNextLevelExperience(byte level)
         {
             if (!m_records.ContainsKey((byte)(level + 1)))
-                return long.MaxValue;
+                return -1;
 
             if (m_records[(byte)(level + 1)].MountExp == null)
-                return long.MaxValue;
+                return -1;
 
             var exp = m_records[(byte)(level + 1)].MountExp;
 
@@ -299,10 +299,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public long GetJobNextLevelExperience(byte level)
         {
             if (!m_records.ContainsKey((byte)(level + 1)))
-                return int.MaxValue;
+                return 0;
 
             if (m_records[(byte)(level + 1)].JobExp == null)
-                return int.MaxValue;
+                return 0;
 
             var exp = m_records[(byte)(level + 1)].JobExp;
 

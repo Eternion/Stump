@@ -13,8 +13,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         protected int ValueEquiped;
         protected int ValueGiven;
         protected int ValueAdditionnal;
-        private int? m_limit;
-        private readonly bool m_limitEquippedOnly;
+        int? m_limit;
+        readonly bool m_limitEquippedOnly;
 
         public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, StatsFormulasHandler formulas = null)
         {

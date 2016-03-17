@@ -1147,16 +1147,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        #region Restat
-
-        public bool CanRestat
-        {
-            get { return m_record.CanRestat; }
-            set { m_record.CanRestat = value; }
-        }
-
-        #endregion
-
         void OnEnergyChanged(short energy, short diff)
         {
             if (diff < 0)
@@ -1268,7 +1258,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 handler(this, currentLevel, difference);
         }
 
-        public void ResetStats()
+        public void ResetStats(bool additional = false)
         {
             Stats.Agility.Base = 0;
             Stats.Strength.Base = 0;
@@ -1277,11 +1267,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Stats.Intelligence.Base = 0;
             Stats.Chance.Base = 0;
 
+            if (additional)
+            {
+                Stats.Agility.Additional = 0;
+                Stats.Strength.Additional = 0;
+                Stats.Vitality.Additional = 0;
+                Stats.Wisdom.Additional = 0;
+                Stats.Intelligence.Additional = 0;
+                Stats.Chance.Additional = 0;
+            }
+
             var newPoints = (Level - 1) * 5;
             StatsPoints = (ushort)newPoints;
 
             RefreshStats();
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 15, newPoints);
+
+            //Caractéristiques (de base et additionnelles) réinitialisées.(469)
+            //Caractéristiques de base réinitialisées.(470)
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, (short)(additional ? 469 : 470));
         }
 
         public void RefreshStats()

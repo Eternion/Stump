@@ -16,13 +16,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Spells
         public Character Character
         {
             get;
-            private set;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_SPELL_FORGET; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_SPELL_FORGET;
 
         public void Open()
         {
@@ -43,12 +39,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Spells
             if (winPoints != 0)
             {
                 var spell = SpellManager.Instance.GetSpellTemplate(spellId);
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 366, spell.Id, winPoints);
+
+                if (spell != null)
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 366, spell.Id, winPoints);
             }
 
-            //todo: Find best way to refresh SpellForgetUI
-            ContextRoleplayHandler.SendSpellForgetUIMessage(client, false);
-            ContextRoleplayHandler.SendSpellForgetUIMessage(client, true);
+            Close();
         }
     }
 }
