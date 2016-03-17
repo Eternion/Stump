@@ -1,8 +1,7 @@
 ﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Spells.Casts;
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
     [DefaultEffectHandler]
     public class DefaultUsableEffectHandler : UsableEffectHandler

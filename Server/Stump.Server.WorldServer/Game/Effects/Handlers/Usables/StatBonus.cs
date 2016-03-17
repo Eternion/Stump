@@ -5,8 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Spells.Casts;
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
     [EffectHandler(EffectsEnum.Effect_AddPermanentAgility)]
     [EffectHandler(EffectsEnum.Effect_AddPermanentStrength)]
@@ -30,22 +29,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (effect == null)
                 return false;
 
-            var bonus = AdjustBonusStat((short) (effect.Value * NumberOfUses));
+            var characteristic = GetEffectCharacteristic(Effect.EffectId);
+            var bonus = AdjustBonusStat((short) (effect.Value * NumberOfUses), characteristic);
 
-            if (bonus == 0 || bonus + Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Additional > StatBonusLimit)
+            if (bonus == 0 || bonus + Target.Stats[characteristic].Additional > StatBonusLimit)
             {
                 Target.SendServerMessage(string.Format("Bonus limit reached : {0}", StatBonusLimit), Color.Red);
                 return false;
             }
 
-            Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Additional += bonus;
-            UsedItems = (uint) Math.Ceiling((double) bonus/effect.Value);
+            Target.Stats[characteristic].Additional += bonus;
             Target.RefreshStats();
+
+            UsedItems = (uint) Math.Ceiling((double) bonus/effect.Value);
 
             return true;
         }
 
-        private static PlayerFields GetEffectCharacteristic(EffectsEnum effect)
+        static PlayerFields GetEffectCharacteristic(EffectsEnum effect)
         {
             switch (effect)
             {
@@ -66,38 +67,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             }
         }
 
-        private short AdjustBonusStat(short bonus)
+        short AdjustBonusStat(short bonus, PlayerFields characteristic)
         {
-            short actualPts;
-
-            switch (Effect.EffectId)
-            {
-                case EffectsEnum.Effect_AddPermanentChance:
-                    actualPts = (short)Target.Stats[PlayerFields.Chance].Additional;
-                    break;
-                case EffectsEnum.Effect_AddPermanentAgility:
-                    actualPts = (short)Target.Stats[PlayerFields.Agility].Additional;
-                    break;
-                case EffectsEnum.Effect_AddPermanentIntelligence:
-                    actualPts = (short)Target.Stats[PlayerFields.Intelligence].Additional;
-                    break;
-                case EffectsEnum.Effect_AddPermanentStrength:
-                    actualPts = (short)Target.Stats[PlayerFields.Strength].Additional;
-                    break;
-                case EffectsEnum.Effect_AddPermanentWisdom:
-                    actualPts = (short)Target.Stats[PlayerFields.Wisdom].Additional;
-                    break;
-                case EffectsEnum.Effect_AddPermanentVitality:
-                    actualPts = (short)Target.Stats[PlayerFields.Vitality].Additional;
-                    break;
-                default:
-                    return 0;
-            }
-
-            if (actualPts >= StatBonusLimit)
+            if (Target.Stats[characteristic].Additional >= StatBonusLimit)
                 return 0;
 
-            return actualPts + bonus > StatBonusLimit ? StatBonusLimit : bonus;
+            return Target.Stats[characteristic].Additional + bonus > StatBonusLimit ? StatBonusLimit : bonus;
         }
     }
 }
