@@ -16,12 +16,12 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            character.Stats.Agility.Base = character.PermanentAddedAgility;
-            character.Stats.Strength.Base = character.PermanentAddedStrength;
-            character.Stats.Vitality.Base = character.PermanentAddedVitality;
-            character.Stats.Wisdom.Base = character.PermanentAddedWisdom;
-            character.Stats.Intelligence.Base = character.PermanentAddedIntelligence;
-            character.Stats.Chance.Base = character.PermanentAddedChance;
+            character.Stats.Agility.Base = 0;
+            character.Stats.Strength.Base = 0;
+            character.Stats.Vitality.Base = 0;
+            character.Stats.Wisdom.Base = 0;
+            character.Stats.Intelligence.Base = 0;
+            character.Stats.Chance.Base = 0;
 
             character.StatsPoints = (ushort) (character.Level*5);
 
