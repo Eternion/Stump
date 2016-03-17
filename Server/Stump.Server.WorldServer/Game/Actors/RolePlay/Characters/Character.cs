@@ -1147,52 +1147,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        #region Restat
-
-        public short PermanentAddedStrength
-        {
-            get { return m_record.PermanentAddedStrength; }
-            set { m_record.PermanentAddedStrength = value; }
-        }
-
-        public short PermanentAddedChance
-        {
-            get { return m_record.PermanentAddedChance; }
-            set { m_record.PermanentAddedChance = value; }
-        }
-
-        public short PermanentAddedVitality
-        {
-            get { return m_record.PermanentAddedVitality; }
-            set { m_record.PermanentAddedVitality = value; }
-        }
-
-        public short PermanentAddedWisdom
-        {
-            get { return m_record.PermanentAddedWisdom; }
-            set { m_record.PermanentAddedWisdom = value; }
-        }
-
-        public short PermanentAddedIntelligence
-        {
-            get { return m_record.PermanentAddedIntelligence; }
-            set { m_record.PermanentAddedIntelligence = value; }
-        }
-
-        public short PermanentAddedAgility
-        {
-            get { return m_record.PermanentAddedAgility; }
-            set { m_record.PermanentAddedAgility = value; }
-        }
-
-        public bool CanRestat
-        {
-            get { return m_record.CanRestat; }
-            set { m_record.CanRestat = value; }
-        }
-
-        #endregion
-
         void OnEnergyChanged(short energy, short diff)
         {
             if (diff < 0)
@@ -1304,20 +1258,33 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 handler(this, currentLevel, difference);
         }
 
-        public void ResetStats()
+        public void ResetStats(bool additional = false)
         {
-            Stats.Agility.Base = PermanentAddedAgility;
-            Stats.Strength.Base = PermanentAddedStrength;
-            Stats.Vitality.Base = PermanentAddedVitality;
-            Stats.Wisdom.Base = PermanentAddedWisdom;
-            Stats.Intelligence.Base = PermanentAddedIntelligence;
-            Stats.Chance.Base = PermanentAddedChance;
+            Stats.Agility.Base = 0;
+            Stats.Strength.Base = 0;
+            Stats.Vitality.Base = 0;
+            Stats.Wisdom.Base = 0;
+            Stats.Intelligence.Base = 0;
+            Stats.Chance.Base = 0;
+
+            if (additional)
+            {
+                Stats.Agility.Additional = 0;
+                Stats.Strength.Additional = 0;
+                Stats.Vitality.Additional = 0;
+                Stats.Wisdom.Additional = 0;
+                Stats.Intelligence.Additional = 0;
+                Stats.Chance.Additional = 0;
+            }
 
             var newPoints = (Level - 1) * 5;
             StatsPoints = (ushort)newPoints;
 
             RefreshStats();
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 15, newPoints);
+
+            //Caractéristiques (de base et additionnelles) réinitialisées.(469)
+            //Caractéristiques de base réinitialisées.(470)
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, (short)(additional ? 469 : 470));
         }
 
         public void RefreshStats()

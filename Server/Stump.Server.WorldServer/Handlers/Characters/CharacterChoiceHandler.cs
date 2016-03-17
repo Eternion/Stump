@@ -321,10 +321,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     (sbyte)characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
-            client.Send(new CharactersListMessage(
-                            characters,
-                            false
-                            ));
+            client.Send(new CharactersListMessage(characters, false));
         }
 
         public static void SendCharactersListWithRemodelingMessage(WorldClient client)

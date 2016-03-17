@@ -18,7 +18,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
 
         #region Binds
 
-        private static readonly Dictionary<PlayerFields, EffectComputeHandler> m_addMethods = new Dictionary
+        static readonly Dictionary<PlayerFields, EffectComputeHandler> m_addMethods = new Dictionary
             <PlayerFields, EffectComputeHandler>
             {
                 {PlayerFields.Health, AddHealth},
@@ -88,7 +88,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
                 {PlayerFields.Weight, AddWeight},
             };
 
-        private static readonly Dictionary<PlayerFields, EffectComputeHandler> m_subMethods = new Dictionary
+        static readonly Dictionary<PlayerFields, EffectComputeHandler> m_subMethods = new Dictionary
             <PlayerFields, EffectComputeHandler>
             {
                 {PlayerFields.Health, SubHealth},

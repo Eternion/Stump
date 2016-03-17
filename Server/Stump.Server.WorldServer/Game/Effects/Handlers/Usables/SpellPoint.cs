@@ -26,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             UsedItems = NumberOfUses;
             Target.SpellsPoints += (ushort)(effect.Value * NumberOfUses);
             Target.RefreshStats();
+
             return true;
         }
     }
