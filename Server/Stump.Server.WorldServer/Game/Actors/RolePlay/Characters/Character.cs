@@ -1149,42 +1149,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Restat
 
-        public short PermanentAddedStrength
-        {
-            get { return m_record.PermanentAddedStrength; }
-            set { m_record.PermanentAddedStrength = value; }
-        }
-
-        public short PermanentAddedChance
-        {
-            get { return m_record.PermanentAddedChance; }
-            set { m_record.PermanentAddedChance = value; }
-        }
-
-        public short PermanentAddedVitality
-        {
-            get { return m_record.PermanentAddedVitality; }
-            set { m_record.PermanentAddedVitality = value; }
-        }
-
-        public short PermanentAddedWisdom
-        {
-            get { return m_record.PermanentAddedWisdom; }
-            set { m_record.PermanentAddedWisdom = value; }
-        }
-
-        public short PermanentAddedIntelligence
-        {
-            get { return m_record.PermanentAddedIntelligence; }
-            set { m_record.PermanentAddedIntelligence = value; }
-        }
-
-        public short PermanentAddedAgility
-        {
-            get { return m_record.PermanentAddedAgility; }
-            set { m_record.PermanentAddedAgility = value; }
-        }
-
         public bool CanRestat
         {
             get { return m_record.CanRestat; }
@@ -1306,12 +1270,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void ResetStats()
         {
-            Stats.Agility.Base = PermanentAddedAgility;
-            Stats.Strength.Base = PermanentAddedStrength;
-            Stats.Vitality.Base = PermanentAddedVitality;
-            Stats.Wisdom.Base = PermanentAddedWisdom;
-            Stats.Intelligence.Base = PermanentAddedIntelligence;
-            Stats.Chance.Base = PermanentAddedChance;
+            Stats.Agility.Base = 0;
+            Stats.Strength.Base = 0;
+            Stats.Vitality.Base = 0;
+            Stats.Wisdom.Base = 0;
+            Stats.Intelligence.Base = 0;
+            Stats.Chance.Base = 0;
 
             var newPoints = (Level - 1) * 5;
             StatsPoints = (ushort)newPoints;
@@ -3334,6 +3298,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
                         m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
                         m_record.Vitality = Stats[PlayerFields.Vitality].Base;
+
+                        m_record.PermanentAddedStrength = (short)Stats[PlayerFields.Strength].Additional;
+                        m_record.PermanentAddedAgility = (short)Stats[PlayerFields.Agility].Additional;
+                        m_record.PermanentAddedChance = (short)Stats[PlayerFields.Chance].Additional;
+                        m_record.PermanentAddedIntelligence = (short)Stats[PlayerFields.Intelligence].Additional;
+                        m_record.PermanentAddedWisdom = (short)Stats[PlayerFields.Wisdom].Additional;
+                        m_record.PermanentAddedVitality = (short)Stats[PlayerFields.Vitality].Additional;
+
                         m_record.BaseHealth = Stats.Health.Base;
                         m_record.DamageTaken = Stats.Health.DamageTaken;
 

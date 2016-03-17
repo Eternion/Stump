@@ -26,12 +26,12 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             character.Stats.Intelligence.Base = 0;
             character.Stats.Chance.Base = 0;
 
-            character.PermanentAddedAgility = 0;
-            character.PermanentAddedStrength = 0;
-            character.PermanentAddedVitality = 0;
-            character.PermanentAddedWisdom = 0;
-            character.PermanentAddedIntelligence = 0;
-            character.PermanentAddedChance = 0;
+            character.Stats.Agility.Additional = 0;
+            character.Stats.Strength.Additional = 0;
+            character.Stats.Vitality.Additional = 0;
+            character.Stats.Wisdom.Additional = 0;
+            character.Stats.Intelligence.Additional = 0;
+            character.Stats.Chance.Additional = 0;
 
             character.StatsPoints = (ushort) (character.Level*5);
 
