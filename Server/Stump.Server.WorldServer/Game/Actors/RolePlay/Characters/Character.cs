@@ -3301,6 +3301,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
                         m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
                         m_record.Vitality = Stats[PlayerFields.Vitality].Base;
+
+                        m_record.PermanentAddedStrength = (short)Stats[PlayerFields.Strength].Additional;
+                        m_record.PermanentAddedAgility = (short)Stats[PlayerFields.Agility].Additional;
+                        m_record.PermanentAddedChance = (short)Stats[PlayerFields.Chance].Additional;
+                        m_record.PermanentAddedIntelligence = (short)Stats[PlayerFields.Intelligence].Additional;
+                        m_record.PermanentAddedWisdom = (short)Stats[PlayerFields.Wisdom].Additional;
+                        m_record.PermanentAddedVitality = (short)Stats[PlayerFields.Vitality].Additional;
+
                         m_record.BaseHealth = Stats.Health.Base;
                         m_record.DamageTaken = Stats.Health.DamageTaken;
 
