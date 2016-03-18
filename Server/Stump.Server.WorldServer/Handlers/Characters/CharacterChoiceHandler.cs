@@ -172,7 +172,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     i++;
                 }
 
-                character.EntityLook.SetColors(m_colors.Select(x => x.Value).ToArray());
                 character.EntityLook.SetColors(m_colors.Select(x => x.Key).ToArray(), m_colors.Select(x => x.Value).ToArray());
             }
 
