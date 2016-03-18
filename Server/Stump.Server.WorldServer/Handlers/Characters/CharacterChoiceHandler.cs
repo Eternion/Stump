@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
@@ -108,6 +105,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED))
             {
                 client.Character = new Character(character, client);
+                client.Character.LoadRecord();
+
                 BreedManager.ChangeBreed(client.Character, (PlayableBreedEnum)remodel.breed);
                 client.Character.SaveNow();
 
@@ -195,6 +194,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             client.Character = new Character(character, client);
+            client.Character.LoadRecord();
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
