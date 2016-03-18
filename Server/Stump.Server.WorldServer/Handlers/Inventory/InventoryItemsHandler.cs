@@ -214,6 +214,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             var modifiedItem = ItemManager.Instance.CreatePlayerItem(character, host);
             modifiedItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
+            modifiedItem.Stack = 1;
 
             if (message.preview)
             {
