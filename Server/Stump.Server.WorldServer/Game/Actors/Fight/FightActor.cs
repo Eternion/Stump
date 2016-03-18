@@ -1797,7 +1797,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX || // insidious poison
                    spell.Template.Id == (int)SpellIdEnum.PEUR || //Fear
                    spell.Template.Id == (int)SpellIdEnum.POISSE ||
-                   spell.Template.Id == (int)SpellIdEnum.ROUBLARDISE; //Jinx
+                   spell.Template.Id == (int)SpellIdEnum.ROUBLARDISE ||
+                   spell.Template.Id == (int)SpellIdEnum.DOFUS_NÉBULEUX ||
+                   spell.Template.Id == (int)SpellIdEnum.DOFUS_DES_VEILLEURS ||
+                   spell.Template.Id == (int)SpellIdEnum.DOFUS_TURQUOISE ||
+                   spell.Template.Id == 6149; //DOKOKO
         }
 
         public bool DispellInvisibilityBuff()
