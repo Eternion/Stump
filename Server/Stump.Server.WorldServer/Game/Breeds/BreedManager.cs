@@ -144,9 +144,9 @@ namespace Stump.Server.WorldServer.Game.Breeds
         public static void ChangeBreed(Character character, PlayableBreedEnum breed)
         {
             character.Spells.ForgetAllSpells();
-            character.ResetStats();
+            ForgetSpecialSpells(character);
 
-            var specialSpell = GetSpecialSpell(character.BreedId);
+            character.ResetStats();
 
             foreach (var breedSpell in character.Breed.Spells)
             {
@@ -160,74 +160,31 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 if (!character.Spells.HasSpell(breedSpell.Spell))
                     character.Spells.LearnSpell(breedSpell.Spell);
             }
-
-            if (character.Spells.HasSpell((int)specialSpell.SpellId))
-            {
-                character.Spells.UnLearnSpell((int)specialSpell.SpellId);
-
-                specialSpell = GetSpecialSpell(character.BreedId);
-
-                character.Spells.LearnSpell((int)specialSpell.SpellId);
-            }
         }
 
-        private static SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
+        static void ForgetSpecialSpells(Character character)
         {
-            var spellId = SpellIdEnum.COUP_DE_POING;
-
-            switch (breedId)
+            var specialSpellsList = new List<SpellIdEnum>
             {
-                case PlayableBreedEnum.Feca:
-                    spellId = SpellIdEnum.MISE_EN_GARDE;
-                    break;
-                case PlayableBreedEnum.Osamodas:
-                    spellId = SpellIdEnum.LAISSE_SPIRITUELLE_420;
-                    break;
-                case PlayableBreedEnum.Enutrof:
-                    spellId = SpellIdEnum.RETRAITE_ANTICIPÉE;
-                    break;
-                case PlayableBreedEnum.Sram:
-                    spellId = SpellIdEnum.POISSE;
-                    break;
-                case PlayableBreedEnum.Xelor:
-                    spellId = SpellIdEnum.RAULEBAQUE;
-                    break;
-                case PlayableBreedEnum.Ecaflip:
-                    spellId = SpellIdEnum.FÉLINTION;
-                    break;
-                case PlayableBreedEnum.Eniripsa:
-                    spellId = SpellIdEnum.MOT_CURATIF;
-                    break;
-                case PlayableBreedEnum.Iop:
-                    spellId = SpellIdEnum.BROKLE;
-                    break;
-                case PlayableBreedEnum.Cra:
-                    spellId = SpellIdEnum.FLÈCHE_DE_DISPERSION;
-                    break;
-                case PlayableBreedEnum.Sadida:
-                    spellId = SpellIdEnum.ARBRE_DE_VIE;
-                    break;
-                case PlayableBreedEnum.Sacrieur:
-                    spellId = SpellIdEnum.DOULEUR_PARTAGÉE;
-                    break;
-                case PlayableBreedEnum.Pandawa:
-                    spellId = SpellIdEnum.IVRESSE;
-                    break;
-                case PlayableBreedEnum.Roublard:
-                    spellId = SpellIdEnum.ROUBLABOT;
-                    break;
-                case PlayableBreedEnum.Zobal:
-                    spellId = SpellIdEnum.DIFFRACTION;
-                    break;
-                case PlayableBreedEnum.Steamer:
-                    spellId = SpellIdEnum.FLIBUSTE;
-                    break;
-                case PlayableBreedEnum.Eliotrope:
-                    spellId = SpellIdEnum.FOCUS;
-                    break;
-            }
+                SpellIdEnum.MISE_EN_GARDE,
+                SpellIdEnum.LAISSE_SPIRITUELLE_420,
+                SpellIdEnum.RETRAITE_ANTICIPÉE,
+                SpellIdEnum.POISSE,
+                SpellIdEnum.RAULEBAQUE,
+                SpellIdEnum.FÉLINTION,
+                SpellIdEnum.MOT_CURATIF,
+                SpellIdEnum.BROKLE,
+                SpellIdEnum.FLÈCHE_DE_DISPERSION,
+                SpellIdEnum.ARBRE_DE_VIE,
+                SpellIdEnum.DOULEUR_PARTAGÉE,
+                SpellIdEnum.DIFFRACTION,
+                SpellIdEnum.FOCUS,
+                SpellIdEnum.ROUBLABOT,
+                SpellIdEnum.IVRESSE,
+                SpellIdEnum.FLIBUSTE
+            };
 
-            return SpellManager.Instance.GetSpellLevel((int)spellId);
+            specialSpellsList.ForEach(x => character.Spells.UnLearnSpell((int)x));
         }
 
     }
