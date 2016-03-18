@@ -163,7 +163,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     m_colors.Add(index, c);
                 }
 
-                var i = 0;
+                var i = 1;
                 foreach (var breedColor in breedColors)
                 {
                     if (!m_colors.ContainsKey(i))
@@ -173,6 +173,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 }
 
                 character.EntityLook.SetColors(m_colors.Select(x => x.Value).ToArray());
+                character.EntityLook.SetColors(m_colors.Select(x => x.Key).ToArray(), m_colors.Select(x => x.Value).ToArray());
             }
 
             character.MandatoryChanges = 0;
