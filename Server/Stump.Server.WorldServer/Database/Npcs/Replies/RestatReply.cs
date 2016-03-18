@@ -18,7 +18,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
                 return false;
 
             character.ResetStats(true);
-
             return true;
         }
     }

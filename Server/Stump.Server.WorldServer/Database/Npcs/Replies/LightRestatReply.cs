@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            character.ResetStats();
+            character.ResetStats(false);
 
             return true;
         }
