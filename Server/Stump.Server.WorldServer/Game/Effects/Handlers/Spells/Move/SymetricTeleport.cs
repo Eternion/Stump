@@ -38,6 +38,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 var cell = new MapPoint((2 * targetPoint.X - casterPoint.X), (2 * targetPoint.Y - casterPoint.Y));
 
+                if (!cell.IsInMap())
+                    continue;
+
                 var dstCell = Map.GetCell(cell.CellId);
 
                 if (dstCell == null)
