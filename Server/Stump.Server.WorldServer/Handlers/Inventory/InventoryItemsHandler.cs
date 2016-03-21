@@ -212,24 +212,22 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
+            var modifiedItem = ItemManager.Instance.CreatePlayerItem(character, host);
+            modifiedItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
+            modifiedItem.Stack = 1;
+
             if (message.preview)
             {
-                var modifiedItem = ItemManager.Instance.CreatePlayerItem(character, host);
-                modifiedItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
-
                 SendMimicryObjectPreviewMessage(client, modifiedItem);
             }
             else
             {
-                host.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
-                host.Invalidate();
-
                 character.Inventory.UnStackItem(food, 1);
                 character.Inventory.UnStackItem(mimisymbic, 1);
+                character.Inventory.UnStackItem(host, 1);
+                character.Inventory.AddItem(modifiedItem);
 
-                character.Inventory.RefreshItem(host);
-
-                SendMimicryObjectAssociatedMessage(client, host);
+                SendMimicryObjectAssociatedMessage(client, modifiedItem);
             }
         }
 

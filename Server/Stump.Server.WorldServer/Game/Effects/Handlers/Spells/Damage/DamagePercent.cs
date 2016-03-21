@@ -68,19 +68,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (triggerDmg == null)
                 return;
 
-            if (triggerDmg.Source == buff.Target)
+            if (triggerDmg.ReflectedDamages)
                 return;
 
             var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Target, buff.Spell, buff.Target.Cell)
             {
-                Buff = buff
+                Buff = buff,
+                ReflectedDamages = true,
+                IsCritical = Critical,
+                MarkTrigger = MarkTrigger,
+                IgnoreDamageBoost = true
             };
 
             damage.GenerateDamages();
             damage.Amount = (int)((buff.Target.LifePoints * (buff.Dice.DiceNum / 100.0)));
-            damage.IgnoreDamageBoost = true;
-            damage.MarkTrigger = MarkTrigger;
-            damage.IsCritical = Critical;
 
             buff.Target.InflictDamage(damage);
 

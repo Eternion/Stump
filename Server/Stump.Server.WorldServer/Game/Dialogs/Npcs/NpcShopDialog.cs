@@ -10,7 +10,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
@@ -34,13 +33,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             CanSell = true;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get
-            {
-                return DialogTypeEnum.DIALOG_PURCHASABLE;
-            }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         public IEnumerable<NpcItem> Items
         {
@@ -88,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public void Close()
         {
-            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
+            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
         }
 
