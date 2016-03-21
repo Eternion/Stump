@@ -183,33 +183,33 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
-        public byte[] BlueCellsBin
+        [NullString]
+        public string BlueCellsCSV
         {
             get;
             set;
         }
 
-        public byte[] RedCellsBin
+        [NullString]
+        public string RedCellsCSV
         {
             get;
             set;
         }
-
 
         [Ignore]
         public short[] BlueFightCells
         {
             get
             {
-                return BlueCellsBin == null
+                return BlueCellsCSV == null
                            ? new short[0]
-                           : (m_blueCells ?? (m_blueCells = DeserializeFightCells(BlueCellsBin)));
+                           : (m_blueCells ?? (m_blueCells = BlueCellsCSV.FromCSV<short>(",")));
             }
             set
             {
                 m_blueCells = value;
-
-                BlueCellsBin = value != null ? SerializeFightCells(value) : null;
+                BlueCellsCSV = value?.ToCSV(",");
             }
         }
 
@@ -218,14 +218,14 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         {
             get
             {
-                return RedCellsBin == null
+                return RedCellsCSV == null
                            ? new short[0]
-                           : (m_redCells ?? (m_redCells = DeserializeFightCells(RedCellsBin)));
+                           : (m_redCells ?? (m_redCells = RedCellsCSV.FromCSV<short>(",")));
             }
             set
             {
                 m_redCells = value;
-                RedCellsBin = value != null ? SerializeFightCells(value) : null;
+                RedCellsCSV = value?.ToCSV(",");
             }
         }
 
@@ -275,31 +275,5 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         }
 
         #endregion
-
-        public static byte[] SerializeFightCells(short[] cells)
-        {
-            var bytes = new byte[cells.Length*2];
-
-            for (int i = 0, l = 0; i < cells.Length; i++, l += 2)
-            {
-                bytes[l] = (byte) ((cells[i] & 0xFF00) >> 8);
-                bytes[l + 1] = (byte) (cells[i] & 0xFF);
-            }
-
-            return bytes;
-        }
-
-        public static short[] DeserializeFightCells(byte[] bytes)
-        {
-            if ((bytes.Length%2) != 0)
-                throw new ArgumentException("bytes.Length % 2 != 0");
-
-            var cells = new short[bytes.Length/2];
-
-            for (int i = 0, j = 0; i < bytes.Length; i += 2, j++)
-                cells[j] = (short) (bytes[i] << 8 | bytes[i + 1]);
-
-            return cells;
-        }
     }
 }
