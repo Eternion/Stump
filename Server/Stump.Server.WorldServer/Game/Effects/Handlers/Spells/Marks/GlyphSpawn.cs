@@ -39,10 +39,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             Glyph glyph;
             if (Effect.EffectId == EffectsEnum.Effect_GlyphAura)
                 glyph = new GlyphAura((short) Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell,
-                    EffectZone.ShapeType, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+                    EffectZone.ShapeType, (byte)Effect.ZoneMinSize, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell));
             else
                 glyph = new Glyph((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell,
-                    EffectZone.ShapeType, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+                    EffectZone.ShapeType, (byte)Effect.ZoneMinSize, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell), Effect.EffectId == EffectsEnum.Effect_Glyph);
 
             Fight.AddTriger(glyph);
 

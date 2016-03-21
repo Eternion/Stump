@@ -1,15 +1,17 @@
-﻿using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
+using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SubAP)]
-    public class APDebuff: SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_LostAP)]
+    [EffectHandler(EffectsEnum.Effect_SubAP_Roll)]
+    public class APDebuff : SpellEffectHandler
     {
         public APDebuff(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
@@ -18,16 +20,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         protected override bool InternalApply()
         {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return false;
+
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
                 var target = actor;
+                
                 var buff = actor.GetBestReflectionBuff();
-                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
+                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && buff.RollReflection() && Spell.Template.Id != 0)
                 {
                     NotifySpellReflected(actor);
                     target = Caster;
@@ -36,21 +39,50 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         actor.RemoveBuff(buff);
                 }
 
-                if (Effect.Duration != 0 || Effect.Delay != 0)
+                var value = Effect.EffectId == EffectsEnum.Effect_SubAP ? integerEffect.Value : RollAP(actor, integerEffect.Value);
+
+                var dodged = (short)(integerEffect.Value - value);
+
+                if (dodged > 0)
                 {
-                    AddStatBuff(target, (short)(-(integerEffect.Value)), PlayerFields.AP, (short)EffectsEnum.Effect_SubAP);
+                    ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
+                        ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, target, dodged);
+                }
+
+                if (value <= 0)
+                    continue;
+                
+                target.TriggerBuffs(target, BuffTriggerType.OnAPLost);
+
+                if (Effect.Duration != 0 || Effect.Delay != 0 && Effect.EffectId != EffectsEnum.Effect_LostAP)
+                {
+                    AddStatBuff(actor, (short) -value, PlayerFields.AP, (short)EffectsEnum.Effect_SubAP);
                 }
                 else
                 {
-                    target.LostAP(integerEffect.Value, Caster);
+                    target.LostAP(value, Caster);
                 }
-
-
-                target.TriggerBuffs(target, BuffTriggerType.OnAPLost);
             }
 
             return true;
         }
+
+        short RollAP(FightActor actor, int maxValue)
+        {
+            short value = 0;
+
+            for (var i = 0; i < maxValue && value < actor.AP; i++)
+            {
+                if (actor.RollAPLose(Caster, value))
+                {
+                    value++;
+                }
+            }
+
+            return value;
+        }
+
+
         void NotifySpellReflected(FightActor source)
         {
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);

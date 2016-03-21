@@ -420,7 +420,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                     EffectsEnum.Effect_StealHPFire,
                     EffectsEnum.Effect_StealHPNeutral,
 
-                    EffectsEnum.Effect_RemoveAP, 
+                    EffectsEnum.Effect_LostAP, 
                     
                     EffectsEnum.Effect_RemainingFights,
 

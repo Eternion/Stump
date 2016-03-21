@@ -4,6 +4,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using System;
+using MongoDB.Bson.Serialization.Conventions;
+using Stump.Core.Mathematics;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
@@ -21,6 +23,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         }
 
         public int ReflectedLevel => Dice.DiceFace;
+        public int ReflectionChance => Dice.Value;
+
+        public bool RollReflection()
+        {
+            var rand = new CryptoRandom();
+
+            return rand.Next(0, 101) <= ReflectionChance;
+        }
         
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {

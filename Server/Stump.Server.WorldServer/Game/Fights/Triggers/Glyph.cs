@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -20,15 +21,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         };
 
         public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
-                     Cell centerCell, SpellShapeEnum shape, byte size, Color color)
+                     Cell centerCell, SpellShapeEnum shape, byte minSize, byte size, Color color, bool canBeForced)
             : base(id, caster, castedSpell, originEffect, centerCell,
-                new MarkShape(caster.Fight, centerCell, shape, GetMarkShape(shape), size, color))
+                new MarkShape(caster.Fight, centerCell, shape, GetMarkShape(shape), minSize, size, color))
         {
             GlyphSpell = glyphSpell;
+            CanBeForced = canBeForced;
             Duration = originEffect.Duration;
         }
 
         public Spell GlyphSpell
+        {
+            get;
+        }
+
+        public bool CanBeForced
         {
             get;
         }
@@ -67,7 +74,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
             handler.Execute();
         }
-        
+
+        public void TriggerAllCells(FightActor trigger)
+        {
+            NotifyTriggered(trigger, GlyphSpell);
+
+            var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, CenterCell, false);
+            handler.MarkTrigger = this;
+            handler.Initialize();
+
+            handler.Execute();
+        }
+
 
         public override GameActionMark GetGameActionMark()
         {

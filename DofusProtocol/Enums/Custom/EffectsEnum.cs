@@ -169,7 +169,7 @@
         /// <summary>
         /// -#1{~1~2 à -}#2 PA
         /// </summary>
-        Effect_RemoveAP = 101,
+        Effect_LostAP = 101,
         /// <summary>
         /// Dommages réduits de #1{~1~2 à }#2
         /// </summary>
@@ -1893,11 +1893,11 @@
         /// <summary>
         /// -#1{~1~2 à -}#2 PA
         /// </summary>
-        Effect_SubAP_1079 = 1079,
+        Effect_SubAP_Roll = 1079,
         /// <summary>
         /// -#1{~1~2 à -}#2 PM
         /// </summary>
-        Effect_SubMP_1080 = 1080,
+        Effect_SubMP_Roll = 1080,
         /// <summary>
         /// (not found)
         /// </summary>
