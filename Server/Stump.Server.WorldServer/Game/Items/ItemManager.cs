@@ -499,4 +499,20 @@ namespace Stump.Server.WorldServer.Game.Items
 
         #endregion
     }
+
+    public class EffectsListComparer : IEqualityComparer<List<EffectBase>>
+    {
+        public bool Equals(List<EffectBase> x, List<EffectBase> y)
+        {
+            return x.Count == y.Count && x.All(y.Contains);
+        }
+
+        public int GetHashCode(List<EffectBase> obj)
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                return obj.Aggregate((int) 2166136261, (current, effectBase) => current*16777619 ^ effectBase.GetHashCode());
+            }
+        }
+    }
 }

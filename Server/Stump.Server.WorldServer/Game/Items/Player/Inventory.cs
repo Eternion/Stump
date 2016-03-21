@@ -384,7 +384,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (!itemStack.OnAddItem())
                     return null;
 
-                StackItem(itemStack, amount);
+                StackItem(itemStack, amount, addItemMsg);
             }
             else
             {
@@ -408,7 +408,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (!item.OnAddItem())
                     return null;
 
-                StackItem(item, amount);
+                StackItem(item, amount, addItemMsg);
             }
             else
             {

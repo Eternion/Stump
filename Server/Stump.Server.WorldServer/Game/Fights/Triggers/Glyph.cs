@@ -68,8 +68,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
             foreach (var effectHandler in handler.GetEffectHandlers())
             {
-                if (effectHandler.IsValidTarget(trigger))
-                    effectHandler.SetAffectedActors(new[] { trigger });
+                effectHandler.SetAffectedActors(effectHandler.IsValidTarget(trigger) ? new[] {trigger} : new FightActor[0]);
             }
 
             handler.Execute();
