@@ -91,8 +91,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             SaveSync = new object();
             LoggoutSync = new object();
             Status = new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
-
-            LoadRecord();
         }
 
         #region Events
@@ -3337,7 +3335,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        void LoadRecord()
+        public void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
             Head = BreedManager.Instance.GetHead(Record.Head);

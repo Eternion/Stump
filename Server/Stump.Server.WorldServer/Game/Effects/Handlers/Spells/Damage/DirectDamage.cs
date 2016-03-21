@@ -5,8 +5,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Spell = Stump.Server.WorldServer.Game.Spells.Spell;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
     [EffectHandler(EffectsEnum.Effect_DamageWater)]
@@ -83,12 +83,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             var damages = token as Fights.Damage;
 
-            if (damages != null && damages.Spell == null)
+            if (damages != null && (damages.Spell == null || damages.ReflectedDamages))
                 return;
 
             var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, null, buff.Target.Cell)
             {
-                IsCritical = buff.Critical
+                IsCritical = buff.Critical,
+                ReflectedDamages = true
             };
 
             damage.GenerateDamages();
