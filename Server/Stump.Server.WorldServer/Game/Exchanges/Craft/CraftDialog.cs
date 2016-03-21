@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
@@ -150,20 +151,32 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             var xp = JobManager.Instance.GetCraftJobXp(recipe, Job.Level) * Amount;
             Job.Experience += xp;
 
-            if (ItemManager.Instance.HasToBeGenerated(recipe.ItemTemplate))
-                for (int i = 0; i < Amount; i++)
-                {
-                    var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, 1, false);
-                    InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
-                        ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, 1);
-                    InventoryHandler.SendExchangeCraftInformationObjectMessage(Clients, createdItem, Receiver.Character);
-                }
-            else
+            if (!ItemManager.Instance.HasToBeGenerated(recipe.ItemTemplate))
             {
                 var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, Amount, false);
                 InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
                     ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, Amount);
-                InventoryHandler.SendExchangeCraftInformationObjectMessage(Clients, createdItem, Receiver.Character);
+                InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character);
+            }
+            else
+            {
+                var dict = new Dictionary<List<EffectBase>, int>(new EffectsListComparer());
+                for (int i = 0; i < Amount; i++)
+                {
+                    var effects = ItemManager.Instance.GenerateItemEffects(recipe.ItemTemplate);
+                    if (dict.ContainsKey(effects))
+                        dict[effects] += 1;
+                    else
+                        dict.Add(effects, 1);
+                }
+
+                foreach (var keyPair in dict)
+                {
+                    var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, keyPair.Key, keyPair.Value, false);
+                    InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
+                        ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, keyPair.Value);
+                    InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character);
+                }
             }
 
             ChangeAmount(1);

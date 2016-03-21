@@ -54,13 +54,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         protected override bool InternalApply()
         {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return false;
+
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
                 AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic());
             }
 
