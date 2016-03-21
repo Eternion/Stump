@@ -15,8 +15,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
     {
         private List<FightActor> m_actorsInside = new List<FightActor>();
 
-        public GlyphAura(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, SpellShapeEnum shape, byte size, Color color)
-            : base(id, caster, castedSpell, originEffect, glyphSpell, centerCell, shape, size, color)
+        public GlyphAura(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, SpellShapeEnum shape, byte minSize, byte size, Color color)
+            : base(id, caster, castedSpell, originEffect, glyphSpell, centerCell, shape, minSize, size, color, false)
         {
         }
 

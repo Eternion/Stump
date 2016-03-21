@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 {
                     var wall = new Wall((short) Bomb1.Fight.PopNextTriggerId(), Bomb1.Summoner, Bomb1.WallSpell, null,
                         cell, this,
-                        new MarkShape(Bomb1.Fight, cell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, m_color));
+                        new MarkShape(Bomb1.Fight, cell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, 0, m_color));
 
                     Bomb1.Fight.AddTriger(wall);
                     m_walls.Add(wall);

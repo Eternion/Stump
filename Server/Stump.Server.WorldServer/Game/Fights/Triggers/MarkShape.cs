@@ -15,20 +15,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         bool m_customForm;
         Cell[] m_cells;
 
-        public MarkShape(IFight fight, Cell cell, SpellShapeEnum spellShape, GameActionMarkCellsTypeEnum shape, byte size, Color color)
+        public MarkShape(IFight fight, Cell cell, SpellShapeEnum spellShape, GameActionMarkCellsTypeEnum shape, byte minSize, byte size, Color color)
         {
             Fight = fight;
             Cell = cell;
             Shape = shape;
             Size = size;
+            MinSize = minSize;
             Color = color;
 
-            m_zone = new Zone(spellShape, size);
+            m_zone = new Zone(spellShape, size) { MinRadius = MinSize };
             CheckCells(m_zone.GetCells(Cell, fight.Map));
         }
 
-        public MarkShape(IFight fight, Cell cell, GameActionMarkCellsTypeEnum shape, byte size, Color color)
-            : this(fight, cell, SpellShapeEnum.C, shape, size, color)
+        public MarkShape(IFight fight, Cell cell, GameActionMarkCellsTypeEnum shape, byte minSize, byte size, Color color)
+            : this(fight, cell, SpellShapeEnum.C, shape, minSize, size, color)
         {
         }
 
@@ -52,6 +53,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             get;
         }
 
+        public byte MinSize
+        {
+            get;
+        }
+
         public Color Color
         {
             get;
@@ -61,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public GameActionMarkedCell[] GetGameActionMarkedCells()
         {
-            if (!m_customForm && m_cells.Length > 1 && Shape == GameActionMarkCellsTypeEnum.CELLS_CIRCLE || Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS)
+            if (!m_customForm && m_cells.Length > 1 && MinSize == 0 && Shape == GameActionMarkCellsTypeEnum.CELLS_CIRCLE || Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS)
                 return new[] {new GameActionMarkedCell(Cell.Id, (sbyte)Size, Color.ToArgb() & 0xFFFFFF, (sbyte) Shape)};
             
             return m_cells.Select(x => new GameActionMarkedCell(x.Id, 0, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape)).ToArray();
