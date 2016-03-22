@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             var fight = Caster.Fight;
             var triggers = fight.GetTriggersByCell(Caster.Cell);
 
-            foreach (var trigger in triggers.OfType<Glyph>().Where(x => x.CanBeForced))
+            foreach (var trigger in triggers.OfType<Glyph>().Where(x => x.CanBeForced && x.Caster == Caster))
             {
                 fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
 
