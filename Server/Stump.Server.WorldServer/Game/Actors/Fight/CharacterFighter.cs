@@ -294,8 +294,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 193);
                     break;
                 default:
+                    //Impossible de lancer ce sort actuellement.
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
-                    Character.SendServerMessage("(" + result + ")", Color.Red);
                     break;
             }
 

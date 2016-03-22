@@ -78,23 +78,30 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             return spell.MaxCastPerTarget <= 0 || castsOnThisTarget < spell.MaxCastPerTarget;
         }
 
+        SpellHistoryEntry GetMostRecentEntry(SpellLevelTemplate spell)
+        {
+            return m_underlyingStack.LastOrDefault(entry => entry.Spell.SpellId == spell.SpellId);
+        }
+
         public bool CanCastSpell(SpellLevelTemplate spell)
         {
-            var mostRecentEntry = m_underlyingStack.LastOrDefault(entry => entry.Spell.Id == spell.Id);
+            if (spell.GlobalCooldown != 0 &&
+                Owner.Team.Fighters.Any(x => x.SpellHistory.GetMostRecentEntry(spell) != null &&
+                                            x.SpellHistory.GetMostRecentEntry(spell).IsGlobalCooldownActive(CurrentRound)))
+                return false;
+
+            var mostRecentEntry = GetMostRecentEntry(spell);
 
             //check initial cooldown
             if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
-            {
                 return false;
-            }
 
             if (mostRecentEntry == null)
                 return true;
 
-            if (mostRecentEntry.IsGlobalCooldownActive(CurrentRound))
-            {
+            if (mostRecentEntry.IsCooldownActive(CurrentRound))
                 return false;
-            }
+
             var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.CastRound == CurrentRound).ToArray();
 
             if (castsThisRound.Length == 0)
@@ -113,9 +120,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             var mostRecentEntry = m_underlyingStack.LastOrDefault(entry => entry.Spell.Id == spell.Id);
 
             if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
-            {
                 return (int) (spell.InitialCooldown - CurrentRound);
-            }
 
             if (mostRecentEntry == null)
                 return 0;
@@ -123,9 +128,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             var elapsedCd = mostRecentEntry.GetElapsedRounds(CurrentRound);
 
             if (elapsedCd < mostRecentEntry.CooldownDuration)
-            {
                 return mostRecentEntry.CooldownDuration - elapsedCd;
-            }
 
             var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.CastRound == CurrentRound).ToArray();
 
@@ -133,9 +136,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
                 return 0;
 
             if (spell.MaxCastPerTurn > 0 && castsThisRound.Length >= spell.MaxCastPerTurn)
-            {
                 return 1;
-            }
 
             return 0;
         }

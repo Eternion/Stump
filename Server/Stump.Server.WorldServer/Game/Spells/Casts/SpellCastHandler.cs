@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             if (Spell.Id == spellId)
                 return true;
 
-            CastSpell effect = CastedByEffect;
+            var effect = CastedByEffect;
             while (effect != null && effect.Spell.Id != spellId)
                 effect = effect.CastHandler.CastedByEffect;
 

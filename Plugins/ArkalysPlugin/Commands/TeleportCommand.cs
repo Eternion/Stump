@@ -18,111 +18,30 @@ namespace ArkalysPlugin.Commands
         }
     }
 
-    public class NpcTPCommand : InGameSubCommand
+    public class BetaTPCommand : InGameSubCommand
     {
-        [Variable(true)]
-        public static int NpcMap;
-
-        [Variable(true)]
-        public static short NpcCell;
-
-        [Variable(true)]
-        public static byte NpcDirection;
-
-        public NpcTPCommand()
+        public BetaTPCommand()
         {
-            Aliases = new[] { "pnj" };
+            Aliases = new[] { "beta" };
             RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à la zone d'achat d'équipements";
-            ParentCommandType = typeof (TPCommands);
-        }
-
-        public override void Execute(GameTrigger trigger)
-        {
-            var map = World.Instance.GetMap(NpcMap);
-
-            if (map == null)
-            {
-                trigger.ReplyError("Map {0} not found", NpcMap);
-                return;
-            }
-
-            var cell = map.Cells[NpcCell];
-
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)NpcDirection));
-            trigger.Reply("Téléporté à la zone d'achat d'équipements");
-        }
-    }
-
-    public class ShopTPCommand : InGameSubCommand
-    {
-        [Variable(true)]
-        public static int ShopMap;
-
-        [Variable(true)]
-        public static short ShopCell;
-
-        [Variable(true)]
-        public static byte ShopDirection;
-
-        public ShopTPCommand()
-        {
-            Aliases = new[] { "shop", "boutique" };
-            RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace boutique";
-            ParentCommandType = typeof (TPCommands);
-        }
-
-        public override void Execute(GameTrigger trigger)
-        {
-            var map = World.Instance.GetMap(ShopMap);
-
-            if (map == null)
-            {
-                trigger.ReplyError("Map {0} not found", ShopMap);
-                return;
-            }
-
-            var cell = map.Cells[ShopCell];
-
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)ShopDirection));
-            trigger.Reply("Téléporté au shop");
-        }
-    }
-
-    public class PvPTPCommand : InGameSubCommand
-    {
-        [Variable(true)]
-        public static int PvPMap;
-
-        [Variable(true)]
-        public static short PvPCell;
-
-        [Variable(true)]
-        public static byte PvPDirection;
-
-        public PvPTPCommand()
-        {
-            Aliases = new[] { "pvp" };
-            RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace PvP";
+            Description = "Téléporte à la zone bêta";
             ParentCommandType = typeof(TPCommands);
         }
 
         public override void Execute(GameTrigger trigger)
         {
-            var map = World.Instance.GetMap(PvPMap);
+            var map = World.Instance.GetMap(154272513);
 
             if (map == null)
             {
-                trigger.ReplyError("Map {0} not found", PvPMap);
+                trigger.ReplyError("Map {0} not found", 154272513);
                 return;
             }
 
-            var cell = map.Cells[PvPCell];
+            var cell = map.Cells[456];
 
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)PvPDirection));
-            trigger.Reply("Téléporté à l'espace PvP");
+            trigger.Character.Teleport(new ObjectPosition(map, cell, DirectionsEnum.DIRECTION_SOUTH));
+            trigger.Reply("Téléporté à la zone bêta");
         }
     }
 }

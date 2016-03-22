@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             Caster.SetInvisibilityState(GameActionFightInvisibilityStateEnum.INVISIBLE);
 
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, Caster,
-                entry.Fighter.IsFriendlyWith(Caster) ? TargetedCell : new Cell { Id = -1 }), true);
+                entry.Fighter.IsFriendlyWith(Caster) ? TargetedCell : new Cell { Id = -1 }), false);
 
             foreach (var dir in (DirectionsEnum[])Enum.GetValues(typeof(DirectionsEnum)))
             {
