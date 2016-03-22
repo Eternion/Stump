@@ -1444,9 +1444,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public bool BuffMaxStackReached(Buff buff)
             => buff.Spell.CurrentSpellLevel.MaxStack > 0
                 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell.Id == buff.Spell.Id
-                && entry.Effect.EffectId == buff.Effect.EffectId
-                && entry.Effect.GetValues() == buff.Effect.GetValues()
-                && entry.GetType() == buff.GetType()
+                && entry.Effect.Id == buff.Effect.Id
+                && (buff.Critical || entry.Critical || Enumerable.SequenceEqual(entry.Effect.GetValues(), buff.Effect.GetValues()))
+                && entry.GetType().Name == buff.GetType().Name
                 && buff.Delay == 0);
 
         public bool AddBuff(Buff buff, bool bypassMaxStack = false)
@@ -1461,7 +1461,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 var oldBuff = m_buffList.Where(x => x.Spell.Id == buff.Spell.Id
                                             && x.Effect.EffectId == buff.Effect.EffectId
-                                            && x.Effect.GetValues() == buff.Effect.GetValues()
+                                            && (buff.Critical || x.Critical || Enumerable.SequenceEqual(x.Effect.GetValues(), buff.Effect.GetValues()))
                                             && x.GetType() == buff.GetType()).OrderBy(x => x.Duration).FirstOrDefault();
 
                 if (oldBuff == null)
