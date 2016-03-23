@@ -671,6 +671,7 @@
     <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Mounts\MountHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
+    <Compile Include="Handlers\Social\SocialHandler.cs" />
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
     <Compile Include="Handlers\TaxCollector\TaxCollectorHandler.cs" />
     <Compile Include="Handlers\Titles\TitleHandler.cs" />

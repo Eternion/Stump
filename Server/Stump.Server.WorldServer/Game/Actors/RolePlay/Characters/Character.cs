@@ -2142,6 +2142,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (IsRiding() && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
                 Mount.Dismount(this);
 
+            foreach(var job in Jobs.Where(x => x.IsIndexed))
+            {
+                job.Template.RefreshCrafter(this);
+            }
+
             base.OnEnterMap(map);
         }
 
