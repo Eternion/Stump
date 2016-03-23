@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
 
         public void Close()
         {
-            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, true);
+            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.ResetDialog();
         }
     }
