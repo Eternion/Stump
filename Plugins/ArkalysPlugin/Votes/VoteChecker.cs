@@ -21,7 +21,7 @@ namespace ArkalysPlugin.Votes
         [Initialization(InitializationPass.Last, Silent = true)]
         public static void Initialize()
         {
-            //WorldServer.Instance.IOTaskPool.CallPeriodically((VoteTimer * 1000), CheckVotes);
+            WorldServer.Instance.IOTaskPool.CallPeriodically((VoteTimer * 1000), CheckVotes);
         }
 
         static void CheckVotes()
