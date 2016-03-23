@@ -570,6 +570,7 @@
     <Compile Include="Game\Interactives\Skills\SkillCraft.cs" />
     <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillHarvest.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillLearnEmote.cs" />
     <Compile Include="Game\Interactives\Skills\SkillOpenJobBook.cs" />
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
     <Compile Include="Game\Interactives\Skills\SkillRevive.cs" />
