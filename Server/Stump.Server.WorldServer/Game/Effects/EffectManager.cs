@@ -433,7 +433,10 @@ namespace Stump.Server.WorldServer.Game.Effects
                     EffectsEnum.Effect_LastMeal,
                     EffectsEnum.Effect_LastMealDate,
 
-                    EffectsEnum.Effect_Corpulence
+                    EffectsEnum.Effect_Corpulence,
+
+
+                    EffectsEnum.Effect_999,
                 };
 
         #endregion

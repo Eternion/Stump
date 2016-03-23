@@ -82,6 +82,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Jobs
 
         public void Close()
         {
+            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, true);
             if (m_lastRequestedJob != null)
             {
                 m_lastRequestedJob.CrafterUnSubscribed -= LastRequestedJobOnCrafterUnSubscribed;
