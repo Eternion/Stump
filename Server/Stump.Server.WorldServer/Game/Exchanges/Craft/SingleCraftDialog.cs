@@ -39,7 +39,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         public void Open()
         {
-            InventoryHandler.SendExchangeStartedMessage(Character.Client, ExchangeType);
             InventoryHandler.SendExchangeStartOkCraftWithInformationMessage(Character.Client, Skill);
 
             Character.SetDialoger(Crafter);
