@@ -46,6 +46,8 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public int GetElapsedRounds(int currentRound) => currentRound - CastRound;
 
-        public bool IsGlobalCooldownActive(int currentRound) => GetElapsedRounds(currentRound) < CooldownDuration;
+        public bool IsCooldownActive(int currentRound) => GetElapsedRounds(currentRound) < CooldownDuration;
+
+        public bool IsGlobalCooldownActive(int currentRound) => GetElapsedRounds(currentRound) < (Spell.GlobalCooldown == -1 ? (int)Spell.MinCastInterval : Spell.GlobalCooldown);
     }
 }
