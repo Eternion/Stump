@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 
             foreach (var handler in Handlers)
             {
-                handler.AddAffectedActor(affectedActors);
+                handler.SetAffectedActors(new[] { affectedActors });
             }
 
             base.Execute();

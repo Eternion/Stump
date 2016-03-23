@@ -880,9 +880,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
             }
 
-            if (HasState((int)SpellStatesEnum.INVULNERABLE_56)
-                || (isCloseRangeAttack && HasState((int)SpellStatesEnum.INVULNERABILITE_EN_MELEE_376))
-                || (!isCloseRangeAttack && HasState((int)SpellStatesEnum.INVULNERABILITE_A_DISTANCE_375)))
+            if (HasState((int)SpellStatesEnum.INVULNERABLE_56) ||
+                HasState((int)SpellStatesEnum.INVULNERABLE_269) ||
+                HasState((int)SpellStatesEnum.INVULNERABLE_365) ||
+                (isCloseRangeAttack && HasState((int)SpellStatesEnum.INVULNERABILITE_EN_MELEE_376)) ||
+                (!isCloseRangeAttack && HasState((int)SpellStatesEnum.INVULNERABILITE_A_DISTANCE_375)))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
