@@ -29,10 +29,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
     public sealed class Inventory : ItemsStorage<BasePlayerItem>, IDisposable
     {
         [Variable(true)]
-        private const int MaxInventoryKamas = 150000000;
+        const int MaxInventoryKamas = 150000000;
 
         [Variable(true)]
-        private const int MaxPresets = 8;
+        const int MaxPresets = 8;
 
         [Variable]
         public static readonly bool ActiveTokens = true;
@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public static bool WeightEnabled = true;
 
         [Initialization(typeof(ItemManager), Silent=true)]
-        private static void InitializeTokenTemplate()
+        static void InitializeTokenTemplate()
         {
             if (ActiveTokens)
                 TokenTemplate = ItemManager.Instance.TryGetTemplate(TokenTemplateId);
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #endregion
 
-        private readonly Dictionary<CharacterInventoryPositionEnum, List<BasePlayerItem>> m_itemsByPosition
+        readonly Dictionary<CharacterInventoryPositionEnum, List<BasePlayerItem>> m_itemsByPosition
             = new Dictionary<CharacterInventoryPositionEnum, List<BasePlayerItem>>
                   {
                       {CharacterInventoryPositionEnum.ACCESSORY_POSITION_HAT, new List<BasePlayerItem>()},
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                       {CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, new List<BasePlayerItem>()},
                   };
 
-        private readonly Dictionary<ItemSuperTypeEnum, CharacterInventoryPositionEnum[]> m_itemsPositioningRules
+        readonly Dictionary<ItemSuperTypeEnum, CharacterInventoryPositionEnum[]> m_itemsPositioningRules
             = new Dictionary<ItemSuperTypeEnum, CharacterInventoryPositionEnum[]>
             {
                 {ItemSuperTypeEnum.SUPERTYPE_AMULET, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_AMULET}},
@@ -147,7 +147,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public Character Owner
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -162,13 +161,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        public BasePlayerItem this[int guid]
-        {
-            get
-            {
-                return TryGetItem(guid);
-            }
-        }
+        public BasePlayerItem this[int guid] => TryGetItem(guid);
 
         public int Weight
         {
@@ -185,10 +178,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        public uint WeightTotal
-        {
-            get { return 1000 + (uint)(5 * Owner.Stats.Strength.Total) + (uint)Owner.Stats[PlayerFields.Weight].Total; } //todo: add jobs
-        }
+        public uint WeightTotal => 1000 + (uint)(5 * Owner.Stats.Strength.Total) + (uint)Owner.Stats[PlayerFields.Weight].Total;
 
         public uint WeaponCriticalHit
         {
@@ -218,7 +208,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             private set;
         }
 
-        private Queue<PlayerPresetRecord> PresetsToDelete
+        Queue<PlayerPresetRecord> PresetsToDelete
         {
             get;
             set;
@@ -264,7 +254,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        private void UnLoadInventory()
+        void UnLoadInventory()
         {
             // we must keep then in case it's a fight disconnection
             /*Items.Clear();
@@ -420,10 +410,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item;
         }
 
-        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true)
-        {
-            return item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
-        }
+        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true) => item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
 
         public void CreateTokenItem(uint amount)
         {
@@ -431,10 +418,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Items.Add(Tokens.Guid, Tokens); // cannot stack
         }
 
-        public PlayerPresetRecord GetPreset(int presetId)
-        {
-            return Presets.FirstOrDefault(x => x.PresetId == presetId);
-        }
+        public PlayerPresetRecord GetPreset(int presetId) => Presets.FirstOrDefault(x => x.PresetId == presetId);
 
         public bool IsPresetExist(int presetId)
         {
@@ -653,10 +637,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return false;
         }
 
-        public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item)
-        {
-            return !m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType) ? new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED } : m_itemsPositioningRules[item.Template.Type.SuperType];
-        }
+        public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item) => !m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType) ? new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED } : m_itemsPositioningRules[item.Template.Type.SuperType];
 
         public void MoveItem(BasePlayerItem item, CharacterInventoryPositionEnum position)
         {
@@ -760,7 +741,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        private void UnEquipedDouble(IItem itemToEquip)
+        void UnEquipedDouble(IItem itemToEquip)
         {
             if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHÉE)
             {
@@ -1136,10 +1117,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return itemSet.GetEffects(CountItemSetEquiped(itemSet));
         }
 
-        public short[] GetItemsSkins()
-        {
-            return GetEquipedItems().Where(entry => entry.Position != CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS && entry.AppearanceId != 0).Select(entry => (short)entry.AppearanceId).ToArray();
-        }
+        public short[] GetItemsSkins() => GetEquipedItems().Where(entry => entry.Position != CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS && entry.AppearanceId != 0).Select(entry => (short)entry.AppearanceId).ToArray();
 
         public Tuple<short?, bool> GetPetSkin()
         {

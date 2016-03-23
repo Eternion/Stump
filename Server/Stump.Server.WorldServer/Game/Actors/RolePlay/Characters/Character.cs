@@ -2158,15 +2158,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Fight?.State == FightState.Placement || Fight?.State == FightState.NotStarted)
                 return false;
 
-            if (Inventory.Weight <= Inventory.WeightTotal)
-                return base.CanMove() && !IsDialoging();
-
-            if (!Inventory.WeightEnabled)
-                return base.CanMove() && !IsDialoging();
-
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 12);
-
-            return false;
+            return base.CanMove() && !IsDialoging();
         }
 
         public override bool IsGonnaChangeZone() => base.IsGonnaChangeZone() || !IsLoggedIn;
@@ -2174,6 +2166,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public override bool StartMove(Path movementPath)
         {
             LeaveDialog(); //Close Dialog && RequestBox when moving
+
+            if (Inventory.WeightEnabled && Inventory.Weight > Inventory.WeightTotal)
+                movementPath.SetWalk();
 
             if (IsFighting() || MustBeJailed() || !IsInJail())
                 return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
