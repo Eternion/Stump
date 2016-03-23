@@ -360,6 +360,7 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Dialogs\Book\BookDialog.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
     <Compile Include="Game\Dialogs\Jobs\JobIndexDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Items\EmoteItemEffect.cs" />
