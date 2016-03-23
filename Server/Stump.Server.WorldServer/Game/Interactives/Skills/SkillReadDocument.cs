@@ -1,7 +1,7 @@
-﻿using Stump.DofusProtocol.Messages;
-using Stump.Server.BaseServer.Database;
+﻿using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs.Book;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -17,7 +17,8 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override int StartExecute(Character character)
         {
-            character.Client.Send(new DocumentReadingBeginMessage(DocumentId));
+            var bookDialog = new BookDialog(character, DocumentId);
+            bookDialog.Open();
 
             return base.StartExecute(character);
         }

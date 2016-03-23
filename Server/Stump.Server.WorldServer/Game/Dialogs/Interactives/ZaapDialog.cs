@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
 {
     public class ZaapDialog : IDialog
     {
-        private readonly List<Map> m_destinations = new List<Map>();
+        readonly List<Map> m_destinations = new List<Map>();
 
         public ZaapDialog(Character character, InteractiveObject zaap)
         {
@@ -29,21 +29,16 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
             m_destinations = destinations.ToList();
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_TELEPORTER; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_TELEPORTER;
 
         public Character Character
         {
             get;
-            private set;
         }
 
         public InteractiveObject Zaap
         {
             get;
-            private set;
         }
 
         public void AddDestination(Map map)
