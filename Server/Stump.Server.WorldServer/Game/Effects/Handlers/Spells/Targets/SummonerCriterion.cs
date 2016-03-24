@@ -20,9 +20,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             if (Required)
             {
                 return actor == handler.Caster ||
-                        (((SummonedFighter)actor)?.Summoner == handler.Caster) ||
-                        (((SummonedBomb)actor)?.Summoner == handler.Caster) ||
-                        (((SummonedFighter)actor)?.Summoner == ((SummonedFighter)handler.Caster)?.Summoner);
+                        (actor is SummonedFighter && ((SummonedFighter)actor).Summoner == handler.Caster) ||
+                        (actor is SummonedBomb && ((SummonedBomb)actor).Summoner == handler.Caster) ||
+                        (actor is SummonedFighter && handler.Caster is SummonedFighter &&
+                        ((SummonedFighter)actor).Summoner == ((SummonedFighter)handler.Caster).Summoner);
             }
 
             return !(actor is SummonedFighter) || !(actor is SummonedBomb) ||

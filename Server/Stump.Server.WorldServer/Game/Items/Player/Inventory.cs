@@ -1016,11 +1016,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendObjectMovementMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
-            if (lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+            if (isEquiped || wasEquiped)
+            {
                 CheckItemsCriterias();
 
-            if ((isEquiped || wasEquiped) && item.AppearanceId != 0)
-                Owner.UpdateLook();
+                if (item.AppearanceId != 0)
+                    Owner.UpdateLook();
+            }
 
             Owner.RefreshActor();
             Owner.RefreshStats();

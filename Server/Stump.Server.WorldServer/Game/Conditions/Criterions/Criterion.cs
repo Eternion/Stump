@@ -214,7 +214,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         protected bool Compare<T>(IComparable<T> obj, T comparand)
         {
-            int comparaison = obj.CompareTo(comparand);
+            var comparaison = obj.CompareTo(comparand);
 
             switch (Operator)
             {
