@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
                 var buffId = actor.PopNextBuffId();
                 var effect = Spell.CurrentSpellLevel.Effects[0];
 
-                var buff = new TriggerBuff(buffId, actor, actor, effect, Spell, Spell, false, FightDispellableEnum.DISPELLABLE_BY_DEATH, 0, SpellBuffTrigger)
+                var buff = new TriggerBuff(buffId, actor, actor, Handlers[0], Spell, Spell, false, FightDispellableEnum.DISPELLABLE_BY_DEATH, 0, SpellBuffTrigger)
                 {
                     Duration = (short)effect.Duration
                 };

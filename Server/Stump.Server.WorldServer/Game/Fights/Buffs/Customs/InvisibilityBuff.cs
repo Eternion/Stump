@@ -4,17 +4,18 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class InvisibilityBuff : Buff
     {
-        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable)
+        public InvisibilityBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
         }
 
-        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, int priority, FightDispellableEnum dispelable, short customActionId)
+        public InvisibilityBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, int priority, FightDispellableEnum dispelable, short customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
         }

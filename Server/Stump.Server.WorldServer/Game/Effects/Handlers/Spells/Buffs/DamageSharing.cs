@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             foreach (var actor in actors)
             {
                 var buffId = actor.PopNextBuffId();
-                var buff = new FractionBuff(buffId, actor, Caster, Dice, Spell, Critical, FightDispellableEnum.DISPELLABLE, actors);
+                var buff = new FractionBuff(buffId, actor, Caster, this, Spell, Critical, FightDispellableEnum.DISPELLABLE, actors);
 
                 actor.AddBuff(buff);
             }

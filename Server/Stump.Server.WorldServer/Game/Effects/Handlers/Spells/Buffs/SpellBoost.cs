@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (boostedSpell == null)
                     return false;
 
-                var buff = new SpellBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, boostedSpell, Dice.Value, false, FightDispellableEnum.DISPELLABLE_BY_DEATH);
+                var buff = new SpellBuff(actor.PopNextBuffId(), actor, Caster, this, Spell, boostedSpell, Dice.Value, false, FightDispellableEnum.DISPELLABLE_BY_DEATH);
 
                 actor.AddBuff(buff);
             }

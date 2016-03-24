@@ -4,12 +4,13 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     public class SpellImmunityBuff : Buff
     {
-        public SpellImmunityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, int spellImmune, bool critical, FightDispellableEnum dispelable)
+        public SpellImmunityBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, int spellImmune, bool critical, FightDispellableEnum dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             SpellImmune = spellImmune;

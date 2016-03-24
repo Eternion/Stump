@@ -1,6 +1,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -11,27 +12,27 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
        
         public const int CHARACTERISTIC_STATE = 71;
 
-        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable)
-            : this(id, target,caster,effect,spell,critical, dispelable, 0, null)
-        {
-        }
-
-        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId)
+        protected Buff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, int priority = 0, short? customActionId = null)
         {
             Id = id;
             Target = target;
             Caster = caster;
-            Effect = effect;
+            EffectHandler = effectHandler;
             Spell = spell;
             Critical = critical;
             Dispellable = dispelable;
             CustomActionId = customActionId;
 
-            Duration = (short)(Effect.Duration == -1 ? -1000 : Effect.Duration);
-            Delay = (short)Effect.Delay;
+            Duration = (short) (EffectHandler.Duration == -1 ? -1000 : Effect.Duration);
+            Delay = (short) EffectHandler.Delay;
 
             Efficiency = 1.0d;
             Priority = priority;
+        }
+
+        public SpellEffectHandler EffectHandler
+        {
+            get;
         }
 
         public int Id
@@ -49,10 +50,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
         }
 
-        public EffectBase Effect
-        {
-            get;
-        }
+        public EffectDice Dice => EffectHandler.Dice;
+
+        public EffectBase Effect => EffectHandler.Effect;
 
         public Spell Spell
         {

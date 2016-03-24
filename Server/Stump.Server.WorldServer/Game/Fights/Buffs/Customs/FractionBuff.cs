@@ -6,17 +6,18 @@ using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class FractionBuff : Buff
     {
-        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, FightActor[] fighters)
+        public FractionBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, FightActor[] fighters)
             : this(id, target, caster, effect, spell, critical, dispelable, 0, null, fighters)
         {
         }
 
-        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId, FightActor[] fighters)
+        public FractionBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId, FightActor[] fighters)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             Fighters = fighters;

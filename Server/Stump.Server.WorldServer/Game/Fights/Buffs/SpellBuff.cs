@@ -4,19 +4,20 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     public class SpellBuff : Buff
     {
-        public SpellBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, Spell boostedSpell, short boost, bool critical, FightDispellableEnum dispelable)
+        public SpellBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, Spell boostedSpell, short boost, bool critical, FightDispellableEnum dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             BoostedSpell = boostedSpell;
             Boost = boost;
         }
 
-        public SpellBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, Spell boostedSpell, short boost, bool critical, FightDispellableEnum dispelable, int priority, short customActionId)
+        public SpellBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, Spell boostedSpell, short boost, bool critical, FightDispellableEnum dispelable, int priority, short customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             BoostedSpell = boostedSpell;

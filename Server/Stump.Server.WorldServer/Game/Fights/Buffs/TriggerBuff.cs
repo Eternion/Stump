@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
@@ -58,17 +59,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             {"tS", BuffTriggerType.OnTackle},
             {"X", BuffTriggerType.OnDeath},
         };
-
-
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority, TriggerBuffApplyHandler applyTrigger, short? customActionId = null)
-            : this(id, target, caster, effect, spell, parentSpell, critical, dispelable, priority, applyTrigger, null, customActionId)
-        {
-        }
-
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short? customActionId = null)
+        
+        public TriggerBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority,
+            TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger = null, short? customActionId = null)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
-            Dice = effect;
             ParentSpell = parentSpell;
             ApplyTrigger = applyTrigger;
             RemoveTrigger = removeTrigger;
@@ -88,10 +83,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
         }
 
-        public EffectDice Dice
-        {
-            get;
-        }
 
         public TriggerBuffApplyHandler ApplyTrigger
         {

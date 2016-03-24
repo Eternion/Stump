@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                             return false;
 
                         var id = actor.PopNextBuffId();
-                        var stateBuff = new DisableStateBuff(id, actor, Caster, Dice, Spell, DefaultDispellableStatus, actualState)
+                        var stateBuff = new DisableStateBuff(id, actor, Caster, this, Spell, DefaultDispellableStatus, actualState)
                         {
                             Duration = 1
                         };
@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return;
 
                 var id = buff.Target.PopNextBuffId();
-                var stateBuff = new DisableStateBuff(id, buff.Target, Caster, Dice, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState)
+                var stateBuff = new DisableStateBuff(id, buff.Target, Caster, this, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState)
                 {
                     Duration = 1
                 };

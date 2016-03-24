@@ -5,18 +5,19 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     public class StateBuff : Buff
     {
-        public StateBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, FightDispellableEnum dispelable, SpellState state)
+        public StateBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, FightDispellableEnum dispelable, SpellState state)
             : base(id, target, caster, effect, spell, false, dispelable)
         {
             State = state;
         }
 
-        public StateBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, FightDispellableEnum dispelable, int priority, short customActionId, SpellState state)
+        public StateBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, FightDispellableEnum dispelable, int priority, short customActionId, SpellState state)
             : base(id, target, caster, effect, spell, false, dispelable, priority, customActionId)
         {
             State = state;

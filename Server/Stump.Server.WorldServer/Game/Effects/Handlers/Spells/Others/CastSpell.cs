@@ -30,13 +30,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     var buffId = affectedActor.PopNextBuffId();
 
                     var spell = new Spell(Dice.DiceNum, (byte)Dice.DiceFace);
-                    var effect = Effect as EffectDice;
 
-                    var buff = new TriggerBuff(buffId, affectedActor, Caster, effect, spell, Spell, false, FightDispellableEnum.DISPELLABLE_BY_DEATH, Priority, DefaultBuffTrigger)
-                    {
-                        Duration = (short)Dice.Duration,
-                        Delay = (short)Dice.Delay
-                    };
+                    var buff = new TriggerBuff(buffId, affectedActor, Caster, this, spell, Spell, false, FightDispellableEnum.DISPELLABLE_BY_DEATH, Priority, DefaultBuffTrigger);
 
                     affectedActor.AddBuff(buff);
                 }
