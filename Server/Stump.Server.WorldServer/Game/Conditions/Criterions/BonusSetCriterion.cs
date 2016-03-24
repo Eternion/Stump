@@ -27,14 +27,10 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         {
             // sum the number of bonus given by itemset
             // if you have only 1 item from the set it gives 0 bonus else you have (count-1) bonuses
-            var bonusCount =
-                (from item in character.Inventory
-                 group item by item.Template.ItemSet into g
-                 where g.Key != null
-                 let count = g.Count()
-                 select count - 1).Sum();
-                
-            return Compare(BonusCount, bonusCount);
+            var setItems = character.Inventory.GetEquipedItems().Select(x => x.Template.ItemSet).Where(x => x != null);
+            var bonus = setItems.Count() - setItems.Distinct().Count();
+
+            return Compare(bonus, BonusCount);
         }
     }
 }
