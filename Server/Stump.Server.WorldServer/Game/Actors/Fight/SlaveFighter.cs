@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Fight.TurnStopped -= OnTurnStopped;
 
-            base.OnDead(killedBy, false);
+            base.OnDead(killedBy, passTurn);
 
             Summoner.RemoveSlave(this);
         }
