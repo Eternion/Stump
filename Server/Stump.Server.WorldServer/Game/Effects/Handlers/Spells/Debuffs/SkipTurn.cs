@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                var buff = new SkipTurnBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, false, FightDispellableEnum.DISPELLABLE_BY_DEATH);
+                var buff = new SkipTurnBuff(actor.PopNextBuffId(), actor, Caster, this, Spell, false, FightDispellableEnum.DISPELLABLE_BY_DEATH);
                 actor.AddBuff(buff);
             }
 

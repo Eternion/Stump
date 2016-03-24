@@ -650,6 +650,7 @@
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\RoublabotCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Sadida\FeuillageCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
     <Compile Include="Game\Jobs\Job.cs" />

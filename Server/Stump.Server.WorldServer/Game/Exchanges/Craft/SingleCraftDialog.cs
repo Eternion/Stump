@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
     public class SingleCraftDialog : CraftDialog
     {
         public SingleCraftDialog(Character character, InteractiveObject interactive, Skill skill)
-             : base (interactive, skill, character.Jobs[skill.SkillTemplate.ParentJobId])
+             : base(interactive, skill, character.Jobs[skill.SkillTemplate.ParentJobId])
         {
             Crafter = new Crafter(this, character);
             Receiver = Crafter;

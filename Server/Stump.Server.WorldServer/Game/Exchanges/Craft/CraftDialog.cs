@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                     Receiver.MoveItem(item.Guid, 0);
             }
 
-            var xp = JobManager.Instance.GetCraftJobXp(recipe, Job.Level) * Amount;
+            var xp = Job.GetCraftXp(recipe, Amount);
             Job.Experience += xp;
 
             if (!ItemManager.Instance.HasToBeGenerated(recipe.ItemTemplate))

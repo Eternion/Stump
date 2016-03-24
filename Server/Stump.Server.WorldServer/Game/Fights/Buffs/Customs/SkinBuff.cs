@@ -6,19 +6,20 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class SkinBuff : Buff
     {
 
-        public SkinBuff(int id, FightActor target, FightActor caster, EffectBase effect, ActorLook look, Spell spell, FightDispellableEnum dispelable)
+        public SkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, ActorLook look, Spell spell, FightDispellableEnum dispelable)
             : base(id, target, caster, effect, spell, false, dispelable)
         {
             Look = look;
         }
 
-        public SkinBuff(int id, FightActor target, FightActor caster, EffectBase effect, ActorLook look, Spell spell, FightDispellableEnum dispelable, int priority, short customActionId)
+        public SkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, ActorLook look, Spell spell, FightDispellableEnum dispelable, int priority, short customActionId)
             : base(id, target, caster, effect, spell, false, dispelable, priority, customActionId)
         {
             Look = look;

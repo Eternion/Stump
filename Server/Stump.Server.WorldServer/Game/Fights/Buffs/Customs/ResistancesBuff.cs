@@ -2,6 +2,7 @@ using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -9,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class ResistancesBuff : Buff
     {
-        public ResistancesBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, bool critical, FightDispellableEnum dispelable)
+        public ResistancesBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, short value, bool critical, FightDispellableEnum dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Value = value;

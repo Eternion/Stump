@@ -166,6 +166,43 @@ namespace Stump.Server.WorldServer.Game.Jobs
             Owner.Stats[PlayerFields.Weight].Base += weightBonus;
         }
 
+        public int GetCraftXp(RecipeRecord recipe, int amount)
+        {
+            var level = Level;
+
+            double upperBoundXp = UpperBoundExperience;
+            double currentXp = Experience;
+            double xp = 0;
+            while (amount > 0)
+            {
+                if (level - JobManager.MAX_JOB_LEVEL_GAP > recipe.ItemTemplate.Level)
+                    break;
+
+                var xpPerLevel = 20d*recipe.ItemTemplate.Level/(Math.Pow((level - recipe.ItemTemplate.Level), 1.1)/10 + 1);
+
+                if (recipe.ItemTemplate.CraftXpRatio > -1)
+                    xpPerLevel *= recipe.ItemTemplate.CraftXpRatio/100d;
+                else if (recipe.ItemTemplate.Type.CraftXpRatio > -1)
+                    xpPerLevel *= recipe.ItemTemplate.Type.CraftXpRatio/100d;
+
+                xpPerLevel *= Rates.JobXpRate;
+                xpPerLevel = Math.Floor(xpPerLevel);
+
+                var amountBeforeLevelUp = (int)Math.Min(amount, Math.Ceiling((upperBoundXp - currentXp) /xpPerLevel));
+                amount -= amountBeforeLevelUp;
+                xp += xpPerLevel*amountBeforeLevelUp;
+                currentXp += xpPerLevel*amountBeforeLevelUp;
+
+                if (currentXp >= upperBoundXp)
+                {
+                    level++;
+                    upperBoundXp = ExperienceManager.Instance.GetCharacterNextLevelExperience((byte) level);
+                }
+            }
+
+            return (int)Math.Floor(xp);
+        }
+
         public void Save(ORM.Database database)
         {
             if (IsNew)

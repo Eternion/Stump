@@ -6,21 +6,17 @@ using Stump.Server.WorldServer.Game.Spells;
 using System;
 using MongoDB.Bson.Serialization.Conventions;
 using Stump.Core.Mathematics;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class SpellReflectionBuff : Buff
     {
-        public SpellReflectionBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, FightDispellableEnum dispelable)
+        public SpellReflectionBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
-            Dice = effect;
         }
-
-        public EffectDice Dice
-        {
-            get;
-        }
+        
 
         public int ReflectedLevel => Dice.DiceFace;
         public int ReflectionChance => Dice.Value;

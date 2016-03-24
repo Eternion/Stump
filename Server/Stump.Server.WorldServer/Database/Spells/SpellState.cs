@@ -47,6 +47,59 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
+        public Boolean IsSilent
+        {
+            get;
+            set;
+        }
+
+        public Boolean CantDealDamage
+        {
+            get;
+            set;
+        }
+
+        public Boolean Invulnerable
+        {
+            get;
+            set;
+        }
+
+        public Boolean Incurable
+        {
+            get;
+            set;
+        }
+
+        public Boolean CantBeMoved
+        {
+            get;
+            set;
+        }
+
+        public Boolean CantBePushed
+        {
+            get;
+            set;
+        }
+
+        public Boolean CantSwitchPosition
+        {
+            get;
+            set;
+        }
+
+        public Boolean InvulnerableMelee
+        {
+            get;
+            set;
+        }
+
+        public Boolean InvulnerableRange
+        {
+            get;
+            set;
+        }
 
         #region IAssignedByD2O Members
 
@@ -57,6 +110,16 @@ namespace Stump.Server.WorldServer.Database.Spells
             NameId = state.nameId;
             PreventsSpellCast = state.preventsSpellCast;
             PreventsFight = state.preventsFight;
+            IsSilent = state.IsSilent;
+            CantDealDamage = state.CantDealDamage;
+            Invulnerable = state.Invulnerable;
+            Incurable = state.Incurable;
+            CantBeMoved = state.CantBeMoved;
+            CantBePushed = state.CantBePushed;
+            CantSwitchPosition = state.CantSwitchPosition;
+            InvulnerableMelee = state.InvulnerableMelee;
+            InvulnerableRange = state.InvulnerableRange;
+
         }
 
         #endregion

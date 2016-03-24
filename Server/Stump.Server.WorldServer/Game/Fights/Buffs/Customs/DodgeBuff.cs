@@ -7,19 +7,20 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class DodgeBuff : Buff
     {
-        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, int dodgePercent, int backCellsCount)
+        public DodgeBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, int dodgePercent, int backCellsCount)
             : this(id, target, caster, effect, spell, critical, dispelable, 0, null, dodgePercent, backCellsCount)
         {
             DodgePercent = dodgePercent;
             BackCellsCount = backCellsCount;
         }
 
-        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId, int dodgePercent, int backCellsCount)
+        public DodgeBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId, int dodgePercent, int backCellsCount)
             : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             DodgePercent = dodgePercent;
@@ -41,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public override void Apply()
         {
             var id = Target.PopNextBuffId();
-            var buff = new TriggerBuff(id, Target, Caster, Effect as EffectDice, Spell, Spell, Critical, Dispellable, Priority, EvasionBuffTrigger);
+            var buff = new TriggerBuff(id, Target, Caster, EffectHandler, Spell, Spell, Critical, Dispellable, Priority, EvasionBuffTrigger);
 
             buff.SetTrigger(BuffTriggerType.OnDamaged);
             Target.AddBuff(buff);

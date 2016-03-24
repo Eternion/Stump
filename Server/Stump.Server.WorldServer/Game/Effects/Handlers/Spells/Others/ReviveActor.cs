@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using System;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -58,7 +59,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             {
                 var actorBuffId = actor.PopNextBuffId();
 
-                var actorBuff = new StateBuff(actorBuffId, actor, Caster, new EffectInteger(EffectsEnum.Effect_AddState, (short)SpellStatesEnum.ZOMBI_74),
+                var addStateHandler = new AddState(new EffectDice((short)EffectsEnum.Effect_AddState, (short)SpellStatesEnum.ZOMBI_74, 0, 0, new EffectBase()), actor, null, actor.Cell, false);
+                var actorBuff = new StateBuff(actorBuffId, actor, Caster, addStateHandler,
                     Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.ZOMBI_74))
                 {
                     Duration = -1000

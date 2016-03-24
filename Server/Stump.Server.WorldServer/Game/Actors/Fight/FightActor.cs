@@ -18,6 +18,7 @@ using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -39,6 +40,7 @@ using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -1869,13 +1871,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
 
-            var actorBuff = new StateBuff(actorBuffId, this, this, new EffectInteger(EffectsEnum.Effect_AddState, (short)stateCarrying.Id),
+            var addStateHandler = new AddState(new EffectDice((short)EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), this, null, Cell, false);
+            var actorBuff = new StateBuff(actorBuffId, this, this, addStateHandler,
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarrying)
             {
                 Duration = -1000
             };
 
-            var targetBuff = new StateBuff(targetBuffId, target, this, new EffectInteger(EffectsEnum.Effect_AddState, (short)stateCarried.Id),
+            addStateHandler = new AddState(new EffectDice((short)EffectsEnum.Effect_AddState, (short)stateCarrying.Id, 0, 0, new EffectBase()), target, null, target.Cell, false);
+            var targetBuff = new StateBuff(targetBuffId, target, this, addStateHandler,
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarried)
             {
                 Duration = -1000
@@ -2075,14 +2079,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool CanMove() => IsFighterTurn() && IsAlive() && MP > 0;
 
         public virtual bool CanTackle(FightActor fighter)
-            => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.ENRACINE_6)
-                && !fighter.HasState((int)SpellStatesEnum.ENRACINE_6) && fighter.Position.Cell != Position.Cell;
+            => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && GetStates().All(x => !x.State.CantBeMoved)
+                && fighter.GetStates().All(x => !x.State.CantBeMoved) && fighter.Position.Cell != Position.Cell;
 
-        public virtual bool CanBePushed() => !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
+        public virtual bool CanBePushed() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantBePushed);
 
-        public virtual bool CanSwitchPos() => !HasState((int)SpellStatesEnum.ENRACINE_6) && !HasState((int)SpellStatesEnum.INDEPLACABLE_97);
+        public virtual bool CanSwitchPos() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantSwitchPosition);
 
-        public virtual bool CanPlay() => true;
+        public virtual bool CanPlay() => GetStates().All(x => !x.State.PreventsFight);
 
         public virtual bool HasLeft() => false;
 

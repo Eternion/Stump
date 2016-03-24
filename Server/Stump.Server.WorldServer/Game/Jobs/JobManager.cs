@@ -48,23 +48,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
         public JobTemplate[] GetJobTemplates() => m_jobTemplates.Values.ToArray();
         public IEnumerable<JobTemplate> EnumerateJobTemplates() => m_jobTemplates.Values;
-
-        public int GetCraftJobXp(RecipeRecord recipe, int jobLevel)
-        {
-            if (jobLevel - MAX_JOB_LEVEL_GAP > recipe.ItemTemplate.Level)
-                return 0;
-
-            var xp = 20d*recipe.ItemTemplate.Level/(Math.Pow((jobLevel - recipe.ItemTemplate.Level), 1.1)/10 + 1);
-
-            if (recipe.ItemTemplate.CraftXpRatio > -1)
-                xp *= recipe.ItemTemplate.CraftXpRatio/100d;
-            else if (recipe.ItemTemplate.Type.CraftXpRatio > -1)
-                xp *= recipe.ItemTemplate.Type.CraftXpRatio/100d;
-
-            xp *= Rates.JobXpRate;
-
-            return (int)Math.Floor(xp);
-        }
+        
 
         public int GetHarvestJobXp(int minLevel)
         {

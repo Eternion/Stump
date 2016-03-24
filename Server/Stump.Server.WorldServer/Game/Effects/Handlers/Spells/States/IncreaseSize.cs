@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                 look.Rescale((Dice.DiceNum / 100.0) + 1);
 
-                var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH);
+                var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, this, look, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH);
                 actor.AddBuff(buff);
             }
 
