@@ -170,6 +170,9 @@ namespace Stump.Server.WorldServer.Game.Jobs
         {
             var level = Level;
 
+            if (level == 200)
+                return GetXpPerLevel(recipe, Level) * amount;
+
             double upperBoundXp = UpperBoundExperience;
             double currentXp = Experience;
             double xp = 0;
@@ -178,15 +181,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
                 if (level - JobManager.MAX_JOB_LEVEL_GAP > recipe.ItemTemplate.Level)
                     break;
 
-                var xpPerLevel = 20d*recipe.ItemTemplate.Level/(Math.Pow((level - recipe.ItemTemplate.Level), 1.1)/10 + 1);
-
-                if (recipe.ItemTemplate.CraftXpRatio > -1)
-                    xpPerLevel *= recipe.ItemTemplate.CraftXpRatio/100d;
-                else if (recipe.ItemTemplate.Type.CraftXpRatio > -1)
-                    xpPerLevel *= recipe.ItemTemplate.Type.CraftXpRatio/100d;
-
-                xpPerLevel *= Rates.JobXpRate;
-                xpPerLevel = Math.Floor(xpPerLevel);
+                var xpPerLevel = GetXpPerLevel(recipe, level);
 
                 var amountBeforeLevelUp = (int)Math.Min(amount, Math.Ceiling((upperBoundXp - currentXp) /xpPerLevel));
                 amount -= amountBeforeLevelUp;
@@ -201,6 +196,24 @@ namespace Stump.Server.WorldServer.Game.Jobs
             }
 
             return (int)Math.Floor(xp);
+        }
+
+        private int GetXpPerLevel(RecipeRecord recipe, int level)
+        {
+            if (level - JobManager.MAX_JOB_LEVEL_GAP > recipe.ItemTemplate.Level)
+                return 0;
+
+            var xpPerLevel = 20d * recipe.ItemTemplate.Level / (Math.Pow((level - recipe.ItemTemplate.Level), 1.1) / 10 + 1);
+
+            if (recipe.ItemTemplate.CraftXpRatio > -1)
+                xpPerLevel *= recipe.ItemTemplate.CraftXpRatio / 100d;
+            else if (recipe.ItemTemplate.Type.CraftXpRatio > -1)
+                xpPerLevel *= recipe.ItemTemplate.Type.CraftXpRatio / 100d;
+
+            xpPerLevel *= Rates.JobXpRate;
+            xpPerLevel = Math.Floor(xpPerLevel);
+
+            return (int)xpPerLevel;
         }
 
         public void Save(ORM.Database database)
