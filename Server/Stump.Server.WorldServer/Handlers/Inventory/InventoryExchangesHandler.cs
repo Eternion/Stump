@@ -460,6 +460,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
+            if (client.Character.Inventory.IsFull(item.Template, (int)item.Stack))
+            {
+                //Action annulée pour cause de surcharge...
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 70);
+
+                SendExchangeBidHouseBuyResultMessage(client, message.uid, false);
+                return;
+            }
+
             if (!item.SellItem(client.Character))
             {
                 SendExchangeBidHouseBuyResultMessage(client, item.Guid, false);

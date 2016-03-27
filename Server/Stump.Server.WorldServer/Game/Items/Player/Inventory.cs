@@ -1131,6 +1131,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return Tuple.Create((short?)pet.AppearanceId, pet.Template.TypeId == (int)ItemTypeEnum.FAMILIER);
         }
 
+        public bool IsFull()
+        {
+            return Weight > WeightTotal && WeightEnabled;
+        }
+
+        public bool IsFull(ItemTemplate item, int count)
+        {
+            return (Weight + (item.Weight * count)) > WeightTotal && WeightEnabled;
+        }
+
         #region Events
 
         private void InitializeEvents()
