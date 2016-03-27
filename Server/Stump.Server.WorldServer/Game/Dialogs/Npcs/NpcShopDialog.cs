@@ -97,6 +97,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
             }
 
+            if (Character.Inventory.IsFull(itemToSell.Item, amount))
+            {
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.REQUEST_CHARACTER_OVERLOADED));
+                return false;
+            }
+
             var finalPrice = (int) (itemToSell.Price*amount);
 
             if (amount <= 0 || !CanBuy(itemToSell, amount))
