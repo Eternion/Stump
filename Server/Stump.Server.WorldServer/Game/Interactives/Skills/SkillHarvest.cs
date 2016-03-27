@@ -61,6 +61,15 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
             var count = RollHarvestedItemCount(character);
 
+            if (character.Inventory.IsFull(m_harvestedItem, count))
+            {
+                //Votre inventaire est plein. Votre récolte est perdue...
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 144);
+
+                base.EndExecute(character);
+                return;
+            }
+
             character.Inventory.AddItem(m_harvestedItem, count);
             InventoryHandler.SendObtainedItemMessage(character.Client, m_harvestedItem, count);
 

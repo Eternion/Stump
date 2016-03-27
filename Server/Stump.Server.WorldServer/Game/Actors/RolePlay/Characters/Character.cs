@@ -2167,7 +2167,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             LeaveDialog(); //Close Dialog && RequestBox when moving
 
-            if (Inventory.WeightEnabled && Inventory.Weight > Inventory.WeightTotal)
+            if (Inventory.IsFull())
                 movementPath.SetWalk();
 
             if (IsFighting() || MustBeJailed() || !IsInJail())
@@ -3036,6 +3036,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void GetDroppedItem(WorldObjectItem objectItem)
         {
+            if (Inventory.IsFull(objectItem.Item, objectItem.Quantity))
+            {
+                //Vous ne pouvez pas porter autant d'objets.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 285);
+
+                //Le nombre maximum d'objets pour cet inventaire est déjà atteint.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 6);
+                return;
+            }
+
             objectItem.Map.Leave(objectItem);
             Inventory.AddItem(objectItem.Item, objectItem.Effects, objectItem.Quantity);
         }
