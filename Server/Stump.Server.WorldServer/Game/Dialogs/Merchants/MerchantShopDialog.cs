@@ -78,6 +78,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
                 return false;
             }
 
+            if (Character.Inventory.IsFull(item.Template, quantity))
+            {
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.REQUEST_CHARACTER_OVERLOADED));
+                return false;
+            }
+
             var removed = Merchant.Bag.RemoveItem(item, quantity);
 
             var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, removed, item.Effects);

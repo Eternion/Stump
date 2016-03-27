@@ -27,7 +27,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
         public Character Character
         {
             get;
-            private set;
         }
 
         public Npc Npc

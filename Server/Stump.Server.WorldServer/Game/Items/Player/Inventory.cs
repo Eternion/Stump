@@ -932,6 +932,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (addItemMsg)
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 21, item.Stack, item.Template.Id);
 
+            if (IsFull())
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 12);
+
             base.OnItemAdded(item, addItemMsg);
         }
 

@@ -17,7 +17,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
         public Character Character
         {
             get;
-            private set;
         }
 
         public ExchangeTypeEnum ExchangeType
