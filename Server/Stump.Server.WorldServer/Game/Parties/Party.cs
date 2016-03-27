@@ -475,7 +475,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         private void UnBindEvents(Character member)
         {
-            //member.LifeRegened -= OnLifeUpdated;
+            member.LifeRegened -= OnLifeUpdated;
             member.LevelChanged -= OnLevelChanged;
             member.EnterMap -= OnEnterMap;
             member.ContextChanged -= OnContextChanged;

@@ -1,9 +1,6 @@
-﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
-using Stump.Server.WorldServer.Database.World;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
-using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -17,23 +14,42 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             BonusMax = 75;
         }
 
+        bool WeaponAttack = false;
+
         public override void Initialize()
         {
             base.Initialize();
 
+            Fight.TurnStopped += OnTurnStopped;
+
             foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
-                fighter.SpellCasted += OnSpellCasted;
+                fighter.DamageInflicted += OnDamageInflicted;
         }
 
-        void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
-            => UpdateStatus(ChallengeStatusEnum.FAILED, caster);
+        private void OnTurnStopped(IFight fight, FightActor fighter)
+        {
+            if (fighter is CharacterFighter && !WeaponAttack)
+                UpdateStatus(ChallengeStatusEnum.FAILED, fighter);
+
+            WeaponAttack = false;
+        }
+
+        private void OnDamageInflicted(FightActor fighter, Damage damage)
+        {
+            if (!damage.IsWeaponAttack)
+                return;
+
+            WeaponAttack = true;
+        }
 
         protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {
             base.OnWinnersDetermined(fight, winners, losers, draw);
 
+            Fight.TurnStopped -= OnTurnStopped;
+
             foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
-                fighter.SpellCasted -= OnSpellCasted;
+                fighter.DamageInflicted -= OnDamageInflicted;
         }
     }
 }
