@@ -71,6 +71,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
                 return;
             }
 
+            //Check if kamas still here
+            if (FirstTrader.Character.Inventory.Kamas < FirstTrader.Kamas)
+                return;
+
             FirstTrader.Character.Inventory.SetKamas((int)(FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
 
 
