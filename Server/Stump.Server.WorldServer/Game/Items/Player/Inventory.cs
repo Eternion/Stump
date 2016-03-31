@@ -1141,7 +1141,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool IsFull(ItemTemplate item, int count)
         {
-            return (Weight + (item.Weight * count)) > WeightTotal && WeightEnabled;
+            return (Weight + (item.RealWeight * count)) > WeightTotal && WeightEnabled;
         }
 
         #region Events
