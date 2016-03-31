@@ -1577,13 +1577,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void DecrementSummonsCastedBuffsDuration()
         {
-            foreach (var summon in Summons)
+            foreach (var summon in Summons.ToArray())
                 summon.DecrementAllCastedBuffsDuration();
 
-            foreach (var bomb in Bombs)
+            foreach (var bomb in Bombs.ToArray())
                 bomb.DecrementAllCastedBuffsDuration();
 
-            foreach (var slave in Slaves)
+            foreach (var slave in Slaves.ToArray())
                 slave.DecrementAllCastedBuffsDuration();
         }
 
@@ -1708,7 +1708,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region States
 
-        public IEnumerable<StateBuff> GetStates() => GetBuffs(x => x is StateBuff).Select(x => x as StateBuff);
+        public IEnumerable<StateBuff> GetStates() => GetBuffs(x => x is StateBuff && x.Delay == 0).Select(x => x as StateBuff);
 
         public bool HasState(int stateId)
             => GetStates().Any(x => x.State.Id == stateId && !x.IsDisabled);
@@ -1805,6 +1805,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    spell.Template.Id == (int)SpellIdEnum.DOFUS_NÉBULEUX ||
                    spell.Template.Id == (int)SpellIdEnum.DOFUS_DES_VEILLEURS ||
                    spell.Template.Id == (int)SpellIdEnum.DOFUS_TURQUOISE ||
+                   spell.Template.Id == (int)SpellIdEnum.MAÎTRISE_D_ARME ||
                    spell.Template.Id == 6149; //DOKOKO
         }
 

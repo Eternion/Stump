@@ -1490,7 +1490,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event GradeChangedHandler GradeChanged;
 
-        private void OnGradeChanged(sbyte currentLevel, int difference)
+        void OnGradeChanged(sbyte currentLevel, int difference)
         {
             Map.Refresh(this);
             RefreshStats();
@@ -1503,7 +1503,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event Action<Character, bool> PvPToggled;
 
-        private void OnPvPToggled()
+        void OnPvPToggled()
         {
             foreach (var item in Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD).Where(item => !item.AreConditionFilled(this)))
             {
