@@ -18,6 +18,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         {
             logger.Debug("Apply spells fix");
 
+            #region COMMON
+
+            FixEffectOnAllLevels((int)SpellIdEnum.COUP_DE_POING, 0, (level, effect, critical) => effect.TargetMask = "a,A");
+
+            #endregion COMMON
+
             #region ECAFLIP
 
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Delay = 0);

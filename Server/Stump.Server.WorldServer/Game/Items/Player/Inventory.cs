@@ -353,7 +353,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount >= MaxInventoryKamas)
             {
                 amount = MaxInventoryKamas;            
-                //344	Vous avez atteint le seuil maximum de kamas dans votre inventaire.
+                //Vous avez atteint le seuil maximum de kamas dans votre inventaire.
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 344);
             }
 

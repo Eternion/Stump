@@ -22,6 +22,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 var look = actor.Look.Clone();
                 var buffLook = actor.GetBuffs(x => x is SkinBuff).LastOrDefault() as SkinBuff;
 
+                if (Delay == 0)
+                    buffLook = actor.GetBuffs(x => x is SkinBuff && x.Delay == 0).LastOrDefault() as SkinBuff;
+
                 if (buffLook != null)
                     look = buffLook.Look.Clone();
 

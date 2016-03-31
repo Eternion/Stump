@@ -255,6 +255,7 @@
     <Compile Include="Database\Npcs\NpcReplyRecord.cs" />
     <Compile Include="Database\Npcs\NpcSpawn.cs" />
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
+    <Compile Include="Database\Npcs\Replies\AlignmentReply.cs" />
     <Compile Include="Database\Npcs\Replies\ContinueDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\EndDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\LightRestatReply.cs" />

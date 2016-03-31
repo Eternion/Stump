@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         public List<BidHouseItem> GetSoldBidHouseItems(int ownerId) => m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId && x.Sold).ToList();
 
         public List<BidHouseItem> GetBidHouseItems(int ownerId, IEnumerable<int> types) => m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId
-        && types.Contains((int)x.Template.TypeId) && !x.Sold).ToList();
+                && types.Contains((int)x.Template.TypeId) && !x.Sold).ToList();
 
         public BidHouseItem GetBidHouseItem(int guid) => m_bidHouseItems.FirstOrDefault(x => x.Guid == guid);
 
