@@ -1920,9 +1920,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (targetState != null)
                 m_carriedActor.RemoveBuff(targetState);
 
-            RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
-            m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
-
             var carriedActor = m_carriedActor;
             m_carriedActor = null;
 

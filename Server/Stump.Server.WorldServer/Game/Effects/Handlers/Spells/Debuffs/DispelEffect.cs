@@ -1,9 +1,9 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_DispelMagicEffects)]
@@ -18,10 +18,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                actor.RemoveAndDispellAllBuffs();
+                if (Duration != 0)
+                {
+                    AddTriggerBuff(actor, OnBuffTriggered);
+                }
+                else
+                {
+                    actor.RemoveAndDispellAllBuffs();
+                }
             }
 
             return true;
+        }
+
+        static void OnBuffTriggered(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
+        {
+            buff.Target.RemoveAndDispellAllBuffs();
         }
     }
 
@@ -37,15 +49,33 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
+                if (Duration != 0)
+                {
+                    AddTriggerBuff(actor, OnBuffTriggered);
 
-                if (integerEffect == null)
-                    return false;
+                }
+                else
+                {
+                    var integerEffect = GenerateEffect();
 
-                actor.RemoveSpellBuffs(integerEffect.Value);
+                    if (integerEffect == null)
+                        return false;
+
+                    actor.RemoveSpellBuffs(integerEffect.Value);
+                }
             }
 
             return true;
+        }
+
+        void OnBuffTriggered(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
+        {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return;
+
+            buff.Target.RemoveSpellBuffs(integerEffect.Value);
         }
     }
 }
