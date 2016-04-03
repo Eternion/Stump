@@ -262,6 +262,7 @@ namespace Stump.Tools.SpellsExplorer
             Console.WriteLine("Level.SpellBreed = {0}, Level.HideEffects = {1}", levelTemplate.SpellBreed, levelTemplate.HideEffects);
             Console.WriteLine("Range = {0}, MinRange = {1}, RangeCanBeBoosted={2}", levelTemplate.Range, levelTemplate.MinRange, levelTemplate.RangeCanBeBoosted);
             Console.WriteLine("CastInLine = {0}, CastInDiagonal = {1}, CastTestLos={2}", levelTemplate.CastInLine, levelTemplate.CastInDiagonal, levelTemplate.CastTestLos);
+            Console.WriteLine("StatesRequired = {0}, StatesForbidden = {1}", levelTemplate.StatesRequiredCSV, levelTemplate.StatesForbiddenCSV);
             Console.WriteLine("");
 
             foreach (var effect in critical ? levelTemplate.CriticalEffects : levelTemplate.Effects)

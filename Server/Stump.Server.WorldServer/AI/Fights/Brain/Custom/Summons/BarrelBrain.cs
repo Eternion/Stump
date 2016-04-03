@@ -26,16 +26,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             var barrel = (SummonedMonster) Fighter;
 
             var spellBeuverie = barrel.Spells.FirstOrDefault(x => x.Value.Template.Id == (int)SpellIdEnum.BEUVERIE).Value;
-            var spellTournee = barrel.Spells.FirstOrDefault(x => x.Value.Template.Id == (int)SpellIdEnum.TOURNÉE_GÉNÉRALE).Value;
 
-            if (spellBeuverie == null || spellTournee == null)
+            if (spellBeuverie == null)
                 return;
 
-            if (player.IsCarried() && player.GetCarryingActor() == barrel.Summoner)
-            {
-                barrel.CastSpell(spellTournee, barrel.Cell);
+            if (player.IsCarried())
                 return;
-            }
 
             if (!barrel.Summoner.HasState((int) SpellStatesEnum.SAOUL_1) ||
                 !barrel.Summoner.Position.Point.IsOnSameLine(barrel.Position.Point))
