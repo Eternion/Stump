@@ -24,8 +24,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             Position = position;
             Look = look;
 
-            m_gameContextActorInformations =
-                new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
+            m_gameContextActorInformations = new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
             m_actions.AddRange(Template.Actions);
         }
 
@@ -39,13 +38,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         public NpcTemplate Template
         {
             get;
-            private set;
         }
 
         public NpcSpawn Spawn
         {
             get;
-            private set;
         }
 
         public override int Id
@@ -54,10 +51,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             protected set;
         }
 
-        public int TemplateId
-        {
-            get { return Template.Id; }
-        }
+        public int TemplateId => Template.Id;
 
         public override ActorLook Look
         {
@@ -65,10 +59,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             set;
         }
 
-        public List<NpcAction> Actions
-        {
-            get { return m_actions; }
-        }
+        public List<NpcAction> Actions => m_actions;
 
         public event Action<Npc, NpcActionTypeEnum, NpcAction, Character> Interacted;
 
@@ -113,29 +104,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             InteractWith(NpcActionTypeEnum.ACTION_TALK, dialoguer);
         }
 
-        public override string ToString()
-        {
-            return string.Format("{0} ({1}) [{2}]", Template.Name, Id, TemplateId);
-        }
+        public override string ToString() => string.Format("{0} ({1}) [{2}]", Template.Name, Id, TemplateId);
 
         #region GameContextActorInformations
 
         private readonly ObjectValidator<GameContextActorInformations> m_gameContextActorInformations;
 
-        private GameContextActorInformations BuildGameContextActorInformations()
-        {
-            return new GameRolePlayNpcInformations(Id,
+        private GameContextActorInformations BuildGameContextActorInformations() => new GameRolePlayNpcInformations(Id,
                                                    Look.GetEntityLook(),
                                                    GetEntityDispositionInformations(),
-                                                   (short) Template.Id,
+                                                   (short)Template.Id,
                                                    Template.Gender != 0,
                                                    Template.SpecialArtworkId);
-        }
 
-        public override GameContextActorInformations GetGameContextActorInformations(Character character)
-        {
-            return m_gameContextActorInformations;
-        }
+        public override GameContextActorInformations GetGameContextActorInformations(Character character) => m_gameContextActorInformations;
 
         #endregion
     }

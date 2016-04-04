@@ -106,12 +106,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                 m_destinations.Select(x => (sbyte)TeleporterTypeEnum.TELEPORTER_SUBWAY)));
         }
 
-        public short GetCostTo(Map map)
-        {
-            var pos = map.Position;
-            var pos2 = Zaapi.Map.Position;
-
-            return (short)Math.Floor(Math.Sqrt((pos2.X - pos.X) * (pos2.X - pos.X) + (pos2.Y - pos.Y) * (pos2.Y - pos.Y)) * 10);
-        }
+        public short GetCostTo(Map map) => 20;
     }
 }

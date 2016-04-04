@@ -271,9 +271,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void Save(bool updateAccount)
         {
-            if (Owner.Bank.IsLoaded)
-                Owner.Bank.Save();
-
             lock (Locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
