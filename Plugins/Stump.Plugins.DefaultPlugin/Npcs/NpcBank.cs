@@ -9,7 +9,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Bank;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Plugins.DefaultPlugin.Npcs
@@ -82,10 +81,7 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
 
     public class NpcBankScript : NpcAction
     {
-        public override NpcActionTypeEnum[] ActionType
-        {
-            get { return new []{ NpcActionTypeEnum.ACTION_TALK }; }
-        }
+        public override NpcActionTypeEnum[] ActionType => new[] { NpcActionTypeEnum.ACTION_TALK };
 
         public override void Execute(Npc npc, Character character)
         {
@@ -96,7 +92,8 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
 
     public class NpcBankDialog : NpcDialog
     {
-         public NpcBankDialog(Character character, Npc npc) : base(character, npc)
+         public NpcBankDialog(Character character, Npc npc)
+            : base(character, npc)
          {
              CurrentMessage = character.Level >= 10 ? NpcBank.Message : NpcBank.WrongLevelMessage;
          }
@@ -105,13 +102,8 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
         {
             base.Open();
 
-            if (Character.CheckBankIsLoaded(() => Character.Area.AddMessage(OpenCallBack)))
-                OpenCallBack();
-        }
-
-        private void OpenCallBack()
-        {
-            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, CurrentMessage == NpcBank.Message ? new[] { NpcBank.ReplyInfos, NpcBank.ReplyConsult } : new[] { NpcBank.ReplyInfos }, Character.Bank.GetAccessPrice().ToString());
+            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, CurrentMessage == NpcBank.Message ? 
+                new[] { NpcBank.ReplyInfos, NpcBank.ReplyConsult } : new[] { NpcBank.ReplyInfos }, Character.Bank.GetAccessPrice().ToString());
         }
 
         public override void Reply(short replyId)
@@ -121,9 +113,7 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
                 var accessPrice = Character.Bank.GetAccessPrice();
 
                 if (Character.Kamas < accessPrice)
-                {
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 82);
-                }
                 else
                 {
                     Character.Inventory.SubKamas(accessPrice);
@@ -140,9 +130,7 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
                 ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new short[0]);
             }
             else
-            {
                 Close();
-            }
         }
     }
 }

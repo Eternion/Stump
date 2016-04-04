@@ -276,17 +276,17 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             lock (m_locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
-                foreach (var shortcut in m_itemShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew))
+                foreach (var shortcut in m_itemShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew).ToArray())
                 {
                     database.Save(shortcut.Value);
                 }
 
-                foreach (var shortcut in m_spellShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew))
+                foreach (var shortcut in m_spellShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew).ToArray())
                 {
                     database.Save(shortcut.Value);
                 }
 
-                foreach (var shortcut in m_presetShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew))
+                foreach (var shortcut in m_presetShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew).ToArray())
                 {
                     database.Save(shortcut.Value);
                 }

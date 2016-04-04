@@ -30,6 +30,7 @@ using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Dialogs.Jobs;
+using Stump.Server.WorldServer.Game.Exchanges.Bank;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -513,6 +514,66 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             (client.Character.Dialog as JobIndexDialog)?.RequestAvailableCrafters(message.jobId);
         }
 
+        [WorldHandler(ExchangeObjectTransfertAllFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertAllFromInvMessage(WorldClient client, ExchangeObjectTransfertAllFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, new int[0], true, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertExistingFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertExistingFromInvMessage(WorldClient client, ExchangeObjectTransfertExistingFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, new int[0], false, true);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertListFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertListFromInvMessage(WorldClient client, ExchangeObjectTransfertListFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, message.ids, false, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertAllToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertAllToInvMessage(WorldClient client, ExchangeObjectTransfertAllToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, new int[0], true, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertExistingToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertExistingToInvMessage(WorldClient client, ExchangeObjectTransfertExistingToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, new int[0], false, true);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertListToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertListToInvMessage(WorldClient client, ExchangeObjectTransfertListToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, message.ids, false, false);
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -533,6 +594,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             playerTrade.SecondTrader.Character.Inventory.Weight,
                             (int)playerTrade.SecondTrader.Character.Inventory.WeightTotal
                             ));
+        }
+
+        public static void SendExchangeStartedWithStorageMessage(IPacketReceiver client, ExchangeTypeEnum type, int storageMaxSlot)
+        {
+            client.Send(new ExchangeStartedWithStorageMessage((sbyte)type, storageMaxSlot));
         }
 
         public static void SendExchangeStartedMessage(IPacketReceiver client, ExchangeTypeEnum type)
