@@ -6,6 +6,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 
 namespace Stump.Plugins.DefaultPlugin.Spells
 {
@@ -20,7 +21,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region COMMON
 
-            FixEffectOnAllLevels((int)SpellIdEnum.COUP_DE_POING, 0, (level, effect, critical) => effect.TargetMask = "a,A");
+            FixEffectOnAllLevels((int)SpellIdEnum.COUP_DE_POING, 0, (level, effect, critical)
+                => effect.Targets = new[] { new TargetTypeCriterion(SpellTargetType.ALLY_ALL), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL) });
 
             #endregion COMMON
 
