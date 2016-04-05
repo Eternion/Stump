@@ -332,7 +332,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObjectAddedMessage(addedItem.GetObjectItem()));
         }
 
-        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<BasePlayerItem> addeditems)
+        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<IItem> addeditems)
         {
             client.Send(new ObjectsAddedMessage(addeditems.Select(entry => entry.GetObjectItem())));
         }

@@ -53,21 +53,28 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            Owner.Inventory.RemoveItem(item, amount);
+            Owner.Inventory.RemoveItem(item, amount, sendMessage: false);
 
             var bankItem = ItemManager.Instance.CreateBankItem(Owner, item, amount);
-            AddItem(bankItem);
+            AddItem(bankItem, false);
 
             return true;
         }
 
         public bool StoreItems(IEnumerable<int> guids, bool all, bool existing)
         {
-            foreach (var item in Owner.Inventory.Where(x => guids.Contains(x.Guid) || (existing && Items.Values.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
-                StoreItem(item, (int)item.Stack);
+            var items = new List<BasePlayerItem>();
 
-            //TODO: Avoid client lag
-            //InventoryHandler.SendObjectsDeletedMessage(Owner.Client, guids);
+            foreach (var item in Owner.Inventory.Where(x => guids.Contains(x.Guid) || (existing && Items.Values.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
+            {
+                if (StoreItem(item, (int)item.Stack))
+                    items.Add(item);
+            }
+
+            InventoryHandler.SendObjectsDeletedMessage(Owner.Client, items.Select(x => x.Guid));
+            InventoryHandler.SendStorageObjectsUpdateMessage(Owner.Client, items);
+
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             return true;
         }
@@ -100,21 +107,28 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            RemoveItem(item, amount);
+            RemoveItem(item, amount, sendMessage: false);
 
             var playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
-            Owner.Inventory.AddItem(playerItem);
+            Owner.Inventory.AddItem(playerItem, false);
 
             return true;
         }
 
         public bool TakeItemsBack(IEnumerable<int> guids, bool all, bool existing)
         {
-            foreach (var item in Items.Values.Where(x => guids.Contains(x.Guid) || (existing && Owner.Inventory.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
-                TakeItemBack(item, (int)item.Stack);
+            var items = new List<BankItem>();
 
-            //TODO: Avoid client lag
-            //InventoryHandler.SendObjectsDeletedMessage(Owner.Client, guids);
+            foreach (var item in Items.Values.Where(x => guids.Contains(x.Guid) || (existing && Owner.Inventory.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
+            {
+                if (TakeItemBack(item, (int)item.Stack))
+                    items.Add(item);
+            }
+
+            InventoryHandler.SendStorageObjectsRemoveMessage(Owner.Client, items.Select(x => x.Guid));
+            InventoryHandler.SendObjectsAddedMessage(Owner.Client, items);
+
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             return true;
         }
@@ -135,18 +149,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public int GetAccessPrice() => (Items.Count * PricePerItem);
 
-        protected override void OnItemAdded(BankItem item)
+        protected override void OnItemAdded(BankItem item, bool sendMessage = true)
         {
-            InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
+            if (sendMessage)
+                InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
 
-            base.OnItemAdded(item);
+            base.OnItemAdded(item, sendMessage);
         }
 
-        protected override void OnItemRemoved(BankItem item)
+        protected override void OnItemRemoved(BankItem item, bool sendMessage = true)
         {            
-            InventoryHandler.SendStorageObjectRemoveMessage(Owner.Client, item);
+            if (sendMessage)
+                InventoryHandler.SendStorageObjectRemoveMessage(Owner.Client, item);
 
-            base.OnItemRemoved(item);
+            base.OnItemRemoved(item, sendMessage);
         }
 
         protected override void OnItemStackChanged(BankItem item, int difference)
