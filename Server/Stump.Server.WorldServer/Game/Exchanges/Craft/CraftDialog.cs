@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             foreach (var item in ingredients)
             {
                 var playerItem = item.Owner.Inventory[item.Guid];
-                item.Owner.Inventory.RemoveItem(playerItem, (int)item.Stack * Amount, removeItemMsg: false);
+                item.Owner.Inventory.RemoveItem(playerItem, (int)item.Stack * Amount);
 
                 if (item.Owner == Crafter.Character)
                     Crafter.MoveItem(item.Guid, 0);
@@ -153,7 +153,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
             if (!ItemManager.Instance.HasToBeGenerated(recipe.ItemTemplate))
             {
-                var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, Amount, false);
+                var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, Amount);
                 InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
                     ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, Amount);
                 InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character);
@@ -172,7 +172,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
                 foreach (var keyPair in dict)
                 {
-                    var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, keyPair.Key, keyPair.Value, false);
+                    var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, keyPair.Key, keyPair.Value);
                     InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
                         ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, keyPair.Value);
                     InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character);

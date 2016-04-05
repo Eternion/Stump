@@ -36,28 +36,28 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             private set;
         }
 
-        protected override void OnItemStackChanged(TaxCollectorItem item, int difference, bool removeMsg = true)
+        protected override void OnItemStackChanged(TaxCollectorItem item, int difference)
         {
             IsDirty = true;
 
             base.OnItemStackChanged(item, difference);
         }
 
-        protected override void OnItemAdded(TaxCollectorItem item, bool addItemMsg)
+        protected override void OnItemAdded(TaxCollectorItem item, bool sendMessage = true)
         {
             IsDirty = true;
 
-            base.OnItemAdded(item, false);
+            base.OnItemAdded(item, sendMessage);
         }
 
-        protected override void OnItemRemoved(TaxCollectorItem item, bool removeItemMsg)
+        protected override void OnItemRemoved(TaxCollectorItem item, bool sendMessage = true)
         {
             IsDirty = true;
 
             if (Count == 0)
                 Owner.Delete();
 
-            base.OnItemRemoved(item, removeItemMsg);
+            base.OnItemRemoved(item, sendMessage);
         }
 
         public bool MoveToInventory(TaxCollectorItem item, Character character)
@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             if (quantity > item.Stack)
                 quantity = (int)item.Stack;
 
-            RemoveItem(item, quantity);
+            RemoveItem(item, quantity, sendMessage: true);
             var newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity,
                                                                        item.Effects);
 

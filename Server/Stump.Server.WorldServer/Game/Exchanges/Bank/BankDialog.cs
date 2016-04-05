@@ -16,28 +16,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
         public BankCustomer Customer
         {
             get;
-            private set;
         }
 
-        public ExchangeTypeEnum ExchangeType
-        {
-            get { return ExchangeTypeEnum.BANK; }
-        }
+        public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.BANK;
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         public void Open()
         {
-            if (Character.CheckBankIsLoaded(() => Character.Area.AddMessage(OpenCallBack)))
-                OpenCallBack();
-        }
-
-        private void OpenCallBack()
-        {
-            InventoryHandler.SendExchangeStartedMessage(Character.Client, ExchangeType);
+            InventoryHandler.SendExchangeStartedWithStorageMessage(Character.Client, ExchangeType, int.MaxValue);
             InventoryHandler.SendStorageInventoryContentMessage(Character.Client, Customer.Character.Bank);
             Character.SetDialoger(Customer);
         }

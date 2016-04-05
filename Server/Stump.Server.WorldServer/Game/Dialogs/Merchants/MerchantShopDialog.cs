@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
                 return false;
             }
 
-            var removed = Merchant.Bag.RemoveItem(item, quantity);
+            var removed = Merchant.Bag.RemoveItem(item, quantity, sendMessage: true);
 
             var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, removed, item.Effects);
             Character.Inventory.AddItem(newItem);

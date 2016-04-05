@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             BonusMax = 75;
         }
 
-        bool WeaponAttack = false;
+        bool WeaponAttack;
 
         public override void Initialize()
         {
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             Fight.TurnStopped += OnTurnStopped;
 
-            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
                 fighter.DamageInflicted += OnDamageInflicted;
         }
 
@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnDamageInflicted(FightActor fighter, Damage damage)
         {
-            if (!damage.IsWeaponAttack)
+            if (damage.Source.IsFriendlyWith(fighter) || !damage.IsWeaponAttack)
                 return;
 
             WeaponAttack = true;
@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             Fight.TurnStopped -= OnTurnStopped;
 
-            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
                 fighter.DamageInflicted -= OnDamageInflicted;
         }
     }

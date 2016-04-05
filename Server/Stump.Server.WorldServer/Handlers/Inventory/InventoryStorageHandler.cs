@@ -36,9 +36,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new StorageObjectUpdateMessage(item.GetObjectItem()));
         }
 
-        public static void SendStorageObjectsRemoveMessage(IPacketReceiver client, IEnumerable<IItem> items)
+        public static void SendStorageObjectsRemoveMessage(IPacketReceiver client, IEnumerable<int> guids)
         {
-            client.Send(new StorageObjectsRemoveMessage(items.Select(x => x.Guid)));
+            client.Send(new StorageObjectsRemoveMessage(guids));
         }
 
         public static void SendStorageObjectsUpdateMessage(IPacketReceiver client, IEnumerable<IItem> items)

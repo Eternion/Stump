@@ -52,12 +52,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight.Customs
                     for (var i = 0; i < drop.Amount; i++)
                     {
                         var item = ItemManager.Instance.CreatePlayerItem(summoner.Character, drop.ItemId, 1);
-                        summoner.Character.Inventory.AddItem(item, false);
+                        summoner.Character.Inventory.AddItem(item);
                     }
                 else
                 {
                     var item = ItemManager.Instance.CreatePlayerItem(summoner.Character, drop.ItemId, (int)drop.Amount);
-                    summoner.Character.Inventory.AddItem(item, false);
+                    summoner.Character.Inventory.AddItem(item);
                 }
             }
         }
