@@ -121,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var item = GetPrestigeItem();
                 if (item != null)
-                    Inventory.RemoveItem(item, true, false);
+                    Inventory.RemoveItem(item, true);
             }
 
             OnPlayerLifeStatusChanged(PlayerLifeStatus);
@@ -1722,10 +1722,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set { m_record.Experience = value; }
         }
 
-        public bool IsPrestigeMax()
-        {
-            return PrestigeRank == PrestigeManager.PrestigeTitles.Length;
-        }
+        public bool IsPrestigeMax() => PrestigeRank == PrestigeManager.PrestigeTitles.Length;
 
         public PrestigeItem GetPrestigeItem()
         {
@@ -1735,10 +1732,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Inventory.TryGetItem(PrestigeManager.BonusItem) as PrestigeItem;
         }
 
-        public PrestigeItem CreatePrestigeItem()
-        {
-            return (PrestigeItem)Inventory.AddItem(PrestigeManager.BonusItem, 1, false);
-        }
+        public PrestigeItem CreatePrestigeItem() => (PrestigeItem)Inventory.AddItem(PrestigeManager.BonusItem);
 
         public bool IncrementPrestige()
         {
@@ -1804,7 +1798,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     item.UpdateEffects();
                     Inventory.RefreshItem(item);
                 }
-                else Inventory.RemoveItem(item, true, false);
+                else Inventory.RemoveItem(item);
             }
 
             OpenPopup(
@@ -1828,7 +1822,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (item != null)
             {
-                Inventory.RemoveItem(item, true, false);
+                Inventory.RemoveItem(item);
             }
         }
 
@@ -1895,7 +1889,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amountToken);
             Inventory.AddKamas(amountKamas);
 
-            //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 276, amountKamas, amountToken);
             DisplayNotification(NotificationEnum.KOLIZÉUM, amountKamas, amountToken);
         }
 
@@ -2038,15 +2031,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var price = (int)(item.Price * item.StackSold);
                 kamasMerchant += price;
 
-                //Vous avez gagné %1 kamas suite à la vente en mode marchand de %4 '$item%3' lorsque vous étiez hors jeu.
-                //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, price, 0, item.Template.Id, item.StackSold);
-
                 merchantSoldItems.Add(new ObjectItemGenericQuantityPrice((short)item.Template.Id, (int)item.StackSold, price));
 
                 item.StackSold = 0;
 
                 if (item.Stack == 0)
-                    MerchantBag.RemoveItem(item, true, false);
+                    MerchantBag.RemoveItem(item, true);
             }
 
             Inventory.AddKamas(kamasMerchant);
@@ -2060,11 +2050,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 kamasBidHouse += (int)item.Price;
                 BidHouseManager.Instance.RemoveBidHouseItem(item, true);
 
-                //Banque : + %1 Kamas (vente de %4 $item%3 hors jeu).
-                //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, item.Price, 0, item.Template.Id, item.Stack);
-
                 bidhouseSoldItems.Add(new ObjectItemGenericQuantityPrice((short)item.Template.Id, (int)item.Stack, (int)item.Price));
-
             }
 
             Bank.AddKamas(kamasBidHouse);
@@ -2080,8 +2066,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SendServerMessage(string message, Color color)
         {
-            SendServerMessage(string.Format("<font col" +
-                                            "or=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
+            SendServerMessage(string.Format("<font color=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
         }
 
         public void SendInformationMessage(TextInformationTypeEnum msgType, short msgId, params object[] parameters)
@@ -2242,10 +2227,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Dialog.Close();
         }
 
-        public override bool CanChangeMap()
-        {
-            return base.CanChangeMap() && !IsFighting() && !Account.IsJailed;
-        }
+        public override bool CanChangeMap() => base.CanChangeMap() && !IsFighting() && !Account.IsJailed;
 
         #endregion
 

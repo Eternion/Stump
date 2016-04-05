@@ -56,23 +56,23 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             get { return Items.Count(x => x.Value.Stack != 0); }
         }
 
-        protected override void OnItemStackChanged(MerchantItem item, int difference, bool removeMsg = true)
+        protected override void OnItemStackChanged(MerchantItem item, int difference)
         {
             IsDirty = true;
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
 
-            base.OnItemStackChanged(item, difference, removeMsg);
+            base.OnItemStackChanged(item, difference);
         }
 
-        protected override void OnItemAdded(MerchantItem item, bool addItemMsg)
+        protected override void OnItemAdded(MerchantItem item)
         {
             IsDirty = true;
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
 
-            base.OnItemAdded(item, false);
+            base.OnItemAdded(item);
         }
 
-        public override int RemoveItem(MerchantItem item, int amount, bool delete = true, bool sendMsg = false)
+        public override int RemoveItem(MerchantItem item, int amount, bool delete = true)
         {
             if (!HasItem(item) || item.Stack == 0)
                 return 0;
@@ -84,16 +84,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 item.StackSold += removed;
                 item.Stack = 0;
 
-                NotifyItemRemoved(item, sendMsg);
+                NotifyItemRemoved(item);
 
                 return (int)removed;
             }
 
-            UnStackItem(item, amount, sendMsg);
+            UnStackItem(item, amount);
             return amount;
         }
 
-        public override void UnStackItem(MerchantItem item, int amount, bool stackMsg = true)
+        public override void UnStackItem(MerchantItem item, int amount)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -103,18 +103,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 item.StackSold += item.Stack;
                 item.Stack = 0;
 
-                NotifyItemRemoved(item, false);
+                NotifyItemRemoved(item);
             }
             else
             {
                 item.Stack -= (uint) amount;
                 item.StackSold += (uint) amount;
 
-                NotifyItemStackChanged(item, -amount, stackMsg);
+                NotifyItemStackChanged(item, -amount);
             }
         }
 
-        protected override void OnItemRemoved(MerchantItem item, bool removeItemMsg)
+        protected override void OnItemRemoved(MerchantItem item)
         {
             IsDirty = true;
             InventoryHandler.SendExchangeShopStockMovementRemovedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (Count == 0)
                 Owner.Delete();
 
-            base.OnItemRemoved(item, removeItemMsg);
+            base.OnItemRemoved(item);
         }
 
         public void LoadRecord()
