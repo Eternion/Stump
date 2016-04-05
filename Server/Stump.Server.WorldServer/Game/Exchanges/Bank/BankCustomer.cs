@@ -36,9 +36,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
         public override bool SetKamas(int amount)
         {            
             if (amount > 0)
-            {
                 return Character.Bank.StoreKamas(amount);
-            }
 
             return amount < 0 && Character.Bank.TakeKamas(-amount);
         }

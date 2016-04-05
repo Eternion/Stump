@@ -407,7 +407,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item;
         }
 
-        public override bool RemoveItem(BasePlayerItem item, bool delete = true) => item.OnRemoveItem() && base.RemoveItem(item, delete);
+        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool sendMessage = true) => item.OnRemoveItem() && base.RemoveItem(item, delete, sendMessage);
 
         public void CreateTokenItem(uint amount)
         {
@@ -904,31 +904,34 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 Owner.RefreshStats();
         }
 
-        protected override void DeleteItem(BasePlayerItem item)
+        protected override void DeleteItem(BasePlayerItem item, bool sendMessage = true)
         {
             if (item == Tokens)
                 return;
 
-            base.DeleteItem(item);
+            base.DeleteItem(item, sendMessage);
         }
 
-        protected override void OnItemAdded(BasePlayerItem item)
+        protected override void OnItemAdded(BasePlayerItem item, bool sendMessage = true)
         {
             m_itemsByPosition[item.Position].Add(item);
 
             if (item.IsEquiped())
                 ApplyItemEffects(item);
 
-            InventoryHandler.SendObjectAddedMessage(Owner.Client, item);
-            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+            if (sendMessage)
+            {
+                InventoryHandler.SendObjectAddedMessage(Owner.Client, item);
+                InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+            }
 
             if (IsFull())
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 12);
 
-            base.OnItemAdded(item);
+            base.OnItemAdded(item, sendMessage);
         }
 
-        protected override void OnItemRemoved(BasePlayerItem item)
+        protected override void OnItemRemoved(BasePlayerItem item, bool sendMessage = true)
         {
             m_itemsByPosition[item.Position].Remove(item);
 
@@ -954,8 +957,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 InventoryHandler.SendSetUpdateMessage(Owner.Client, item.Template.ItemSet);
             }
 
-            InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
-            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+            if (sendMessage)
+            {
+                InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
+                InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+            }
 
             DeleteItemFromPresets(item);
 
@@ -965,7 +971,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (wasEquiped && item.AppearanceId != 0)
                 Owner.UpdateLook();
 
-            base.OnItemRemoved(item);
+            base.OnItemRemoved(item, sendMessage);
         }
 
         private void OnItemMoved(BasePlayerItem  item, CharacterInventoryPositionEnum lastPosition)

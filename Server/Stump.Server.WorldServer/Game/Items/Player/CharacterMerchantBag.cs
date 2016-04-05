@@ -110,18 +110,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return true;
         }
 
-        protected override void OnItemAdded(MerchantItem item)
+        protected override void OnItemAdded(MerchantItem item, bool sendMessage = true)
         {
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
 
-            base.OnItemAdded(item);
+            base.OnItemAdded(item, sendMessage);
         }
 
-        protected override void OnItemRemoved(MerchantItem item)
+        protected override void OnItemRemoved(MerchantItem item, bool sendMessage = true)
         {
             InventoryHandler.SendExchangeShopStockMovementRemovedMessage(Owner.Client, item);
 
-            base.OnItemRemoved(item);
+            base.OnItemRemoved(item, sendMessage);
         }
 
         protected override void OnItemStackChanged(MerchantItem item, int difference)
