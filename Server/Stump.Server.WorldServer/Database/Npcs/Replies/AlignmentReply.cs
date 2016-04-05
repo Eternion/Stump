@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
-    [Discriminator("Alignment", typeof(AlignmentReply), typeof(NpcReplyRecord))]
+    [Discriminator("Alignment", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class AlignmentReply : NpcReply
     {
         public AlignmentReply(NpcReplyRecord record)
