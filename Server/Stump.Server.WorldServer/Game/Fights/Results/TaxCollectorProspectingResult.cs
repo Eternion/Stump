@@ -111,12 +111,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                     for (var i = 0; i < drop.Amount; i++)
                     {
                         var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, (int)drop.Amount);
-                        TaxCollector.Bag.AddItem(item, false);
+                        TaxCollector.Bag.AddItem(item);
                     }
                 else
                 {
                     var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, (int)drop.Amount);
-                    TaxCollector.Bag.AddItem(item, false);
+                    TaxCollector.Bag.AddItem(item);
                 }
             }
 
