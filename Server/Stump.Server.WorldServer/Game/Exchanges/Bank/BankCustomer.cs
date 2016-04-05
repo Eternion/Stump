@@ -1,4 +1,5 @@
 ﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Bank
 {
@@ -13,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
         public Character Character
         {
             get;
-            private set;
         }
 
         public override bool MoveItem(int id, int quantity)
@@ -36,11 +36,17 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
         public override bool SetKamas(int amount)
         {            
             if (amount > 0)
-            {
                 return Character.Bank.StoreKamas(amount);
-            }
 
             return amount < 0 && Character.Bank.TakeKamas(-amount);
+        }
+
+        public void MoveItems(bool store, IEnumerable<int> guids, bool all, bool existing)
+        {
+            if (store)
+                Character.Bank.StoreItems(guids, all, existing);
+            else
+                Character.Bank.TakeItemsBack(guids, all, existing);
         }
     }
 }

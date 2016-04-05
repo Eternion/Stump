@@ -37,21 +37,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var target = trigger.Get<Character>("target");
                 var source = trigger.Character.Client;
 
-                if (!target.Bank.IsLoaded)
-                {
-                    WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                    {
-                        target.Bank.LoadRecord();
-
-                        InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
-                        InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
-                    });
-                }
-                else
-                {
-                    InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
-                    InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
-                }
+                InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
+                InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
             }
             else
             {

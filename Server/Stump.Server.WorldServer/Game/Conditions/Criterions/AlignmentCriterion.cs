@@ -14,10 +14,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             set;
         }
 
-        public override bool Eval(Character character)
-        {
-            return Compare(character.AlignmentSide, Alignement);
-        }
+        public override bool Eval(Character character) => Compare(character.AlignmentSide, Alignement);
 
         public override void Build()
         {
@@ -29,9 +26,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             Alignement = (AlignmentSideEnum)id;
         }
 
-        public override string ToString()
-        {
-            return FormatToString(Identifier);
-        }
+        public override string ToString() => FormatToString(Identifier);
     }
 }

@@ -271,9 +271,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void Save(bool updateAccount)
         {
-            if (Owner.Bank.IsLoaded)
-                Owner.Bank.Save();
-
             lock (Locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
@@ -360,7 +357,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return base.SetKamas(amount);
         }
 
-        public BasePlayerItem AddItem(ItemTemplate template, List<EffectBase> effects, int amount = 1, bool addItemMsg = true)
+        public BasePlayerItem AddItem(ItemTemplate template, List<EffectBase> effects, int amount = 1)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -374,19 +371,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (!itemStack.OnAddItem())
                     return null;
 
-                StackItem(itemStack, amount, addItemMsg);
+                StackItem(itemStack, amount);
             }
             else
             {
                 item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount, effects);
 
-                return !item.OnAddItem() ? null : AddItem(item, addItemMsg);
+                return !item.OnAddItem() ? null : AddItem(item);
             }
 
             return item;
         }
 
-        public BasePlayerItem AddItem(ItemTemplate template, int amount = 1, bool addItemMsg = true)
+        public BasePlayerItem AddItem(ItemTemplate template, int amount = 1)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -398,19 +395,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (!item.OnAddItem())
                     return null;
 
-                StackItem(item, amount, addItemMsg);
+                StackItem(item, amount);
             }
             else
             {
                 item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount);
 
-                return !item.OnAddItem() ? null : AddItem(item, addItemMsg);
+                return !item.OnAddItem() ? null : AddItem(item);
             }
 
             return item;
         }
 
-        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true) => item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
+        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool sendMessage = true) => item.OnRemoveItem() && base.RemoveItem(item, delete, sendMessage);
 
         public void CreateTokenItem(uint amount)
         {
@@ -420,10 +417,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public PlayerPresetRecord GetPreset(int presetId) => Presets.FirstOrDefault(x => x.PresetId == presetId);
 
-        public bool IsPresetExist(int presetId)
-        {
-            return Presets.Any(x => x.PresetId == presetId);
-        }
+        public bool IsPresetExist(int presetId) => Presets.Any(x => x.PresetId == presetId);
 
         public void DeleteItemFromPresets(BasePlayerItem item)
         {
@@ -732,8 +726,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 }
 
                 NotifyItemMoved(item, oldPosition);
-                StackItem(stacktoitem, (int)item.Stack, false); // in all cases Stack = 1 else there is an error
-                RemoveItem(item, true, false);
+                StackItem(stacktoitem, (int)item.Stack); // in all cases Stack = 1 else there is an error
+                RemoveItem(item, true);
             }
             else // else we just move the item
             {
@@ -782,7 +776,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             // delete the item if there is no more stack else we unstack it
             if (amount >= item.Stack)
             {
-                RemoveItem(item, true, false);
+                RemoveItem(item, true);
             }
             else
             {
@@ -792,7 +786,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             DeleteItemFromPresets(item);
 
             var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
-            newOwner.Inventory.AddItem(copy, false);
+            newOwner.Inventory.AddItem(copy);
         }
 
         public void CheckItemsCriterias()
@@ -872,13 +866,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (item.Stack <= 1)
                 return item;
 
-            UnStackItem(item, 1, false);
+            UnStackItem(item, 1);
 
             var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, 1);
 
             Items.Add(newitem.Guid, newitem);
 
-            NotifyItemAdded(newitem, false);
+            NotifyItemAdded(newitem);
 
             return newitem;
         }
@@ -910,35 +904,34 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 Owner.RefreshStats();
         }
 
-        protected override void DeleteItem(BasePlayerItem item)
+        protected override void DeleteItem(BasePlayerItem item, bool sendMessage = true)
         {
             if (item == Tokens)
                 return;
 
-            base.DeleteItem(item);
+            base.DeleteItem(item, sendMessage);
         }
 
-        protected override void OnItemAdded(BasePlayerItem item, bool addItemMsg)
+        protected override void OnItemAdded(BasePlayerItem item, bool sendMessage = true)
         {
             m_itemsByPosition[item.Position].Add(item);
 
             if (item.IsEquiped())
                 ApplyItemEffects(item);
 
-            InventoryHandler.SendObjectAddedMessage(Owner.Client, item);
-            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
-
-            //Vous avez obtenu %1 '$item%2'.
-            if (addItemMsg)
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 21, item.Stack, item.Template.Id);
+            if (sendMessage)
+            {
+                InventoryHandler.SendObjectAddedMessage(Owner.Client, item);
+                InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+            }
 
             if (IsFull())
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 12);
 
-            base.OnItemAdded(item, addItemMsg);
+            base.OnItemAdded(item, sendMessage);
         }
 
-        protected override void OnItemRemoved(BasePlayerItem item, bool removeItemMsg)
+        protected override void OnItemRemoved(BasePlayerItem item, bool sendMessage = true)
         {
             m_itemsByPosition[item.Position].Remove(item);
 
@@ -964,15 +957,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 InventoryHandler.SendSetUpdateMessage(Owner.Client, item.Template.ItemSet);
             }
 
-            InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
-            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
-
-            //Vous avez perdu %1 '$item%2'.
-            if (removeItemMsg)
+            if (sendMessage)
             {
-                DeleteItemFromPresets(item);
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, item.Stack, item.Template.Id);
+                InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
+                InventoryHandler.SendInventoryWeightMessage(Owner.Client);
             }
+
+            DeleteItemFromPresets(item);
 
             if (wasEquiped)
                 CheckItemsCriterias();
@@ -980,7 +971,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (wasEquiped && item.AppearanceId != 0)
                 Owner.UpdateLook();
 
-            base.OnItemRemoved(item, removeItemMsg);
+            base.OnItemRemoved(item, sendMessage);
         }
 
         private void OnItemMoved(BasePlayerItem  item, CharacterInventoryPositionEnum lastPosition)
@@ -1031,15 +1022,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Owner.RefreshStats();
         }
 
-        protected override void OnItemStackChanged(BasePlayerItem item, int difference, bool removeMsg = true)
+        protected override void OnItemStackChanged(BasePlayerItem item, int difference)
         {
             InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
-
-            //Vous avez perdu %1 '$item%2'.
-            //Vous avez obtenu %1 '$item%2'.
-            if (removeMsg && difference != 0)
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, difference > 0 ? (short)21 : (short)22, Math.Abs(difference), item.Template.Id);
 
             base.OnItemStackChanged(item, difference);
         }
@@ -1072,11 +1058,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return false;
         }
 
-        public BasePlayerItem TryGetItem(CharacterInventoryPositionEnum position)
-        {
-            return Items.Values.FirstOrDefault(entry => entry.Position == position);
-        }
-        
+        public BasePlayerItem TryGetItem(CharacterInventoryPositionEnum position) => Items.Values.FirstOrDefault(entry => entry.Position == position);
+
         public BasePlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position)
         {
             var entries = from entry in Items.Values
@@ -1095,10 +1078,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return entries.FirstOrDefault();
         }
 
-        public BasePlayerItem[] GetItems(CharacterInventoryPositionEnum position)
-        {
-            return Items.Values.Where(entry => entry.Position == position).ToArray();
-        }
+        public BasePlayerItem[] GetItems(CharacterInventoryPositionEnum position) => Items.Values.Where(entry => entry.Position == position).ToArray();
 
         public BasePlayerItem[] GetEquipedItems()
         {
@@ -1107,10 +1087,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                    select entry.Value).ToArray();
         }
 
-        public int CountItemSetEquiped(ItemSetTemplate itemSet)
-        {
-            return GetEquipedItems().Count(entry => itemSet.Items.Contains(entry.Template));
-        }
+        public int CountItemSetEquiped(ItemSetTemplate itemSet) => GetEquipedItems().Count(entry => itemSet.Items.Contains(entry.Template));
 
         public BasePlayerItem[] GetItemSetEquipped(ItemSetTemplate itemSet)
         {
@@ -1122,7 +1099,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return itemSet.GetEffects(CountItemSetEquiped(itemSet));
         }
 
-        public short[] GetItemsSkins() => GetEquipedItems().Where(entry => entry.Position != CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS && entry.AppearanceId != 0).Select(entry => (short)entry.AppearanceId).ToArray();
+        public short[] GetItemsSkins() => GetEquipedItems().Where(entry => entry.Position != CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS && entry.AppearanceId != 0)
+            .Select(entry => (short)entry.AppearanceId).ToArray();
 
         public Tuple<short?, bool> GetPetSkin()
         {
@@ -1141,7 +1119,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool IsFull(ItemTemplate item, int count)
         {
-            return (Weight + (item.Weight * count)) > WeightTotal && WeightEnabled;
+            return (Weight + (item.RealWeight * count)) > WeightTotal && WeightEnabled;
         }
 
         #region Events

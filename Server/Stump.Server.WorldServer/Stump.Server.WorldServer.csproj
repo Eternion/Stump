@@ -643,8 +643,6 @@
     <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\OldToyParadeCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\PunishmentCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\ExplosionCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
@@ -960,9 +958,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AI\Fights\Brain\Custom\Monsters\" />
     <Folder Include="Commands\Matching\Items\" />
-    <Folder Include="Game\Spells\Casts\Enutrof\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
