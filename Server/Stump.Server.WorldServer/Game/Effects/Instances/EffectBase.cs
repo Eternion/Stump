@@ -147,7 +147,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public TargetCriterion[] Targets
         {
             get { return m_targets; }
-            protected set
+            set
             {
                 m_targets = value;
                 IsDirty = true;
