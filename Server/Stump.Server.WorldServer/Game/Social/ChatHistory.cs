@@ -76,6 +76,9 @@ namespace Stump.Server.WorldServer.Game.Social
                     // Ceci ne vous autorise cependant pas pour autant à surcharger ce canal.
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 115,
                                                      ChatManager.AntiFloodTimeBetweenTwoGlobalMessages - (int)( entry.Date - m_entries[entryIndex].Date ).TotalSeconds);
+
+                    m_entries.Remove(entry);
+
                     return false;
                 }
             }

@@ -4,6 +4,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_AddMP)]
@@ -22,6 +24,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
+                    return false;
+
+                if (actor is ICreature && ((ICreature)actor).MonsterGrade.MovementPoints  <= 0)
                     return false;
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
