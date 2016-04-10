@@ -1831,70 +1831,32 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null && !fighter.IsFighterTurn())
                 return;
 
-            if (path.IsEmpty() || path.MPCost <= 0)
+            if (!(path is FightPath))
                 return;
 
+            var fightPath = (FightPath)path;
+
             StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-            if (fighter != null && (fighter.GetTackledMP() > 0 || fighter.GetTackledAP() > 0))
+            if (fightPath.TackledAP > 0 || fightPath.TackledMP > 0)
             {
                 // tackle
-                OnTackled(fighter, path);
+                OnTackled(fighter, fightPath);
 
                 if (path.IsEmpty() || path.MPCost == 0)
                 {
                     EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                     return;
                 }
-            }
-            var cells = path.GetPath();
-            if (fighter != null)
-            {
-                var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.CanTackle(fighter)).Select(entry => entry.Cell.Id).ToList();
-                var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.Position.Cell != fighter.Cell && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
 
-                if (cells[0].Id != fighter.Cell.Id)
+                if (fightPath.BlockedByObstacle)
                 {
-                    EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                    return;
+                    // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
+                    character?.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 276);
                 }
 
-                if (fighter.MP < path.MPCost)
-                    path.CutPath(fighter.MP + 1);
-
-                for (var i = 0; i < cells.Length; i++)
-                {
-                    // if there is a trap on the way we trigger it
-                    // or if there is a fighter on a adjacent cell
-                    if (i > 0 && ShouldTriggerOnMove(cells[i], fighter))
-                    {
-                        path.CutPath(i + 1);
-                        break;
-                    }
-
-                    // fighter adjacent to this cell, ignore first cell
-                    // characters only can be tackled
-                    if (i > 0 && fighter is CharacterFighter && 
-                        fighter.VisibleState == GameActionFightInvisibilityStateEnum.VISIBLE &&
-                        new MapPoint(cells[i]).GetAdjacentCells(entry => true).Any(entry => fighterCells.Contains(entry.CellId)))
-                    {
-                        path.CutPath(i + 1);
-                        break;
-                    }
-                    if (!obstaclesCells.Contains(cells[i].Id))
-                        continue;
-
-                    if (character != null)
-                    {
-                        // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
-                        character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 276);
-                    }
-
-                    path.CutPath(i);
-                    break;
-                }
             }
 
-            var movementsKeys = path.GetServerPathKeys();
+            var movementsKeys = fightPath.GetServerPathKeys();
 
             ForEach(entry =>
                         {
@@ -1908,33 +1870,29 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public event Action<FightActor, int, int> Tackled;
 
-        protected virtual void OnTackled(FightActor actor, Path path)
+        protected virtual void OnTackled(FightActor actor, FightPath path)
         {
-            var tacklers = actor.GetTacklers();
-            var mpTackled = actor.GetTackledMP();
-            var apTackled = actor.GetTackledAP();
-
-            if (actor.MP - mpTackled < 0)
+            if (actor.MP - path.TackledMP < 0)
             {
-                logger.Error("Cannot apply tackle : mp tackled ({0}) > available mp ({1})", mpTackled, actor.MP);
+                logger.Error("Cannot apply tackle : mp tackled ({0}) > available mp ({1})", path.TackledMP, actor.MP);
                 return;
             }
 
-            ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, tacklers);
-            actor.LostAP((short)apTackled, actor);
-            actor.LostMP((short)mpTackled, actor);
+            ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, path.Tacklers);
+            actor.LostAP((short)path.TackledAP, actor);
+            actor.LostMP((short)path.TackledMP, actor);
 
             if (path.MPCost > actor.MP)
                 path.CutPath(actor.MP + 1);
 
             actor.TriggerBuffs(actor, BuffTriggerType.OnTackled);
 
-            foreach (var tackler in tacklers)
+            foreach (var tackler in path.Tacklers)
                 tackler.TriggerBuffs(tackler, BuffTriggerType.OnTackle);
 
             var handler = Tackled;
             if (handler != null)
-                handler(actor, apTackled, mpTackled);
+                handler(actor, path.TackledAP, path.TackledMP);
         }
 
         protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)

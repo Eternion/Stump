@@ -66,6 +66,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             return m_cellsPath.Length == 0;
         }
 
+        public Cell[] Cells
+        {
+            get { return m_cellsPath; }
+            protected set { m_cellsPath = value;
+                m_endPathPosition = null;
+                m_path = m_cellsPath.Select(entry => new MapPoint(entry)).ToArray();
+            }
+        }
+
         public DirectionsEnum GetEndCellDirection()
         {
             if (m_cellsPath.Length <= 1)
