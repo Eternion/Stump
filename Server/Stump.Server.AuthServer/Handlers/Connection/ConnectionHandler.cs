@@ -203,6 +203,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
+            var creationDate = (DateTime.Now - client.Account.CreationDate).TotalMilliseconds;
+
             client.Send(new IdentificationSuccessMessage(
                 client.UserGroup.IsGameMaster,
                 wasAlreadyConnected,
@@ -215,7 +217,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                     ? client.Account.SubscriptionEnd.GetUnixTimeStampLong()
                     : 0,
                 0d,
-                (DateTime.Now - client.Account.CreationDate).TotalMilliseconds, 
+                creationDate < 0 ? 0 : creationDate, 
                 0));
 
             client.LookingOfServers = true;
