@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Owner.Inventory.RemoveItem(item, amount, sendMessage: sendMessage);
 
             var bankItem = ItemManager.Instance.CreateBankItem(Owner, item, amount);
-            AddItem(bankItem, sendMessage);
+            bankItem = AddItem(bankItem, sendMessage);
 
             return bankItem;
         }
@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             RemoveItem(item, amount, sendMessage: sendMessage);
 
             var playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
-            Owner.Inventory.AddItem(playerItem, sendMessage);
+            playerItem = Owner.Inventory.AddItem(playerItem, sendMessage);
 
             return playerItem;
         }
