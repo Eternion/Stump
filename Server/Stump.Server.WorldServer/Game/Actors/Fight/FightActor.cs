@@ -1364,10 +1364,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor[] GetTacklers()
         {
-            return OpposedTeam.GetAllFighters(entry => entry.CanTackle(this) && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
+            return GetTacklers(Position.Cell);
         }
 
+        public FightActor[] GetTacklers(Cell cell)
+        {
+            return OpposedTeam.GetAllFighters(entry => entry.CanTackle(this) && entry.Position.Point.IsAdjacentTo(cell)).ToArray();
+        }
+
+
         public virtual int GetTackledMP()
+        {
+            return GetTackledMP(Cell);
+        }
+
+        public virtual int GetTackledMP(Cell cell)
         {
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
@@ -1375,23 +1386,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
-            return (int) Math.Round(MP* (1 - GetTacklePercent()));
+            return (int) Math.Round(MP* (1 - GetTacklePercent(cell)));
         }
 
         public virtual int GetTackledAP()
         {
+            return GetTackledAP(Cell);
+        }
+
+        public virtual int GetTackledAP(Cell cell)
+        {
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
 
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
-            return (int) Math.Round(AP* (1-GetTacklePercent()));
+            return (int) Math.Round(AP* (1-GetTacklePercent(cell)));
         }
 
         private double GetTacklePercent()
         {
-            var tacklers = GetTacklers();
+            return GetTacklePercent(Cell);
+        }
+
+        private double GetTacklePercent(Cell cell)
+        {
+            var tacklers = GetTacklers(cell);
 
             // no tacklers, then no tackle possible
             if (tacklers.Length <= 0)
@@ -1937,17 +1958,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool StartMove(Path movementPath)
         {
+            var fightPath = new FightPath(this, Fight, movementPath);
+
             if (!IsCarried())
-                return base.StartMove(movementPath);
+                return base.StartMove(fightPath);
 
             var carryingActor = GetCarryingActor();
 
             if (carryingActor == null)
-                return base.StartMove(movementPath);
+                return base.StartMove(fightPath);
             
-            carryingActor.ThrowActor(movementPath.StartCell, true);
+            carryingActor.ThrowActor(fightPath.StartCell, true);
 
-            return base.StartMove(movementPath);
+            return base.StartMove(fightPath);
         }
 
         public override bool StopMove()
