@@ -337,6 +337,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObjectsAddedMessage(addeditems));
         }
 
+        public static void SendObjectsQuantityMessage(IPacketReceiver client, IEnumerable<ObjectItemQuantity> itemQuantity)
+        {
+            client.Send(new ObjectsQuantityMessage(itemQuantity));
+        }
+
         public static void SendObjectDeletedMessage(IPacketReceiver client, int guid)
         {
             client.Send(new ObjectDeletedMessage(guid));
