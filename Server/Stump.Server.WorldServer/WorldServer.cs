@@ -130,10 +130,6 @@ namespace Stump.Server.WorldServer
             if (!Initializing && !IOTaskPool.IsInContext)
             {
                 logger.Warn("Execute DB command out the IO task pool : " + arg2.CommandText);
-                if (IsExceptionLoggerEnabled)
-                    ExceptionLogger.CaptureMessage(
-                        new SentryMessage("Execute DB command out the IO task pool : " + arg2.CommandText),
-                        ErrorLevel.Warning);
             }
         }
 

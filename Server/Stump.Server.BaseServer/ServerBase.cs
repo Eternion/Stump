@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using SharpRaven;
-using SharpRaven.Data;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Threading;
@@ -47,18 +45,6 @@ namespace Stump.Server.BaseServer
         public static int AutomaticShutdownTimer = 6*60;
 
         [Variable] public static string CommandsInfoFilePath = "./commands.xml";
-
-        [Variable(Priority = 10, DefinableRunning = true)]
-        public static bool IsExceptionLoggerEnabled = false;
-
-        [Variable(Priority = 10)]
-        public static string ExceptionLoggerDSN = "";
-
-        public RavenClient ExceptionLogger
-        {
-            get;
-            protected set;
-        }
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -266,31 +252,6 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
-
-            if (IsExceptionLoggerEnabled)
-            {
-                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
-                /*
-                MethodCallTarget target = new MethodCallTarget();
-                target.ClassName = typeof (ServerBase).AssemblyQualifiedName;
-                target.MethodName = "PushLogWithRaven";
-                target.Parameters.Add(new MethodCallParameter("${level}"));
-                target.Parameters.Add(new MethodCallParameter("${logger} : ${message}"));
-
-                var rule = new LoggingRule("*", LogLevel.Warn, target);
-                LogManager.Configuration.AddTarget("raven", target);
-                LogManager.Configuration.LoggingRules.Add(rule);
-
-                LogManager.ReconfigExistingLoggers();*/
-            }
-
-        }
-
-        public static void PushLogWithRaven(string levelStr, string message)
-        {
-            ErrorLevel level;
-            if (Enum.TryParse(levelStr, out level))
-                InstanceAsBase.ExceptionLogger.CaptureMessage(new SentryMessage(message), level);
         }
 
         public virtual void UpdateConfigFiles()
