@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -122,7 +123,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool TakeItemsBack(IEnumerable<int> guids, bool all, bool existing)
         {
-            var newItems = new List<BasePlayerItem>();
+            var newItems = new List<ObjectItem>();
             var deletedItems = new List<BankItem>();
 
             foreach (var item in Items.Values.Where(x => guids.Contains(x.Guid) || (existing && Owner.Inventory.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
@@ -132,7 +133,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     continue;
 
                 deletedItems.Add(item);
-                newItems.Add(newItem);
+
+                var objectItem = newItem.GetObjectItem();
+                objectItem.quantity = 0;
+
+                newItems.Add(objectItem);
             }
 
             InventoryHandler.SendStorageObjectsRemoveMessage(Owner.Client, deletedItems.Select(x => x.Guid));
