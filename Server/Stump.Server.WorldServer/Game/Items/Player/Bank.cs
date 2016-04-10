@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            Owner.Inventory.RemoveItem(item, amount, sendMessage);
+            Owner.Inventory.RemoveItem(item, amount, sendMessage: sendMessage);
 
             var bankItem = ItemManager.Instance.CreateBankItem(Owner, item, amount);
             AddItem(bankItem, sendMessage);
@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            RemoveItem(item, amount, sendMessage);
+            RemoveItem(item, amount, sendMessage: sendMessage);
 
             var playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
             Owner.Inventory.AddItem(playerItem, sendMessage);

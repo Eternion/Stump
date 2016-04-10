@@ -106,6 +106,9 @@
       <Name>Stump.Server.WorldServer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\" mkdir "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\"
