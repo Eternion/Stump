@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -39,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             protected set { Owner.Client.WorldAccount.BankKamas = value; }
         }
 
-        public BankItem StoreItem(BasePlayerItem item, int amount)
+        public BankItem StoreItem(BasePlayerItem item, int amount, bool sendMessage)
         {
             if (!Owner.Inventory.HasItem(item) || amount <= 0)
                 return null;
@@ -53,10 +54,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            Owner.Inventory.RemoveItem(item, amount, sendMessage: false);
+            Owner.Inventory.RemoveItem(item, amount, sendMessage: sendMessage);
 
             var bankItem = ItemManager.Instance.CreateBankItem(Owner, item, amount);
-            AddItem(bankItem, false);
+            bankItem = AddItem(bankItem, sendMessage);
 
             return bankItem;
         }
@@ -68,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             foreach (var item in Owner.Inventory.Where(x => guids.Contains(x.Guid) || (existing && Items.Values.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
             {
-                var bankItem = StoreItem(item, (int)item.Stack);
+                var bankItem = StoreItem(item, (int)item.Stack, false);
                 if (bankItem == null)
                     continue;
 
@@ -98,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return true;
         }
 
-        public BasePlayerItem TakeItemBack(BankItem item, int amount)
+        public BasePlayerItem TakeItemBack(BankItem item, int amount, bool sendMessage)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -112,10 +113,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            RemoveItem(item, amount, sendMessage: false);
+            RemoveItem(item, amount, sendMessage: sendMessage);
 
             var playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
-            Owner.Inventory.AddItem(playerItem, false);
+            playerItem = Owner.Inventory.AddItem(playerItem, sendMessage);
 
             return playerItem;
         }
@@ -127,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             foreach (var item in Items.Values.Where(x => guids.Contains(x.Guid) || (existing && Owner.Inventory.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
             {
-                var newItem = TakeItemBack(item, (int)item.Stack);
+                var newItem = TakeItemBack(item, (int)item.Stack, false);
                 if (newItem == null)
                     continue;
 
@@ -136,7 +137,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
 
             InventoryHandler.SendStorageObjectsRemoveMessage(Owner.Client, deletedItems.Select(x => x.Guid));
-            InventoryHandler.SendObjectsAddedMessage(Owner.Client, newItems);
+            InventoryHandler.SendObjectsAddedMessage(Owner.Client, newItems.Select(x => x.GetObjectItem()));
+            InventoryHandler.SendObjectsQuantityMessage(Owner.Client, newItems.Select(x => new ObjectItemQuantity(x.Guid, (int)x.Stack)));
 
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 

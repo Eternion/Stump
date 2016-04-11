@@ -1078,6 +1078,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return entries.FirstOrDefault();
         }
 
+        public BasePlayerItem[] GetItems() => Items.Values.ToArray();
+
         public BasePlayerItem[] GetItems(CharacterInventoryPositionEnum position) => Items.Values.Where(entry => entry.Position == position).ToArray();
 
         public BasePlayerItem[] GetEquipedItems()
