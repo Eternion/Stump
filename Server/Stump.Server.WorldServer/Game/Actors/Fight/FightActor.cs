@@ -1375,10 +1375,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int GetTackledMP()
         {
-            return GetTackledMP(Cell);
+            return GetTackledMP(MP, Cell);
         }
 
-        public virtual int GetTackledMP(Cell cell)
+        public virtual int GetTackledMP(int mp, Cell cell)
         {
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
@@ -1386,15 +1386,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
-            return (int) Math.Round(MP* (1 - GetTacklePercent(cell)));
+            return (int) Math.Round(mp* (1 - GetTacklePercent(cell)));
         }
 
         public virtual int GetTackledAP()
         {
-            return GetTackledAP(Cell);
+            return GetTackledAP(AP, Cell);
         }
 
-        public virtual int GetTackledAP(Cell cell)
+        public virtual int GetTackledAP(int ap, Cell cell)
         {
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
@@ -1402,7 +1402,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
-            return (int) Math.Round(AP* (1-GetTacklePercent(cell)));
+            return (int) Math.Round(ap* (1-GetTacklePercent(cell)));
         }
 
         private double GetTacklePercent()

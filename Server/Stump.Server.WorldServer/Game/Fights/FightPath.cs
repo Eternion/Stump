@@ -6,6 +6,43 @@ using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
+    public class FightTackle
+    {
+        public FightTackle(FightActor[] tacklers, Cell cell, int index, int tackledAp, int tackledMp)
+        {
+            Tacklers = tacklers;
+            Cell = cell;
+            PathIndex = index;
+            TackledAP = tackledAp;
+            TackledMP = tackledMp;
+        }
+
+        public FightActor[] Tacklers
+        {
+            get;
+        }
+
+        public Cell Cell
+        {
+            get;
+        }
+
+        public int PathIndex
+        {
+            get;
+        }
+
+        public int TackledAP
+        {
+            get;
+        }
+
+        public int TackledMP
+        {
+            get;
+        }
+    }
+
     public class FightPath : Path
     {
         public FightPath(FightActor fighter, IFight fight, Path path)
@@ -26,19 +63,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        public int TackledMP
-        {
-            get;
-            private set;
-        }
-
-        public int TackledAP
-        {
-            get;
-            private set;
-        }
-
-        public FightActor[] Tacklers
+        public FightTackle[] Tackles
         {
             get;
             private set;
@@ -53,10 +78,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         private void AdjustPath()
         {
             int mp = Fighter.MP;
+            int ap = Fighter.AP;
             int i = 1;
 
             var path = new List<Cell>() {StartCell};
-            var tacklers = new List<FightActor>();
+            var tackles = new List<FightTackle>();
             var cell = StartCell;
 
             var obstaclesCells = Fight.GetAllFighters(entry => entry != Fighter && entry.Position.Cell != Fighter.Cell && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
@@ -66,21 +92,25 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 int tackledMP = 0;
                 int tackledAP = 0;
-                if ((tackledMP = Fighter.GetTackledMP(cell)) > 0)
+                if ((tackledMP = Fighter.GetTackledMP(mp, cell)) > 0)
                 {
                     if (tackledMP > mp)
                         tackledMP = mp;
 
                     mp -= tackledMP;
-                    TackledMP += tackledMP;
                 }
 
-                if ((tackledAP = Fighter.GetTackledAP(cell)) > 0)
+                if ((tackledAP = Fighter.GetTackledAP(ap, cell)) > 0)
                 {
-                    TackledAP += tackledAP;
+                    if (tackledAP > ap)
+                        tackledAP = ap;
+
+                    ap -= tackledAP;
                 }
 
-                tacklers.AddRange(Fighter.GetTacklers(cell));
+                if (tackledAP > 0 || tackledMP > 0)
+                    tackles.Add(new FightTackle(Fighter.GetTacklers(cell), cell, i - 1, tackledAP, tackledMP));
+
 
                 if (mp > 0)
                 {
@@ -93,7 +123,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             BlockedByObstacle = obstaclesCells.Contains(cell.Id);
             Cells = path.ToArray();
-            Tacklers = tacklers.Distinct().ToArray();
+            Tackles = tackles.ToArray();
         }
     }
 }

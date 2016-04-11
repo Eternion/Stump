@@ -1837,32 +1837,37 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fightPath = (FightPath)path;
 
             StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-            if (fightPath.TackledAP > 0 || fightPath.TackledMP > 0)
+            
+            int index = 0;
+            foreach(var tackle in fightPath.Tackles)
             {
-                // tackle
-                OnTackled(fighter, fightPath);
-
-                if (path.IsEmpty() || path.MPCost == 0)
+                if (tackle.PathIndex - index > 0)
                 {
-                    EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                    return;
+                    ForEach(entry =>
+                    {
+                        if (entry.CanSee(fighter))
+                            ContextHandler.SendGameMapMovementMessage(entry.Client, fightPath.Cells.Skip(index).Take(tackle.PathIndex - index + 1).Select(x => x.Id), fighter);
+                    }, true);
                 }
-
-                if (fightPath.BlockedByObstacle)
-                {
-                    // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
-                    character?.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 276);
-                }
-
+                OnTackled(fighter, tackle);
+                index = tackle.PathIndex;
             }
 
-            var movementsKeys = fightPath.GetServerPathKeys();
 
-            ForEach(entry =>
-                        {
-                            if (entry.CanSee(fighter))
-                                ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKeys, fighter);
-                        }, true);
+            if (path.Cells.Length - index > 0)
+            {
+                ForEach(entry =>
+                {
+                    if (entry.CanSee(fighter))
+                        ContextHandler.SendGameMapMovementMessage(entry.Client, fightPath.Cells.Skip(index).Take(path.Cells.Length - index + 1).Select(x => x.Id), fighter);
+                }, true);
+            }
+
+            if (fightPath.BlockedByObstacle)
+            {
+                // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
+                character?.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 276);
+            }
 
             actor.StopMove();
             EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
@@ -1870,29 +1875,26 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public event Action<FightActor, int, int> Tackled;
 
-        protected virtual void OnTackled(FightActor actor, FightPath path)
+        protected virtual void OnTackled(FightActor actor, FightTackle tackle)
         {
-            if (actor.MP - path.TackledMP < 0)
+            if (actor.MP - tackle.TackledMP < 0)
             {
-                logger.Error("Cannot apply tackle : mp tackled ({0}) > available mp ({1})", path.TackledMP, actor.MP);
+                logger.Error("Cannot apply tackle : mp tackled ({0}) > available mp ({1})", tackle.TackledMP, actor.MP);
                 return;
             }
 
-            ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, path.Tacklers);
-            actor.LostAP((short)path.TackledAP, actor);
-            actor.LostMP((short)path.TackledMP, actor);
-
-            if (path.MPCost > actor.MP)
-                path.CutPath(actor.MP + 1);
-
+            ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, tackle.Tacklers);
+            actor.LostAP((short)tackle.TackledAP, actor);
+            actor.LostMP((short)tackle.TackledMP, actor);
+            
             actor.TriggerBuffs(actor, BuffTriggerType.OnTackled);
 
-            foreach (var tackler in path.Tacklers)
+            foreach (var tackler in tackle.Tacklers)
                 tackler.TriggerBuffs(tackler, BuffTriggerType.OnTackle);
 
             var handler = Tackled;
             if (handler != null)
-                handler(actor, path.TackledAP, path.TackledMP);
+                handler(actor, tackle.TackledAP, tackle.TackledMP);
         }
 
         protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)
