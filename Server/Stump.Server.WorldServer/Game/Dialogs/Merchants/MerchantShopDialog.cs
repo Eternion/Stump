@@ -1,27 +1,10 @@
-﻿#region License GNU GPL
-// MerchantTrade.cs
-// 
-// Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
-
-using System.Linq;
+﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
@@ -37,22 +20,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
         public Merchant Merchant
         {
             get;
-            private set;
         }
 
         public Character Character
         {
             get;
-            private set;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get
-            {
-                return DialogTypeEnum.DIALOG_EXCHANGE;
-            }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         public void Open()
         {
@@ -84,13 +59,19 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
                 return false;
             }
 
-            var removed = Merchant.Bag.RemoveItem(item, quantity, sendMessage: true);
+            var removed = Merchant.Bag.RemoveItem(item, quantity);
 
             var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, removed, item.Effects);
             Character.Inventory.AddItem(newItem);
 
             var finalPrice = item.Price * removed;
             Character.Inventory.SubKamas((int)finalPrice);
+
+            //Vous avez perdu %1 kamas.
+            Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 46, finalPrice);
+
+            //Vous avez obtenu %1 '$item%2'.
+            Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 21, newItem.Stack, newItem.Template.Id);
 
             Character.Client.Send(new ExchangeBuyOkMessage());
 
@@ -100,10 +81,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             return true;
         }
 
-        public bool CanBuy(MerchantItem item, int amount)
-        {
-            return Character.Inventory.Kamas >= item.Price * amount || !Merchant.CanBeSee(Character);
-        }
+        public bool CanBuy(MerchantItem item, int amount) => Character.Inventory.Kamas >= item.Price * amount || !Merchant.CanBeSee(Character);
 
         public bool SellItem(int id, int quantity)
         {
