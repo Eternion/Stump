@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
                 foreach (var character in Fight.GetAllCharacters(true))
                 {
-                    if (direction != dir || !character.Fighter.IsFriendlyWith(Caster))
+                    if (direction != dir || character.Fighter == null || !character.Fighter.IsFriendlyWith(Caster))
                         ActionsHandler.SendGameActionFightSummonMessage(character.Client, summon);
                 }
 
