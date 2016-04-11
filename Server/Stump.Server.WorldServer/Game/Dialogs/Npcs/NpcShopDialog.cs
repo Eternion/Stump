@@ -127,6 +127,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             else
             {
                 Character.Inventory.SubKamas(finalPrice);
+
+                //%3 x {item,%1,%2} (%4 kamas)
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 252, item.Template.Id, item.Guid, item.Stack, finalPrice);
             }
 
             Character.Client.Send(new ExchangeBuyOkMessage());
