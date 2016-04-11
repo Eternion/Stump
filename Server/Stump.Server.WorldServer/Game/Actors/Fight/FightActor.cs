@@ -1773,6 +1773,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    || spell.Template.Id == (int) SpellIdEnum.VERTIGE
                    || spell.Template.Id == (int) SpellIdEnum.SORT_ENFLAMMÉ
                    || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_1503
+                   || spell.Template.Id == (int)SpellIdEnum.GLYPHE_RALENTISSANT
                    || spell.Template.Id == (int) SpellIdEnum.PULSE
                    || spell.Template.Id == (int) SpellIdEnum.CONTRE_94
                    || spell.Template.Id == (int) SpellIdEnum.MOT_D_ÉPINE

@@ -146,12 +146,13 @@ namespace Stump.Server.WorldServer.Game.Breeds
             character.Spells.ForgetAllSpells();
             ForgetSpecialSpells(character);
 
+            foreach (var equippedItem in character.Inventory.ToArray())
+                character.Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
             character.ResetStats();
 
             foreach (var breedSpell in character.Breed.Spells)
-            {
                 character.Spells.UnLearnSpell(breedSpell.Spell);
-            }
 
             character.SetBreed(breed);
 
@@ -172,7 +173,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 SpellIdEnum.POISSE,
                 SpellIdEnum.RAULEBAQUE,
                 SpellIdEnum.FÉLINTION,
-                SpellIdEnum.MOT_CURATIF,
+                SpellIdEnum.MOT_LOTOF,
                 SpellIdEnum.BROKLE,
                 SpellIdEnum.FLÈCHE_DE_DISPERSION,
                 SpellIdEnum.ARBRE_DE_VIE,
@@ -181,11 +182,10 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 SpellIdEnum.FOCUS,
                 SpellIdEnum.ROUBLABOT,
                 SpellIdEnum.IVRESSE,
-                SpellIdEnum.FLIBUSTE
+                SpellIdEnum.BRISE_L_ÂME
             };
 
             specialSpellsList.ForEach(x => character.Spells.UnLearnSpell((int)x));
         }
-
     }
 }
