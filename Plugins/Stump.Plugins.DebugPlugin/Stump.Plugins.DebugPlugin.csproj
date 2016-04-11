@@ -151,7 +151,9 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
