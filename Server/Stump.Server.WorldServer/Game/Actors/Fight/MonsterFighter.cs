@@ -85,21 +85,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
+        public override bool CanTackle(FightActor fighter) => base.CanTackle(fighter) && Monster.Template.CanTackle;
 
-        public override bool CanTackle(FightActor fighter)
-        {
-            return base.CanTackle(fighter) && Monster.Template.CanTackle;
-        }
+        public override bool CanBePushed() => base.CanBePushed() && Monster.Template.CanBePushed;
 
-        public override bool CanBePushed()
-        {
-            return base.CanBePushed() && Monster.Template.CanBePushed;
-        }
-
-        public override bool CanSwitchPos()
-        {
-            return base.CanSwitchPos() && Monster.Template.CanSwitchPos;
-        }
+        public override bool CanSwitchPos() => base.CanSwitchPos() && Monster.Template.CanSwitchPos;
 
         public override uint GetDroppedKamas()
         {
@@ -113,6 +103,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool CanDrop() => true;
 
         public override bool CanPlay() => base.CanPlay() && Monster.Template.CanPlay;
+
+        public override bool CanMove() => base.CanMove() && MonsterGrade.MovementPoints > 0;
 
         public override IEnumerable<DroppedItem> RollLoot(IFightResult looter)
         {
