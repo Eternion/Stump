@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CanPlay()
         {
-            return base.CanPlay() && (!HasLeft() || IsDisconnected);
+            return !HasLeft() || IsDisconnected;
         }
 
         #endregion
