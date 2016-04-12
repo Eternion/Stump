@@ -691,7 +691,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
 
             var adjacentCells = interactiveObject.Position.Point.GetAdjacentCells(true).
-                Select(x => Cells[x.CellId]).ToArray();
+                Where(x => x.IsInMap()).Select(x => Cells[x.CellId]).ToArray();
 
             // user must be near the interactive if possible
             if (adjacentCells.Any(x => x.Walkable) && 

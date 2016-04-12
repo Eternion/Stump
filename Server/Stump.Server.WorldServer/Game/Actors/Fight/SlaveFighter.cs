@@ -7,7 +7,6 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Stats;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -77,6 +76,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
         }
+
         public override bool HasResult => false;
 
         public override ObjectPosition MapPosition => Position;
@@ -94,6 +94,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override Spell GetSpell(int id) => Spells.FirstOrDefault(x => x.Template.Id == id);
 
         public override bool HasSpell(int id) => Spells.Any(x => x.Template.Id == id);
+
+        public override bool CanMove() => base.CanMove() && MonsterGrade.MovementPoints > 0;
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberMonsterInformations(Id, MonsterGrade.Template.Id, (sbyte)MonsterGrade.GradeId);
 
