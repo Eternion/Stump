@@ -2542,7 +2542,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
-        public FighterRefusedReasonEnum CanAgress(Character target)
+        public FighterRefusedReasonEnum CanAgress(Character target, bool bypassCheck = false)
         {
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
@@ -2553,7 +2553,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy())
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
-            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
+            if (!bypassCheck && (!IsInWorld || IsFighting() || IsSpectator() || IsBusy()))
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL || target.AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL)
@@ -2562,7 +2562,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.AlignmentSide == AlignmentSide)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
-            if (target.Map != Map || !Map.AllowAggression)
+            if (!bypassCheck && (target.Map != Map || !Map.AllowAggression))
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             if (string.Equals(target.Client.IP, Client.IP) && !IsGameMaster())

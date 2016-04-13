@@ -138,8 +138,8 @@ namespace Stump.Core.Extensions
 
             for (int i = 0; i < result.Length; i++)
             {
-                int randInt = rand.Next(sum + 1);
-                int currentSum = 0;
+                var randInt = rand.Next(sum + 1);
+                var currentSum = 0;
                 for (int j = 0; j < indices.Count; j++)
                 {
                     currentSum += indices[j];
@@ -162,7 +162,7 @@ namespace Stump.Core.Extensions
         public static T RandomElementOrDefault<T>(this IEnumerable<T> enumerable)
         {
             var rand = new Random();
-            int count = enumerable.Count();
+            var count = enumerable.Count();
 
             if (count <= 0)
                 return default(T);
