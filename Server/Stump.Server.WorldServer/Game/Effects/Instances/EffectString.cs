@@ -1,6 +1,7 @@
 ﻿using System;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -26,6 +27,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_value = value;
         }
 
+        public EffectString(EffectsEnum id, string value)
+            : this((short) id, value, new EffectBase())
+        {
+        }
+
         public EffectString(EffectInstanceString effect)
             : base(effect)
         {
@@ -44,6 +50,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 return 10;
             }
         }
+
+        public string Text => m_value;
 
         public override object[] GetValues()
         {

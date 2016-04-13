@@ -18,7 +18,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
         public override bool IsTargetValid(FightActor actor, SpellEffectHandler handler)
         {
             return Required == (actor == handler.Caster || 
-                (actor.Summoner != null && (actor.Summoner == handler.Caster || actor.Summoner == handler.Caster.Summoner)));
+                (actor.Summoner != null && (actor.Summoner == handler.Caster || actor.Summoner == handler.Caster.Summoner)) ||
+                handler.Caster.Summoner != null && handler.Caster.Summoner == actor);
         }
     }
 }

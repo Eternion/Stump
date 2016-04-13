@@ -2447,7 +2447,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             character.EnterMap += OnFollowedMemberEnterMap;
 
             PartyHandler.SendPartyFollowStatusUpdateMessage(Client, Party, true, character.Id);
-            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, character);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, character);
         }
 
         public void UnfollowMember()
@@ -2467,7 +2467,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!(actor is Character))
                 return;
 
-            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, (Character)actor);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, (Character)actor);
         }
 
         #endregion

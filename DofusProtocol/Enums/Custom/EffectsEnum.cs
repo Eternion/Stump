@@ -1489,15 +1489,15 @@
         /// <summary>
         /// Alignement : #3
         /// </summary>
-        Effect_960 = 960,
+        Effect_Alignment = 960,
         /// <summary>
         /// Grade : #3
         /// </summary>
-        Effect_961 = 961,
+        Effect_Grade = 961,
         /// <summary>
         /// Niveau : #3
         /// </summary>
-        Effect_962 = 962,
+        Effect_Level = 962,
         /// <summary>
         /// Créé depuis : #3 jour(s)
         /// </summary>
@@ -1561,7 +1561,7 @@
         /// <summary>
         /// Recherche : #4
         /// </summary>
-        Effect_989 = 989,
+        Effect_Seek = 989,
         /// <summary>
         /// #4
         /// </summary>

@@ -26,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             m_value = value;
         }
+
         public EffectInteger(EffectsEnum id, short value)
             : this((short) id, value, new EffectBase())
         {
