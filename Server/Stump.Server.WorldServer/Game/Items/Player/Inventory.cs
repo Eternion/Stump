@@ -791,7 +791,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void CheckItemsCriterias()
         {
-            foreach (var equipedItem in GetEquipedItems().ToArray().Where(equipedItem => !equipedItem.AreConditionFilled(Owner)))
+            foreach (var equipedItem in GetEquipedItems().Where(equipedItem => !equipedItem.AreConditionFilled(Owner)).ToArray())
             {
                 MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
@@ -1077,7 +1077,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public BasePlayerItem[] GetItems() => Items.Values.ToArray();
 
-        public BasePlayerItem[] GetItems(CharacterInventoryPositionEnum position) => Items.Values.Where(entry => entry.Position == position).ToArray();
+        public BasePlayerItem[] GetItems(Predicate<BasePlayerItem> predicate) => Items.Values.Where(entry => predicate(entry)).ToArray();
 
         public BasePlayerItem[] GetEquipedItems()
         {
@@ -1135,7 +1135,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         private void OnFightEnded(Character character, CharacterFighter fighter)
         {
             // update boosts
-            foreach (var boost in GetItems(CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD))
+            foreach (var boost in GetItems(x => x.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD))
             {
                 var effect = boost.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
 

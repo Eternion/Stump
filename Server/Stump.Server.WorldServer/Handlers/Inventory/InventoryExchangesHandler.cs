@@ -263,9 +263,6 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
         public static void HandleExchangeObjectModifyPricedMessage(WorldClient client, ExchangeObjectModifyPricedMessage message)
         {
-            if (message.price <= 0)
-                return;
-
             if (!client.Character.IsInExchange())
                 return;
 
@@ -275,6 +272,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             }
             else if (client.Character.Exchanger is BidHouseExchanger)
             {
+                if (message.price <= 0)
+                    return;
+
                 ((BidHouseExchanger)client.Character.Exchanger).ModifyItem(message.objectUID, (uint)message.price);
             }
         }

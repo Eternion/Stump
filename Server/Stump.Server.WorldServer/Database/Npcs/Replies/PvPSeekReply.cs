@@ -27,19 +27,21 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (target == null)
                 return false;
 
+            foreach (var contract in character.Inventory.GetItems(x => x.Template.Id == (int)ItemIdEnum.ORDRE_DEXECUTION_10085))
+                character.Inventory.RemoveItem(contract);
+
             var item = ItemManager.Instance.CreatePlayerItem(character, (int)ItemIdEnum.ORDRE_DEXECUTION_10085, 25);
 
             var seekEffect = item.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek);
 
-            if (seekEffect == null)
-                return false;
-
-            item.Effects.Remove(seekEffect);
+            if (seekEffect != null)
+                item.Effects.Remove(seekEffect);
 
             item.Effects.Add(new EffectString(EffectsEnum.Effect_Seek, target.Name));
             item.Effects.Add(new EffectInteger(EffectsEnum.Effect_Alignment, (short)target.AlignmentSide));
             item.Effects.Add(new EffectInteger(EffectsEnum.Effect_Grade, target.AlignmentGrade));
             item.Effects.Add(new EffectInteger(EffectsEnum.Effect_Level, target.Level));
+            item.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0));
 
             character.Inventory.AddItem(item);
 

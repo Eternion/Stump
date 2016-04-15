@@ -2,6 +2,7 @@
 using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -45,9 +46,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public int GetMerchantTax()
         {
-            var resultTax = Items.Aggregate<KeyValuePair<int, MerchantItem>, double>(0, (current, item) => current + (item.Value.Price*item.Value.Stack));
+            var resultTax = Items.Aggregate<KeyValuePair<int, MerchantItem>, double>(0, (current, item) => current + Math.Round((double)item.Value.Price*item.Value.Stack));
 
-            resultTax = (resultTax * 0.01);
+            resultTax = (resultTax * 0.0001);
+
+            if (resultTax > int.MaxValue)
+                return int.MaxValue;
 
             return (int)resultTax;
         }
@@ -92,8 +96,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool ModifyItem(MerchantItem item, int quantity, uint price)
         {
-            item.Price = price;
-            InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
+            if (price > 0)
+                item.Price = price;
 
             if (quantity > item.Stack)
             {
@@ -104,6 +108,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (quantity > 0 && quantity < item.Stack)
                 TakeBack(item, (int) (item.Stack - quantity));
+
+            InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
 
             WorldServer.Instance.IOTaskPool.AddMessage(Save);
 
