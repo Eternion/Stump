@@ -200,7 +200,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         static void RemoveShield(IInventoryOwner character)
         {
-            foreach (var item in character.Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD))
+            foreach (var item in character.Inventory.GetItems(x => x.Position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD))
                 character.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
         }
 

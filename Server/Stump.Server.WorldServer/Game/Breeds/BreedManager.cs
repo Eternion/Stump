@@ -145,11 +145,9 @@ namespace Stump.Server.WorldServer.Game.Breeds
         {
             character.Spells.ForgetAllSpells();
             ForgetSpecialSpells(character);
-
-            foreach (var equippedItem in character.Inventory.ToArray())
-                character.Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-
             character.ResetStats();
+
+            character.Inventory.CheckItemsCriterias();
 
             foreach (var breedSpell in character.Breed.Spells)
                 character.Spells.UnLearnSpell(breedSpell.Spell);

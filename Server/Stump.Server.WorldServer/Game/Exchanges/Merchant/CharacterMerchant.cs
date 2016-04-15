@@ -13,7 +13,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
         public Character Character
         {
             get;
-            private set;
         }
 
         public override bool MoveItem(int id, int quantity)
@@ -43,9 +42,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
             return item != null && Character.MerchantBag.ModifyItem(item, quantity, price);
         }
 
-        public override bool SetKamas(int amount)
-        {
-            return false;
-        }
+        public override bool SetKamas(int amount) => false;
     }
 }

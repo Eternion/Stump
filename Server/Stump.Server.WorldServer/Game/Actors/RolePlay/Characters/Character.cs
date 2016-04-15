@@ -1505,10 +1505,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         void OnPvPToggled()
         {
-            foreach (var item in Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD).Where(item => !item.AreConditionFilled(this)))
-            {
+            foreach (var item in Inventory.GetItems(x => x.Position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD && x.AreConditionFilled(this)))
                 Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-            }
 
             Map.Refresh(this);
             RefreshStats();
@@ -2948,6 +2946,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (sendError)
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 76);
+
             return false;
         }
 
