@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:49
+// Generated on 04/19/2016 10:17:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-    public class CharacterMinimalInformations : AbstractCharacterInformation
+    public class CharacterMinimalInformations : CharacterBasicMinimalInformations
     {
         public const short Id = 110;
         public override short TypeId
@@ -18,24 +18,21 @@ namespace Stump.DofusProtocol.Types
         }
         
         public byte level;
-        public string name;
         
         public CharacterMinimalInformations()
         {
         }
         
-        public CharacterMinimalInformations(long id, byte level, string name)
-         : base(id)
+        public CharacterMinimalInformations(long id, string name, byte level)
+         : base(id, name)
         {
             this.level = level;
-            this.name = name;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
             writer.WriteByte(level);
-            writer.WriteUTF(name);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -44,7 +41,6 @@ namespace Stump.DofusProtocol.Types
             level = reader.ReadByte();
             if (level < 1 || level > 200)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
-            name = reader.ReadUTF();
         }
         
         

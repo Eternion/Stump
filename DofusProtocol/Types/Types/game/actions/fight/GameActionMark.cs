@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:48
+// Generated on 04/19/2016 10:17:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,8 +72,8 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             markAuthorId = reader.ReadDouble();
-            if (markAuthorId < -9.007199254740992E15 || markAuthorId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on markAuthorId = " + markAuthorId + ", it doesn't respect the following condition : markAuthorId < -9.007199254740992E15 || markAuthorId > 9.007199254740992E15");
+            if (markAuthorId < -9007199254740990 || markAuthorId > 9007199254740990)
+                throw new Exception("Forbidden value on markAuthorId = " + markAuthorId + ", it doesn't respect the following condition : markAuthorId < -9007199254740990 || markAuthorId > 9007199254740990");
             markTeamId = reader.ReadSByte();
             if (markTeamId < 0)
                 throw new Exception("Forbidden value on markTeamId = " + markTeamId + ", it doesn't respect the following condition : markTeamId < 0");

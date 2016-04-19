@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:15:04
+// Generated on 04/19/2016 10:18:00
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -40,6 +40,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean canSwitchPos;
         public List<uint> incompatibleIdols;
         public Boolean allIdolsDisabled;
+        public Boolean dareAvailable;
+        public List<uint> incompatibleChallenges;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -199,6 +201,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.allIdolsDisabled; }
             set { this.allIdolsDisabled = value; }
+        }
+        [D2OIgnore]
+        public Boolean DareAvailable
+        {
+            get { return this.dareAvailable; }
+            set { this.dareAvailable = value; }
+        }
+        [D2OIgnore]
+        public List<uint> IncompatibleChallenges
+        {
+            get { return this.incompatibleChallenges; }
+            set { this.incompatibleChallenges = value; }
         }
     }
 }

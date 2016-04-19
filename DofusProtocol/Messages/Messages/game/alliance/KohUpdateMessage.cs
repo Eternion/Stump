@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:04
+// Generated on 04/19/2016 10:17:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,8 +143,8 @@ namespace Stump.DofusProtocol.Messages
             if (allianceMapMyAllianceScore < 0)
                 throw new Exception("Forbidden value on allianceMapMyAllianceScore = " + allianceMapMyAllianceScore + ", it doesn't respect the following condition : allianceMapMyAllianceScore < 0");
             nextTickTime = reader.ReadDouble();
-            if (nextTickTime < 0 || nextTickTime > 9.007199254740992E15)
-                throw new Exception("Forbidden value on nextTickTime = " + nextTickTime + ", it doesn't respect the following condition : nextTickTime < 0 || nextTickTime > 9.007199254740992E15");
+            if (nextTickTime < 0 || nextTickTime > 9007199254740990)
+                throw new Exception("Forbidden value on nextTickTime = " + nextTickTime + ", it doesn't respect the following condition : nextTickTime < 0 || nextTickTime > 9007199254740990");
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:13:58
+// Generated on 04/19/2016 10:17:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public BasicStatWithDataMessage(short statId, IEnumerable<Types.StatisticData> datas)
-         : base(statId)
+        public BasicStatWithDataMessage(double timeSpent, short statId, IEnumerable<Types.StatisticData> datas)
+         : base(timeSpent, statId)
         {
             this.datas = datas;
         }

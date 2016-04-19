@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:13
+// Generated on 04/19/2016 10:17:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +43,8 @@ namespace Stump.DofusProtocol.Messages
             if (challengeId < 0)
                 throw new Exception("Forbidden value on challengeId = " + challengeId + ", it doesn't respect the following condition : challengeId < 0");
             targetId = reader.ReadDouble();
-            if (targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15");
+            if (targetId < -9007199254740990 || targetId > 9007199254740990)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9007199254740990 || targetId > 9007199254740990");
         }
         
     }

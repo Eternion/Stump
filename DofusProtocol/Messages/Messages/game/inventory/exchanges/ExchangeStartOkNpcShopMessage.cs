@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:38
+// Generated on 04/19/2016 10:17:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +55,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             npcSellerId = reader.ReadDouble();
-            if (npcSellerId < -9.007199254740992E15 || npcSellerId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on npcSellerId = " + npcSellerId + ", it doesn't respect the following condition : npcSellerId < -9.007199254740992E15 || npcSellerId > 9.007199254740992E15");
+            if (npcSellerId < -9007199254740990 || npcSellerId > 9007199254740990)
+                throw new Exception("Forbidden value on npcSellerId = " + npcSellerId + ", it doesn't respect the following condition : npcSellerId < -9007199254740990 || npcSellerId > 9007199254740990");
             tokenId = reader.ReadVarShort();
             if (tokenId < 0)
                 throw new Exception("Forbidden value on tokenId = " + tokenId + ", it doesn't respect the following condition : tokenId < 0");

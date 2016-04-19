@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:55
+// Generated on 04/19/2016 10:17:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +35,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GuildMember(long id, byte level, string name, sbyte breed, bool sex, short rank, long givenExperience, sbyte experienceGivenPercent, int rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, short moodSmileyId, int accountId, int achievementPoints, Types.PlayerStatus status)
-         : base(id, level, name)
+        public GuildMember(long id, string name, byte level, sbyte breed, bool sex, short rank, long givenExperience, sbyte experienceGivenPercent, int rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, short moodSmileyId, int accountId, int achievementPoints, Types.PlayerStatus status)
+         : base(id, name, level)
         {
             this.breed = breed;
             this.sex = sex;
@@ -81,8 +81,8 @@ namespace Stump.DofusProtocol.Types
             if (rank < 0)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0");
             givenExperience = reader.ReadVarLong();
-            if (givenExperience < 0 || givenExperience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on givenExperience = " + givenExperience + ", it doesn't respect the following condition : givenExperience < 0 || givenExperience > 9.007199254740992E15");
+            if (givenExperience < 0 || givenExperience > 9007199254740990)
+                throw new Exception("Forbidden value on givenExperience = " + givenExperience + ", it doesn't respect the following condition : givenExperience < 0 || givenExperience > 9007199254740990");
             experienceGivenPercent = reader.ReadSByte();
             if (experienceGivenPercent < 0 || experienceGivenPercent > 100)
                 throw new Exception("Forbidden value on experienceGivenPercent = " + experienceGivenPercent + ", it doesn't respect the following condition : experienceGivenPercent < 0 || experienceGivenPercent > 100");

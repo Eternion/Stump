@@ -215,6 +215,7 @@
     <Compile Include="Export\AggressableStatusEnum.cs" />
     <Compile Include="Export\AlignmentSideEnum.cs" />
     <Compile Include="Export\AllianceRightsBitEnum.cs" />
+    <Compile Include="Export\BoostableCharacteristicEnum.cs" />
     <Compile Include="Export\BreedEnum.cs" />
     <Compile Include="Export\BuildTypeEnum.cs" />
     <Compile Include="Export\CharacterCreationResultEnum.cs" />
@@ -230,6 +231,8 @@
     <Compile Include="Export\CompassTypeEnum.cs" />
     <Compile Include="Export\ConsoleMessageTypeEnum.cs" />
     <Compile Include="Export\CraftResultEnum.cs" />
+    <Compile Include="Export\DareCriteriaTypeEnum.cs" />
+    <Compile Include="Export\DareErrorEnum.cs" />
     <Compile Include="Export\DebugLevelEnum.cs" />
     <Compile Include="Export\DelayedActionTypeEnum.cs" />
     <Compile Include="Export\DialogTypeEnum.cs" />
@@ -250,6 +253,7 @@
     <Compile Include="Export\GameHierarchyEnum.cs" />
     <Compile Include="Export\GuestLimitationEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
+    <Compile Include="Export\GuildMotdErrorEnum.cs" />
     <Compile Include="Export\GuildRightsBitEnum.cs" />
     <Compile Include="Export\HaapiTokenTypeEnum.cs" />
     <Compile Include="Export\HardcoreOrEpicDeathStateEnum.cs" />

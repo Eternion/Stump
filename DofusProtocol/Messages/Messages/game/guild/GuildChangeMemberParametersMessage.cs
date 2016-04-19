@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:28
+// Generated on 04/19/2016 10:17:28
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             memberId = reader.ReadVarLong();
-            if (memberId < 0 || memberId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0 || memberId > 9.007199254740992E15");
+            if (memberId < 0 || memberId > 9007199254740990)
+                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0 || memberId > 9007199254740990");
             rank = reader.ReadVarShort();
             if (rank < 0)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0");

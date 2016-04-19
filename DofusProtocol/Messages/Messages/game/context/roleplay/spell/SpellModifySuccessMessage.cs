@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:26
+// Generated on 04/19/2016 10:17:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class SpellUpgradeSuccessMessage : Message
+    public class SpellModifySuccessMessage : Message
     {
-        public const uint Id = 1201;
+        public const uint Id = 6654;
         public override uint MessageId
         {
             get { return Id; }
@@ -21,11 +21,11 @@ namespace Stump.DofusProtocol.Messages
         public int spellId;
         public sbyte spellLevel;
         
-        public SpellUpgradeSuccessMessage()
+        public SpellModifySuccessMessage()
         {
         }
         
-        public SpellUpgradeSuccessMessage(int spellId, sbyte spellLevel)
+        public SpellModifySuccessMessage(int spellId, sbyte spellLevel)
         {
             this.spellId = spellId;
             this.spellLevel = spellLevel;

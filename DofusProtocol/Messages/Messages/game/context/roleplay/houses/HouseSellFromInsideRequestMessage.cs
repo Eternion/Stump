@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:18
+// Generated on 04/19/2016 10:17:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public HouseSellFromInsideRequestMessage(int amount)
-         : base(amount)
+        public HouseSellFromInsideRequestMessage(int amount, bool forSale)
+         : base(amount, forSale)
         {
         }
         

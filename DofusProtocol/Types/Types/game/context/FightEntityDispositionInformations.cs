@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:49
+// Generated on 04/19/2016 10:17:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +39,8 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             carryingCharacterId = reader.ReadDouble();
-            if (carryingCharacterId < -9.007199254740992E15 || carryingCharacterId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on carryingCharacterId = " + carryingCharacterId + ", it doesn't respect the following condition : carryingCharacterId < -9.007199254740992E15 || carryingCharacterId > 9.007199254740992E15");
+            if (carryingCharacterId < -9007199254740990 || carryingCharacterId > 9007199254740990)
+                throw new Exception("Forbidden value on carryingCharacterId = " + carryingCharacterId + ", it doesn't respect the following condition : carryingCharacterId < -9007199254740990 || carryingCharacterId > 9007199254740990");
         }
         
         

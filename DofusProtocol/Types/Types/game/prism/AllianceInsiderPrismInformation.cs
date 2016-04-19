@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:57
+// Generated on 04/19/2016 10:17:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,8 +69,8 @@ namespace Stump.DofusProtocol.Types
             if (lastTimeSlotModificationAuthorGuildId < 0)
                 throw new Exception("Forbidden value on lastTimeSlotModificationAuthorGuildId = " + lastTimeSlotModificationAuthorGuildId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorGuildId < 0");
             lastTimeSlotModificationAuthorId = reader.ReadVarLong();
-            if (lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9.007199254740992E15");
+            if (lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9007199254740990)
+                throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9007199254740990");
             lastTimeSlotModificationAuthorName = reader.ReadUTF();
             var limit = reader.ReadUShort();
             var modulesObjects_ = new Types.ObjectItem[limit];

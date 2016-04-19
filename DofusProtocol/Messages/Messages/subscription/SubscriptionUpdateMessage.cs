@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:46
+// Generated on 04/19/2016 10:17:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +37,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             timestamp = reader.ReadDouble();
-            if (timestamp < -9.007199254740992E15 || timestamp > 9.007199254740992E15)
-                throw new Exception("Forbidden value on timestamp = " + timestamp + ", it doesn't respect the following condition : timestamp < -9.007199254740992E15 || timestamp > 9.007199254740992E15");
+            if (timestamp < -9007199254740990 || timestamp > 9007199254740990)
+                throw new Exception("Forbidden value on timestamp = " + timestamp + ", it doesn't respect the following condition : timestamp < -9007199254740990 || timestamp > 9007199254740990");
         }
         
     }

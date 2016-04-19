@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:14
+// Generated on 04/19/2016 10:17:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +19,22 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int price;
+        public bool forSale;
         
         public PaddockSellRequestMessage()
         {
         }
         
-        public PaddockSellRequestMessage(int price)
+        public PaddockSellRequestMessage(int price, bool forSale)
         {
             this.price = price;
+            this.forSale = forSale;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(price);
+            writer.WriteBoolean(forSale);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -39,6 +42,7 @@ namespace Stump.DofusProtocol.Messages
             price = reader.ReadVarInt();
             if (price < 0)
                 throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
+            forSale = reader.ReadBoolean();
         }
         
     }

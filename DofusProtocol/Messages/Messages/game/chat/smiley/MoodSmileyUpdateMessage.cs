@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:09
+// Generated on 04/19/2016 10:17:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,8 @@ namespace Stump.DofusProtocol.Messages
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
             playerId = reader.ReadVarLong();
-            if (playerId < 0 || playerId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
+            if (playerId < 0 || playerId > 9007199254740990)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9007199254740990");
             smileyId = reader.ReadVarShort();
             if (smileyId < 0)
                 throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");

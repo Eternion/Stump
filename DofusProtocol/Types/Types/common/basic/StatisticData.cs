@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:47
+// Generated on 04/19/2016 10:17:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,27 +17,18 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public short actionId;
         
         public StatisticData()
         {
         }
         
-        public StatisticData(short actionId)
-        {
-            this.actionId = actionId;
-        }
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteVarShort(actionId);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            actionId = reader.ReadVarShort();
-            if (actionId < 0)
-                throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
         }
         
         

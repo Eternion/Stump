@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:36
+// Generated on 04/19/2016 10:17:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,11 +43,11 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             initiatorId = reader.ReadVarLong();
-            if (initiatorId < 0 || initiatorId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on initiatorId = " + initiatorId + ", it doesn't respect the following condition : initiatorId < 0 || initiatorId > 9.007199254740992E15");
+            if (initiatorId < 0 || initiatorId > 9007199254740990)
+                throw new Exception("Forbidden value on initiatorId = " + initiatorId + ", it doesn't respect the following condition : initiatorId < 0 || initiatorId > 9007199254740990");
             otherId = reader.ReadVarLong();
-            if (otherId < 0 || otherId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on otherId = " + otherId + ", it doesn't respect the following condition : otherId < 0 || otherId > 9.007199254740992E15");
+            if (otherId < 0 || otherId > 9007199254740990)
+                throw new Exception("Forbidden value on otherId = " + otherId + ", it doesn't respect the following condition : otherId < 0 || otherId > 9007199254740990");
             role = reader.ReadSByte();
         }
         

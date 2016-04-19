@@ -213,6 +213,7 @@
     <Compile Include="Types\game\character\AbstractCharacterInformation.cs" />
     <Compile Include="Types\game\character\alignment\ActorAlignmentInformations.cs" />
     <Compile Include="Types\game\character\alignment\ActorExtendedAlignmentInformations.cs" />
+    <Compile Include="Types\game\character\CharacterBasicMinimalInformations.cs" />
     <Compile Include="Types\game\character\characteristic\CharacterBaseCharacteristic.cs" />
     <Compile Include="Types\game\character\characteristic\CharacterCharacteristicsInformations.cs" />
     <Compile Include="Types\game\character\characteristic\CharacterSpellModification.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="Types\game\context\roleplay\HumanOptionSkillUse.cs" />
     <Compile Include="Types\game\context\roleplay\HumanOptionTitle.cs" />
     <Compile Include="Types\game\context\roleplay\job\DecraftedItemStackInfo.cs" />
+    <Compile Include="Types\game\context\roleplay\job\JobBookSubscription.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryEntryJobInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryEntryPlayerInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryListEntry.cs" />
@@ -353,6 +355,10 @@
     <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntStepFollowDirectionToPOI.cs" />
     <Compile Include="Types\game\context\TaxCollectorStaticExtendedInformations.cs" />
     <Compile Include="Types\game\context\TaxCollectorStaticInformations.cs" />
+    <Compile Include="Types\game\dare\DareCriteria.cs" />
+    <Compile Include="Types\game\dare\DareInformations.cs" />
+    <Compile Include="Types\game\dare\DareReward.cs" />
+    <Compile Include="Types\game\dare\DareVersatileInformations.cs" />
     <Compile Include="Types\game\data\items\BidExchangerObjectInfo.cs" />
     <Compile Include="Types\game\data\items\effects\ObjectEffect.cs" />
     <Compile Include="Types\game\data\items\effects\ObjectEffectCreature.cs" />

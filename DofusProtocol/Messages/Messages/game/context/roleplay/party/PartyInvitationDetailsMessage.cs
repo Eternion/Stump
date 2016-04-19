@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:22
+// Generated on 04/19/2016 10:17:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,12 +86,12 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
             partyName = reader.ReadUTF();
             fromId = reader.ReadVarLong();
-            if (fromId < 0 || fromId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0 || fromId > 9.007199254740992E15");
+            if (fromId < 0 || fromId > 9007199254740990)
+                throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0 || fromId > 9007199254740990");
             fromName = reader.ReadUTF();
             leaderId = reader.ReadVarLong();
-            if (leaderId < 0 || leaderId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0 || leaderId > 9.007199254740992E15");
+            if (leaderId < 0 || leaderId > 9007199254740990)
+                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0 || leaderId > 9007199254740990");
             var limit = reader.ReadUShort();
             var members_ = new Types.PartyInvitationMemberInformations[limit];
             for (int i = 0; i < limit; i++)

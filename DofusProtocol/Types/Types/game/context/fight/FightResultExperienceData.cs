@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:50
+// Generated on 04/19/2016 10:17:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,23 +87,23 @@ namespace Stump.DofusProtocol.Types
             showExperienceForMount = BooleanByteWrapper.GetFlag(flag1, 5);
             isIncarnationExperience = BooleanByteWrapper.GetFlag(flag1, 6);
             experience = reader.ReadVarLong();
-            if (experience < 0 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
+            if (experience < 0 || experience > 9007199254740990)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9007199254740990");
             experienceLevelFloor = reader.ReadVarLong();
-            if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
+            if (experienceLevelFloor < 0 || experienceLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9007199254740990");
             experienceNextLevelFloor = reader.ReadVarLong();
-            if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15");
+            if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9007199254740990");
             experienceFightDelta = reader.ReadVarLong();
-            if (experienceFightDelta < 0 || experienceFightDelta > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceFightDelta = " + experienceFightDelta + ", it doesn't respect the following condition : experienceFightDelta < 0 || experienceFightDelta > 9.007199254740992E15");
+            if (experienceFightDelta < 0 || experienceFightDelta > 9007199254740990)
+                throw new Exception("Forbidden value on experienceFightDelta = " + experienceFightDelta + ", it doesn't respect the following condition : experienceFightDelta < 0 || experienceFightDelta > 9007199254740990");
             experienceForGuild = reader.ReadVarLong();
-            if (experienceForGuild < 0 || experienceForGuild > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceForGuild = " + experienceForGuild + ", it doesn't respect the following condition : experienceForGuild < 0 || experienceForGuild > 9.007199254740992E15");
+            if (experienceForGuild < 0 || experienceForGuild > 9007199254740990)
+                throw new Exception("Forbidden value on experienceForGuild = " + experienceForGuild + ", it doesn't respect the following condition : experienceForGuild < 0 || experienceForGuild > 9007199254740990");
             experienceForMount = reader.ReadVarLong();
-            if (experienceForMount < 0 || experienceForMount > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0 || experienceForMount > 9.007199254740992E15");
+            if (experienceForMount < 0 || experienceForMount > 9007199254740990)
+                throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0 || experienceForMount > 9007199254740990");
             rerollExperienceMul = reader.ReadSByte();
             if (rerollExperienceMul < 0)
                 throw new Exception("Forbidden value on rerollExperienceMul = " + rerollExperienceMul + ", it doesn't respect the following condition : rerollExperienceMul < 0");

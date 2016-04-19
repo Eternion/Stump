@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:09
+// Generated on 04/19/2016 10:17:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +37,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             targetId = reader.ReadDouble();
-            if (targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15");
+            if (targetId < -9007199254740990 || targetId > 9007199254740990)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9007199254740990 || targetId > 9007199254740990");
         }
         
     }

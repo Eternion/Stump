@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:12
+// Generated on 04/19/2016 10:17:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,11 +46,11 @@ namespace Stump.DofusProtocol.Messages
             if (fightType < 0)
                 throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
             attackerId = reader.ReadDouble();
-            if (attackerId < -9.007199254740992E15 || attackerId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on attackerId = " + attackerId + ", it doesn't respect the following condition : attackerId < -9.007199254740992E15 || attackerId > 9.007199254740992E15");
+            if (attackerId < -9007199254740990 || attackerId > 9007199254740990)
+                throw new Exception("Forbidden value on attackerId = " + attackerId + ", it doesn't respect the following condition : attackerId < -9007199254740990 || attackerId > 9007199254740990");
             defenderId = reader.ReadDouble();
-            if (defenderId < -9.007199254740992E15 || defenderId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on defenderId = " + defenderId + ", it doesn't respect the following condition : defenderId < -9.007199254740992E15 || defenderId > 9.007199254740992E15");
+            if (defenderId < -9007199254740990 || defenderId > 9007199254740990)
+                throw new Exception("Forbidden value on defenderId = " + defenderId + ", it doesn't respect the following condition : defenderId < -9007199254740990 || defenderId > 9007199254740990");
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:59
+// Generated on 04/19/2016 10:17:55
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -19,6 +19,7 @@ namespace Stump.DofusProtocol.D2oClasses
         [I18NField]
         public uint descId;
         public int npcId;
+        public List<int> bonusesIds;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -46,6 +47,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.npcId; }
             set { this.npcId = value; }
+        }
+        [D2OIgnore]
+        public List<int> BonusesIds
+        {
+            get { return this.bonusesIds; }
+            set { this.bonusesIds = value; }
         }
     }
 }

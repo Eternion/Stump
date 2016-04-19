@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:38
+// Generated on 04/19/2016 10:17:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +18,43 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public sbyte jobId;
+        public IEnumerable<sbyte> jobIds;
         
         public JobBookSubscribeRequestMessage()
         {
         }
         
-        public JobBookSubscribeRequestMessage(sbyte jobId)
+        public JobBookSubscribeRequestMessage(IEnumerable<sbyte> jobIds)
         {
-            this.jobId = jobId;
+            this.jobIds = jobIds;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteSByte(jobId);
+            var jobIds_before = writer.Position;
+            var jobIds_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in jobIds)
+            {
+                 writer.WriteSByte(entry);
+                 jobIds_count++;
+            }
+            var jobIds_after = writer.Position;
+            writer.Seek((int)jobIds_before);
+            writer.WriteUShort((ushort)jobIds_count);
+            writer.Seek((int)jobIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            jobId = reader.ReadSByte();
-            if (jobId < 0)
-                throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
+            var limit = reader.ReadUShort();
+            var jobIds_ = new sbyte[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 jobIds_[i] = reader.ReadSByte();
+            }
+            jobIds = jobIds_;
         }
         
     }

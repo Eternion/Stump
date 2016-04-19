@@ -1,7 +1,7 @@
  
 
 
-// Generated on 02/02/2016 14:15:13
+// Generated on 04/19/2016 10:18:06
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +23,8 @@ namespace DBSynchroniser.Records
         public uint nameId;
         [I18NField]
         public uint descriptionId;
+        public Boolean dareAvailable;
+        public List<uint> incompatibleChallenges;
 
         int ID2ORecord.Id
         {
@@ -54,6 +56,39 @@ namespace DBSynchroniser.Records
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
+        public Boolean DareAvailable
+        {
+            get { return dareAvailable; }
+            set { dareAvailable = value; }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> IncompatibleChallenges
+        {
+            get { return incompatibleChallenges; }
+            set
+            {
+                incompatibleChallenges = value;
+                m_incompatibleChallengesBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_incompatibleChallengesBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] IncompatibleChallengesBin
+        {
+            get { return m_incompatibleChallengesBin; }
+            set
+            {
+                m_incompatibleChallengesBin = value;
+                incompatibleChallenges = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Challenge)obj;
@@ -61,6 +96,8 @@ namespace DBSynchroniser.Records
             Id = castedObj.id;
             NameId = castedObj.nameId;
             DescriptionId = castedObj.descriptionId;
+            DareAvailable = castedObj.dareAvailable;
+            IncompatibleChallenges = castedObj.incompatibleChallenges;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -69,11 +106,14 @@ namespace DBSynchroniser.Records
             obj.id = Id;
             obj.nameId = NameId;
             obj.descriptionId = DescriptionId;
+            obj.dareAvailable = DareAvailable;
+            obj.incompatibleChallenges = IncompatibleChallenges;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_incompatibleChallengesBin = incompatibleChallenges == null ? null : incompatibleChallenges.ToBinary();
         
         }
     }

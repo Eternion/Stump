@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:49
+// Generated on 04/19/2016 10:17:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,8 +52,8 @@ namespace Stump.DofusProtocol.Types
             if (alignmentGrade < 0)
                 throw new Exception("Forbidden value on alignmentGrade = " + alignmentGrade + ", it doesn't respect the following condition : alignmentGrade < 0");
             characterPower = reader.ReadDouble();
-            if (characterPower < -9.007199254740992E15 || characterPower > 9.007199254740992E15)
-                throw new Exception("Forbidden value on characterPower = " + characterPower + ", it doesn't respect the following condition : characterPower < -9.007199254740992E15 || characterPower > 9.007199254740992E15");
+            if (characterPower < -9007199254740990 || characterPower > 9007199254740990)
+                throw new Exception("Forbidden value on characterPower = " + characterPower + ", it doesn't respect the following condition : characterPower < -9007199254740990 || characterPower > 9007199254740990");
         }
         
         

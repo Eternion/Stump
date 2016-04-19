@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:16
+// Generated on 04/19/2016 10:17:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,11 +46,11 @@ namespace Stump.DofusProtocol.Messages
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             sourceId = reader.ReadVarLong();
-            if (sourceId < 0 || sourceId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < 0 || sourceId > 9.007199254740992E15");
+            if (sourceId < 0 || sourceId > 9007199254740990)
+                throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < 0 || sourceId > 9007199254740990");
             targetId = reader.ReadVarLong();
-            if (targetId < 0 || targetId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0 || targetId > 9.007199254740992E15");
+            if (targetId < 0 || targetId > 9007199254740990)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0 || targetId > 9007199254740990");
         }
         
     }

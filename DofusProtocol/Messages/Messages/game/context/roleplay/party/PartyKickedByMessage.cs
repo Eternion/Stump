@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:23
+// Generated on 04/19/2016 10:17:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +40,8 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             kickerId = reader.ReadVarLong();
-            if (kickerId < 0 || kickerId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on kickerId = " + kickerId + ", it doesn't respect the following condition : kickerId < 0 || kickerId > 9.007199254740992E15");
+            if (kickerId < 0 || kickerId > 9007199254740990)
+                throw new Exception("Forbidden value on kickerId = " + kickerId + ", it doesn't respect the following condition : kickerId < 0 || kickerId > 9007199254740990");
         }
         
     }

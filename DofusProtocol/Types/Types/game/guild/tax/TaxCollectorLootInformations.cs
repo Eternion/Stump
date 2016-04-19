@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:56
+// Generated on 04/19/2016 10:17:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +50,8 @@ namespace Stump.DofusProtocol.Types
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
             experience = reader.ReadVarLong();
-            if (experience < 0 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
+            if (experience < 0 || experience > 9007199254740990)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9007199254740990");
             pods = reader.ReadVarInt();
             if (pods < 0)
                 throw new Exception("Forbidden value on pods = " + pods + ", it doesn't respect the following condition : pods < 0");

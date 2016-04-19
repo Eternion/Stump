@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:48
+// Generated on 04/19/2016 10:17:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +36,8 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             id = reader.ReadVarLong();
-            if (id < 0 || id > 9.007199254740992E15)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 9.007199254740992E15");
+            if (id < 0 || id > 9007199254740990)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 9007199254740990");
         }
         
         

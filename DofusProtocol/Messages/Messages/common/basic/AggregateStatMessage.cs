@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:25
+// Generated on 04/19/2016 10:17:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +10,35 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class SpellForgetUIMessage : Message
+    public class AggregateStatMessage : Message
     {
-        public const uint Id = 5565;
+        public const uint Id = 6669;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public bool open;
+        public short statId;
         
-        public SpellForgetUIMessage()
+        public AggregateStatMessage()
         {
         }
         
-        public SpellForgetUIMessage(bool open)
+        public AggregateStatMessage(short statId)
         {
-            this.open = open;
+            this.statId = statId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteBoolean(open);
+            writer.WriteVarShort(statId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            open = reader.ReadBoolean();
+            statId = reader.ReadVarShort();
+            if (statId < 0)
+                throw new Exception("Forbidden value on statId = " + statId + ", it doesn't respect the following condition : statId < 0");
         }
         
     }

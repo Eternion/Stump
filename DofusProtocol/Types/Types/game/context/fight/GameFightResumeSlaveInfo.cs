@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:51
+// Generated on 04/19/2016 10:17:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,8 +57,8 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             slaveId = reader.ReadDouble();
-            if (slaveId < -9.007199254740992E15 || slaveId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on slaveId = " + slaveId + ", it doesn't respect the following condition : slaveId < -9.007199254740992E15 || slaveId > 9.007199254740992E15");
+            if (slaveId < -9007199254740990 || slaveId > 9007199254740990)
+                throw new Exception("Forbidden value on slaveId = " + slaveId + ", it doesn't respect the following condition : slaveId < -9007199254740990 || slaveId > 9007199254740990");
             var limit = reader.ReadUShort();
             var spellCooldowns_ = new Types.GameFightSpellCooldown[limit];
             for (int i = 0; i < limit; i++)

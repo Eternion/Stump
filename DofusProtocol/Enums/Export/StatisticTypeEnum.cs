@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:15:11
+// Generated on 04/19/2016 10:18:04
 using System;
 using System.Collections.Generic;
 
@@ -49,5 +49,12 @@ namespace Stump.DofusProtocol.Enums
         STEP2640_END_DIALOG = 116,
         CLICK_ON_BUTTON = 151,
         DISPLAY_MENU = 152,
+        CATEGORY_MAP_OPENED = 544,
+        CATEGORY_MAP_PERSONALIZED_LANDMARK_PLACED = 546,
+        CATEGORY_MAP_QUEST_LANDMARK_ACTIVATED = 547,
+        CATEGORY_MAP_MOVED = 549,
+        CATEGORY_MAP_ZOOM = 550,
+        CATEGORY_MINIMAP_MOVED = 545,
+        CATEGORY_MINIMAP_ZOOM = 548,
     }
 }

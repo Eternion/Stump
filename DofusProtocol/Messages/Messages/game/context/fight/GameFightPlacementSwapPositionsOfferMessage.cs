@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:11
+// Generated on 04/19/2016 10:17:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,14 +52,14 @@ namespace Stump.DofusProtocol.Messages
             if (requestId < 0)
                 throw new Exception("Forbidden value on requestId = " + requestId + ", it doesn't respect the following condition : requestId < 0");
             requesterId = reader.ReadDouble();
-            if (requesterId < -9.007199254740992E15 || requesterId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on requesterId = " + requesterId + ", it doesn't respect the following condition : requesterId < -9.007199254740992E15 || requesterId > 9.007199254740992E15");
+            if (requesterId < -9007199254740990 || requesterId > 9007199254740990)
+                throw new Exception("Forbidden value on requesterId = " + requesterId + ", it doesn't respect the following condition : requesterId < -9007199254740990 || requesterId > 9007199254740990");
             requesterCellId = reader.ReadVarShort();
             if (requesterCellId < 0 || requesterCellId > 559)
                 throw new Exception("Forbidden value on requesterCellId = " + requesterCellId + ", it doesn't respect the following condition : requesterCellId < 0 || requesterCellId > 559");
             requestedId = reader.ReadDouble();
-            if (requestedId < -9.007199254740992E15 || requestedId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on requestedId = " + requestedId + ", it doesn't respect the following condition : requestedId < -9.007199254740992E15 || requestedId > 9.007199254740992E15");
+            if (requestedId < -9007199254740990 || requestedId > 9007199254740990)
+                throw new Exception("Forbidden value on requestedId = " + requestedId + ", it doesn't respect the following condition : requestedId < -9007199254740990 || requestedId > 9007199254740990");
             requestedCellId = reader.ReadVarShort();
             if (requestedCellId < 0 || requestedCellId > 559)
                 throw new Exception("Forbidden value on requestedCellId = " + requestedCellId + ", it doesn't respect the following condition : requestedCellId < 0 || requestedCellId > 559");

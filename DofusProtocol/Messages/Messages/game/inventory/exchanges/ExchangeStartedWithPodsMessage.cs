@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:37
+// Generated on 04/19/2016 10:17:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +55,8 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             firstCharacterId = reader.ReadDouble();
-            if (firstCharacterId < -9.007199254740992E15 || firstCharacterId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on firstCharacterId = " + firstCharacterId + ", it doesn't respect the following condition : firstCharacterId < -9.007199254740992E15 || firstCharacterId > 9.007199254740992E15");
+            if (firstCharacterId < -9007199254740990 || firstCharacterId > 9007199254740990)
+                throw new Exception("Forbidden value on firstCharacterId = " + firstCharacterId + ", it doesn't respect the following condition : firstCharacterId < -9007199254740990 || firstCharacterId > 9007199254740990");
             firstCharacterCurrentWeight = reader.ReadVarInt();
             if (firstCharacterCurrentWeight < 0)
                 throw new Exception("Forbidden value on firstCharacterCurrentWeight = " + firstCharacterCurrentWeight + ", it doesn't respect the following condition : firstCharacterCurrentWeight < 0");
@@ -64,8 +64,8 @@ namespace Stump.DofusProtocol.Messages
             if (firstCharacterMaxWeight < 0)
                 throw new Exception("Forbidden value on firstCharacterMaxWeight = " + firstCharacterMaxWeight + ", it doesn't respect the following condition : firstCharacterMaxWeight < 0");
             secondCharacterId = reader.ReadDouble();
-            if (secondCharacterId < -9.007199254740992E15 || secondCharacterId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on secondCharacterId = " + secondCharacterId + ", it doesn't respect the following condition : secondCharacterId < -9.007199254740992E15 || secondCharacterId > 9.007199254740992E15");
+            if (secondCharacterId < -9007199254740990 || secondCharacterId > 9007199254740990)
+                throw new Exception("Forbidden value on secondCharacterId = " + secondCharacterId + ", it doesn't respect the following condition : secondCharacterId < -9007199254740990 || secondCharacterId > 9007199254740990");
             secondCharacterCurrentWeight = reader.ReadVarInt();
             if (secondCharacterCurrentWeight < 0)
                 throw new Exception("Forbidden value on secondCharacterCurrentWeight = " + secondCharacterCurrentWeight + ", it doesn't respect the following condition : secondCharacterCurrentWeight < 0");

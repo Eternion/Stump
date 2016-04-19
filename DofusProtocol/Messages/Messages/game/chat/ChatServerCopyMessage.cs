@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:08
+// Generated on 04/19/2016 10:17:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +43,8 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             receiverId = reader.ReadVarLong();
-            if (receiverId < 0 || receiverId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on receiverId = " + receiverId + ", it doesn't respect the following condition : receiverId < 0 || receiverId > 9.007199254740992E15");
+            if (receiverId < 0 || receiverId > 9007199254740990)
+                throw new Exception("Forbidden value on receiverId = " + receiverId + ", it doesn't respect the following condition : receiverId < 0 || receiverId > 9007199254740990");
             receiverName = reader.ReadUTF();
         }
         

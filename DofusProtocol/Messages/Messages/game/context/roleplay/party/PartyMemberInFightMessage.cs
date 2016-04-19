@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:23
+// Generated on 04/19/2016 10:17:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +61,8 @@ namespace Stump.DofusProtocol.Messages
             if (reason < 0)
                 throw new Exception("Forbidden value on reason = " + reason + ", it doesn't respect the following condition : reason < 0");
             memberId = reader.ReadVarLong();
-            if (memberId < 0 || memberId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0 || memberId > 9.007199254740992E15");
+            if (memberId < 0 || memberId > 9007199254740990)
+                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0 || memberId > 9007199254740990");
             memberAccountId = reader.ReadInt();
             if (memberAccountId < 0)
                 throw new Exception("Forbidden value on memberAccountId = " + memberAccountId + ", it doesn't respect the following condition : memberAccountId < 0");

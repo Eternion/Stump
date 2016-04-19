@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:15
+// Generated on 04/19/2016 10:17:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,14 +43,14 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             delayedCharacterId = reader.ReadDouble();
-            if (delayedCharacterId < -9.007199254740992E15 || delayedCharacterId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on delayedCharacterId = " + delayedCharacterId + ", it doesn't respect the following condition : delayedCharacterId < -9.007199254740992E15 || delayedCharacterId > 9.007199254740992E15");
+            if (delayedCharacterId < -9007199254740990 || delayedCharacterId > 9007199254740990)
+                throw new Exception("Forbidden value on delayedCharacterId = " + delayedCharacterId + ", it doesn't respect the following condition : delayedCharacterId < -9007199254740990 || delayedCharacterId > 9007199254740990");
             delayTypeId = reader.ReadSByte();
             if (delayTypeId < 0)
                 throw new Exception("Forbidden value on delayTypeId = " + delayTypeId + ", it doesn't respect the following condition : delayTypeId < 0");
             delayEndTime = reader.ReadDouble();
-            if (delayEndTime < 0 || delayEndTime > 9.007199254740992E15)
-                throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9.007199254740992E15");
+            if (delayEndTime < 0 || delayEndTime > 9007199254740990)
+                throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9007199254740990");
         }
         
     }

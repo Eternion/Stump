@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:48
+// Generated on 04/19/2016 10:17:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +39,8 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             value = reader.ReadDouble();
-            if (value < -9.007199254740992E15 || value > 9.007199254740992E15)
-                throw new Exception("Forbidden value on value = " + value + ", it doesn't respect the following condition : value < -9.007199254740992E15 || value > 9.007199254740992E15");
+            if (value < -9007199254740990 || value > 9007199254740990)
+                throw new Exception("Forbidden value on value = " + value + ", it doesn't respect the following condition : value < -9007199254740990 || value > 9007199254740990");
         }
         
         

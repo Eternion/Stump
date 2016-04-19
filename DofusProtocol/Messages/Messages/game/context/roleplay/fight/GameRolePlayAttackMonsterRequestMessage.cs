@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:16
+// Generated on 04/19/2016 10:17:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +37,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             monsterGroupId = reader.ReadDouble();
-            if (monsterGroupId < -9.007199254740992E15 || monsterGroupId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on monsterGroupId = " + monsterGroupId + ", it doesn't respect the following condition : monsterGroupId < -9.007199254740992E15 || monsterGroupId > 9.007199254740992E15");
+            if (monsterGroupId < -9007199254740990 || monsterGroupId > 9007199254740990)
+                throw new Exception("Forbidden value on monsterGroupId = " + monsterGroupId + ", it doesn't respect the following condition : monsterGroupId < -9007199254740990 || monsterGroupId > 9007199254740990");
         }
         
     }

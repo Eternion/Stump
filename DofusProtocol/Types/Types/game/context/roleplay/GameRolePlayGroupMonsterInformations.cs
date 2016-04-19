@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:52
+// Generated on 04/19/2016 10:17:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,8 +69,8 @@ namespace Stump.DofusProtocol.Types
             staticInfos = Types.ProtocolTypeManager.GetInstance<Types.GroupMonsterStaticInformations>(reader.ReadShort());
             staticInfos.Deserialize(reader);
             creationTime = reader.ReadDouble();
-            if (creationTime < 0 || creationTime > 9.007199254740992E15)
-                throw new Exception("Forbidden value on creationTime = " + creationTime + ", it doesn't respect the following condition : creationTime < 0 || creationTime > 9.007199254740992E15");
+            if (creationTime < 0 || creationTime > 9007199254740990)
+                throw new Exception("Forbidden value on creationTime = " + creationTime + ", it doesn't respect the following condition : creationTime < 0 || creationTime > 9007199254740990");
             ageBonusRate = reader.ReadInt();
             if (ageBonusRate < 0)
                 throw new Exception("Forbidden value on ageBonusRate = " + ageBonusRate + ", it doesn't respect the following condition : ageBonusRate < 0");

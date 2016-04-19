@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:05
+// Generated on 04/19/2016 10:17:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +26,7 @@ namespace Stump.DofusProtocol.Messages
         public string playerName;
         public long playerId;
         public short areaId;
+        public short serverId;
         public IEnumerable<Types.AbstractSocialGroupInfos> socialGroups;
         public sbyte playerState;
         
@@ -33,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, long playerId, short areaId, IEnumerable<Types.AbstractSocialGroupInfos> socialGroups, sbyte playerState)
+        public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, long playerId, short areaId, short serverId, IEnumerable<Types.AbstractSocialGroupInfos> socialGroups, sbyte playerState)
         {
             this.self = self;
             this.verbose = verbose;
@@ -43,6 +44,7 @@ namespace Stump.DofusProtocol.Messages
             this.playerName = playerName;
             this.playerId = playerId;
             this.areaId = areaId;
+            this.serverId = serverId;
             this.socialGroups = socialGroups;
             this.playerState = playerState;
         }
@@ -59,6 +61,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(playerName);
             writer.WriteVarLong(playerId);
             writer.WriteShort(areaId);
+            writer.WriteShort(serverId);
             var socialGroups_before = writer.Position;
             var socialGroups_count = 0;
             writer.WriteUShort(0);
@@ -88,9 +91,10 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
             playerName = reader.ReadUTF();
             playerId = reader.ReadVarLong();
-            if (playerId < 0 || playerId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
+            if (playerId < 0 || playerId > 9007199254740990)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9007199254740990");
             areaId = reader.ReadShort();
+            serverId = reader.ReadShort();
             var limit = reader.ReadUShort();
             var socialGroups_ = new Types.AbstractSocialGroupInfos[limit];
             for (int i = 0; i < limit; i++)
