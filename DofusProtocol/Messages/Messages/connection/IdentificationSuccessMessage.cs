@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:13:58
+// Generated on 04/19/2016 10:17:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,14 +81,14 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on communityId = " + communityId + ", it doesn't respect the following condition : communityId < 0");
             secretQuestion = reader.ReadUTF();
             accountCreation = reader.ReadDouble();
-            if (accountCreation < 0 || accountCreation > 9.007199254740992E15)
-                throw new Exception("Forbidden value on accountCreation = " + accountCreation + ", it doesn't respect the following condition : accountCreation < 0 || accountCreation > 9.007199254740992E15");
+            if (accountCreation < 0 || accountCreation > 9007199254740990)
+                throw new Exception("Forbidden value on accountCreation = " + accountCreation + ", it doesn't respect the following condition : accountCreation < 0 || accountCreation > 9007199254740990");
             subscriptionElapsedDuration = reader.ReadDouble();
-            if (subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9.007199254740992E15)
-                throw new Exception("Forbidden value on subscriptionElapsedDuration = " + subscriptionElapsedDuration + ", it doesn't respect the following condition : subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9.007199254740992E15");
+            if (subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9007199254740990)
+                throw new Exception("Forbidden value on subscriptionElapsedDuration = " + subscriptionElapsedDuration + ", it doesn't respect the following condition : subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9007199254740990");
             subscriptionEndDate = reader.ReadDouble();
-            if (subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15)
-                throw new Exception("Forbidden value on subscriptionEndDate = " + subscriptionEndDate + ", it doesn't respect the following condition : subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15");
+            if (subscriptionEndDate < 0 || subscriptionEndDate > 9007199254740990)
+                throw new Exception("Forbidden value on subscriptionEndDate = " + subscriptionEndDate + ", it doesn't respect the following condition : subscriptionEndDate < 0 || subscriptionEndDate > 9007199254740990");
             havenbagAvailableRoom = reader.ReadByte();
             if (havenbagAvailableRoom < 0 || havenbagAvailableRoom > 255)
                 throw new Exception("Forbidden value on havenbagAvailableRoom = " + havenbagAvailableRoom + ", it doesn't respect the following condition : havenbagAvailableRoom < 0 || havenbagAvailableRoom > 255");

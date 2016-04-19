@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:15:10
+// Generated on 04/19/2016 10:18:04
 using System;
 using System.Collections.Generic;
 
@@ -19,6 +19,7 @@ namespace Stump.DofusProtocol.Enums
         CREDENTIALS_RESET = 9,
         EMAIL_UNVALIDATED = 10,
         OTP_TIMEOUT = 11,
+        LOCKED = 12,
         SERVICE_UNAVAILABLE = 53,
         EXTERNAL_ACCOUNT_LINK_REFUSED = 61,
         EXTERNAL_ACCOUNT_ALREADY_LINKED = 62,

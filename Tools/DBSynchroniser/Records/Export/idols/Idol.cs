@@ -1,7 +1,7 @@
  
 
 
-// Generated on 02/02/2016 14:15:14
+// Generated on 04/19/2016 10:18:07
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +29,7 @@ namespace DBSynchroniser.Records
         public int dropBonus;
         public List<int> synergyIdolsIds;
         public List<double> synergyIdolsCoeff;
+        public List<int> incompatibleMonsters;
 
         int ID2ORecord.Id
         {
@@ -153,6 +154,32 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<int> IncompatibleMonsters
+        {
+            get { return incompatibleMonsters; }
+            set
+            {
+                incompatibleMonsters = value;
+                m_incompatibleMonstersBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_incompatibleMonstersBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] IncompatibleMonstersBin
+        {
+            get { return m_incompatibleMonstersBin; }
+            set
+            {
+                m_incompatibleMonstersBin = value;
+                incompatibleMonsters = value == null ? null : value.ToObject<List<int>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Idol)obj;
@@ -168,6 +195,7 @@ namespace DBSynchroniser.Records
             DropBonus = castedObj.dropBonus;
             SynergyIdolsIds = castedObj.synergyIdolsIds;
             SynergyIdolsCoeff = castedObj.synergyIdolsCoeff;
+            IncompatibleMonsters = castedObj.incompatibleMonsters;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -184,6 +212,7 @@ namespace DBSynchroniser.Records
             obj.dropBonus = DropBonus;
             obj.synergyIdolsIds = SynergyIdolsIds;
             obj.synergyIdolsCoeff = SynergyIdolsCoeff;
+            obj.incompatibleMonsters = IncompatibleMonsters;
             return obj;
         }
         
@@ -191,6 +220,7 @@ namespace DBSynchroniser.Records
         {
             m_synergyIdolsIdsBin = synergyIdolsIds == null ? null : synergyIdolsIds.ToBinary();
             m_synergyIdolsCoeffBin = synergyIdolsCoeff == null ? null : synergyIdolsCoeff.ToBinary();
+            m_incompatibleMonstersBin = incompatibleMonsters == null ? null : incompatibleMonsters.ToBinary();
         
         }
     }

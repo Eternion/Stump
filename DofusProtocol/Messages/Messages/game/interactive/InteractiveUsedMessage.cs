@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:32
+// Generated on 04/19/2016 10:17:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,17 +22,19 @@ namespace Stump.DofusProtocol.Messages
         public int elemId;
         public short skillId;
         public short duration;
+        public bool canMove;
         
         public InteractiveUsedMessage()
         {
         }
         
-        public InteractiveUsedMessage(long entityId, int elemId, short skillId, short duration)
+        public InteractiveUsedMessage(long entityId, int elemId, short skillId, short duration, bool canMove)
         {
             this.entityId = entityId;
             this.elemId = elemId;
             this.skillId = skillId;
             this.duration = duration;
+            this.canMove = canMove;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -41,13 +43,14 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarInt(elemId);
             writer.WriteVarShort(skillId);
             writer.WriteVarShort(duration);
+            writer.WriteBoolean(canMove);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             entityId = reader.ReadVarLong();
-            if (entityId < 0 || entityId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on entityId = " + entityId + ", it doesn't respect the following condition : entityId < 0 || entityId > 9.007199254740992E15");
+            if (entityId < 0 || entityId > 9007199254740990)
+                throw new Exception("Forbidden value on entityId = " + entityId + ", it doesn't respect the following condition : entityId < 0 || entityId > 9007199254740990");
             elemId = reader.ReadVarInt();
             if (elemId < 0)
                 throw new Exception("Forbidden value on elemId = " + elemId + ", it doesn't respect the following condition : elemId < 0");
@@ -57,6 +60,7 @@ namespace Stump.DofusProtocol.Messages
             duration = reader.ReadVarShort();
             if (duration < 0)
                 throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0");
+            canMove = reader.ReadBoolean();
         }
         
     }

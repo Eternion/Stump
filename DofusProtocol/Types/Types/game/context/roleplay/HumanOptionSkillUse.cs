@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:53
+// Generated on 04/19/2016 10:17:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +50,8 @@ namespace Stump.DofusProtocol.Types
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
             skillEndTime = reader.ReadDouble();
-            if (skillEndTime < -9.007199254740992E15 || skillEndTime > 9.007199254740992E15)
-                throw new Exception("Forbidden value on skillEndTime = " + skillEndTime + ", it doesn't respect the following condition : skillEndTime < -9.007199254740992E15 || skillEndTime > 9.007199254740992E15");
+            if (skillEndTime < -9007199254740990 || skillEndTime > 9007199254740990)
+                throw new Exception("Forbidden value on skillEndTime = " + skillEndTime + ", it doesn't respect the following condition : skillEndTime < -9007199254740990 || skillEndTime > 9007199254740990");
         }
         
         

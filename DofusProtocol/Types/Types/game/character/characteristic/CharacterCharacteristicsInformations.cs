@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:49
+// Generated on 04/19/2016 10:17:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -273,14 +273,14 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             experience = reader.ReadVarLong();
-            if (experience < 0 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
+            if (experience < 0 || experience > 9007199254740990)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9007199254740990");
             experienceLevelFloor = reader.ReadVarLong();
-            if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
+            if (experienceLevelFloor < 0 || experienceLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9007199254740990");
             experienceNextLevelFloor = reader.ReadVarLong();
-            if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15");
+            if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9007199254740990");
             kamas = reader.ReadInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");

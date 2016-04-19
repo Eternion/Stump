@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:03
+// Generated on 04/19/2016 10:17:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,8 @@ namespace Stump.DofusProtocol.Messages
             if (actionId < 0)
                 throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
             authorId = reader.ReadDouble();
-            if (authorId < -9.007199254740992E15 || authorId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on authorId = " + authorId + ", it doesn't respect the following condition : authorId < -9.007199254740992E15 || authorId > 9.007199254740992E15");
+            if (authorId < -9007199254740990 || authorId > 9007199254740990)
+                throw new Exception("Forbidden value on authorId = " + authorId + ", it doesn't respect the following condition : authorId < -9007199254740990 || authorId > 9007199254740990");
             sequenceType = reader.ReadSByte();
         }
         

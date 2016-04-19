@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:51
+// Generated on 04/19/2016 10:17:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,8 +51,8 @@ namespace Stump.DofusProtocol.Types
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
             masterId = reader.ReadDouble();
-            if (masterId < -9.007199254740992E15 || masterId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on masterId = " + masterId + ", it doesn't respect the following condition : masterId < -9.007199254740992E15 || masterId > 9.007199254740992E15");
+            if (masterId < -9007199254740990 || masterId > 9007199254740990)
+                throw new Exception("Forbidden value on masterId = " + masterId + ", it doesn't respect the following condition : masterId < -9007199254740990 || masterId > 9007199254740990");
         }
         
         

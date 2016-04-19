@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:07
+// Generated on 04/19/2016 10:17:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,17 +46,17 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             experienceCharacter = reader.ReadVarLong();
-            if (experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceCharacter = " + experienceCharacter + ", it doesn't respect the following condition : experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15");
+            if (experienceCharacter < 0 || experienceCharacter > 9007199254740990)
+                throw new Exception("Forbidden value on experienceCharacter = " + experienceCharacter + ", it doesn't respect the following condition : experienceCharacter < 0 || experienceCharacter > 9007199254740990");
             experienceMount = reader.ReadVarLong();
-            if (experienceMount < 0 || experienceMount > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceMount = " + experienceMount + ", it doesn't respect the following condition : experienceMount < 0 || experienceMount > 9.007199254740992E15");
+            if (experienceMount < 0 || experienceMount > 9007199254740990)
+                throw new Exception("Forbidden value on experienceMount = " + experienceMount + ", it doesn't respect the following condition : experienceMount < 0 || experienceMount > 9007199254740990");
             experienceGuild = reader.ReadVarLong();
-            if (experienceGuild < 0 || experienceGuild > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceGuild = " + experienceGuild + ", it doesn't respect the following condition : experienceGuild < 0 || experienceGuild > 9.007199254740992E15");
+            if (experienceGuild < 0 || experienceGuild > 9007199254740990)
+                throw new Exception("Forbidden value on experienceGuild = " + experienceGuild + ", it doesn't respect the following condition : experienceGuild < 0 || experienceGuild > 9007199254740990");
             experienceIncarnation = reader.ReadVarLong();
-            if (experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceIncarnation = " + experienceIncarnation + ", it doesn't respect the following condition : experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15");
+            if (experienceIncarnation < 0 || experienceIncarnation > 9007199254740990)
+                throw new Exception("Forbidden value on experienceIncarnation = " + experienceIncarnation + ", it doesn't respect the following condition : experienceIncarnation < 0 || experienceIncarnation > 9007199254740990");
         }
         
     }

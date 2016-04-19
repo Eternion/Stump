@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:19
+// Generated on 04/19/2016 10:17:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,31 +18,44 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public bool addedOrDeleted;
-        public sbyte jobId;
+        public IEnumerable<Types.JobBookSubscription> subscriptions;
         
         public JobBookSubscriptionMessage()
         {
         }
         
-        public JobBookSubscriptionMessage(bool addedOrDeleted, sbyte jobId)
+        public JobBookSubscriptionMessage(IEnumerable<Types.JobBookSubscription> subscriptions)
         {
-            this.addedOrDeleted = addedOrDeleted;
-            this.jobId = jobId;
+            this.subscriptions = subscriptions;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteBoolean(addedOrDeleted);
-            writer.WriteSByte(jobId);
+            var subscriptions_before = writer.Position;
+            var subscriptions_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in subscriptions)
+            {
+                 entry.Serialize(writer);
+                 subscriptions_count++;
+            }
+            var subscriptions_after = writer.Position;
+            writer.Seek((int)subscriptions_before);
+            writer.WriteUShort((ushort)subscriptions_count);
+            writer.Seek((int)subscriptions_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            addedOrDeleted = reader.ReadBoolean();
-            jobId = reader.ReadSByte();
-            if (jobId < 0)
-                throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
+            var limit = reader.ReadUShort();
+            var subscriptions_ = new Types.JobBookSubscription[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 subscriptions_[i] = new Types.JobBookSubscription();
+                 subscriptions_[i].Deserialize(reader);
+            }
+            subscriptions = subscriptions_;
         }
         
     }

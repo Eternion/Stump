@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:24
+// Generated on 04/19/2016 10:17:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,8 +52,8 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             id = reader.ReadVarLong();
-            if (id < 0 || id > 9.007199254740992E15)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 9.007199254740992E15");
+            if (id < 0 || id > 9007199254740990)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 9007199254740990");
             lifePoints = reader.ReadVarInt();
             if (lifePoints < 0)
                 throw new Exception("Forbidden value on lifePoints = " + lifePoints + ", it doesn't respect the following condition : lifePoints < 0");

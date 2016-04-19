@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:32
+// Generated on 04/19/2016 10:17:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,8 @@ namespace Stump.DofusProtocol.Messages
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
             buddyId = reader.ReadVarLong();
-            if (buddyId < 0 || buddyId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on buddyId = " + buddyId + ", it doesn't respect the following condition : buddyId < 0 || buddyId > 9.007199254740992E15");
+            if (buddyId < 0 || buddyId > 9007199254740990)
+                throw new Exception("Forbidden value on buddyId = " + buddyId + ", it doesn't respect the following condition : buddyId < 0 || buddyId > 9007199254740990");
             accept = reader.ReadBoolean();
         }
         

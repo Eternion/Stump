@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:51
+// Generated on 04/19/2016 10:17:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte companionId;
-        public int masterId;
+        public double masterId;
         
         public GameFightFighterCompanionLightInformations()
         {
         }
         
-        public GameFightFighterCompanionLightInformations(bool sex, bool alive, double id, sbyte wave, short level, sbyte breed, sbyte companionId, int masterId)
+        public GameFightFighterCompanionLightInformations(bool sex, bool alive, double id, sbyte wave, short level, sbyte breed, sbyte companionId, double masterId)
          : base(sex, alive, id, wave, level, breed)
         {
             this.companionId = companionId;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteSByte(companionId);
-            writer.WriteInt(masterId);
+            writer.WriteDouble(masterId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -44,7 +44,9 @@ namespace Stump.DofusProtocol.Types
             companionId = reader.ReadSByte();
             if (companionId < 0)
                 throw new Exception("Forbidden value on companionId = " + companionId + ", it doesn't respect the following condition : companionId < 0");
-            masterId = reader.ReadInt();
+            masterId = reader.ReadDouble();
+            if (masterId < -9007199254740990 || masterId > 9007199254740990)
+                throw new Exception("Forbidden value on masterId = " + masterId + ", it doesn't respect the following condition : masterId < -9007199254740990 || masterId > 9007199254740990");
         }
         
         

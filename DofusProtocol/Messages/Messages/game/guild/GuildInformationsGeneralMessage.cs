@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:29
+// Generated on 04/19/2016 10:17:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,14 +69,14 @@ namespace Stump.DofusProtocol.Messages
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
             expLevelFloor = reader.ReadVarLong();
-            if (expLevelFloor < 0 || expLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on expLevelFloor = " + expLevelFloor + ", it doesn't respect the following condition : expLevelFloor < 0 || expLevelFloor > 9.007199254740992E15");
+            if (expLevelFloor < 0 || expLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on expLevelFloor = " + expLevelFloor + ", it doesn't respect the following condition : expLevelFloor < 0 || expLevelFloor > 9007199254740990");
             experience = reader.ReadVarLong();
-            if (experience < 0 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
+            if (experience < 0 || experience > 9007199254740990)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9007199254740990");
             expNextLevelFloor = reader.ReadVarLong();
-            if (expNextLevelFloor < 0 || expNextLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on expNextLevelFloor = " + expNextLevelFloor + ", it doesn't respect the following condition : expNextLevelFloor < 0 || expNextLevelFloor > 9.007199254740992E15");
+            if (expNextLevelFloor < 0 || expNextLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on expNextLevelFloor = " + expNextLevelFloor + ", it doesn't respect the following condition : expNextLevelFloor < 0 || expNextLevelFloor > 9007199254740990");
             creationDate = reader.ReadInt();
             if (creationDate < 0)
                 throw new Exception("Forbidden value on creationDate = " + creationDate + ", it doesn't respect the following condition : creationDate < 0");

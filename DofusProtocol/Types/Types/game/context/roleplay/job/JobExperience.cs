@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:53
+// Generated on 04/19/2016 10:17:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,14 +54,14 @@ namespace Stump.DofusProtocol.Types
             if (jobLevel < 0 || jobLevel > 255)
                 throw new Exception("Forbidden value on jobLevel = " + jobLevel + ", it doesn't respect the following condition : jobLevel < 0 || jobLevel > 255");
             jobXP = reader.ReadVarLong();
-            if (jobXP < 0 || jobXP > 9.007199254740992E15)
-                throw new Exception("Forbidden value on jobXP = " + jobXP + ", it doesn't respect the following condition : jobXP < 0 || jobXP > 9.007199254740992E15");
+            if (jobXP < 0 || jobXP > 9007199254740990)
+                throw new Exception("Forbidden value on jobXP = " + jobXP + ", it doesn't respect the following condition : jobXP < 0 || jobXP > 9007199254740990");
             jobXpLevelFloor = reader.ReadVarLong();
-            if (jobXpLevelFloor < 0 || jobXpLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on jobXpLevelFloor = " + jobXpLevelFloor + ", it doesn't respect the following condition : jobXpLevelFloor < 0 || jobXpLevelFloor > 9.007199254740992E15");
+            if (jobXpLevelFloor < 0 || jobXpLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on jobXpLevelFloor = " + jobXpLevelFloor + ", it doesn't respect the following condition : jobXpLevelFloor < 0 || jobXpLevelFloor > 9007199254740990");
             jobXpNextLevelFloor = reader.ReadVarLong();
-            if (jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on jobXpNextLevelFloor = " + jobXpNextLevelFloor + ", it doesn't respect the following condition : jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9.007199254740992E15");
+            if (jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9007199254740990)
+                throw new Exception("Forbidden value on jobXpNextLevelFloor = " + jobXpNextLevelFloor + ", it doesn't respect the following condition : jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9007199254740990");
         }
         
         

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:53
+// Generated on 04/19/2016 10:17:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,11 +70,11 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             guestId = reader.ReadVarLong();
-            if (guestId < 0 || guestId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on guestId = " + guestId + ", it doesn't respect the following condition : guestId < 0 || guestId > 9.007199254740992E15");
+            if (guestId < 0 || guestId > 9007199254740990)
+                throw new Exception("Forbidden value on guestId = " + guestId + ", it doesn't respect the following condition : guestId < 0 || guestId > 9007199254740990");
             hostId = reader.ReadVarLong();
-            if (hostId < 0 || hostId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on hostId = " + hostId + ", it doesn't respect the following condition : hostId < 0 || hostId > 9.007199254740992E15");
+            if (hostId < 0 || hostId > 9007199254740990)
+                throw new Exception("Forbidden value on hostId = " + hostId + ", it doesn't respect the following condition : hostId < 0 || hostId > 9007199254740990");
             name = reader.ReadUTF();
             guestLook = new Types.EntityLook();
             guestLook.Deserialize(reader);

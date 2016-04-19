@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:15:01
+// Generated on 04/19/2016 10:17:58
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -24,6 +24,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int dropBonus;
         public List<int> synergyIdolsIds;
         public List<double> synergyIdolsCoeff;
+        public List<int> incompatibleMonsters;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -93,6 +94,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.synergyIdolsCoeff; }
             set { this.synergyIdolsCoeff = value; }
+        }
+        [D2OIgnore]
+        public List<int> IncompatibleMonsters
+        {
+            get { return this.incompatibleMonsters; }
+            set { this.incompatibleMonsters = value; }
         }
     }
 }

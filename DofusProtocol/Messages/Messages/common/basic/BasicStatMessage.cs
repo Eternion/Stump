@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:13:58
+// Generated on 04/19/2016 10:17:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +18,30 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public double timeSpent;
         public short statId;
         
         public BasicStatMessage()
         {
         }
         
-        public BasicStatMessage(short statId)
+        public BasicStatMessage(double timeSpent, short statId)
         {
+            this.timeSpent = timeSpent;
             this.statId = statId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteDouble(timeSpent);
             writer.WriteVarShort(statId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            timeSpent = reader.ReadDouble();
+            if (timeSpent < 0 || timeSpent > 9007199254740990)
+                throw new Exception("Forbidden value on timeSpent = " + timeSpent + ", it doesn't respect the following condition : timeSpent < 0 || timeSpent > 9007199254740990");
             statId = reader.ReadVarShort();
             if (statId < 0)
                 throw new Exception("Forbidden value on statId = " + statId + ", it doesn't respect the following condition : statId < 0");

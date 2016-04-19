@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:48
+// Generated on 04/19/2016 10:17:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public StatisticDataString(short actionId, string value)
-         : base(actionId)
+        public StatisticDataString(string value)
         {
             this.value = value;
         }

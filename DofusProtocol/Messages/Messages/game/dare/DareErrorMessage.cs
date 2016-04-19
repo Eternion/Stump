@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:25
+// Generated on 04/19/2016 10:17:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,26 +10,35 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class SpellUpgradeFailureMessage : Message
+    public class DareErrorMessage : Message
     {
-        public const uint Id = 1202;
+        public const uint Id = 6667;
         public override uint MessageId
         {
             get { return Id; }
         }
         
+        public sbyte error;
         
-        public SpellUpgradeFailureMessage()
+        public DareErrorMessage()
         {
         }
         
+        public DareErrorMessage(sbyte error)
+        {
+            this.error = error;
+        }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteSByte(error);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            error = reader.ReadSByte();
+            if (error < 0)
+                throw new Exception("Forbidden value on error = " + error + ", it doesn't respect the following condition : error < 0");
         }
         
     }

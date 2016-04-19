@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:56
+// Generated on 04/19/2016 10:17:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -172,8 +172,8 @@ namespace Stump.DofusProtocol.Types
             isWild = BooleanByteWrapper.GetFlag(flag1, 2);
             isFecondationReady = BooleanByteWrapper.GetFlag(flag1, 3);
             id = reader.ReadDouble();
-            if (id < -9.007199254740992E15 || id > 9.007199254740992E15)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9.007199254740992E15 || id > 9.007199254740992E15");
+            if (id < -9007199254740990 || id > 9007199254740990)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9007199254740990 || id > 9007199254740990");
             model = reader.ReadVarInt();
             if (model < 0)
                 throw new Exception("Forbidden value on model = " + model + ", it doesn't respect the following condition : model < 0");
@@ -196,14 +196,14 @@ namespace Stump.DofusProtocol.Types
             if (ownerId < 0)
                 throw new Exception("Forbidden value on ownerId = " + ownerId + ", it doesn't respect the following condition : ownerId < 0");
             experience = reader.ReadVarLong();
-            if (experience < 0 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
+            if (experience < 0 || experience > 9007199254740990)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9007199254740990");
             experienceForLevel = reader.ReadVarLong();
-            if (experienceForLevel < 0 || experienceForLevel > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceForLevel = " + experienceForLevel + ", it doesn't respect the following condition : experienceForLevel < 0 || experienceForLevel > 9.007199254740992E15");
+            if (experienceForLevel < 0 || experienceForLevel > 9007199254740990)
+                throw new Exception("Forbidden value on experienceForLevel = " + experienceForLevel + ", it doesn't respect the following condition : experienceForLevel < 0 || experienceForLevel > 9007199254740990");
             experienceForNextLevel = reader.ReadDouble();
-            if (experienceForNextLevel < -9.007199254740992E15 || experienceForNextLevel > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceForNextLevel = " + experienceForNextLevel + ", it doesn't respect the following condition : experienceForNextLevel < -9.007199254740992E15 || experienceForNextLevel > 9.007199254740992E15");
+            if (experienceForNextLevel < -9007199254740990 || experienceForNextLevel > 9007199254740990)
+                throw new Exception("Forbidden value on experienceForNextLevel = " + experienceForNextLevel + ", it doesn't respect the following condition : experienceForNextLevel < -9007199254740990 || experienceForNextLevel > 9007199254740990");
             level = reader.ReadSByte();
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
@@ -244,8 +244,8 @@ namespace Stump.DofusProtocol.Types
             if (boostLimiter < 0)
                 throw new Exception("Forbidden value on boostLimiter = " + boostLimiter + ", it doesn't respect the following condition : boostLimiter < 0");
             boostMax = reader.ReadDouble();
-            if (boostMax < -9.007199254740992E15 || boostMax > 9.007199254740992E15)
-                throw new Exception("Forbidden value on boostMax = " + boostMax + ", it doesn't respect the following condition : boostMax < -9.007199254740992E15 || boostMax > 9.007199254740992E15");
+            if (boostMax < -9007199254740990 || boostMax > 9007199254740990)
+                throw new Exception("Forbidden value on boostMax = " + boostMax + ", it doesn't respect the following condition : boostMax < -9007199254740990 || boostMax > 9007199254740990");
             reproductionCount = reader.ReadInt();
             reproductionCountMax = reader.ReadVarInt();
             if (reproductionCountMax < 0)

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:55
+// Generated on 04/19/2016 10:17:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,8 +63,8 @@ namespace Stump.DofusProtocol.Types
             if (spouseAccountId < 0)
                 throw new Exception("Forbidden value on spouseAccountId = " + spouseAccountId + ", it doesn't respect the following condition : spouseAccountId < 0");
             spouseId = reader.ReadVarLong();
-            if (spouseId < 0 || spouseId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on spouseId = " + spouseId + ", it doesn't respect the following condition : spouseId < 0 || spouseId > 9.007199254740992E15");
+            if (spouseId < 0 || spouseId > 9007199254740990)
+                throw new Exception("Forbidden value on spouseId = " + spouseId + ", it doesn't respect the following condition : spouseId < 0 || spouseId > 9007199254740990");
             spouseName = reader.ReadUTF();
             spouseLevel = reader.ReadByte();
             if (spouseLevel < 1 || spouseLevel > 200)

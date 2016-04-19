@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:35
+// Generated on 04/19/2016 10:17:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,12 +91,12 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             userName = reader.ReadUTF();
             callerId = reader.ReadVarLong();
-            if (callerId < 0 || callerId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on callerId = " + callerId + ", it doesn't respect the following condition : callerId < 0 || callerId > 9.007199254740992E15");
+            if (callerId < 0 || callerId > 9007199254740990)
+                throw new Exception("Forbidden value on callerId = " + callerId + ", it doesn't respect the following condition : callerId < 0 || callerId > 9007199254740990");
             callerName = reader.ReadUTF();
             experience = reader.ReadDouble();
-            if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
+            if (experience < -9007199254740990 || experience > 9007199254740990)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9007199254740990 || experience > 9007199254740990");
             pods = reader.ReadVarShort();
             if (pods < 0)
                 throw new Exception("Forbidden value on pods = " + pods + ", it doesn't respect the following condition : pods < 0");

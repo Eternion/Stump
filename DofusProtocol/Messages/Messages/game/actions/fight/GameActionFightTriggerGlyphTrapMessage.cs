@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:03
+// Generated on 04/19/2016 10:17:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,8 +47,8 @@ namespace Stump.DofusProtocol.Messages
             base.Deserialize(reader);
             markId = reader.ReadShort();
             triggeringCharacterId = reader.ReadDouble();
-            if (triggeringCharacterId < -9.007199254740992E15 || triggeringCharacterId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on triggeringCharacterId = " + triggeringCharacterId + ", it doesn't respect the following condition : triggeringCharacterId < -9.007199254740992E15 || triggeringCharacterId > 9.007199254740992E15");
+            if (triggeringCharacterId < -9007199254740990 || triggeringCharacterId > 9007199254740990)
+                throw new Exception("Forbidden value on triggeringCharacterId = " + triggeringCharacterId + ", it doesn't respect the following condition : triggeringCharacterId < -9007199254740990 || triggeringCharacterId > 9007199254740990");
             triggeredSpellId = reader.ReadVarShort();
             if (triggeredSpellId < 0)
                 throw new Exception("Forbidden value on triggeredSpellId = " + triggeredSpellId + ", it doesn't respect the following condition : triggeredSpellId < 0");

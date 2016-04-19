@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:48
+// Generated on 04/19/2016 10:17:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,8 +74,8 @@ namespace Stump.DofusProtocol.Types
             if (charactersSlots < 0)
                 throw new Exception("Forbidden value on charactersSlots = " + charactersSlots + ", it doesn't respect the following condition : charactersSlots < 0");
             date = reader.ReadDouble();
-            if (date < -9.007199254740992E15 || date > 9.007199254740992E15)
-                throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < -9.007199254740992E15 || date > 9.007199254740992E15");
+            if (date < -9007199254740990 || date > 9007199254740990)
+                throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < -9007199254740990 || date > 9007199254740990");
         }
         
         

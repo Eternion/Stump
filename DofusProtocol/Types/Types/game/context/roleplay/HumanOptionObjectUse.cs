@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:53
+// Generated on 04/19/2016 10:17:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,8 +47,8 @@ namespace Stump.DofusProtocol.Types
             if (delayTypeId < 0)
                 throw new Exception("Forbidden value on delayTypeId = " + delayTypeId + ", it doesn't respect the following condition : delayTypeId < 0");
             delayEndTime = reader.ReadDouble();
-            if (delayEndTime < 0 || delayEndTime > 9.007199254740992E15)
-                throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9.007199254740992E15");
+            if (delayEndTime < 0 || delayEndTime > 9007199254740990)
+                throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9007199254740990");
             objectGID = reader.ReadVarShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");

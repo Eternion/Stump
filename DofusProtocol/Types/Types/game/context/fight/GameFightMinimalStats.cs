@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:51
+// Generated on 04/19/2016 10:17:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,13 +54,14 @@ namespace Stump.DofusProtocol.Types
         public short dodgePMLostProbability;
         public short tackleBlock;
         public short tackleEvade;
+        public short fixedDamageReflection;
         public sbyte invisibilityState;
         
         public GameFightMinimalStats()
         {
         }
         
-        public GameFightMinimalStats(int lifePoints, int maxLifePoints, int baseMaxLifePoints, int permanentDamagePercent, int shieldPoints, short actionPoints, short maxActionPoints, short movementPoints, short maxMovementPoints, double summoner, bool summoned, short neutralElementResistPercent, short earthElementResistPercent, short waterElementResistPercent, short airElementResistPercent, short fireElementResistPercent, short neutralElementReduction, short earthElementReduction, short waterElementReduction, short airElementReduction, short fireElementReduction, short criticalDamageFixedResist, short pushDamageFixedResist, short pvpNeutralElementResistPercent, short pvpEarthElementResistPercent, short pvpWaterElementResistPercent, short pvpAirElementResistPercent, short pvpFireElementResistPercent, short pvpNeutralElementReduction, short pvpEarthElementReduction, short pvpWaterElementReduction, short pvpAirElementReduction, short pvpFireElementReduction, short dodgePALostProbability, short dodgePMLostProbability, short tackleBlock, short tackleEvade, sbyte invisibilityState)
+        public GameFightMinimalStats(int lifePoints, int maxLifePoints, int baseMaxLifePoints, int permanentDamagePercent, int shieldPoints, short actionPoints, short maxActionPoints, short movementPoints, short maxMovementPoints, double summoner, bool summoned, short neutralElementResistPercent, short earthElementResistPercent, short waterElementResistPercent, short airElementResistPercent, short fireElementResistPercent, short neutralElementReduction, short earthElementReduction, short waterElementReduction, short airElementReduction, short fireElementReduction, short criticalDamageFixedResist, short pushDamageFixedResist, short pvpNeutralElementResistPercent, short pvpEarthElementResistPercent, short pvpWaterElementResistPercent, short pvpAirElementResistPercent, short pvpFireElementResistPercent, short pvpNeutralElementReduction, short pvpEarthElementReduction, short pvpWaterElementReduction, short pvpAirElementReduction, short pvpFireElementReduction, short dodgePALostProbability, short dodgePMLostProbability, short tackleBlock, short tackleEvade, short fixedDamageReflection, sbyte invisibilityState)
         {
             this.lifePoints = lifePoints;
             this.maxLifePoints = maxLifePoints;
@@ -99,6 +100,7 @@ namespace Stump.DofusProtocol.Types
             this.dodgePMLostProbability = dodgePMLostProbability;
             this.tackleBlock = tackleBlock;
             this.tackleEvade = tackleEvade;
+            this.fixedDamageReflection = fixedDamageReflection;
             this.invisibilityState = invisibilityState;
         }
         
@@ -141,6 +143,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(dodgePMLostProbability);
             writer.WriteVarShort(tackleBlock);
             writer.WriteVarShort(tackleEvade);
+            writer.WriteVarShort(fixedDamageReflection);
             writer.WriteSByte(invisibilityState);
         }
         
@@ -166,8 +169,8 @@ namespace Stump.DofusProtocol.Types
             movementPoints = reader.ReadVarShort();
             maxMovementPoints = reader.ReadVarShort();
             summoner = reader.ReadDouble();
-            if (summoner < -9.007199254740992E15 || summoner > 9.007199254740992E15)
-                throw new Exception("Forbidden value on summoner = " + summoner + ", it doesn't respect the following condition : summoner < -9.007199254740992E15 || summoner > 9.007199254740992E15");
+            if (summoner < -9007199254740990 || summoner > 9007199254740990)
+                throw new Exception("Forbidden value on summoner = " + summoner + ", it doesn't respect the following condition : summoner < -9007199254740990 || summoner > 9007199254740990");
             summoned = reader.ReadBoolean();
             neutralElementResistPercent = reader.ReadVarShort();
             earthElementResistPercent = reader.ReadVarShort();
@@ -199,6 +202,7 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on dodgePMLostProbability = " + dodgePMLostProbability + ", it doesn't respect the following condition : dodgePMLostProbability < 0");
             tackleBlock = reader.ReadVarShort();
             tackleEvade = reader.ReadVarShort();
+            fixedDamageReflection = reader.ReadVarShort();
             invisibilityState = reader.ReadSByte();
             if (invisibilityState < 0)
                 throw new Exception("Forbidden value on invisibilityState = " + invisibilityState + ", it doesn't respect the following condition : invisibilityState < 0");

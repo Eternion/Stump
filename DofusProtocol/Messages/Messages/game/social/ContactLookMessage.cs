@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:44
+// Generated on 04/19/2016 10:17:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +50,8 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on requestId = " + requestId + ", it doesn't respect the following condition : requestId < 0");
             playerName = reader.ReadUTF();
             playerId = reader.ReadVarLong();
-            if (playerId < 0 || playerId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
+            if (playerId < 0 || playerId > 9007199254740990)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9007199254740990");
             look = new Types.EntityLook();
             look.Deserialize(reader);
         }

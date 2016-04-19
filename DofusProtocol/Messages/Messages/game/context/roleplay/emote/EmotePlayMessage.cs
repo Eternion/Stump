@@ -1,6 +1,6 @@
 
 
-// Generated on 02/02/2016 14:14:16
+// Generated on 04/19/2016 10:17:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +43,8 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             actorId = reader.ReadDouble();
-            if (actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on actorId = " + actorId + ", it doesn't respect the following condition : actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15");
+            if (actorId < -9007199254740990 || actorId > 9007199254740990)
+                throw new Exception("Forbidden value on actorId = " + actorId + ", it doesn't respect the following condition : actorId < -9007199254740990 || actorId > 9007199254740990");
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");

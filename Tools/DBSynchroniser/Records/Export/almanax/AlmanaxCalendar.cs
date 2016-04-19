@@ -1,7 +1,7 @@
  
 
 
-// Generated on 02/02/2016 14:15:12
+// Generated on 04/19/2016 10:18:05
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +24,7 @@ namespace DBSynchroniser.Records
         [I18NField]
         public uint descId;
         public int npcId;
+        public List<int> bonusesIds;
 
         int ID2ORecord.Id
         {
@@ -62,6 +63,32 @@ namespace DBSynchroniser.Records
             set { npcId = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<int> BonusesIds
+        {
+            get { return bonusesIds; }
+            set
+            {
+                bonusesIds = value;
+                m_bonusesIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_bonusesIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] BonusesIdsBin
+        {
+            get { return m_bonusesIdsBin; }
+            set
+            {
+                m_bonusesIdsBin = value;
+                bonusesIds = value == null ? null : value.ToObject<List<int>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (AlmanaxCalendar)obj;
@@ -70,6 +97,7 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             DescId = castedObj.descId;
             NpcId = castedObj.npcId;
+            BonusesIds = castedObj.bonusesIds;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -79,11 +107,13 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.descId = DescId;
             obj.npcId = NpcId;
+            obj.bonusesIds = BonusesIds;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_bonusesIdsBin = bonusesIds == null ? null : bonusesIds.ToBinary();
         
         }
     }

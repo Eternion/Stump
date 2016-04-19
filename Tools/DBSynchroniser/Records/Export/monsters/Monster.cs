@@ -1,7 +1,7 @@
  
 
 
-// Generated on 02/02/2016 14:15:17
+// Generated on 04/19/2016 10:18:09
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -45,6 +45,8 @@ namespace DBSynchroniser.Records
         public Boolean canSwitchPos;
         public List<uint> incompatibleIdols;
         public Boolean allIdolsDisabled;
+        public Boolean dareAvailable;
+        public List<uint> incompatibleChallenges;
 
         int ID2ORecord.Id
         {
@@ -351,6 +353,39 @@ namespace DBSynchroniser.Records
             set { allIdolsDisabled = value; }
         }
 
+        [D2OIgnore]
+        public Boolean DareAvailable
+        {
+            get { return dareAvailable; }
+            set { dareAvailable = value; }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> IncompatibleChallenges
+        {
+            get { return incompatibleChallenges; }
+            set
+            {
+                incompatibleChallenges = value;
+                m_incompatibleChallengesBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_incompatibleChallengesBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] IncompatibleChallengesBin
+        {
+            get { return m_incompatibleChallengesBin; }
+            set
+            {
+                m_incompatibleChallengesBin = value;
+                incompatibleChallenges = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Monster)obj;
@@ -381,6 +416,8 @@ namespace DBSynchroniser.Records
             CanSwitchPos = castedObj.canSwitchPos;
             IncompatibleIdols = castedObj.incompatibleIdols;
             AllIdolsDisabled = castedObj.allIdolsDisabled;
+            DareAvailable = castedObj.dareAvailable;
+            IncompatibleChallenges = castedObj.incompatibleChallenges;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -412,6 +449,8 @@ namespace DBSynchroniser.Records
             obj.canSwitchPos = CanSwitchPos;
             obj.incompatibleIdols = IncompatibleIdols;
             obj.allIdolsDisabled = AllIdolsDisabled;
+            obj.dareAvailable = DareAvailable;
+            obj.incompatibleChallenges = IncompatibleChallenges;
             return obj;
         }
         
@@ -423,6 +462,7 @@ namespace DBSynchroniser.Records
             m_subareasBin = subareas == null ? null : subareas.ToBinary();
             m_spellsBin = spells == null ? null : spells.ToBinary();
             m_incompatibleIdolsBin = incompatibleIdols == null ? null : incompatibleIdols.ToBinary();
+            m_incompatibleChallengesBin = incompatibleChallenges == null ? null : incompatibleChallenges.ToBinary();
         
         }
     }
