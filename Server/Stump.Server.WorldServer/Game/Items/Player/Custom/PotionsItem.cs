@@ -4,27 +4,9 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
-using Stump.Server.WorldServer.Game.Dialogs.Spells;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemId(ItemIdEnum.POTION_DOUBLI_DE_SORT_15591)]
-    public class SpellForgetPotion : BasePlayerItem
-    {
-        public SpellForgetPotion(Character owner, PlayerItemRecord record)
-            : base(owner, record)
-        {
-        }
-
-        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
-        {
-            var panel = new SpellForgetPanel(Owner);
-            panel.Open();
-
-            return 1;
-        }
-    }
-
     [ItemId(ItemIdEnum.POTION_DE_CITE_BONTA_6965)]
     public class BontarianPotion : BasePlayerItem
     {

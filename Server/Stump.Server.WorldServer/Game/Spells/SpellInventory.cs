@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public IEnumerable<CharacterSpell> GetSpells()
         {
-            return m_spells.Values; 
+            return m_spells.Values;
         }
 
         public CharacterSpell LearnSpell(int id)
@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             var spell = new CharacterSpell(record);
             m_spells.Add(spell.Id, spell);
 
-            //ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
+            ContextRoleplayHandler.SendSpellModifySuccessMessage(Owner.Client, spell);
 
             return spell;
         }
@@ -92,15 +92,9 @@ namespace Stump.Server.WorldServer.Game.Spells
             return true;
         }
 
-        public bool UnLearnSpell(CharacterSpell spell)
-        {
-            return UnLearnSpell(spell.Id);
-        }
+        public bool UnLearnSpell(CharacterSpell spell) => UnLearnSpell(spell.Id);
 
-        public bool UnLearnSpell(SpellTemplate spell)
-        {
-            return UnLearnSpell(spell.Id);
-        }
+        public bool UnLearnSpell(SpellTemplate spell) => UnLearnSpell(spell.Id);
 
         public int CalculateSpellPoints(int level, int currentLevel = 1)
         {
@@ -116,15 +110,15 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (Owner.IsFighting())
             {
                 if (send)
-                    //ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellModifyFailureMessage(Owner.Client);
 
                 return false;
             }
 
-            if (spell.CurrentLevel >= level || level > 6)
+            if (spell.CurrentLevel == level || level > 6)
             {
                 if (send)
-                    //ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellModifyFailureMessage(Owner.Client);
 
                 return false;
             }
@@ -132,7 +126,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (Owner.SpellsPoints < CalculateSpellPoints(level, spell.CurrentLevel))
             {
                 if (send)
-                    //ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellModifyFailureMessage(Owner.Client);
 
                 return false;
             }
@@ -140,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (spell.ByLevel[level].MinPlayerLevel > Owner.Level)
             {
                 if (send)
-                    //ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellModifyFailureMessage(Owner.Client);
 
                 return false;
             }
@@ -154,7 +148,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             if (spell == null)
             {
-                //ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                ContextRoleplayHandler.SendSpellModifyFailureMessage(Owner.Client);
                 return false;
             }
 
@@ -164,7 +158,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             Owner.SpellsPoints -= (ushort)CalculateSpellPoints(level, spell.CurrentLevel);
             spell.CurrentLevel = (byte)level;
 
-            //ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
+            ContextRoleplayHandler.SendSpellModifySuccessMessage(Owner.Client, spell);
 
             return true;
         }
@@ -195,7 +189,7 @@ namespace Stump.Server.WorldServer.Game.Spells
                 DowngradeSpell(spell, false);
             }
 
-            InventoryHandler.SendSpellListMessage(Owner.Client, true); 
+            InventoryHandler.SendSpellListMessage(Owner.Client, true);
             return true;
         }
 
@@ -244,7 +238,7 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return spell.CurrentLevel;
 
             InventoryHandler.SendSpellListMessage(Owner.Client, true);
-            //ContextRoleplayHandler.SendSpellForgottenMessage(Owner.Client, spell, spell.CurrentLevel);
+            ContextRoleplayHandler.SendSpellModifySuccessMessage(Owner.Client, spell);
 
             Owner.RefreshStats();
 
@@ -258,7 +252,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (spell == null)
                 return;
 
-            Owner.Shortcuts.AddSpellShortcut(position, (short) id);
+            Owner.Shortcuts.AddSpellShortcut(position, (short)id);
         }
 
         public int CountSpentBoostPoint()
@@ -294,14 +288,8 @@ namespace Stump.Server.WorldServer.Game.Spells
             }
         }
 
-        public IEnumerator<CharacterSpell> GetEnumerator()
-        {
-            return m_spells.Values.GetEnumerator();
-        }
+        public IEnumerator<CharacterSpell> GetEnumerator() => m_spells.Values.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

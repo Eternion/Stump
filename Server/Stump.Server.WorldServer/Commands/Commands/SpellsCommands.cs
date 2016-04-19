@@ -180,7 +180,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             spell.CurrentLevel = (byte)level;
             trigger.ReplyBold("{0}'s spell {1} is now level {2}", target, spell.Template.Name, level);
             
-            //ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(target.Client, spell);
+            ContextRoleplayHandler.SendSpellModifySuccessMessage(target.Client, spell);
         }
     }
 
