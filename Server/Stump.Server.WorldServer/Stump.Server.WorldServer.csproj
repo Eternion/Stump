@@ -460,7 +460,6 @@
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
-    <Compile Include="Game\Dialogs\Spells\SpellForgetPanel.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GiveOrnament.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GiveTitle.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercent.cs" />
