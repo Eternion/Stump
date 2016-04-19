@@ -60,7 +60,8 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
 
         public static void SendInteractiveUsedMessage(IPacketReceiver client, Character user, InteractiveObject interactiveObject, Skill skill)
         {
-            client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.SkillTemplate.Id, (short) (skill.GetDuration(user, true)/100)));
+            //todo: CanMove
+            client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.SkillTemplate.Id, (short) (skill.GetDuration(user, true)/100), false));
         }
 
         public static void SendInteractiveUseErrorMessage(IPacketReceiver client, int interactiveId, int skillId)

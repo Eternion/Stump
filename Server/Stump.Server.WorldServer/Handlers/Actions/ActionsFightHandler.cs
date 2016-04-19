@@ -37,22 +37,22 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                 action = summon is SummonedImage ? (short)EffectsEnum.Effect_Illusions : (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE;
             }
 
-            client.Send(new GameActionFightSummonMessage(action, summon.Summoner.Id, fighterInfos));
+            client.Send(new GameActionFightSummonMessage(action, summon.Summoner.Id, new[] { fighterInfos }));
         }
 
         public static void SendGameActionFightReviveMessage(IPacketReceiver client, FightActor caster, FightActor actor)
         {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_CHARACTER_SUMMON_DEAD_ALLY_IN_FIGHT, caster.Id, actor.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_CHARACTER_SUMMON_DEAD_ALLY_IN_FIGHT, caster.Id, new[] { actor.GetGameFightFighterInformations() }));
         }
 
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedBomb summon)
         {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_BOMB, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_BOMB, summon.Summoner.Id, new[] { summon.GetGameFightFighterInformations() }));
         }
 
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SlaveFighter slave)
         {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_SLAVE, slave.Summoner.Id, slave.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_SLAVE, slave.Summoner.Id, new[] { slave.GetGameFightFighterInformations() }));
         }
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)

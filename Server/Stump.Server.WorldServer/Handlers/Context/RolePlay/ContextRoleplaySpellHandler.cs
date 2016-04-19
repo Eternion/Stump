@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
     public partial class ContextRoleplayHandler : WorldHandlerContainer
     {
-        [WorldHandler(SpellUpgradeRequestMessage.Id)]
+        /*[WorldHandler(SpellUpgradeRequestMessage.Id)]
         public static void HandleSpellUpgradeRequestMessage(WorldClient client, SpellUpgradeRequestMessage message)
         {
             client.Character.Spells.BoostSpell(message.spellId, (ushort)message.spellLevel);
@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendSpellUpgradeFailureMessage(IPacketReceiver client)
         {
             client.Send(new SpellUpgradeFailureMessage());
-        }
+        }*/
 
         public static void SendSpellItemBoostMessage(IPacketReceiver client, int statId, short spellId, short value)
         {

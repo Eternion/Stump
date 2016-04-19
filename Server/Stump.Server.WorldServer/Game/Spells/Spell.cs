@@ -116,10 +116,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         #endregion
 
-        public bool CanBoostSpell()
-        {
-            return ByLevel.ContainsKey(CurrentLevel + 1);
-        }
+        public bool CanBoostSpell() => ByLevel.ContainsKey(CurrentLevel + 1);
 
         public bool BoostSpell()
         {
@@ -145,14 +142,8 @@ namespace Stump.Server.WorldServer.Game.Spells
             return true;
         }
 
-        public SpellItem GetSpellItem()
-        {
-            return new SpellItem(Position, Id, (sbyte) CurrentLevel);
-        }
+        public SpellItem GetSpellItem() => new SpellItem(Id, (sbyte)CurrentLevel);
 
-        public override string ToString()
-        {
-            return string.Format("{0} ({1})", Template.Name, Template.Id);
-        }
+        public override string ToString() => string.Format("{0} ({1})", Template.Name, Template.Id);
     }
 }

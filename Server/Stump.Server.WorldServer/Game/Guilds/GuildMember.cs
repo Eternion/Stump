@@ -163,23 +163,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             if (IsConnected)
             {
-                return new NetworkGuildMember(Id, Character.Level, Character.Name, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+                return new NetworkGuildMember(Id, Character.Name, Character.Level, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
                                               GivenExperience, (sbyte)GivenPercent, (int)Rights, (sbyte)(IsConnected ? 1 : 0),
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
                                               Record.AccountId, 0, Character.Status);
             }
 
-            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
-                Name, (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
+            return new NetworkGuildMember(Id, Name, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
+                (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
                 GivenExperience, (sbyte)GivenPercent, (int)Rights, (sbyte)(IsConnected ? 1 : 0),
                 (sbyte)AlignementSide, LastConnection!= null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
                 Record.AccountId, 0, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_OFFLINE));
         }
 
-        public bool HasRight(GuildRightsBitEnum right)
-        {
-            return Rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || Rights.HasFlag(right);
-        }
+        public bool HasRight(GuildRightsBitEnum right) => Rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || Rights.HasFlag(right);
 
         public event Action<GuildMember> Connected;
         public event Action<GuildMember, Character> Disconnected;

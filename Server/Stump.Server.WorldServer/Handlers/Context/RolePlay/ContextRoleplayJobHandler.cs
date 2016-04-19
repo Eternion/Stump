@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Jobs;
+using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
@@ -27,11 +28,19 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(JobBookSubscribeRequestMessage.Id)]
         public static void HandleJobBookSubscribeRequestMessage(WorldClient client, JobBookSubscribeRequestMessage message)
         {
-            var job = client.Character.Jobs[message.jobId];
+            var subscriptions = new List<JobBookSubscription>();
 
-            var addedOrRemoved = job.Template.AddOrRemoveAvailableCrafter(client.Character);
-            job.IsIndexed = addedOrRemoved;
-            SendJobBookSubscriptionMessage(client, addedOrRemoved, job.Template);
+            foreach (var jobId in message.jobIds)
+            {
+                var job = client.Character.Jobs[jobId];
+
+                var addedOrRemoved = job.Template.AddOrRemoveAvailableCrafter(client.Character);
+                job.IsIndexed = addedOrRemoved;
+
+                subscriptions.Add(new JobBookSubscription((sbyte)job.Template.Id, addedOrRemoved));
+            }
+
+            SendJobBookSubscriptionMessage(client, subscriptions.ToArray());
         }
 
         public static void SendJobMultiCraftAvailableSkillsMessage(IPacketReceiver client, Character character, IEnumerable<InteractiveSkillTemplate> skills, bool enabled)
@@ -69,9 +78,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Send(new JobLevelUpMessage((byte) job.Level, job.GetJobDescription()));
         }
 
-        public static void SendJobBookSubscriptionMessage(IPacketReceiver client, bool addOrRemoved, JobTemplate job)
+        public static void SendJobBookSubscriptionMessage(IPacketReceiver client, JobBookSubscription[] subscriptions)
         {
-            client.Send(new JobBookSubscriptionMessage(addOrRemoved, (sbyte)job.Id));
+            client.Send(new JobBookSubscriptionMessage(subscriptions));
         }
     }
 }
