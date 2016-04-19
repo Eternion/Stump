@@ -136,7 +136,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return slaveStats;
         }
 
-        public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null) => new GameFightMinimalStats(
+        public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
+            => new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
                 Stats.Health.TotalMaxWithoutPermanentDamages,
@@ -174,6 +175,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,
                 (short)Stats[PlayerFields.TackleEvade].Total,
+                0,
                 (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
             );
     }

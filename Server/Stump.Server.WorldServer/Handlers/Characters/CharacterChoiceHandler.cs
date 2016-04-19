@@ -315,8 +315,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
-                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                     characterRecord.Name,
+                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                     characterRecord.EntityLook.GetEntityLook(),
                     (sbyte)characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
@@ -332,8 +332,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             foreach (var characterRecord in client.Characters.OrderByDescending(x => x.LastUsage))
             {
                 characterBaseInformations.Add(new CharacterBaseInformations((short)characterRecord.Id,
+                                                                            characterRecord.Name,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
-                                                                            characterRecord.Name, characterRecord.EntityLook.GetEntityLook(),
+                                                                            characterRecord.EntityLook.GetEntityLook(),
                                                                             (sbyte)characterRecord.Breed,
                                                                             characterRecord.Sex == SexTypeEnum.SEX_MALE));
 

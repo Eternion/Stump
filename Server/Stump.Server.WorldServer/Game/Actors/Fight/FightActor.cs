@@ -2178,6 +2178,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,
                 (short)Stats[PlayerFields.TackleEvade].Total,
+                0,
                 (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.Character) ),
                 Stats[PlayerFields.Initiative].Total// invisibility state
                 );
@@ -2220,6 +2221,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,
                 (short)Stats[PlayerFields.TackleEvade].Total,
+                0,
                 (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.Character) ) // invisibility state
                 );
         }

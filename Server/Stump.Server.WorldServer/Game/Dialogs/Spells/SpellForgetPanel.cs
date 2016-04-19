@@ -23,13 +23,13 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Spells
         public void Open()
         {
             Character.SetDialog(this);
-            ContextRoleplayHandler.SendSpellForgetUIMessage(Character.Client, true);
+            //ContextRoleplayHandler.SendSpellForgetUIMessage(Character.Client, true);
         }
 
         public void Close()
         {
             Character.CloseDialog(this);
-            ContextRoleplayHandler.SendSpellForgetUIMessage(Character.Client, false);
+            //ContextRoleplayHandler.SendSpellForgetUIMessage(Character.Client, false);
         }
 
         public void DowngradeSpell(WorldClient client, int spellId)

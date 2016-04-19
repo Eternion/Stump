@@ -2445,7 +2445,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             character.EnterMap += OnFollowedMemberEnterMap;
 
             PartyHandler.SendPartyFollowStatusUpdateMessage(Client, Party, true, character.Id);
-            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, character);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, character, true);
         }
 
         public void UnfollowMember()
@@ -2456,6 +2456,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_followedCharacter.EnterMap -= OnFollowedMemberEnterMap;
 
             PartyHandler.SendPartyFollowStatusUpdateMessage(Client, Party, true, 0);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, m_followedCharacter, false);
 
             m_followedCharacter = null;
         }
@@ -2465,7 +2466,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!(actor is Character))
                 return;
 
-            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, (Character)actor);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, (Character)actor, true);
         }
 
         #endregion
@@ -3461,28 +3462,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region CharacterBaseInformations
 
         public CharacterBaseInformations GetCharacterBaseInformations()
-        {
-            return new CharacterBaseInformations(
+            => new CharacterBaseInformations(
                 Id,
-                Level,
                 Name,
+                Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
-        }
 
         public CharacterMinimalPlusLookInformations GetCharacterMinimalPlusLookInformations()
-        {
-            return new CharacterMinimalPlusLookInformations(
+            => new CharacterMinimalPlusLookInformations(
                 Id,
-                Level,
                 Name,
+                Level,
                 Look.GetEntityLook());
-        }
 
         public CharacterCharacteristicsInformations GetCharacterCharacteristicsInformations()
-        {
-            return new CharacterCharacteristicsInformations(
+            => new CharacterCharacteristicsInformations(
                         Experience, // EXPERIENCE
                         LowerBoundExperience, // EXPERIENCE level floor 
                         UpperBoundExperience, // EXPERIENCE nextlevel floor 
@@ -3568,17 +3564,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Stats[PlayerFields.PvpFireElementReduction],
                         new List<CharacterSpellModification>(),
                         0);
-        }
         #endregion
 
         #region PartyMemberInformations
 
         public PartyInvitationMemberInformations GetPartyInvitationMemberInformations()
-        {
-            return new PartyInvitationMemberInformations(
+            => new PartyInvitationMemberInformations(
                 Id,
-                Level,
                 Name,
+                Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
@@ -3587,14 +3581,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Map.Id,
                 (short)Map.SubArea.Id,
                 new PartyCompanionBaseInformations[0]);
-        }
 
         public PartyMemberInformations GetPartyMemberInformations()
-        {
-            return new PartyMemberInformations(
+            => new PartyMemberInformations(
                 Id,
-                Level,
                 Name,
+                Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
@@ -3610,7 +3602,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short)SubArea.Id,
                 Status,
                 new PartyCompanionMemberInformations[0]);
-        }
 
         public PartyGuestInformations GetPartyGuestInformations(Party party)
         {
@@ -3631,11 +3622,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public PartyMemberArenaInformations GetPartyMemberArenaInformations()
-        {
-            return new PartyMemberArenaInformations(
+            => new PartyMemberArenaInformations(
                 Id,
-                Level,
                 Name,
+                Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
@@ -3652,7 +3642,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Status,
                 new PartyCompanionMemberInformations[0],
                 (short)ArenaRank);
-        }
 
         #endregion
 

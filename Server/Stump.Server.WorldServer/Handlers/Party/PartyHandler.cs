@@ -219,7 +219,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 
         public static void SendPartyFollowStatusUpdateMessage(WorldClient client, Game.Parties.Party party, bool success, int followedId)
         {
-            client.Send(new PartyFollowStatusUpdateMessage(party.Id, success, followedId));
+            client.Send(new PartyFollowStatusUpdateMessage(party.Id, success, followedId != 0, followedId));
         }
 
         public static void SendPartyKickedByMessage(IPacketReceiver client, Game.Parties.Party party, Character kicker)

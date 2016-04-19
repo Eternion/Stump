@@ -282,9 +282,13 @@ namespace DBSynchroniser
                 var d2oReader = new D2OReader(filePath);
                 foreach (var entry in d2oReader.GetObjectsClasses())
                 {
+                    if (!m_tables.ContainsKey(entry.Value.Name) && !m_tables.ContainsKey(entry.Value.ClassType.BaseType.Name))
+                        continue;
+
                     var table = !m_tables.ContainsKey(entry.Value.Name)
                         ? m_tables[entry.Value.ClassType.BaseType.Name]
                         : m_tables[entry.Value.Name];
+
                     var obj = d2oReader.ReadObject(entry.Key);
 
                     var record = table.Constructor.DynamicInvoke() as ID2ORecord;

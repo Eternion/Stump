@@ -8,9 +8,13 @@ namespace Stump.Server.WorldServer.Handlers.Compass
 {
     public class CompassHandler : WorldHandlerContainer
     {
-        public static void SendCompassUpdatePartyMemberMessage(WorldClient client, Character character)
+        public static void SendCompassUpdatePartyMemberMessage(WorldClient client, Character character, bool active)
         {
-            client.Send(new CompassUpdatePartyMemberMessage((int)CompassTypeEnum.COMPASS_TYPE_PARTY, new MapCoordinates((short)character.Map.Position.X, (short)character.Map.Position.Y), character.Id));
+            client.Send(new CompassUpdatePartyMemberMessage(
+                (sbyte)CompassTypeEnum.COMPASS_TYPE_PARTY,
+                new MapCoordinates((short)character.Map.Position.X, (short)character.Map.Position.Y),
+                character.Id,
+                active));
         }
 
         public static void SendCompassUpdatePvpSeekMessage(WorldClient client, Character character)
