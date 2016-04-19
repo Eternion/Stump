@@ -180,6 +180,37 @@ namespace Stump.Server.WorldServer.Game.Items
 
         }
 
+        public BankItem CreateBankItem(Character character, int id, int amount)
+        {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+            if (!m_itemTemplates.ContainsKey(id))
+                throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
+
+            return CreateBankItem(character, m_itemTemplates[id], amount);
+        }
+
+        public BankItem CreateBankItem(Character character, ItemTemplate template, int amount)
+        {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+
+            var guid = BankItemRecord.PopNextId();
+            var record = new BankItemRecord // create the associated record
+            {
+                Id = guid,
+                OwnerAccountId = character.Account.Id,
+                Template = template,
+                Stack = (uint)amount,
+                Effects = GenerateItemEffects(template),
+                IsNew = true
+            };
+
+            return new BankItem(character, record);
+        }
+
         public BankItem CreateBankItem(Character character, BasePlayerItem item, int amount)
         {
             if (amount < 0)
