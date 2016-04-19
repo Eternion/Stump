@@ -798,6 +798,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
+    <Compile Include="WebAPI\Controllers\BankController.cs" />
     <Compile Include="WebAPI\Controllers\InventoryController.cs" />
     <Compile Include="WebAPI\Startup.cs" />
     <Compile Include="WebAPI\WebServer.cs" />
