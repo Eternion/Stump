@@ -3,9 +3,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
     [EffectHandler(EffectsEnum.Effect_DamageAirPerHPEroded)]
@@ -13,6 +12,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
     [EffectHandler(EffectsEnum.Effect_DamageFirePerHPEroded)]
     [EffectHandler(EffectsEnum.Effect_DamageWaterPerHPEroded)]
     [EffectHandler(EffectsEnum.Effect_DamageNeutralPerHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageAirPerCasterHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageEarthPerCasterHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageFirePerCasterHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageWaterPerCasterHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageNeutralPerCasterHPEroded)]
     public class DamagePerHPEroded : SpellEffectHandler
     {
         public DamagePerHPEroded(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
@@ -24,7 +28,34 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, BuffTriggerType.Instant, OnBuffTriggered);
+                if (Effect.Duration != 0 || Effect.Delay != 0)
+                {
+                    AddTriggerBuff(actor, BuffTriggerType.Instant, OnBuffTriggered);
+                }
+                else
+                {
+                    var damages = new Fights.Damage(Dice)
+                    {
+                        Source = Caster,
+                        IgnoreDamageReduction = true,
+                        IgnoreDamageBoost = true,
+                        School = GetEffectSchool(Dice.EffectId),
+                        MarkTrigger = MarkTrigger,
+                        IsCritical = Critical,
+                        Amount = (int)Math.Floor((actor.Stats.Health.PermanentDamages * Dice.DiceNum) / 100d)
+                    };
+
+                    if (Effect.EffectId == EffectsEnum.Effect_DamageNeutralPerCasterHPEroded ||
+                        Effect.EffectId == EffectsEnum.Effect_DamageEarthPerCasterHPEroded ||
+                        Effect.EffectId == EffectsEnum.Effect_DamageFirePerCasterHPEroded ||
+                        Effect.EffectId == EffectsEnum.Effect_DamageWaterPerCasterHPEroded ||
+                        Effect.EffectId == EffectsEnum.Effect_DamageAirPerCasterHPEroded)
+                    {
+                        damages.Amount = (int)Math.Floor((Caster.Stats.Health.PermanentDamages * Dice.DiceNum) / 100d);
+                    }
+
+                    actor.InflictDamage(damages);
+                }
             }
 
             return true;
@@ -41,12 +72,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 School = GetEffectSchool(buff.Dice.EffectId),
                 MarkTrigger = MarkTrigger,
                 IsCritical = Critical,
-                
+                Amount = (int)Math.Floor((buff.Target.Stats.Health.PermanentDamages * Dice.DiceNum) / 100d)
             };
 
-            var damagesAmount = (int)Math.Floor((buff.Target.Stats.Health.PermanentDamages*Dice.DiceNum)/100d);
-
-            damages.Amount = damagesAmount;
+            if (Effect.EffectId == EffectsEnum.Effect_DamageNeutralPerCasterHPEroded ||
+                Effect.EffectId == EffectsEnum.Effect_DamageEarthPerCasterHPEroded ||
+                Effect.EffectId == EffectsEnum.Effect_DamageFirePerCasterHPEroded ||
+                Effect.EffectId == EffectsEnum.Effect_DamageWaterPerCasterHPEroded ||
+                Effect.EffectId == EffectsEnum.Effect_DamageAirPerCasterHPEroded)
+            {
+                damages.Amount = (int)Math.Floor((buff.Caster.Stats.Health.PermanentDamages * Dice.DiceNum) / 100d);
+            }
 
             buff.Target.InflictDamage(damages);
         }

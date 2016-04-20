@@ -2009,23 +2009,23 @@
         /// <summary>
         /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Neutre)
         /// </summary>
-        Effect_1118 = 1118,
+        Effect_DamageNeutralPerCasterHPEroded = 1118,
         /// <summary>
         /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Air)
         /// </summary>
-        Effect_1119 = 1119,
+        Effect_DamageAirPerCasterHPEroded = 1119,
         /// <summary>
         /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Feu)
         /// </summary>
-        Effect_1120 = 1120,
+        Effect_DamageFirePerCasterHPEroded = 1120,
         /// <summary>
         /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Eau)
         /// </summary>
-        Effect_1121 = 1121,
+        Effect_DamageWaterPerCasterHPEroded = 1121,
         /// <summary>
         /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Terre)
         /// </summary>
-        Effect_1122 = 1122,
+        Effect_DamageEarthPerCasterHPEroded = 1122,
         /// <summary>
         /// Répartit #1{~1~2 à }#2% des dommages subis.
         /// </summary>

@@ -97,8 +97,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Import maps (on stump_data)", LoadMapsWithWarning),
             Tuple.Create<string, Action>("Fix fight placement (on stump_data)", PlacementsFix.ApplyFix),
             Tuple.Create<string, Action>("Generate interactive spawn (on stump_world)", GenerateInteractiveSpawnWithWarning),
-            Tuple.Create<string, Action>("Generate monsters spawns and drops (on stump_world)", GenerateMonstersSpawnsAndDrops),
-            Tuple.Create<string, Action>("Parse monsters Spells", ParseMonstersSpells),
+            Tuple.Create<string, Action>("Generate monsters spells, spawns and drops (on stump_world)", GenerateMonstersSpawnsAndDrops),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -822,11 +821,11 @@ namespace DBSynchroniser
 
         public static void GenerateMonstersSpawnsAndDrops()
         {
-            Console.WriteLine("WARNING IT WILL ERASE TABLES 'monsters_spawns' AND 'monsters_drops'. ARE YOU SURE ? (y/n)");
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'monsters_spells', 'monsters_spawns' AND 'monsters_drops'. ARE YOU SURE ? (y/n)");
             if (Console.ReadLine() != "y")
                 return;
 
-            Console.WriteLine("Generating monsters spawns and drops");
+            Console.WriteLine("Generating monsters spells, spawns and drops");
             var worldDatabase = ConnectToWorld();
             if (worldDatabase == null)
                 return;
@@ -837,6 +836,9 @@ namespace DBSynchroniser
             worldDatabase.Database.Execute("DELETE FROM monsters_drops");
             worldDatabase.Database.Execute("ALTER TABLE monsters_drops AUTO_INCREMENT=1");
 
+            worldDatabase.Database.Execute("DELETE FROM monsters_spells");
+            worldDatabase.Database.Execute("ALTER TABLE monsters_spells AUTO_INCREMENT=1");
+
             var dataTable = m_tables["Monster"];
 
             if (dataTable == null)
@@ -845,6 +847,7 @@ namespace DBSynchroniser
             InitializeCounter();
             var i = 0;
             var rows = GetTableRows(dataTable);
+
             foreach (ID2ORecord row in rows)
             {
                 var obj = row.CreateObject() as Monster;
@@ -885,122 +888,29 @@ namespace DBSynchroniser
                     worldDatabase.Database.Insert(record);
                 }
 
-                i++;
-                UpdateCounter(i, rows.Count);
-            }
-            EndCounter();
-        }
-
-        public static void ParseMonstersSpells()
-        {
-            Console.WriteLine("WARNING IT WILL ERASE TABLES 'monsters_spells'. ARE YOU SURE ? (y/n)");
-            if (Console.ReadLine() != "y")
-                return;
-
-            var worldDatabase = ConnectToWorld();
-            if (worldDatabase == null)
-                return;
-
-            worldDatabase.Database.Execute("DELETE FROM monsters_spells");
-            worldDatabase.Database.Execute("ALTER TABLE monsters_spells AUTO_INCREMENT=1");
-
-            Console.WriteLine("Generating monsters spells...");
-
-            var rows = GetTableRows(m_tables["Monster"]);
-            InitializeCounter();
-            var i = 0;
-
-            foreach (ID2ORecord row in rows)
-            {
-                var monster = row.CreateObject() as Monster;
-                
-                ParseMonsterSpells(monster.Id);
-                //Thread.Sleep(1000);
-
-                i++;
-                UpdateCounter(i, rows.Count);
-            }
-
-            EndCounter();
-
-            File.WriteAllLines("parseErrors.txt", ParseErrors);
-            Console.WriteLine("Create parseErrors.txt");
-        }
-
-        public static List<string> ParseErrors = new List<string>();
-
-        public async static void ParseMonsterSpells(int monsterId)
-        {
-
-            var worldDatabase = ConnectToWorld(false);
-            if (worldDatabase == null)
-                return;
-
-            var resultat = new HtmlDocument();
-
-            try
-            {
-                var http = new HttpClient();
-                var response = await http.GetByteArrayAsync(string.Format("http://www.dofus.com/fr/mmorpg/encyclopedie/monstres/{0}-test", monsterId));
-                var source = Encoding.GetEncoding("utf-8").GetString(response, 0, response.Length - 1);
-                source = WebUtility.HtmlDecode(source);
-                resultat.LoadHtml(source);
-            }
-            catch (Exception ex)
-            {
-                ParseErrors.Add(string.Format("HTTP ERROR for MonsterId ({0}). Exception: {1}", monsterId, ex.Message));
-                return;
-            }
-
-            var spellsNames = resultat.DocumentNode.Descendants()
-                .Where(x => ((x.Name == "a" || x.Name == "span")
-                            && x.Attributes["href"] != null
-                            && x.Attributes["href"].Value.StartsWith("http://staticns.ankama.com/dofus/renderer/look/")
-                            && x.ParentNode.Name == "div"
-                            && x.ParentNode.Attributes["class"] != null
-                            && x.ParentNode.Attributes["class"].Value.Contains("ak-title"))).Select(x => x.InnerText.Replace("’", "'")).ToList();
-
-            var grades = worldDatabase.Database.Fetch<Stump.Server.WorldServer.Database.Monsters.MonsterGrade>(string.Format("SELECT * FROM monsters_grades WHERE MonsterId = {0}", monsterId));
-            var spells = new List<int>();
-
-            foreach (var spellName in spellsNames)
-            {
-                var spellsId = worldDatabase.Database.Fetch<int>("SELECT DISTINCT t2.Id FROM langs t1 JOIN spells_templates t2, spells_levels t3 WHERE t1.French=@0 AND t2.NameId=t1.Id AND t3.SpellId = t2.Id AND t3.SpellBreed = 0", spellName);
-
-                if (!spellsId.Any())
-                    spellsId = worldDatabase.Database.Fetch<int>("SELECT DISTINCT t2.Id FROM langs t1 JOIN spells_templates t2, spells_levels t3 WHERE t1.French=@0 AND t2.NameId=t1.Id AND t3.SpellId = t2.Id", spellName);
-
-                if (!spellsId.Any())
+                foreach (var spell in obj.Spells)
                 {
-                    ParseErrors.Add(string.Format("Can't find spell ({0}) for monsterId ({1}).", spellName, monsterId));
-                    continue;
-                }
+                    var maxLevel = worldDatabase.Database.Fetch<int>($"SELECT COUNT(Id) FROM spells_levels WHERE SpellId = {spell}").FirstOrDefault();
 
-                if (spellsId.Count > 1)
-                {
-                    ParseErrors.Add(string.Format("Found multiple spells for monsterId ({0}) - {1}({2}).", monsterId, spellName, spellsId.ToCSV(",")));
-                    continue;
-                }
-
-                spells.Add(spellsId.First());
-            }
-
-            foreach (var spell in spells)
-            {
-                var count = worldDatabase.Database.Fetch<int>($"SELECT COUNT(Id) FROM spells_levels WHERE SpellId = {spell}").FirstOrDefault();
-
-                foreach (var grade in grades)
-                {
-                    var record = new MonsterSpell
+                    foreach (var grade in obj.Grades)
                     {
-                        MonsterGradeId = grade.Id,
-                        Level = (short)(grade.GradeId > count ? count : (short)grade.GradeId),
-                        SpellId = spell
-                    };
+                        var gradeId = worldDatabase.Database.Fetch<int>($"SELECT Id FROM monsters_grades WHERE MonsterId = {grade.MonsterId} AND GradeId = {grade.Grade}").FirstOrDefault();
 
-                    worldDatabase.Database.Insert(record);
+                        var record = new MonsterSpell
+                        {
+                            MonsterGradeId = gradeId,
+                            SpellId = (int)spell,
+                            Level = grade.Level > maxLevel ? (short)maxLevel : (short)grade.Level
+                        };
+
+                        worldDatabase.Database.Insert(record);
+                    }
                 }
+
+                i++;
+                UpdateCounter(i, rows.Count);
             }
+            EndCounter();
         }
 
         static void ExecutePatch(string file, Database database)
