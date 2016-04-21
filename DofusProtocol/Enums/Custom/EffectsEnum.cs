@@ -2265,7 +2265,7 @@
         /// <summary>
         /// Soigne #1{~1~2 à }#2% des dommages subis.
         /// </summary>
-        Effect_2020 = 2020,
+        Effect_HealReceivedDamages = 2020,
         /// <summary>
         /// 
         /// </summary>

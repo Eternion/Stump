@@ -409,6 +409,7 @@
     <Compile Include="Game\Effects\Handlers\Items\OrnamentEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Items\TitleEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Heal\HealReceivedDamages.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
