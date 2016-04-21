@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
         public override bool SilentCast => m_initialized && Handlers.Any(entry => entry.RequireSilentCast());
 
-        protected bool CheckWhenExecute = false;
+        protected bool CheckWhenExecute;
 
         public override bool Initialize()
         {
