@@ -41,6 +41,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                     if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160 || Effect.EffectId == EffectsEnum.Effect_CastSpell_2160)
                         Caster.CastSpell(spell, affectedActor.Cell, true, true, true, this);
+                    else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
+                        affectedActor.CastSpell(spell, Caster.Cell, true, true, true, this);
                     else
                         affectedActor.CastSpell(spell, affectedActor.Cell, true, true, true, this);
                 }

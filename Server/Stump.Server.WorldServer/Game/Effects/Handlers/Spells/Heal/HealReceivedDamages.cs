@@ -43,6 +43,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             {
                 actor.HealDirect(healAmount, Caster);
             }
+
+            buff.Caster.RemoveBuff(buff);
         }
     }
 }
