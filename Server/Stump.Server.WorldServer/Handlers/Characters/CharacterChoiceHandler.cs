@@ -254,6 +254,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             SendCharacterCapabilitiesMessage(client);
 
+            ContextRoleplayHandler.SendAlmanachCalendarDateMessage(client);
+
             //Loading complete
             SendCharacterLoadingCompleteMessage(client);
 
