@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using Stump.Core.Memory;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -28,8 +29,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         void OnBuffTriggered(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
-            var heal = (int)Math.Round((int)token * (Dice.DiceNum / 100.0)) - (int)token;
-            token = heal;
+            var @ref = token as Ref<int>;
+            if (@ref == null)
+                return;
+
+            var heal = (int)Math.Round(@ref.Target * (Dice.DiceNum / 100.0));
+            @ref.Target = heal;
         }
     }
 }
