@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
         protected override bool InternalApply()
         {
-            var glyphSpell = new Spell(Dice.DiceNum, (byte) Dice.DiceFace);
+            var glyphSpell = new Spell(Dice.DiceNum, (byte)Dice.DiceFace);
 
             if (glyphSpell.Template == null || !glyphSpell.ByLevel.ContainsKey(Dice.DiceFace))
             {
@@ -33,16 +33,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
             var spell = Spell;
 
-            if (spell.Id == (int) SpellIdEnum.DAIPIPAY)
+            if (spell.Id == (int)SpellIdEnum.DAIPIPAY)
                 spell = glyphSpell;
 
             Glyph glyph;
             if (Effect.EffectId == EffectsEnum.Effect_GlyphAura)
-                glyph = new GlyphAura((short) Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell,
-                    EffectZone.ShapeType, (byte)Effect.ZoneMinSize, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+            {
+                glyph = new GlyphAura((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell,
+                                EffectZone.ShapeType, (byte)Effect.ZoneMinSize, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+            }
             else
+            {
                 glyph = new Glyph((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell,
-                    EffectZone.ShapeType, (byte)Effect.ZoneMinSize, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell), Effect.EffectId == EffectsEnum.Effect_Glyph);
+                            EffectZone.ShapeType, (byte)Effect.ZoneMinSize, (byte)Effect.ZoneSize,
+                            GetGlyphColorBySpell(Spell), Effect.EffectId == EffectsEnum.Effect_Glyph,
+                            Effect.EffectId == EffectsEnum.Effect_Glyph_402 ? TriggerType.OnTurnEnd : TriggerType.OnTurnBegin);
+            }
 
             Fight.AddTriger(glyph);
 

@@ -177,6 +177,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Summons\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BlockBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\CadranBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Summons\LapinoBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\LivingBagBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SacrifiedBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SynchroBrain.cs" />
@@ -408,6 +409,7 @@
     <Compile Include="Game\Effects\Handlers\Items\EmoteItemEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Items\OrnamentEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Items\TitleEffectHandler.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\HealReceivedDamages.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />

@@ -5,10 +5,10 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
-    [BrainIdentifier((int)MonsterIdEnum.ARBRE_282)]
-    public class TreeBrain : Brain
+    [BrainIdentifier((int)MonsterIdEnum.LAPINO_39)]
+    public class LapinoBrain : Brain
     {
-        public TreeBrain(AIFighter fighter)
+        public LapinoBrain(AIFighter fighter)
             : base(fighter)
         {
             fighter.Team.FighterAdded += OnFighterAdded;
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             if (Fighter != fighter)
                 return;
 
-            Fighter.CastSpell(new Spell((int)SpellIdEnum.FEUILLAGE, 1), Fighter.Cell, true, true);
+            Fighter.CastSpell(new Spell((int)SpellIdEnum.MOT_STIMULANT, 1), Fighter.Summoner.Cell, true, true);
             fighter.Team.FighterAdded -= OnFighterAdded;
         }
     }

@@ -1001,8 +1001,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int HealDirect(int healPoints, FightActor from)
         {
-            TriggerBuffs(from, BuffTriggerType.OnHealed);
-            from.TriggerBuffs(from, BuffTriggerType.OnHeal);
+            var healPointsRef = new Ref<int>(healPoints);
+
+            TriggerBuffs(from, BuffTriggerType.OnHealed, healPointsRef);
+            from.TriggerBuffs(from, BuffTriggerType.OnHeal, healPointsRef);
+
+            //Allow triggers to edit healPoints
+            healPoints = healPointsRef.Target;
 
             if (HasState((int)SpellStatesEnum.INSOIGNABLE_76))
             {

@@ -2143,6 +2143,10 @@
         /// </summary>
         Effect_1155 = 1155,
         /// <summary>
+        /// Soins reçus x#1%
+        /// </summary>
+        Effect_HealBuff = 1159,
+        /// <summary>
         /// #1
         /// </summary>
         Effect_CastSpell_1160 = 1160,
