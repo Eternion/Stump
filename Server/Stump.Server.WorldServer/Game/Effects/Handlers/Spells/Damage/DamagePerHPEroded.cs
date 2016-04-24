@@ -92,14 +92,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             switch (effect)
             {
                 case EffectsEnum.Effect_DamageWaterPerHPEroded:
+                case EffectsEnum.Effect_DamageWaterPerCasterHPEroded:
                     return EffectSchoolEnum.Water;
                 case EffectsEnum.Effect_DamageEarthPerHPEroded:
+                case EffectsEnum.Effect_DamageEarthPerCasterHPEroded:
                     return EffectSchoolEnum.Earth;
                 case EffectsEnum.Effect_DamageAirPerHPEroded:
+                case EffectsEnum.Effect_DamageAirPerCasterHPEroded:
                     return EffectSchoolEnum.Air;
                 case EffectsEnum.Effect_DamageFirePerHPEroded:
+                case EffectsEnum.Effect_DamageFirePerCasterHPEroded:
                     return EffectSchoolEnum.Fire;
                 case EffectsEnum.Effect_DamageNeutralPerHPEroded:
+                case EffectsEnum.Effect_DamageNeutralPerCasterHPEroded:
                     return EffectSchoolEnum.Neutral;
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
