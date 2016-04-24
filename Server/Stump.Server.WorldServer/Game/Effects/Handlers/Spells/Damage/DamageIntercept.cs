@@ -47,13 +47,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
             target.IsSacrificeProtected = true;
 
+            damage.IgnoreDamageBoost = true;
+            damage.IgnoreDamageReduction = true;
+            damage.Generated = true;
+
             // first, apply damage to sacrifier
             Caster.InflictDamage(damage);
 
             // then, negate damage given to target
-            damage.IgnoreDamageBoost = true;
-            damage.IgnoreDamageReduction = true;
-            damage.Generated = true;
             damage.Amount = 0;
         }
 

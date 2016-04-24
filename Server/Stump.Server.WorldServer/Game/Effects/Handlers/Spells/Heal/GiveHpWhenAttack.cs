@@ -3,8 +3,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 {
     [EffectHandler(EffectsEnum.Effect_HealWhenAttack)]
@@ -37,7 +37,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             if (damage == null)
                 return;
 
-            buff.Target.Heal(damage.Amount, damage.Source);
+            if (damage.Spell != null && Caster.IsPoisonSpellCast(damage.Spell))
+                return;
+
+            buff.Target.Heal(damage.Amount, damage.Source, false);
             damage.Amount = 0;
         }
     }
@@ -76,11 +79,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             if (damage == null)
                 return;
 
-            var source = damage.Source;
-            if (Spell.Id == (int)SpellIdEnum.MANSOMNAMBULE)
-                source = buff.Target;
+            if (damage.Spell != null && Caster.IsPoisonSpellCast(damage.Spell))
+                return;
 
-            HealHpPercent(source, damage.Amount, integerEffect.Value);
+            HealHpPercent(damage.Source, damage.Amount, integerEffect.Value);
         }
 
         static void HealHpPercent(FightActor actor, int amount, int percent)

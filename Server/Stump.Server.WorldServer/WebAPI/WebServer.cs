@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin.Hosting;
 using Stump.Server.BaseServer.Initialization;
+using System;
 
 namespace Stump.Server.WorldServer.WebAPI
 {
@@ -8,8 +9,14 @@ namespace Stump.Server.WorldServer.WebAPI
         [Initialization(InitializationPass.First)]
         public static void Initialize()
         {
-            // Start OWIN host 
-            WebApp.Start<Startup>(url: "http://localhost:9000/");
+            try
+            {
+                // Start OWIN host 
+                WebApp.Start<Startup>(url: "http://localhost:9000/");
+            }
+            catch(Exception ex)
+            {
+            }
         }
     }
 }
