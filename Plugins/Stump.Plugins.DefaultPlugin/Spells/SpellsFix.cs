@@ -22,7 +22,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region COMMON
 
             FixEffectOnAllLevels((int)SpellIdEnum.COUP_DE_POING, 0, (level, effect, critical)
-                => effect.Targets = new[] { new TargetTypeCriterion(SpellTargetType.ALLY_ALL), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL) });
+                => effect.Targets = new[] { new TargetTypeCriterion(SpellTargetType.ALLY_ALL, false), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL, false) });
 
             #endregion COMMON
 
