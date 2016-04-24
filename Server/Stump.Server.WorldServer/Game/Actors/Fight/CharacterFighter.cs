@@ -233,7 +233,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize, (byte) weaponTemplate.Type.ZoneMinSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
                 handler.Targets = new TargetCriterion[]
-                    { new TargetTypeCriterion(SpellTargetType.ALLY_ALL_EXCEPT_SELF), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL) }; // everyone but caster
+                    { new TargetTypeCriterion(SpellTargetType.ALLY_ALL_EXCEPT_SELF, false), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL, false) }; // everyone but caster
                 handlers.Add(handler);
             }
 
