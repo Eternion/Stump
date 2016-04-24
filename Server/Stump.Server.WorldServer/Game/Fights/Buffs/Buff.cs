@@ -152,10 +152,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                 return false;
             }
 
-            if (Duration == -1000) // Duration = -1000 => unlimited buff
+            if (Duration <= -1) // Duration = -1000 => unlimited buff
                 return false;
 
-            return --Duration == 0;
+            return --Duration <= 0;
         }
 
         public virtual void Apply() => Applied = true;
