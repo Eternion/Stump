@@ -413,6 +413,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\HealReceivedDamages.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnSmileyPack.cs" />
