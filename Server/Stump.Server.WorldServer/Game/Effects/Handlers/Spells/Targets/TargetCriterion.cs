@@ -44,14 +44,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
         {
             try
             {
-                if (m_targetsMapping.ContainsKey(str[0]))
-                {
-                    return new TargetTypeCriterion(m_targetsMapping[str[0]]);
-                }
                 var caster = str[0] == '*';
 
                 if (caster)
                     str = str.Remove(0, 1);
+
+                if (m_targetsMapping.ContainsKey(str[0]))
+                {
+                    return new TargetTypeCriterion(m_targetsMapping[str[0]], caster);
+                }
 
                 switch(str[0])
                 {
@@ -77,6 +78,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                         return new SummonerCriterion(false);
                     case 'U':
                         return new JustSummonedCriterion();
+                    case 'b':
+                        return new BreedCriterion(int.Parse(str.Remove(0, 1)), caster, false);
+                    case 'B':
+                        return new BreedCriterion(int.Parse(str.Remove(0, 1)), caster, true);
                 }
 
                 return new UnknownCriterion(str);

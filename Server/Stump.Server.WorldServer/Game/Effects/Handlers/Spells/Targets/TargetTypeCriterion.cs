@@ -5,9 +5,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
     public class TargetTypeCriterion : TargetCriterion
     {
-        public TargetTypeCriterion(SpellTargetType type)
+        public TargetTypeCriterion(SpellTargetType type, bool caster)
         {
             TargetType = type;
+            Caster = caster;
         }
 
         public SpellTargetType TargetType
@@ -16,8 +17,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             set;
         }
 
+        public bool Caster
+        {
+            get;
+            set;
+        }
+
         public override bool IsTargetValid(FightActor actor, SpellEffectHandler handler)
         {
+            if (Caster)
+                actor = handler.Caster;
+
             if (TargetType == SpellTargetType.NONE)
                 // return false; note : wtf, why is there spells with TargetType = NONE ?
                 return true;

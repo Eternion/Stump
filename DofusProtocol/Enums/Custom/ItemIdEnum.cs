@@ -1339,7 +1339,7 @@
         // Item [Level : 1] 
         TRANSFORMATION_ABRAKNYDE_1722 = 1722,
         // Item [Level : 1] 
-        BONBON_ROUGE_SURPUISSANT_1723 = 1723,
+        GOUT_DE_BONBON_ROUGE_SURPUISSANT_1723 = 1723,
         // Item [Level : 1] 
         COURAGE_1724 = 1724,
         // Item [Level : 1] 
@@ -4893,9 +4893,9 @@
         // Item [Level : 60] 
         LE_SAUT_SIFFLARD_7799 = 7799,
         // Item [Level : 1] 
-        BONBON_DE_COMPENSATION_DU_SAGE_7800 = 7800,
+        GOUT_DE_BONBON_DE_COMPENSATION_DU_SAGE_7800 = 7800,
         // Item [Level : 1] 
-        BONBON_DE_COMPENSATION_DU_CHANCEUX_7801 = 7801,
+        GOUT_DE_BONBON_DE_COMPENSATION_DU_CHANCEUX_7801 = 7801,
         // Item [Level : 1] 
         BONBON_DU_SAGE_7802 = 7802,
         // Item [Level : 1] 
@@ -6902,6 +6902,8 @@
         INSIGNE_DE_LA_PATROUILLE_DE_BONTA_9089 = 9089,
         // Item [Level : 1] 
         INSIGNE_DE_LA_PATROUILLE_DE_BRAKMAR_9090 = 9090,
+        // Item [Level : 189] 
+        ECLATS_DE_METAL_9092 = 9092,
         // Item [Level : 134] 
         POISON_ZOTH_9094 = 9094,
         // Item [Level : 1] 
@@ -7214,6 +7216,14 @@
         PROMESSE_DE_MASKARA_9271 = 9271,
         // Item [Level : 177] 
         CAISSE_MYSTERIEUSE_9272 = 9272,
+        // Item [Level : 181] 
+        RAPPORT_DE_BOLZANO_VIEILLETRASSE_9273 = 9273,
+        // Item [Level : 181] 
+        RAPPORT_DEOWINE_FIOLE_9274 = 9274,
+        // Item [Level : 181] 
+        RAPPORT_DE_LARA_SOFT_9275 = 9275,
+        // Item [Level : 181] 
+        RAPPORT_DE_CASPER_VAN_BRUSHING_9276 = 9276,
         // Item [Level : 186] 
         OEIL_DE_CHAMPMANE_9277 = 9277,
         // Item [Level : 180] 
@@ -7224,6 +7234,48 @@
         EPINE_DOUGAH_9280 = 9280,
         // Item [Level : 180] 
         FRAGMENT_DOUGALURETTE_9281 = 9281,
+        // Item [Level : 190] 
+        HEMOGLOBINE_DE_WABBIT_GAROU_9283 = 9283,
+        // Item [Level : 182] 
+        INFORMATIONS_SUR_SATIREV_ONIVIN_9286 = 9286,
+        // Item [Level : 182] 
+        INFORMATIONS_SUR_LARRY_POLLER_9287 = 9287,
+        // Item [Level : 182] 
+        INFORMATIONS_SUR_GRACE_MALCEAN_9288 = 9288,
+        // Item [Level : 182] 
+        NOUVEAU_MESSAGE_DE_NEPRA_LIDO_9289 = 9289,
+        // Item [Level : 182] 
+        NOUVEAU_MESSAGE_DENILEDA_9290 = 9290,
+        // Item [Level : 182] 
+        NOUVEAU_MESSAGE_DE_GWENOLAZ_BARNUMUZE_9291 = 9291,
+        // Item [Level : 182] 
+        NOUVEAU_MESSAGE_DE_MASKARA_9292 = 9292,
+        // Item [Level : 182] 
+        NOUVEAU_MESSAGE_DE_MONTRAKWARTZ_9293 = 9293,
+        // Item [Level : 182] 
+        BON_DE_COMMANDE_BUS_NAIN_2000_9294 = 9294,
+        // Item [Level : 182] 
+        LETTRE_POUR_GRACE_MALCEAN_9295 = 9295,
+        // Item [Level : 1] 
+        LETTRE_DE_LINTENDANT_SAN_LAVALSS_9300 = 9300,
+        // Item [Level : 189] 
+        MYSTENERGIOMETRE_9307 = 9307,
+        // Item [Level : 188] 
+        SOUPE_DAUBERGINE_AMAKNEENNE_9312 = 9312,
+        // Item [Level : 188] 
+        RECETTE_DE_LA_SOUPE_DAUBERGINE_AMAKNEENNE_9313 = 9313,
+        // Item [Level : 188] 
+        INJONCTION_A_COMPARAITRE_9314 = 9314,
+        // Item [Level : 188] 
+        LETTRE_DU_CONSEIL_9315 = 9315,
+        // Item [Level : 181] 
+        CONTRAT_DU_SACRI_ZO_9316 = 9316,
+        // Item [Level : 181] 
+        CONTRAT_DE_KAPI_TAIGNE_9317 = 9317,
+        // Item [Level : 189] 
+        ENTRAVES_BRISEES_9318 = 9318,
+        // Item [Level : 181] 
+        CONTRAT_DE_GRASSIMORE_9320 = 9320,
         // Item [Level : 1] 
         CADEAU_CAPE_PAUPAYAHN_9339 = 9339,
         // Item [Level : 1] 
@@ -7266,6 +7318,8 @@
         CADEAU_CHAPEAU_OBVIJEVAN_9363 = 9363,
         // Item [Level : 49] 
         TUTU_ROSE_9366 = 9366,
+        // Item [Level : 190] 
+        PLUME_DE_DODOX_VIGILE_9368 = 9368,
         // Item [Level : 1] 
         BALLOTIN_DE_CHOCOLAT_9379 = 9379,
         // Item [Level : 1] 
@@ -7692,6 +7746,8 @@
         CERTIFICAT_DE_MISE_EN_CHANIL_CROCODAILLE_9684 = 9684,
         // Item [Level : 1] 
         CERTIFICAT_DE_MISE_EN_CHANIL_DRAGOUNE_NOIRE_9685 = 9685,
+        // Item [Level : 189] 
+        FEUILLE_DE_TILLEUL_9694 = 9694,
         // Item [Level : 1] 
         FRAGMENT_DE_FORCE_MINEUR_9714 = 9714,
         // Item [Level : 1] 
@@ -8608,6 +8664,8 @@
         CADEAU_CHAUSSURES_DU_TETOUNIK_10327 = 10327,
         // Item [Level : 1] 
         CADEAU_COIFFE_MULET_DU_TETOUNIK_10328 = 10328,
+        // Item [Level : 182] 
+        CUR_DE_DRAMANITE_10329 = 10329,
         // Item [Level : 1] 
         CADEAU_YUGURE_10330 = 10330,
         // Item [Level : 1] 
@@ -8672,6 +8730,8 @@
         CADEAU_LES_SLEUMPETTES_10360 = 10360,
         // Item [Level : 1] 
         CADEAU_KASKWETTE_10361 = 10361,
+        // Item [Level : 189] 
+        MYSTENERGIOMETRE_CASSE_10367 = 10367,
         // Item [Level : 1] 
         PARCHEMIN_DE_BIJOUTIER_10382 = 10382,
         // Item [Level : 1] 
@@ -8723,6 +8783,12 @@
         // Item [Level : 1] 
         PARCHEMIN_DE_CORDOMAGE_10407 = 10407,
         // Item [Level : 1] 
+        FEE_RECYDE_DESYROS_10408 = 10408,
+        // Item [Level : 1] 
+        HYDALE_10409 = 10409,
+        // Item [Level : 182] 
+        UF_DE_MAGIE_NOIRE_10411 = 10411,
+        // Item [Level : 1] 
         COURONNE_KONINGINNEDAG_10414 = 10414,
         // Item [Level : 1] 
         PIERRE_DAME_DE_GARDIEN_DE_DONJON_10417 = 10417,
@@ -8736,6 +8802,14 @@
         MALEDICTION_DES_PROTECTEURS_10431 = 10431,
         // Item [Level : 161] 
         LES_MAIDARTES_10438 = 10438,
+        // Item [Level : 181] 
+        CONTRAT_DU_SACRI_ZO_10448 = 10448,
+        // Item [Level : 181] 
+        CONTRAT_DU_SACRI_ZO_10449 = 10449,
+        // Item [Level : 181] 
+        CONTRAT_DE_KAPI_TAIGNE_10450 = 10450,
+        // Item [Level : 181] 
+        CONTRAT_DE_KAPI_TAIGNE_10451 = 10451,
         // Item [Level : 1] 
         PARCHEMIN_DE_SORT_SPECIAL_FLECHE_DE_DISPERSION_10506 = 10506,
         // Item [Level : 1] 
@@ -8743,7 +8817,7 @@
         // Item [Level : 1] 
         PARCHEMIN_DE_SORT_SPECIAL_MISE_EN_GARDE_10508 = 10508,
         // Item [Level : 1] 
-        PARCHEMIN_DE_SORT_SPECIAL_MOT_LOTOF_10509 = 10509,
+        PARCHEMIN_DE_SORT_SPECIAL_MOT_DECISIF_10509 = 10509,
         // Item [Level : 1] 
         PARCHEMIN_DE_SORT_SPECIAL_IVRESSE_10510 = 10510,
         // Item [Level : 1] 
@@ -12679,7 +12753,7 @@
         // Item [Level : 1] 
         PARCHEMIN_DE_SORT_SPECIAL_SRAM_POISSE_12802 = 12802,
         // Item [Level : 1] 
-        PARCHEMIN_DE_SORT_SPECIAL_ENIRIPSA_MOT_LOTOF_12803 = 12803,
+        PARCHEMIN_DE_SORT_SPECIAL_ENIRIPSA_MOT_DECISIF_12803 = 12803,
         // Item [Level : 1] 
         PARCHEMIN_DE_SORT_SPECIAL_FECA_MISE_EN_GARDE_12804 = 12804,
         // Item [Level : 1] 
@@ -16032,7 +16106,7 @@
         FOUDROYEUR_DE_BLOP_ROYAL_14722 = 14722,
         // Item [Level : 95] 
         FOUDROYEUR_DU_MEULOU_14723 = 14723,
-        // Item [Level : 95] 
+        // Item [Level : 105] 
         FOUDROYEUR_DU_MAITRE_CORBAC_14724 = 14724,
         // Item [Level : 145] 
         FOUDROYEUR_DE_BEN_LE_RIPATE_14725 = 14725,
@@ -16108,7 +16182,7 @@
         CARESSEUR_DES_FORGERONS_14760 = 14760,
         // Item [Level : 65] 
         CARESSEUR_DE_CRAQUELEUR_LEGENDAIRE_14761 = 14761,
-        // Item [Level : 55] 
+        // Item [Level : 75] 
         CARESSEUR_DE_WA_WOBOT_14762 = 14762,
         // Item [Level : 115] 
         CARESSEUR_DE_ROYALMOUTH_14763 = 14763,
@@ -21058,7 +21132,7 @@
         CERTIFICAT_DE_MISE_EN_CHANIL_MINIKRONE_17513 = 17513,
         // Item [Level : 1] 
         HORMONE_DE_MINIKRONE_17514 = 17514,
-        // Item [Level : 1] 
+        // Item [Level : 90] 
         POTION_DAMELIORATION_DE_MINIKRONE_17515 = 17515,
         // Item [Level : 1] 
         EIDOLON_DE_PIKBUL_17516 = 17516,
@@ -21422,7 +21496,7 @@
         CERTIFICAT_DE_MISE_EN_CHANIL_CHAPERLIPOPETTE_17702 = 17702,
         // Item [Level : 1] 
         HORMONE_DE_CHAPERLIPOPETTE_17703 = 17703,
-        // Item [Level : 1] 
+        // Item [Level : 200] 
         POTION_DAMELIORATION_DE_CHAPERLIPOPETTE_17704 = 17704,
         // Item [Level : 160] 
         IL_DUSH_IWA_17705 = 17705,
@@ -21430,8 +21504,6 @@
         BON_POUR_UNE_DEVINETTE_17706 = 17706,
         // Item [Level : 1] 
         BON_POUR_UNE_HISTOIRE_17707 = 17707,
-        // Item [Level : 1] 
-        PHUAN_17708 = 17708,
         // Item [Level : 200] 
         MAIN_DE_LARRY_SLIM_17709 = 17709,
         // Item [Level : 1] 
@@ -21482,6 +21554,180 @@
         BOTTES_DRAGOCOURSE_17733 = 17733,
         // Item [Level : 40] 
         CEINTURE_DRAGOCOURSE_17734 = 17734,
+        // Item [Level : 200] 
+        ESSENCE_DE_CHALIL_17735 = 17735,
+        // Item [Level : 160] 
+        ESSENCE_DE_USH_17736 = 17736,
+        // Item [Level : 110] 
+        ESSENCE_DE_POUNICHEUR_17737 = 17737,
+        // Item [Level : 105] 
+        FOUDROYEUR_DU_POUNICHEUR_17738 = 17738,
+        // Item [Level : 155] 
+        CARESSEUR_DE_USH_17739 = 17739,
+        // Item [Level : 195] 
+        MANGEOIRE_DU_CHALIL_17740 = 17740,
+        // Item [Level : 1] 
+        PHUAN_17741 = 17741,
+        // Item [Level : 1] 
+        SHARIVATON_17742 = 17742,
+        // Item [Level : 1] 
+        MONNAIE_DAPPOINT_17743 = 17743,
+        // Item [Level : 1] 
+        ATOUT_17744 = 17744,
+        // Item [Level : 1] 
+        TICKET_DORE_17745 = 17745,
+        // Item [Level : 1] 
+        BAGUE_FOLKLORIQUE_17746 = 17746,
+        // Item [Level : 1] 
+        GEMME_DE_CRUAUTE_17747 = 17747,
+        // Item [Level : 1] 
+        JOYAU_DE_CHARITE_17748 = 17748,
+        // Item [Level : 1] 
+        CHEVALIERE_BOHEME_17749 = 17749,
+        // Item [Level : 1] 
+        SCEAU_DAUTORITE_17750 = 17750,
+        // Item [Level : 1] 
+        MARQUE_DES_FAVORIS_17751 = 17751,
+        // Item [Level : 182] 
+        LETTRE_DE_LINTENDANT_SAN_LAVALSS_17752 = 17752,
+        // Item [Level : 183] 
+        ONGUENT_DE_BENN_ZIN_17753 = 17753,
+        // Item [Level : 183] 
+        PIEGE_A_CROCODAILLE_17754 = 17754,
+        // Item [Level : 183] 
+        CROSODAILLE_17755 = 17755,
+        // Item [Level : 183] 
+        PIERRE_SACREE_DARAKNAS_17756 = 17756,
+        // Item [Level : 184] 
+        PIERRE_SACREE_DARAKNAS_17757 = 17757,
+        // Item [Level : 185] 
+        PIERRE_SACREE_DARAKNAS_17758 = 17758,
+        // Item [Level : 186] 
+        PIERRE_SACREE_DARAKNAS_17759 = 17759,
+        // Item [Level : 186] 
+        PIERRE_SACREE_DARAKNAS_17760 = 17760,
+        // Item [Level : 183] 
+        DOCUMENTS_SUR_LES_PIERRES_SACREES_DARAKNAS_17761 = 17761,
+        // Item [Level : 183] 
+        CLEF_DU_REPAIRE_DES_CYBWORKS_17762 = 17762,
+        // Item [Level : 183] 
+        BOULON_DEFECTUEUX_DE_CYBWORK_17763 = 17763,
+        // Item [Level : 181] 
+        THALLE_DE_CHAMPMANE_17764 = 17764,
+        // Item [Level : 181] 
+        ENVELOPPE_POUR_ASPIC_FARNSWOTTE_17765 = 17765,
+        // Item [Level : 180] 
+        POTION_DE_GISGOUL_17766 = 17766,
+        // Item [Level : 183] 
+        GEMME_RIKIKI_17767 = 17767,
+        // Item [Level : 183] 
+        BILLE_RIKIKI_17768 = 17768,
+        // Item [Level : 183] 
+        PLAN_DU_CHATEAU_DE_PRINCESSE_17769 = 17769,
+        // Item [Level : 183] 
+        CHATEAU_DES_MINIPOUFFS_17770 = 17770,
+        // Item [Level : 184] 
+        RECETTE_DE_LA_CLEF_DU_CAVEAU_DU_ROI_LEORICTUS_17771 = 17771,
+        // Item [Level : 184] 
+        CLEF_DU_CAVEAU_DU_ROI_LEORICTUS_17772 = 17772,
+        // Item [Level : 184] 
+        RECETTE_DE_LELIXIR_DARAKNE_17773 = 17773,
+        // Item [Level : 184] 
+        ELIXIR_DARAKNE_17774 = 17774,
+        // Item [Level : 184] 
+        URNE_DU_ROI_LEORICTUS_17775 = 17775,
+        // Item [Level : 184] 
+        RECETTE_DE_LA_CLEF_DU_CAVEAU_DU_PRINCE_DJAMAL_BRECHT_17776 = 17776,
+        // Item [Level : 184] 
+        CLEF_DU_CAVEAU_DU_PRINCE_DJAMAL_17777 = 17777,
+        // Item [Level : 184] 
+        URNE_DU_PRINCE_DJAMAL_BRECHT_17778 = 17778,
+        // Item [Level : 185] 
+        RECETTE_DE_DISSOLVANT_17779 = 17779,
+        // Item [Level : 180] 
+        FLEUR_DE_KORRIANDRE_17780 = 17780,
+        // Item [Level : 185] 
+        DISSOLVANT_PHOSPHORESCENT_17781 = 17781,
+        // Item [Level : 1] 
+        PWAKLIER_17782 = 17782,
+        // Item [Level : 187] 
+        LIVRE_SUR_LA_FORET_PETRIFIEE_17783 = 17783,
+        // Item [Level : 1] 
+        BOUCLIER_DU_TOFU_ROYAL_17784 = 17784,
+        // Item [Level : 186] 
+        CLEF_DU_TEMPLE_MAUDIT_17785 = 17785,
+        // Item [Level : 186] 
+        PACTE_DE_NONAGRESSION_17786 = 17786,
+        // Item [Level : 188] 
+        RECETTE_DE_LA_SOUPE_POPULAIRE_DASTRUB_17791 = 17791,
+        // Item [Level : 188] 
+        SOUPE_POPULAIRE_DASTRUB_17792 = 17792,
+        // Item [Level : 189] 
+        RUBIS_MAGIQUE_17793 = 17793,
+        // Item [Level : 189] 
+        OUTILS_DE_CAMBRIOLAGE_17794 = 17794,
+        // Item [Level : 1] 
+        TIRUBIM_17795 = 17795,
+        // Item [Level : 1] 
+        FANTOME_DE_TIRUBIM_17796 = 17796,
+        // Item [Level : 1] 
+        CERTIFICAT_DE_MISE_EN_CHANIL_TIRUBIM_17797 = 17797,
+        // Item [Level : 1] 
+        HORMONE_DE_TIRUBIM_17798 = 17798,
+        // Item [Level : 20] 
+        POTION_DAMELIORATION_DE_TIRUBIM_17799 = 17799,
+        // Item [Level : 1] 
+        SKEUNKLIER_17800 = 17800,
+        // Item [Level : 1] 
+        BOUCLIER_DE_MERKATOR_17801 = 17801,
+        // Item [Level : 190] 
+        TALISMAN_DE_GRASSIMORE_INCOMPLET_17803 = 17803,
+        // Item [Level : 190] 
+        TALISMAN_DE_GRASSIMORE_17804 = 17804,
+        // Item [Level : 190] 
+        MATERIEL_DE_GOBELINS_DES_GLACES_17805 = 17805,
+        // Item [Level : 190] 
+        MATERIEL_DE_GOBELINS_DES_GLACES_17806 = 17806,
+        // Item [Level : 190] 
+        MATERIEL_DE_GOBELINS_DES_GLACES_17807 = 17807,
+        // Item [Level : 190] 
+        MARTEAU_DEREZIAH_17808 = 17808,
+        // Item [Level : 1] 
+        PREDICTION_DU_MAGE_HELLAN_17810 = 17810,
+        // Item [Level : 1] 
+        TRANSFORMATION_EN_ARAKNE_17811 = 17811,
+        // Item [Level : 189] 
+        RUBIS_MAGIQUE_IMPREGNE_17812 = 17812,
+        // Item [Level : 1] 
+        TITCHAM_17833 = 17833,
+        // Item [Level : 1] 
+        FANTOME_DE_TITCHAM_17834 = 17834,
+        // Item [Level : 1] 
+        CERTIFICAT_DE_MISE_EN_CHANIL_TITCHAM_17835 = 17835,
+        // Item [Level : 1] 
+        HORMONE_DE_TITCHAM_17836 = 17836,
+        // Item [Level : 110] 
+        POTION_DAMELIORATION_DE_TITCHAM_17837 = 17837,
+        // Item [Level : 60] 
+        JUS_DE_POISSON_ABOMINABLE_17850 = 17850,
+        // Item [Level : 130] 
+        JUS_DE_POISSON_ASPHYXIANT_17851 = 17851,
+        // Item [Level : 200] 
+        JUS_DE_POISSON_PESTILENTIEL_17852 = 17852,
+        // Item [Level : 200] 
+        JUS_DE_POISSON_MEPHITIQUE_17853 = 17853,
+        // Item [Level : 1] 
+        LA_GROSSE_EVASION_17854 = 17854,
+        // Item [Level : 186] 
+        CARTE_DARAKNAS_17855 = 17855,
+        // Item [Level : 186] 
+        MODE_DEMPLOI_DES_PIERRES_SACREES_DARAKNAS_17856 = 17856,
+        // Item [Level : 186] 
+        COFFRE_DARAKNAS_17857 = 17857,
+        // Item [Level : 186] 
+        RECETTE_DE_LA_CLEF_DU_TEMPLE_MAUDIT_17858 = 17858,
+        // Item [Level : 1] 
+        BIENFAISANT_17859 = 17859,
         // Item [Level : 7] 
         EPEE_DE_BOISAILLE_44 = 44,
         // Item [Level : 15] 
@@ -30222,5 +30468,7 @@
         SCEPTRE_DU_ROI_JOUEUR_17682 = 17682,
         // Item [Level : 200] 
         HACHE_DU_CHALIL_17683 = 17683,
+        // Item [Level : 100] 
+        MARTEAU_DEREZIAH_17809 = 17809,
     }
 }
