@@ -175,9 +175,9 @@ namespace Stump.DofusProtocol.Enums
         /// </summary>
         GOULIFIE_49 = 49,
         /// <summary>
-        /// Altruiste
+        /// Décisif
         /// </summary>
-        ALTRUISTE_50 = 50,
+        DECISIF_50 = 50,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -635,13 +635,13 @@ namespace Stump.DofusProtocol.Enums
         /// </summary>
         STATE_167 = 167,
         /// <summary>
-        /// (not found)
+        /// Pentacle
         /// </summary>
-        STATE_168 = 168,
+        PENTACLE_168 = 168,
         /// <summary>
-        /// (not found)
+        /// Bruyant
         /// </summary>
-        STATE_169 = 169,
+        BRUYANT_169 = 169,
         /// <summary>
         /// Acte 6
         /// </summary>
@@ -1339,9 +1339,9 @@ namespace Stump.DofusProtocol.Enums
         /// </summary>
         MATOUMORPHOSE_348 = 348,
         /// <summary>
-        /// (not found)
+        /// Stimulé
         /// </summary>
-        STATE_349 = 349,
+        STIMULE_349 = 349,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1482,5 +1482,21 @@ namespace Stump.DofusProtocol.Enums
         /// Embargo
         /// </summary>
         EMBARGO_384 = 384,
+        /// <summary>
+        /// Air Eniripsatest
+        /// </summary>
+        AIR_ENIRIPSATEST_385 = 385,
+        /// <summary>
+        /// Phuan
+        /// </summary>
+        PHUAN_386 = 386,
+        /// <summary>
+        /// Stimulé
+        /// </summary>
+        STIMULE_387 = 387,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_388 = 388,
     }
 }

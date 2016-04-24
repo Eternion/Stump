@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             SummonedFighter summon;
             if (monster.Template.Id == (int)MonsterIdEnum.HARPONNEUSE_3287 || monster.Template.Id == (int)MonsterIdEnum.GARDIENNE_3288 || monster.Template.Id == (int)MonsterIdEnum.TACTIRELLE_3289)
                 summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell) {SummoningEffect = this};
-            else if (monster.Template.Id == (int)MonsterIdEnum.COFFRE_ANIM_285)
+            else if (monster.Template.Id == (int)MonsterIdEnum.COFFRE_ANIME_285)
                 summon = new LivingChest(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) { SummoningEffect = this };             
             else
                 summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) {SummoningEffect = this};

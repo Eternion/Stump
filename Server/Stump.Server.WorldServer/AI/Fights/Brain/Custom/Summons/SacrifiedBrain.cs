@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
-    [BrainIdentifier((int)MonsterIdEnum.LA_SACRIFIE_116)]
+    [BrainIdentifier((int)MonsterIdEnum.LA_SACRIFIEE_116)]
     public class SacrifiedBrain : Brain
     {
         public SacrifiedBrain(AIFighter fighter)

@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
-    [BrainIdentifier((int)MonsterIdEnum.CADRAN_DE_XLOR_3960)]
+    [BrainIdentifier((int)MonsterIdEnum.CADRAN_DE_XELOR_3960)]
     public class CadranBrain : Brain
     {
         public CadranBrain(AIFighter fighter)

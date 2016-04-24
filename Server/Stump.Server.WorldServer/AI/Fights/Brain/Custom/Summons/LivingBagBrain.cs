@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
-    [BrainIdentifier((int)MonsterIdEnum.SAC_ANIM_237)]
+    [BrainIdentifier((int)MonsterIdEnum.SAC_ANIME_237)]
     public class LivingBagBrain : Brain
     {
         public LivingBagBrain(AIFighter fighter)
