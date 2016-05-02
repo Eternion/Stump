@@ -17,6 +17,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             SendInventoryPresetSaveResultMessage(client, message.presetId, result);
         }
 
+        [WorldHandler(InventoryPresetSaveCustomMessage.Id)]
+        public static void HandleInventoryPresetSaveCustomMessage(WorldClient client, InventoryPresetSaveCustomMessage message)
+        {
+            var result = client.Character.Inventory.AddPreset(message.presetId, message.symbolId, message.itemsUids);
+
+            SendInventoryPresetSaveResultMessage(client, message.presetId, result);
+        }
+
         [WorldHandler(InventoryPresetDeleteMessage.Id)]
         public static void HandleInventoryPresetDeleteMessage(WorldClient client, InventoryPresetDeleteMessage message)
         {
