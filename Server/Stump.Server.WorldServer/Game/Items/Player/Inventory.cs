@@ -432,6 +432,36 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
+        public PresetSaveResultEnum AddPreset(int presetId, int symbolId, IEnumerable<int> itemsUids)
+        {
+            if (presetId < 0 || presetId > 8)
+                return PresetSaveResultEnum.PRESET_SAVE_ERR_UNKNOWN;
+
+            if (Presets.Count > MaxPresets)
+                return PresetSaveResultEnum.PRESET_SAVE_ERR_TOO_MANY;
+
+            if (!IsPresetExist(presetId))
+                return PresetSaveResultEnum.PRESET_SAVE_ERR_UNKNOWN;
+
+            var preset = GetPreset(presetId);
+            preset.SymbolId = symbolId;
+            preset.Objects = new List<PresetItem>();
+            preset.IsDirty = true;
+
+            foreach (var itemUid in itemsUids)
+            {
+                if (!HasItem(itemUid))
+                    continue;
+
+                var item = TryGetItem(itemUid);
+                preset.AddObject(new PresetItem((byte)item.Position, (short)item.Template.Id, item.Guid));
+            }
+
+            InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+
+            return PresetSaveResultEnum.PRESET_SAVE_OK;
+        }
+
         public PresetSaveResultEnum AddPreset(int presetId, int symbolId, bool saveEquipement)
         {
             if (presetId < 0 || presetId > 8)
@@ -457,7 +487,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             else
             {
                 foreach (var item in GetEquipedItems())
-                    preset.AddObject(new PresetItem((byte)item.Position, (short)item.Template.Id, item.Guid));       
+                    preset.AddObject(new PresetItem((byte)item.Position, (short)item.Template.Id, item.Guid));
+
+                Owner.Shortcuts.AddPresetShortcut(Owner.Shortcuts.GetNextFreeSlot(ShortcutBarEnum.GENERAL_SHORTCUT_BAR), presetId);
             }
 
             RemovePreset(presetId);
@@ -515,7 +547,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (preset == null)
             {
-                InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID, unlinkedPosition);
+                InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)presetId, PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID, unlinkedPosition);
                 return;
             }
                 
@@ -551,21 +583,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
                 if (item == null)
                 {
-                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 228, presetItem.objGid, (presetId + 1));
+                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 228, presetItem.objGid, presetId);
                     partial = true;
                     continue;
                 }
 
                 if (!CanEquip(item, (CharacterInventoryPositionEnum)presetItem.position))
                 {
-                    InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_CRITERION, unlinkedPosition);
+                    InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)presetId, PresetUseResultEnum.PRESET_USE_ERR_CRITERION, unlinkedPosition);
                     return;
                 }
 
                 itemsToMove.Add(new Pair<BasePlayerItem, CharacterInventoryPositionEnum>(item, (CharacterInventoryPositionEnum)presetItem.position));
             }
 
-            InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK, unlinkedPosition);
+            InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)presetId, partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK, unlinkedPosition);
 
             foreach (var item in itemsToMove)
                 MoveItem(item.First, item.Second);
