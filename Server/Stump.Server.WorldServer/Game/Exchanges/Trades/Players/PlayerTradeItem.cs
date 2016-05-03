@@ -30,13 +30,21 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
         private readonly BasePlayerItem m_item;
         private uint m_stack;
 
-        public PlayerTradeItem(BasePlayerItem item, uint stack)
+        public PlayerTradeItem(Trader trader, BasePlayerItem item, uint stack)
         {
+            Trader = trader;
             m_item = item;
             m_stack = stack;
         }
 
+        public Trader Trader
+        {
+            get;
+        }
+
         public Character Owner => m_item.Owner;
+
+        public BasePlayerItem PlayerItem => m_item;
 
         public override int Guid
         {

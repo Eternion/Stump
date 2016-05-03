@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 {
     public class Crafter : CraftingActor
     {
-        public Crafter(CraftDialog exchange, Character character)
+        public Crafter(BaseCraftDialog exchange, Character character)
             :base(exchange, character)
         {
         }

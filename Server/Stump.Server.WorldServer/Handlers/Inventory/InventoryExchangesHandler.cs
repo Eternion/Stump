@@ -504,8 +504,13 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (craftActor == null)
                 return;
 
+            var dialog = craftActor.CraftDialog as CraftDialog;
+
+            if (dialog == null)
+                return;
+
             var recipe = JobManager.Instance.Recipes[message.objectGID];
-            craftActor.CraftDialog.ChangeRecipe(craftActor, recipe);
+            dialog.ChangeRecipe(craftActor, recipe);
         }
         
         [WorldHandler(JobCrafterDirectoryListRequestMessage.Id)]
@@ -826,6 +831,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendJobCrafterDirectoryRemoveMessage(IPacketReceiver client, Job entry)
         {
             client.Send(new JobCrafterDirectoryRemoveMessage((sbyte)entry.Template.Id, entry.Owner.Id));
+        }
+
+        public static void SendExchangeCraftResultMagicWithObjectDescMessage(IPacketReceiver client, CraftResultEnum craftResult, BasePlayerItem item, MagicPoolStatus poolStatus)
+        {
+            client.Send(new ExchangeCraftResultMagicWithObjectDescMessage((sbyte)craftResult, item.GetObjectItemNotInContainer(), (sbyte)poolStatus));
         }
     }
 }

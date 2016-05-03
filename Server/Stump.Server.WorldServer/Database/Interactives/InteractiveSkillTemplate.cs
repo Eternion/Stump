@@ -191,6 +191,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
                 return new SkillHarvest(id, this, interactiveObject);
             else if (CraftableItemIds?.Length > 0)
                 return new SkillCraft(id, this, interactiveObject);
+            else if (IsForgemagus && ModifiableItemTypes?.Length > 0)
+                return new SkillRuneCraft(id, this, interactiveObject);
 
             return DiscriminatorManager<Game.Interactives.Skills.Skill, int>.Instance.Generate(Id, id, this, interactiveObject);
         }

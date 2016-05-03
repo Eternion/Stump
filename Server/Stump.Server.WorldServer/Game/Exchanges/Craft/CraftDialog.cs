@@ -15,69 +15,11 @@ using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 {
-    public abstract class CraftDialog : ITrade
+    public abstract class CraftDialog : BaseCraftDialog
     {
         protected CraftDialog(InteractiveObject interactive, Skill skill, Job job)
+            : base(interactive, skill, job)
         {
-            Interactive = interactive;
-            Skill = skill;
-            Job = job;
-        }
-
-        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
-        public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.CRAFT;
-        public abstract void Close();
-
-        public abstract Trader FirstTrader
-        {
-            get;
-        }
-
-        public abstract Trader SecondTrader
-        {
-            get;
-        }
-
-        public InteractiveObject Interactive
-        {
-            get;
-            private set;
-        }
-
-        public Skill Skill
-        {
-            get;
-            private set;
-        }
-
-        public Job Job
-        {
-            get;
-            private set;
-        }
-
-        public Crafter Crafter
-        {
-            get;
-            protected set;
-        }
-
-        public CraftingActor Receiver
-        {
-            get;
-            protected set;
-        }
-
-        public WorldClientCollection Clients
-        {
-            get;
-            protected set;
-        }
-
-        public int Amount
-        {
-            get;
-            private set;
         }
 
         public bool ChangeRecipe(CraftingActor actor, RecipeRecord recipe)
@@ -99,20 +41,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             if (!valid)
                 return false;
 
-            Amount = 1;
-            InventoryHandler.SendExchangeCraftCountModifiedMessage(Clients, 1);
+            ChangeAmount(1);
             return true;
         }
-
-        public bool ChangeAmount(int amount)
-        {
-            if (amount < 0)
-                return false;
-
-            Amount = amount;
-            InventoryHandler.SendExchangeCraftCountModifiedMessage(Clients, amount);
-            return true;
-        }
+        
 
         public bool Craft()
         {
@@ -209,5 +141,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         {
             return Receiver.Items.Concat(Crafter.Items).OfType<PlayerTradeItem>();
         }
+
     }
 }

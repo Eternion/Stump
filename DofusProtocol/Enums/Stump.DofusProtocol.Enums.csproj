@@ -172,12 +172,14 @@
     <Compile Include="Custom\ActionsEnum.cs" />
     <Compile Include="Custom\ChallengeEnum.cs" />
     <Compile Include="Custom\ChallengeStatusEnum.cs" />
+    <Compile Include="Custom\CharacteristicEnum.cs" />
     <Compile Include="Custom\ExchangeCraftResultEnum.cs" />
     <Compile Include="Custom\GuildCreationResultEnum.cs" />
     <Compile Include="Custom\GuildInvitationStateEnum.cs" />
     <Compile Include="Custom\InteractiveStateEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
+    <Compile Include="Custom\MagicPoolStatus.cs" />
     <Compile Include="Custom\MimicryErrorEnum.cs" />
     <Compile Include="Custom\MountStateEnum.cs" />
     <Compile Include="Custom\NotificationEnum.cs" />
