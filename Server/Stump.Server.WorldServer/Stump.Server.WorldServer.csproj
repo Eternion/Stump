@@ -473,15 +473,18 @@
     <Compile Include="Game\Exchanges\Bank\BankCustomer.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchanger.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchange.cs" />
+    <Compile Include="Game\Exchanges\Craft\BaseCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\CraftCustomer.cs" />
     <Compile Include="Game\Exchanges\Craft\CraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\MultiCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\MultiCraftRequest.cs" />
+    <Compile Include="Game\Exchanges\Craft\SingleRuneMagicCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\SingleCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\Crafter.cs" />
     <Compile Include="Game\Exchanges\Craft\CraftingActor.cs" />
     <Compile Include="Game\Exchanges\IExchange.cs" />
     <Compile Include="Game\Exchanges\Exchanger.cs" />
+    <Compile Include="Game\Exchanges\Craft\RuneMagicCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Merchant\CharacterMerchant.cs" />
     <Compile Include="Game\Exchanges\Merchant\MerchantExchange.cs" />
     <Compile Include="Game\Exchanges\Paddock\PaddockExchanger.cs" />
@@ -623,6 +626,7 @@
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
     <Compile Include="Game\Interactives\Skills\SkillReadDocument.cs" />
     <Compile Include="Game\Interactives\Skills\SkillRevive.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillRuneCraft.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapiTeleport.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />

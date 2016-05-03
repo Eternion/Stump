@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
                 return true;
             }
 
-            tradeItem = new PlayerTradeItem(playerItem, amount);
+            tradeItem = new PlayerTradeItem(this, playerItem, amount);
             AddItem(tradeItem);
 
             OnItemMoved(tradeItem, false, (int) amount);

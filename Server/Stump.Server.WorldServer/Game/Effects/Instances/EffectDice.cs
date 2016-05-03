@@ -64,6 +64,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
         }
 
+
+        public short Min
+        {
+            get { var min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
+                return min == 0 ? Max : min;
+            }
+        }
+
+        public short Max => m_dicenum >= m_diceface ? m_dicenum : m_diceface;
+
         public override object[] GetValues()
         {
             return new object[] {DiceNum, DiceFace, Value};

@@ -282,6 +282,28 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
+        public short PowerSink
+        {
+            get {
+                var sinkEffect = Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_PowerSink) as EffectInteger;
+
+                return sinkEffect?.Value ?? 0;
+            }
+            set
+            {
+                var sinkEffect = Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_PowerSink) as EffectInteger;
+
+                if (sinkEffect != null)
+                    sinkEffect.Value = value;
+                else
+                {
+                    Effects.Add(new EffectInteger(EffectsEnum.Effect_PowerSink, value));
+                }
+
+                Invalidate();
+            }
+        }
+
         public virtual int Weight
         {
             get { return (int) (Template.RealWeight*Stack); }

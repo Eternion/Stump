@@ -813,7 +813,7 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_351 = 351,
+        Effect_PowerSink = 351,
         /// <summary>
         /// Pose un piège de rang #2
         /// </summary>

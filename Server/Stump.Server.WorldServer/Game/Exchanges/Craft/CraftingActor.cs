@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 {
     public abstract class CraftingActor : Trader
     {
-        public CraftingActor(CraftDialog trade, Character character)
+        public CraftingActor(BaseCraftDialog trade, Character character)
             : base(trade)
         {
             Character = character;
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             private set;
         }
 
-        public CraftDialog CraftDialog
+        public BaseCraftDialog CraftDialog
         {
             get;
             private set;
@@ -86,10 +86,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             }
 
 
-            var newItem = new PlayerTradeItem(item, (uint)quantity);
+            var newItem = new PlayerTradeItem(this, item, (uint)quantity);
             AddItem(newItem);
             OnItemMoved(newItem, false, quantity);
 
+            return true;
+        }
+
+        public virtual bool CanMoveItem(BasePlayerItem item)
+        {
             return true;
         }
     }
