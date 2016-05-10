@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Stump.Core.Mathematics;
 using Stump.Core.Threading;
 
 namespace Stump.Core.Extensions
@@ -119,6 +120,14 @@ namespace Stump.Core.Extensions
             return elements;
         }
 
+        public static IEnumerable<T> ShuffleLinq<T>(this IEnumerable<T> enumerable)
+        {
+            var rand = new CryptoRandom();
+
+            return enumerable.OrderBy(x => rand.NextDouble());
+        }
+    
+
         public static IEnumerable<T> ShuffleWithProbabilities<T>(this IEnumerable<T> enumerable,
                                                                  IEnumerable<int> probabilities)
         {
@@ -158,6 +167,8 @@ namespace Stump.Core.Extensions
 
             return result;
         }
+
+
 
         public static T RandomElementOrDefault<T>(this IEnumerable<T> enumerable)
         {
