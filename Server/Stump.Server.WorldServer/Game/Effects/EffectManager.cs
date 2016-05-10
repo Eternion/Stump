@@ -481,7 +481,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             return (effect.Template.BonusType < 0 ? -1 : 1) * GetEffectPower(effect.Template) * effect.Value;
         }
 
-        public double GetEffectPower(EffectBase effect)
+        public double GetEffectBasePower(EffectBase effect)
         {
             return (effect.Template.BonusType < 0 ? -1 : 1)*GetEffectPower(effect.Template);
         }
@@ -498,12 +498,12 @@ namespace Stump.Server.WorldServer.Game.Effects
 
         public double GetItemMinPower(IItem item)
         {
-            return item.Effects.OfType<EffectDice>().Sum(x => GetEffectMinPower(x));
+            return item.Template.Effects.OfType<EffectDice>().Sum(x => GetEffectMinPower(x));
         }
 
         public double GetItemMaxPower(IItem item)
         {
-            return item.Effects.OfType<EffectDice>().Sum(x => GetEffectMaxPower(x));
+            return item.Template.Effects.OfType<EffectDice>().Sum(x => GetEffectMaxPower(x));
         }
 
         #region Unrandomable Effects

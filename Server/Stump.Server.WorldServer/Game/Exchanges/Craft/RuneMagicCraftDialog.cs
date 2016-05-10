@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Jobs;
 
@@ -30,6 +31,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             get;
             private set;
         }
+
+        private IEnumerable<EffectInteger> ItemEffects => ItemToImprove.Effects.OfType<EffectInteger>();
 
         public PlayerTradeItem Rune
         {
@@ -71,52 +74,33 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         {
             foreach (var effect in Rune.Effects.OfType<EffectInteger>())
             {
-                var existantEffect = ItemToImprove.Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == effect.EffectId);
-                var template = ItemToImprove.Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == effect.EffectId);
+                var existantEffect = GetEffectToImprove(effect);
+                var template = GetTemplateEffect(existantEffect);
 
                 double criticalSuccess, neutralSuccess, criticalFailure;
                 GetChances(existantEffect, template, out criticalSuccess, out neutralSuccess, out criticalFailure);
 
                 var rand = new CryptoRandom();
-                var randNumber = rand.NextDouble();
+                var randNumber = (int)(rand.NextDouble()*100);
 
                 if (randNumber <= criticalSuccess)
                 {
-                    if (existantEffect != null)
-                        existantEffect.Value += effect.Value;
-
-                    else
-                    {
-                        ItemToImprove.Effects.Add(new EffectInteger(effect.EffectId, effect.Value));
-                    }
-
+                    BoostEffect(effect);
 
                     yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_SUCCESS, MagicPoolStatus.UNMODIFIED);
                 }
                 else if (randNumber <= criticalSuccess + neutralSuccess)
                 {
-                    var effectToDown = GetEffectToDown(existantEffect);
+                    BoostEffect(effect);
+                    int residual = DeBoostEffect(effect);
 
-                    if (existantEffect != null)
-                        existantEffect.Value += effect.Value;
-
-                    else
-                    {
-                        ItemToImprove.Effects.Add(new EffectInteger(effect.EffectId, effect.Value));
-                    }
-
-                    effectToDown.Value -= (short)(effect.Value*Math.Ceiling(EffectManager.Instance.GetEffectPower((EffectBase) effect)/EffectManager.Instance.GetEffectPower((EffectBase) effectToDown)));
-
-                    yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_SUCCESS, MagicPoolStatus.UNMODIFIED);
+                    yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_SUCCESS, GetMagicPoolStatus(residual));
                 }
                 else
                 {
-                    var effectToDown = GetEffectToDown(existantEffect);
-                    
-
-                    effectToDown.Value -= (short)(effect.Value * Math.Ceiling(EffectManager.Instance.GetEffectPower((EffectBase)effect) / EffectManager.Instance.GetEffectPower((EffectBase)effectToDown)));
-
-                    yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_FAILED, MagicPoolStatus.UNMODIFIED);
+                    int residual = DeBoostEffect(effect);
+ 
+                    yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_FAILED, GetMagicPoolStatus(residual));
                 }
                 
             }
@@ -126,10 +110,102 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             Rune.Trader.MoveItem(Rune.Guid, -1);
 
         }
-
-        private EffectInteger GetEffectToDown(EffectInteger effectToImprove)
+        private MagicPoolStatus GetMagicPoolStatus(int residual)
         {
-            return ItemToImprove.Effects.OfType<EffectInteger>().Where(x => x != effectToImprove && EffectManager.Instance.GetEffectPower(x) != 0).RandomElementOrDefault();
+            return residual == 0 ? MagicPoolStatus.UNMODIFIED : (residual > 0 ? MagicPoolStatus.INCREASED : MagicPoolStatus.DECREASED);
+        }
+
+        private void BoostEffect(EffectInteger runeEffect)
+        {
+            var effect = GetEffectToImprove(runeEffect);
+
+
+            if (effect != null)
+                effect.Value += runeEffect.Value;
+            else
+            {
+                ItemToImprove.Effects.Add(new EffectInteger(runeEffect.EffectId, runeEffect.Value));
+            }
+        }
+
+        private int DeBoostEffect(EffectInteger runeEffect)
+        {
+            var pwrToLose = (int)Math.Ceiling(EffectManager.Instance.GetEffectPower(runeEffect));
+            short residual = 0;
+
+            if (ItemToImprove.PlayerItem.PowerSink > 0)
+            {
+                residual = (short) -Math.Min(pwrToLose, ItemToImprove.PlayerItem.PowerSink);
+                ItemToImprove.PlayerItem.PowerSink += residual;
+                pwrToLose += residual;
+            }
+
+            if (pwrToLose == 0)
+                return residual;
+
+            while (pwrToLose > 0)
+            {
+                var effect = GetEffectToDown(runeEffect);
+                var maxLost = (int)Math.Ceiling(EffectManager.Instance.GetEffectBasePower(runeEffect) / EffectManager.Instance.GetEffectBasePower(effect));
+
+                var rand = new CryptoRandom();
+                var lost = rand.Next(1, maxLost + 1);
+
+                effect.Value -= (short)lost;
+                pwrToLose -= (int)Math.Ceiling(lost*EffectManager.Instance.GetEffectBasePower(effect));
+            }
+
+            residual = (short)(pwrToLose < 0 ? -pwrToLose : 0);
+            ItemToImprove.PlayerItem.PowerSink += residual;
+
+            return residual;
+        }
+
+        private EffectInteger GetEffectToImprove(EffectInteger runeEffect)
+        {
+            return ItemEffects.FirstOrDefault(x => x.EffectId == runeEffect.EffectId);
+        }
+
+        private EffectInteger GetEffectToDown(EffectInteger runeEffect)
+        {
+            var effectToImprove = GetEffectToImprove(runeEffect);
+            // recherche de jet exotique
+            var exoticEffect = ItemEffects.Where(x => IsExotic(x) && x != effectToImprove).RandomElementOrDefault();
+
+            if (exoticEffect != null)
+                return exoticEffect;
+
+            // recherche de jet overmax
+            var overmaxEffect = ItemEffects.Where(x => IsOverMax(x) && x != effectToImprove).RandomElementOrDefault();
+
+            if (overmaxEffect != null)
+                return overmaxEffect;
+
+            var rand = new CryptoRandom();
+            foreach (var effect in ItemEffects.ShuffleLinq().Where(x => x != effectToImprove))
+            {
+                if (rand.NextDouble() <= EffectManager.Instance.GetEffectPower(runeEffect)/EffectManager.Instance.GetEffectBasePower(effect))
+                    return effect;
+            }
+
+            return ItemEffects.FirstOrDefault(x => x != effectToImprove);
+        }
+        
+        private bool IsExotic(EffectBase effect)
+        {
+            return ItemEffects.All(x => x.EffectId != effect.EffectId);
+        }
+
+        private bool IsOverMax(EffectInteger effect)
+        {
+            var template = GetTemplateEffect(effect);
+
+            return effect.Value > template?.Max;
+        }
+
+        private EffectDice GetTemplateEffect(EffectBase effect)
+        {
+            return ItemToImprove.Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == effect.EffectId);
         }
 
         private void GetChances(EffectInteger effectToImprove, EffectDice parentEffect, out double criticalSuccess, out double neutralSuccess, out double criticalFailure)
@@ -137,7 +213,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             var minPwr = EffectManager.Instance.GetItemMinPower(ItemToImprove);
             var maxPwr = EffectManager.Instance.GetItemMaxPower(ItemToImprove);
             var pwr = EffectManager.Instance.GetItemPower(ItemToImprove);
-            var itemStatus = pwr - minPwr/(maxPwr - minPwr)*100d;
+            var itemStatus = (pwr - minPwr)/(maxPwr - minPwr)*100d;
 
             double effectStatus;
             double diceFactor;
@@ -158,7 +234,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 diceFactor = 30;
                 itemFactor = 50;
                 levelSuccess = 5;
-                effectStatus = effectToImprove.Value - parentEffect.Min/(parentEffect.Max - parentEffect.Min)*100;
+                effectStatus = ((double)effectToImprove.Value - parentEffect.Min)/(parentEffect.Max - parentEffect.Min)*100d;
             }
 
             if (effectStatus >= 80)
@@ -172,7 +248,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 itemSuccess = itemStatus;
 
             neutralSuccess = 50d;
-            criticalSuccess = 100 - Math.Ceiling(effectSuccess + itemSuccess + levelSuccess);
+            criticalSuccess = Math.Max(1, 100 - Math.Ceiling(effectSuccess + itemSuccess + levelSuccess));
 
             if (criticalSuccess > 50)
                 neutralSuccess = 100 - criticalSuccess;
