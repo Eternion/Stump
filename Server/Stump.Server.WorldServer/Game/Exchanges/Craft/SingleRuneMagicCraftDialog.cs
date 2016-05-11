@@ -1,4 +1,5 @@
-﻿using Stump.Server.WorldServer.Core.Network;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Interactives;
@@ -42,13 +43,20 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         {
             if (isready)
             {
-                foreach (var result in ApplyRune())
-                {
-                    InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Character.Client, result.First, ItemToImprove.PlayerItem, result.Second);
-                }
+                ApplyAllRunes();
 
                 trader.ToggleReady(false);
             }
+        }
+
+        protected override void OnRuneApplied(CraftResultEnum result, MagicPoolStatus poolStatus)
+        {
+            InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
+        }
+
+        protected override void OnAutoCraftStopped(ExchangeReplayStopReasonEnum reason)
+        {
+            InventoryHandler.SendExchangeItemAutoCraftStopedMessage(Character.Client, reason);
         }
 
         private void OnItemMoved(Trader trader, TradeItem item, bool modified, int difference)
