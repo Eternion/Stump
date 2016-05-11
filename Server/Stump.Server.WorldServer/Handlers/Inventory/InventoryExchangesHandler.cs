@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangePlayerMultiCraftRequestMessage(WorldClient client, ExchangePlayerMultiCraftRequestMessage message)
         {
             var target = client.Character.Map.GetActor<Character>((int) message.target);
-
+            
             if (target == null)
             {
                 SendExchangeErrorMessage(client, ExchangeErrorEnum.BID_SEARCH_ERROR);
@@ -490,7 +490,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeCraftCountRequestMessage.Id)]
         public static void HandleExchangeCraftCountRequestMessage(WorldClient client, ExchangeCraftCountRequestMessage message)
         {
-            (client.Character.Dialog as CraftDialog)?.ChangeAmount(message.count);
+            (client.Character.Dialog as BaseCraftDialog)?.ChangeAmount(message.count);
         }
 
         [WorldHandler(ExchangeSetCraftRecipeMessage.Id)]
@@ -577,6 +577,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
 
             bank.Customer.MoveItems(false, message.ids, false, false);
+        }
+
+        [WorldHandler(ExchangeReplayStopMessage.Id)]
+        public static void HandleExchangeReplayStopMessage(WorldClient client, ExchangeReplayStopMessage message)
+        {
+            (client.Character.Dialog as RuneMagicCraftDialog)?.StopAutoCraft();
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
@@ -836,6 +842,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeCraftResultMagicWithObjectDescMessage(IPacketReceiver client, CraftResultEnum craftResult, BasePlayerItem item, MagicPoolStatus poolStatus)
         {
             client.Send(new ExchangeCraftResultMagicWithObjectDescMessage((sbyte)craftResult, item.GetObjectItemNotInContainer(), (sbyte)poolStatus));
+        }
+
+        public static void SendExchangeItemAutoCraftStopedMessage(IPacketReceiver client, ExchangeReplayStopReasonEnum reason)
+        {
+            client.Send(new ExchangeItemAutoCraftStopedMessage((sbyte)reason));
         }
     }
 }

@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         public bool ChangeAmount(int amount)
         {
-            if (amount < 0)
+            if (amount < 0 && amount != -1)
                 return false;
 
             Amount = amount;

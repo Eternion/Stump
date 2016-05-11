@@ -5,6 +5,7 @@ using System.Web.UI;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Mathematics;
+using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
@@ -21,6 +22,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 {
     public abstract class RuneMagicCraftDialog : BaseCraftDialog
     {
+        public const int MAX_STAT_POWER = 100;
+        public const int AUTOCRAFT_INTERVAL = 1000;
+
+        private TimedTimerEntry m_autoCraftTimer;
+
         public RuneMagicCraftDialog(InteractiveObject interactive, Skill skill, Job job)
             : base(interactive, skill, job)
         {
@@ -52,6 +58,22 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             SecondTrader.ItemMoved += OnItemMoved;
         }
 
+        public void StopAutoCraft(ExchangeReplayStopReasonEnum reason = ExchangeReplayStopReasonEnum.STOPPED_REASON_USER)
+        {
+            if (m_autoCraftTimer != null)
+            {
+                m_autoCraftTimer.Stop();
+                m_autoCraftTimer = null;
+
+                OnAutoCraftStopped(reason);
+            }
+        }
+
+        protected virtual void OnAutoCraftStopped(ExchangeReplayStopReasonEnum reason)
+        {
+
+        }
+
         private void OnItemMoved(Trader trader, TradeItem item, bool modified, int difference)
         {
             var playerItem = item as PlayerTradeItem;
@@ -59,10 +81,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             if (playerItem == null)
                 return;
 
-            if (item.Template.Type.ItemType == ItemTypeEnum.RUNE_DE_FORGEMAGIE)
+            if (item.Template.Type.ItemType == ItemTypeEnum.RUNE_DE_FORGEMAGIE && (playerItem != Rune || playerItem.Stack == 0))
+            {
                 Rune = playerItem.Stack > 0 ? playerItem : null;
-            else if (Skill.SkillTemplate.ModifiableItemTypes.Contains((int) item.Template.TypeId))
+                StopAutoCraft(playerItem.Stack == 0 ? ExchangeReplayStopReasonEnum.STOPPED_REASON_OK : ExchangeReplayStopReasonEnum.STOPPED_REASON_USER);
+            }
+            else if (Skill.SkillTemplate.ModifiableItemTypes.Contains((int) item.Template.TypeId) && (playerItem != ItemToImprove || playerItem.Stack == 0))
+            {
                 ItemToImprove = playerItem.Stack > 0 ? playerItem : null;
+                StopAutoCraft(playerItem.Stack == 0 ? ExchangeReplayStopReasonEnum.STOPPED_REASON_OK : ExchangeReplayStopReasonEnum.STOPPED_REASON_USER);
+            }
         }
 
         public override bool CanMoveItem(BasePlayerItem item)
@@ -70,15 +98,41 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             return item.Template.TypeId == (int)ItemTypeEnum.RUNE_DE_FORGEMAGIE || Skill.SkillTemplate.ModifiableItemTypes.Contains((int)item.Template.TypeId);
         }
 
-        public IEnumerable<Pair<CraftResultEnum, MagicPoolStatus>> ApplyRune()
+        protected virtual void OnRuneApplied(CraftResultEnum result, MagicPoolStatus poolStatus)
         {
+        }
+
+        public void ApplyAllRunes()
+        {
+            if (m_autoCraftTimer != null)
+                StopAutoCraft();
+
+            if (Amount == 1)
+                ApplyRune();
+            else
+                AutoCraft();
+        }
+
+        private void AutoCraft()
+        {
+            ApplyRune();
+            if (Rune != null && Amount == -1)
+                m_autoCraftTimer = Crafter.Character.Area.CallDelayed(AUTOCRAFT_INTERVAL, AutoCraft);
+            else
+                StopAutoCraft(ExchangeReplayStopReasonEnum.STOPPED_REASON_OK);
+        }
+
+        public void ApplyRune()
+        {
+            if (Rune == null)
+                return;
+
             foreach (var effect in Rune.Effects.OfType<EffectInteger>())
             {
                 var existantEffect = GetEffectToImprove(effect);
-                var template = GetTemplateEffect(existantEffect);
 
                 double criticalSuccess, neutralSuccess, criticalFailure;
-                GetChances(existantEffect, template, out criticalSuccess, out neutralSuccess, out criticalFailure);
+                GetChances(existantEffect, effect, out criticalSuccess, out neutralSuccess, out criticalFailure);
 
                 var rand = new CryptoRandom();
                 var randNumber = (int)(rand.NextDouble()*100);
@@ -87,20 +141,20 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 {
                     BoostEffect(effect);
 
-                    yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_SUCCESS, MagicPoolStatus.UNMODIFIED);
+                    OnRuneApplied(CraftResultEnum.CRAFT_SUCCESS, MagicPoolStatus.UNMODIFIED);
                 }
                 else if (randNumber <= criticalSuccess + neutralSuccess)
                 {
                     BoostEffect(effect);
                     int residual = DeBoostEffect(effect);
 
-                    yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_SUCCESS, GetMagicPoolStatus(residual));
+                    OnRuneApplied(CraftResultEnum.CRAFT_SUCCESS, GetMagicPoolStatus(residual));
                 }
                 else
                 {
                     int residual = DeBoostEffect(effect);
- 
-                    yield return new Pair<CraftResultEnum, MagicPoolStatus>(CraftResultEnum.CRAFT_FAILED, GetMagicPoolStatus(residual));
+
+                    OnRuneApplied(CraftResultEnum.CRAFT_FAILED, GetMagicPoolStatus(residual));
                 }
                 
             }
@@ -146,6 +200,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             while (pwrToLose > 0)
             {
                 var effect = GetEffectToDown(runeEffect);
+
+                if (effect == null)
+                    break;
+
                 var maxLost = (int)Math.Ceiling(EffectManager.Instance.GetEffectBasePower(runeEffect) / EffectManager.Instance.GetEffectBasePower(effect));
 
                 var rand = new CryptoRandom();
@@ -208,12 +266,21 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             return ItemToImprove.Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == effect.EffectId);
         }
 
-        private void GetChances(EffectInteger effectToImprove, EffectDice parentEffect, out double criticalSuccess, out double neutralSuccess, out double criticalFailure)
+        private void GetChances(EffectInteger effectToImprove, EffectInteger runeEffect, out double criticalSuccess, out double neutralSuccess, out double criticalFailure)
         {
             var minPwr = EffectManager.Instance.GetItemMinPower(ItemToImprove);
             var maxPwr = EffectManager.Instance.GetItemMaxPower(ItemToImprove);
             var pwr = EffectManager.Instance.GetItemPower(ItemToImprove);
             var itemStatus = (pwr - minPwr)/(maxPwr - minPwr)*100d;
+            var parentEffect = GetTemplateEffect(runeEffect);
+
+            if (effectToImprove != null && EffectManager.Instance.GetEffectPower(effectToImprove) + EffectManager.Instance.GetEffectPower(runeEffect) > MAX_STAT_POWER)
+            {
+                neutralSuccess = 0;
+                criticalSuccess = 0;
+                criticalFailure = 100;
+                return;
+            }
 
             double effectStatus;
             double diceFactor;
@@ -234,7 +301,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 diceFactor = 30;
                 itemFactor = 50;
                 levelSuccess = 5;
-                effectStatus = ((double)effectToImprove.Value - parentEffect.Min)/(parentEffect.Max - parentEffect.Min)*100d;
+                effectStatus = ((double)(effectToImprove?.Value ?? 0) - parentEffect.Min)/(parentEffect.Max - parentEffect.Min)*100d;
             }
 
             if (effectStatus >= 80)
