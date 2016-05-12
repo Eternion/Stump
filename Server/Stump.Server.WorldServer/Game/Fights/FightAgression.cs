@@ -85,10 +85,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return TimeSpan.FromMilliseconds(timeleft);
         }
 
-        protected override bool CanCancelFight()
-        {
-            return false;
-        }
+        protected override bool CanCancelFight() => false;
 
         public short CalculateEarnedHonor(CharacterFighter character)
         {
@@ -105,7 +102,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var pvpSeek = character.Character.Inventory.GetItems(x => x.Template.Id == (int)ItemIdEnum.ORDRE_DEXECUTION_10085).FirstOrDefault();
 
-            if (pvpSeek != null)
+            if (pvpSeek != null && ChallengersTeam.Fighters.Contains(character))
             {
                 var seekEffect = pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) as EffectString;
 

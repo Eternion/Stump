@@ -139,7 +139,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (target == null)
                 return;
 
-            target.Guild.KickMember(client.Character, target);
+            target.Guild.KickMember(client.Character.GuildMember, target);
         }
 
         [WorldHandler(GuildInvitationMessage.Id)]

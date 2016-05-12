@@ -23,7 +23,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 
             var player = World.Instance.GetCharacter(stringEffect.Text);
             if (player == null)
+            {
+                Target.SendServerMessage("Votre cible n’est pas connectée.");
                 return false;
+            }
+
+            if (!player.PvPEnabled)
+            {
+                Target.SendServerMessage("Votre cible n’a pas le mode Joueur contre Joueur d’activé.");
+                return false;
+            }
 
             UsedItems = NumberOfUses;
             CompassHandler.SendCompassUpdatePvpSeekMessage(Target.Client, player);
