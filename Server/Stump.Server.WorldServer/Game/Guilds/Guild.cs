@@ -24,9 +24,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class Guild
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static readonly double[][] XP_PER_GAP =
+        static readonly double[][] XP_PER_GAP =
         {
             new double[] {0, 10},
             new double[] {10, 8},
@@ -60,11 +60,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
         [Variable(true)]
         public static int MaxGuildXP = 300000;
 
-        private readonly List<GuildMember> m_members = new List<GuildMember>();
-        private readonly WorldClientCollection m_clients = new WorldClientCollection();
-        private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>();
-        private readonly Spell[] m_spells = new Spell[TAX_COLLECTOR_SPELLS.Length];
-        private bool m_isDirty;
+        readonly List<GuildMember> m_members = new List<GuildMember>();
+        readonly WorldClientCollection m_clients = new WorldClientCollection();
+        readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>();
+        readonly Spell[] m_spells = new Spell[TAX_COLLECTOR_SPELLS.Length];
+        bool m_isDirty;
 
         public Guild(int id, string name)
         {
@@ -620,40 +620,32 @@ namespace Stump.Server.WorldServer.Game.Guilds
             UpdateMember(guildMember);
         }
 
-        public bool KickMember(GuildMember kickedMember, bool kicked)
+        public bool KickMember(GuildMember from, GuildMember kickedMember)
         {
-            if (kickedMember.IsBoss && m_members.Count > 1)
+            if (m_members.Count == 1)
+            {
+                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
+                return true;
+            }
+
+            var leave = from.Id == kickedMember.Id;
+
+            if (!from.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) && !leave)
+                return false;
+
+            if (kickedMember.IsBoss)
                 return false;
 
             if (!RemoveMember(kickedMember))
                 return false;
 
-            foreach (var client in m_clients)
-                GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, true);
+            if (!leave)
+                from.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);  // Vous avez banni <b>%1</b> de votre guilde.
 
-            if (kickedMember.IsBoss && m_members.Count == 0)
-                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
+            foreach (var client in m_clients)
+                GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, !leave);
 
             return true;
-        }
-
-        public bool KickMember(Character kicker, GuildMember kickedMember)
-        {
-            if (kicker.Guild != kickedMember.Guild)
-                return false;
-
-            if (kicker.GuildMember != kickedMember &&
-                (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
-                return false;
-
-            if (kicker.GuildMember.Id != kickedMember.Id)
-            {
-                // Vous avez banni <b>%1</b> de votre guilde.
-                kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177,
-                    kickedMember.Name);
-            }
-
-            return KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id);
         }
 
         public bool ChangeParameters(Character from, GuildMember member, short rankId, byte xpPercent, uint rights)
@@ -691,7 +683,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             UpdateMember(member);
 
             if (member.IsConnected)
+            {
                 GuildHandler.SendGuildMembershipMessage(member.Character.Client, member);
+                GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client, this);
+            }
+
 
             return true;
         }
