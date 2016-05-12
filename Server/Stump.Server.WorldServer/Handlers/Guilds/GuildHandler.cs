@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
+using System;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
 {
@@ -250,6 +251,12 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Character.WarnOnGuildConnection = message.enable;
         }
 
+        [WorldHandler(GuildMotdSetRequestMessage.Id)]
+        public static void HandleGuildMotdSetRequestMessage(WorldClient client, GuildMotdSetRequestMessage message)
+        {
+            client.Send(new GuildMotdMessage(message.content, DateTime.Now.GetUnixTimeStamp(), client.Character.GuildMember.Id, client.Character.Name));
+        }
+
         public static void SendGuildMemberWarnOnConnectionStateMessage(IPacketReceiver client, bool state)
         {
             client.Send(new GuildMemberWarnOnConnectionStateMessage(state));
@@ -336,6 +343,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildModificationStartedMessage(IPacketReceiver client, bool changeName, bool changeEmblem)
         {
             client.Send(new GuildModificationStartedMessage());
+        }
+
+        public static void SendGuildMotdMessage(IPacketReceiver client, Guild guild)
+        {
+            client.Send(new GuildMotdMessage(guild.MotdContent, guild.MotdDate.GetUnixTimeStamp(), guild.MotdMember.Id, guild.MotdMember.Name));
         }
     }
 }

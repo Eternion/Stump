@@ -22,6 +22,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         Dictionary<int, EmblemRecord> m_emblems;
         Dictionary<int, GuildMember> m_guildsMembers;
         readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
+        readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
 
         readonly object m_lock = new object();
 
@@ -156,9 +157,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void RegisterGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => Database.Insert(member.Record));
-
             lock (m_lock)
             {
                 m_guildsMembers.Add(member.Id, member);
@@ -167,12 +165,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DeleteGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.ExecuteInContext(
-                () => Database.Delete(member.Record));
-
             lock (m_lock)
             {
                 m_guildsMembers.Remove(member.Id);
+                m_membersToDelete.Push(member);
+
                 return true;
             }
         }
@@ -191,6 +188,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     var guild = m_guildsToDelete.Pop();
 
                     Database.Delete(guild.Record);
+                }
+
+                while (m_membersToDelete.Count > 0)
+                {
+                    var member = m_membersToDelete.Pop();
+
+                    Database.Delete(member.Record);
                 }
             }
         }

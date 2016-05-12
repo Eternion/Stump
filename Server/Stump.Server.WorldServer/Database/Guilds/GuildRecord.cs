@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
-        public String Name
+        public string Name
         {
             get;
             set;
@@ -130,6 +130,25 @@ namespace Stump.Server.WorldServer.Database.Guilds
         }
 
         public int EmblemForegroundColor
+        {
+            get;
+            set;
+        }
+
+        [NullString]
+        public string MotdContent
+        {
+            get;
+            set;
+        }
+
+        public DateTime MotdDate
+        {
+            get;
+            set;
+        }
+
+        public int MotdMemberId
         {
             get;
             set;

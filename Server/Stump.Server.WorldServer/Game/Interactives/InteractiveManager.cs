@@ -32,6 +32,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
         {
             m_interactivesTemplates = Database.Query<InteractiveTemplate, InteractiveSkillTemplate, InteractiveTemplateSkills, InteractiveCustomSkillRecord, InteractiveTemplate>
                 (new InteractiveTemplateRelator().Map, InteractiveTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+
             m_interactivesSpawns = Database.Query<InteractiveSpawn, InteractiveSpawnSkills, InteractiveCustomSkillRecord, InteractiveSpawn>
                 (new InteractiveSpawnRelator().Map, InteractiveSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_skillsTemplates = m_interactivesTemplates.SelectMany(x => x.Value.TemplateSkills).DistinctBy(x => x.Id).ToDictionary(entry => entry.Id);
