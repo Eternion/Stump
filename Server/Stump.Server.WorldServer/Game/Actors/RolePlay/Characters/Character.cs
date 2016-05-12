@@ -100,7 +100,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         void OnLoggedIn()
         {
             if (GuildMember != null)
+            {
                 GuildMember.OnCharacterConnected(this);
+
+                if (Guild.MotdContent != null)
+                    GuildHandler.SendGuildMotdMessage(Client, Guild);
+            }
 
             //Arena
             CheckArenaDailyProperties();
@@ -3259,9 +3264,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Shortcuts.Save();
                         FriendsBook.Save();
                         Jobs.Save(WorldServer.Instance.DBAccessor.Database);
-
-                        if (GuildMember != null && GuildMember.IsDirty)
-                            GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
 
                         if (Mount != null)
                             Mount.Save(WorldServer.Instance.DBAccessor.Database);
