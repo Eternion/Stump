@@ -1041,12 +1041,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void Revive(int percentHp, FightActor caster)
         {
+            foreach(var stat in Stats.Fields)
+                stat.Value.Context = 0;
+
             var healAmount = (int)(MaxLifePoints * (percentHp / 100.0));
 
             if (healAmount <= 0)
                 healAmount = 1;
 
-            DamageTaken -= healAmount;
+            DamageTaken = Stats.Health.TotalMax - healAmount;
 
             IsRevived = true;
             Summoner = caster;

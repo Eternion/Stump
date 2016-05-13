@@ -62,15 +62,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_ageBonusDefined = true;
         }
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_PvM; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PvM;
 
-        public override bool IsPvP
-        {
-            get { return false; }
-        }
+        public override bool IsPvP => false;
 
         protected override List<IFightResult> GetResults()
         {

@@ -31,6 +31,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Guild = guild;
             Character = character;
             IsDirty = true;
+            IsNew = true;
         }
 
         public GuildMemberRecord Record
@@ -159,19 +160,25 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
+        public bool IsNew
+        {
+            get;
+            protected set;
+        }
+
         public NetworkGuildMember GetNetworkGuildMember()
         {
             if (IsConnected)
             {
                 return new NetworkGuildMember(Id, Character.Name, Character.Level, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                                              GivenExperience, (sbyte)GivenPercent, (int)Rights, (sbyte)(IsConnected ? 1 : 0),
+                                              GivenExperience, (sbyte)GivenPercent, (int)Rights, 1,
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
                                               Record.AccountId, 0, Character.Status);
             }
 
             return new NetworkGuildMember(Id, Name, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
                 (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                GivenExperience, (sbyte)GivenPercent, (int)Rights, (sbyte)(IsConnected ? 1 : 0),
+                GivenExperience, (sbyte)GivenPercent, (int)Rights, 0,
                 (sbyte)AlignementSide, LastConnection!= null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
                 Record.AccountId, 0, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_OFFLINE));
         }
@@ -223,8 +230,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void Save(ORM.Database database)
         {
             WorldServer.Instance.IOTaskPool.ExecuteInContext(() => {
-                database.Update(Record);
+                if (IsNew)
+                    database.Insert(Record);
+                else
+                    database.Update(Record);
+
                 IsDirty = false;
+                IsNew = false;
             });
             
         }

@@ -18,67 +18,30 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         public TaxCollectorNpc TaxCollector
         {
             get;
-            private set;
         }
 
         public IFight Fight
         {
             get;
-            private set;
         }
 
-        public bool Alive
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool Alive => true;
 
-        public bool HasLeft
-        {
-            get { return false; }
-        }
+        public bool HasLeft => false;
 
-        public int Id
-        {
-            get
-            {
-                return TaxCollector.GlobalId;
-            }
-        }
+        public int Id => TaxCollector.GlobalId;
 
-        public int Prospecting
-        {
-            get
-            {
-                return TaxCollector.Guild.TaxCollectorProspecting;
-            }
-        }
+        public int Prospecting => TaxCollector.Guild.TaxCollectorProspecting;
 
-        public int Wisdom
-        {
-            get
-            {
-                return TaxCollector.Guild.TaxCollectorWisdom;
-            }
-        }
+        public int Wisdom => TaxCollector.Guild.TaxCollectorWisdom;
 
-        public int Level
-        {
-            get { return TaxCollector.Guild.Level; }
-        }
+        public int Level => TaxCollector.Guild.Level;
 
-        public bool CanLoot(FightTeam team)
-        {
-            return team is FightPlayerTeam;
-        }
-
+        public bool CanLoot(FightTeam team) => team is FightPlayerTeam;
 
         public FightLoot Loot
         {
             get;
-            private set;
         }
 
         public int Experience
@@ -87,19 +50,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             set;
         }
 
-        public FightOutcomeEnum Outcome
-        {
-            get
-            {
-                return FightOutcomeEnum.RESULT_TAX;
-            }
-        }
+        public FightOutcomeEnum Outcome => FightOutcomeEnum.RESULT_TAX;
 
-        public FightResultListEntry GetFightResultListEntry()
-        {
-            return new FightResultTaxCollectorListEntry((short) Outcome, 0, Loot.GetFightLoot(), Id, Alive,
-                TaxCollector.Guild.Level, TaxCollector.Guild.GetBasicGuildInformations(), Experience);
-        }
+        public FightResultListEntry GetFightResultListEntry() => new FightResultTaxCollectorListEntry((short)Outcome, 0, Loot.GetFightLoot(), Id, Alive,
+                                    TaxCollector.Guild.Level, TaxCollector.Guild.GetBasicGuildInformations(), Experience);
 
         public void Apply()
         {
