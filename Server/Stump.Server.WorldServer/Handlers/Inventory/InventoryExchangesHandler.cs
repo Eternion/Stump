@@ -585,6 +585,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             (client.Character.Dialog as RuneMagicCraftDialog)?.StopAutoCraft();
         }
 
+        [WorldHandler(ExchangeObjectUseInWorkshopMessage.Id)]
+        public static void HandleExchangeObjectUseInWorkshopMessage(WorldClient client, ExchangeObjectUseInWorkshopMessage message)
+        {
+            (client.Character.Dialog as MultiRuneMagicCraftDialog)?.MoveItemFromBag(message.objectUID, message.quantity);
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {

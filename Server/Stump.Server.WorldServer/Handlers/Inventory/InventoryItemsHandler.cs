@@ -393,5 +393,20 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(new ObtainedItemMessage((short)item.Id, count));
         }
+
+        public static void SendExchangeObjectPutInBagMessage(IPacketReceiver client, bool remote, IItem item)
+        {
+            client.Send(new ExchangeObjectPutInBagMessage(remote, item.GetObjectItem()));
+        }
+
+        public static void SendExchangeObjectModifiedInBagMessage(IPacketReceiver client, bool remote, IItem item)
+        {
+            client.Send(new ExchangeObjectModifiedInBagMessage(remote, item.GetObjectItem()));
+        }
+
+        public static void SendExchangeObjectRemovedFromBagMessage(IPacketReceiver client, bool remote, int guid)
+        {
+            client.Send(new ExchangeObjectRemovedFromBagMessage(remote, guid));
+        }
     }
 }

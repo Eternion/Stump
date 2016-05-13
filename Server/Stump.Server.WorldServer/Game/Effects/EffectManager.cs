@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             {CharacteristicEnum.INTELLIGENCE, 1},
             {CharacteristicEnum.AGILITY, 1},
             {CharacteristicEnum.WEIGHT, 0.25},
-            {CharacteristicEnum.VITALITY, 0.25},
+            {CharacteristicEnum.VITALITY, 0.2},
             {CharacteristicEnum.INITIATIVE, 0.1},
         };
 

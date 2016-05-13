@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             if (paddock != null)
                 client.Send(paddock.GetPaddockPropertiesMessage());
 
-            var skills = client.Character.Map.GetInteractiveObjects().SelectMany(x => x.GetSkills().OfType<SkillCraft>().Where(y => y.IsEnabled(client.Character)).Select(y => y.SkillTemplate)).Distinct();
+            var skills = client.Character.Map.GetInteractiveObjects().SelectMany(x => x.GetSkills().Where(y => (y is SkillCraft || y is SkillRuneCraft) && y.IsEnabled(client.Character)).Select(y => y.SkillTemplate)).Distinct();
 
             SendJobMultiCraftAvailableSkillsMessage(client, client.Character, skills, true);
         }
