@@ -1049,7 +1049,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (healAmount <= 0)
                 healAmount = 1;
 
-            DamageTaken -= healAmount;
+            DamageTaken = Stats.Health.TotalMax - healAmount;
 
             IsRevived = true;
             Summoner = caster;
