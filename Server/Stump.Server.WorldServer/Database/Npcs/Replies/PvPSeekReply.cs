@@ -26,9 +26,28 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
                 return false;
 
             //Check if player already get a contract in the last 10 mins
+            m_pvpSeekHistory.Clean();
             if (m_pvpSeekHistory.Any(x => x.First.First == character.Id))
             {
                 character.SendServerMessage("Vous avez déjà obtenu une traque il y a moins de 10 minutes, réessayez ultérieurement.");
+                return false;
+            }
+
+            if (character.AlignmentSide == AlignmentSideEnum.ALIGNMENT_NEUTRAL)
+            {
+                character.SendServerMessage("Vous devez posséder un alignement afin de pouvoir lancer une traque.");
+                return false;
+            }
+
+            if (!character.PvPEnabled)
+            {
+                character.SendServerMessage("Vous devez activer vos ailes d'alignement pour lancer une traque.");
+                return false;
+            }
+
+            if (character.Level < 50)
+            {
+                character.SendServerMessage("Vous devez être niveau 50 minimum pour pouvoir lancer une traque.");
                 return false;
             }
 

@@ -26,16 +26,16 @@ namespace Stump.Core.Collections
             {
                 m_maxDuration = value;
 
-                CheckStack();
+                Clean();
             }
         }
 
-        private void CheckStack()
+        public void Clean()
         {
-            if (First.Value == null)
+            if (First == null || First.Value == null)
                 return;
 
-            while ((DateTime.Now - First.Value.Second).Seconds > MaxDuration)
+            while ((DateTime.Now - First.Value.Second).TotalSeconds > MaxDuration)
             {
                 RemoveFirst();
             }
@@ -59,7 +59,7 @@ namespace Stump.Core.Collections
             var node = new LinkedListNode<Pair<T, DateTime>>(new Pair<T, DateTime>(value, DateTime.Now));
             AddLast(node);
 
-            CheckStack();
+            Clean();
         }
     }
 }
