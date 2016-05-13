@@ -68,13 +68,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
         public uint Kamas
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool ReadyToApply
         {
             get;
-            private set;
+            protected set;
         }
 
         protected void AddItem(TradeItem item)

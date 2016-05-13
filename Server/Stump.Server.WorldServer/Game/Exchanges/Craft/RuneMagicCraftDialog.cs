@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
+using MongoDB.Driver.Linq;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Mathematics;
@@ -58,6 +59,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             SecondTrader.ItemMoved += OnItemMoved;
         }
 
+        public override void Close()
+        {
+            StopAutoCraft();
+        }
+
         public void StopAutoCraft(ExchangeReplayStopReasonEnum reason = ExchangeReplayStopReasonEnum.STOPPED_REASON_USER)
         {
             if (m_autoCraftTimer != null)
@@ -66,6 +72,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 m_autoCraftTimer = null;
 
                 OnAutoCraftStopped(reason);
+                ChangeAmount(1);
             }
         }
 
@@ -74,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         }
 
-        private void OnItemMoved(Trader trader, TradeItem item, bool modified, int difference)
+        protected virtual void OnItemMoved(Trader trader, TradeItem item, bool modified, int difference)
         {
             var playerItem = item as PlayerTradeItem;
 
@@ -84,12 +91,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             if (item.Template.Type.ItemType == ItemTypeEnum.RUNE_DE_FORGEMAGIE && (playerItem != Rune || playerItem.Stack == 0))
             {
                 Rune = playerItem.Stack > 0 ? playerItem : null;
-                StopAutoCraft(playerItem.Stack == 0 ? ExchangeReplayStopReasonEnum.STOPPED_REASON_OK : ExchangeReplayStopReasonEnum.STOPPED_REASON_USER);
             }
             else if (Skill.SkillTemplate.ModifiableItemTypes.Contains((int) item.Template.TypeId) && (playerItem != ItemToImprove || playerItem.Stack == 0))
             {
                 ItemToImprove = playerItem.Stack > 0 ? playerItem : null;
-                StopAutoCraft(playerItem.Stack == 0 ? ExchangeReplayStopReasonEnum.STOPPED_REASON_OK : ExchangeReplayStopReasonEnum.STOPPED_REASON_USER);
             }
         }
 
@@ -107,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             if (m_autoCraftTimer != null)
                 StopAutoCraft();
 
-            if (Amount == 1)
+            if (Amount == 1 || Amount == 0)
                 ApplyRune();
             else
                 AutoCraft();
@@ -116,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         private void AutoCraft()
         {
             ApplyRune();
-            if (Rune != null && Amount == -1)
+            if (ItemToImprove != null && Rune != null && Amount == -1)
                 m_autoCraftTimer = Crafter.Character.Area.CallDelayed(AUTOCRAFT_INTERVAL, AutoCraft);
             else
                 StopAutoCraft(ExchangeReplayStopReasonEnum.STOPPED_REASON_OK);
@@ -124,7 +129,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         public void ApplyRune()
         {
-            if (Rune == null)
+            if (ItemToImprove == null || Rune == null)
                 return;
 
             foreach (var effect in Rune.Effects.OfType<EffectInteger>())
@@ -161,7 +166,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
 
             Rune.Owner.Inventory.RemoveItem(Rune.PlayerItem, 1, true, false);
-            Rune.Trader.MoveItem(Rune.Guid, -1);
+            Crafter.MoveItem(Rune.Guid, -1);
+            ItemToImprove.PlayerItem.Invalidate();
 
         }
         private MagicPoolStatus GetMagicPoolStatus(int residual)
@@ -175,7 +181,17 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
 
             if (effect != null)
-                effect.Value += runeEffect.Value;
+            {
+                effect.Value += (short) ((effect.Template.BonusType == -1 ? -1 : 1)*runeEffect.Value);
+
+                if (effect.Value == 0)
+                    ItemToImprove.Effects.Remove(effect);
+                else if (effect.Value > 0 && effect.Value <= runeEffect.Value && effect.Template.OppositeId > 0) // from negativ to positiv
+                {
+                    ItemToImprove.Effects.Remove(effect);
+                    ItemToImprove.Effects.Add(new EffectInteger((EffectsEnum)effect.Template.OppositeId, effect.Value));
+                }
+            }
             else
             {
                 ItemToImprove.Effects.Add(new EffectInteger(runeEffect.EffectId, runeEffect.Value));
@@ -204,13 +220,24 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 if (effect == null)
                     break;
 
-                var maxLost = (int)Math.Ceiling(EffectManager.Instance.GetEffectBasePower(runeEffect) / EffectManager.Instance.GetEffectBasePower(effect));
+                var maxLost = (int)Math.Ceiling(EffectManager.Instance.GetEffectBasePower(runeEffect) / Math.Abs(EffectManager.Instance.GetEffectBasePower(effect)));
 
                 var rand = new CryptoRandom();
                 var lost = rand.Next(1, maxLost + 1);
 
-                effect.Value -= (short)lost;
-                pwrToLose -= (int)Math.Ceiling(lost*EffectManager.Instance.GetEffectBasePower(effect));
+                var oldValue = effect.Value;
+
+                effect.Value -= (short)((effect.Template.BonusType == -1 ? -1 : 1) * lost);
+                pwrToLose -= (int)Math.Ceiling(lost*Math.Abs(EffectManager.Instance.GetEffectBasePower(effect)));
+
+                if (effect.Value == 0 || (effect.Value < 0 && oldValue > 0))
+                    ItemToImprove.Effects.Remove(effect);
+                else if (effect.Value < 0 && effect.Value >= -lost && effect.Template.OppositeId > 0) // from positiv to negativ stat
+                {
+                    ItemToImprove.Effects.Remove(effect);
+                    ItemToImprove.Effects.Add(new EffectInteger((EffectsEnum) effect.Template.OppositeId, (short) -effect.Value));
+                }
+
             }
 
             residual = (short)(pwrToLose < 0 ? -pwrToLose : 0);
@@ -221,7 +248,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         private EffectInteger GetEffectToImprove(EffectInteger runeEffect)
         {
-            return ItemEffects.FirstOrDefault(x => x.EffectId == runeEffect.EffectId);
+            return ItemEffects.FirstOrDefault(x => x.EffectId == runeEffect.EffectId || (x.Template.OppositeId != 0 && x.Template.OppositeId == runeEffect.Id));
         }
 
         private EffectInteger GetEffectToDown(EffectInteger runeEffect)
@@ -234,7 +261,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 return exoticEffect;
 
             // recherche de jet overmax
-            var overmaxEffect = ItemEffects.Where(x => IsOverMax(x) && x != effectToImprove).RandomElementOrDefault();
+            var overmaxEffect = ItemEffects.Where(x => IsOverMax(x, runeEffect) && x != effectToImprove).RandomElementOrDefault();
 
             if (overmaxEffect != null)
                 return overmaxEffect;
@@ -242,7 +269,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             var rand = new CryptoRandom();
             foreach (var effect in ItemEffects.ShuffleLinq().Where(x => x != effectToImprove))
             {
-                if (rand.NextDouble() <= EffectManager.Instance.GetEffectPower(runeEffect)/EffectManager.Instance.GetEffectBasePower(effect))
+                if (EffectManager.Instance.GetEffectPower(effect) - EffectManager.Instance.GetEffectPower(runeEffect) < MAX_STAT_POWER)
+                    continue;
+
+                if (rand.NextDouble() <= EffectManager.Instance.GetEffectPower(runeEffect)/Math.Abs(EffectManager.Instance.GetEffectBasePower(effect)))
                     return effect;
             }
 
@@ -251,19 +281,31 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         
         private bool IsExotic(EffectBase effect)
         {
-            return ItemEffects.All(x => x.EffectId != effect.EffectId);
+            return ItemToImprove.Template.Effects.All(x => x.EffectId != effect.EffectId);
+        } 
+
+        private double GetExoticPower()
+        {
+            return ItemToImprove.Effects.Where(IsExotic).OfType<EffectInteger>().Sum(x => EffectManager.Instance.GetEffectPower(x));
         }
 
         private bool IsOverMax(EffectInteger effect)
         {
             var template = GetTemplateEffect(effect);
 
-            return effect.Value > template?.Max;
+            return effect.Template.BonusType > -1 && effect.Value > template?.Max;
+        }
+
+        private bool IsOverMax(EffectInteger effect, EffectInteger runeEffect)
+        {
+            var template = GetTemplateEffect(effect);
+
+            return effect.Template.BonusType > -1 && effect.Value + runeEffect.Value > template?.Max;
         }
 
         private EffectDice GetTemplateEffect(EffectBase effect)
         {
-            return ItemToImprove.Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == effect.EffectId);
+            return ItemToImprove.Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == effect.EffectId || (x.Template.OppositeId > 0 && x.Template.OppositeId == (int) effect.EffectId));
         }
 
         private void GetChances(EffectInteger effectToImprove, EffectInteger runeEffect, out double criticalSuccess, out double neutralSuccess, out double criticalFailure)
@@ -271,10 +313,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             var minPwr = EffectManager.Instance.GetItemMinPower(ItemToImprove);
             var maxPwr = EffectManager.Instance.GetItemMaxPower(ItemToImprove);
             var pwr = EffectManager.Instance.GetItemPower(ItemToImprove);
-            var itemStatus = (pwr - minPwr)/(maxPwr - minPwr)*100d;
+
+            double itemStatus = Math.Max(0, GetProgress(pwr, maxPwr, minPwr));
             var parentEffect = GetTemplateEffect(runeEffect);
 
-            if (effectToImprove != null && EffectManager.Instance.GetEffectPower(effectToImprove) + EffectManager.Instance.GetEffectPower(runeEffect) > MAX_STAT_POWER)
+            if (effectToImprove != null && 
+                (EffectManager.Instance.GetEffectPower(effectToImprove) + EffectManager.Instance.GetEffectPower(runeEffect) > MAX_STAT_POWER ||
+                GetExoticPower() > MAX_STAT_POWER))
+
             {
                 neutralSuccess = 0;
                 criticalSuccess = 0;
@@ -288,21 +334,32 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             double levelSuccess;
             double effectSuccess;
             double itemSuccess;
-
-            if (parentEffect == null)
+            if (parentEffect == null) // exo
             {
                 effectStatus = 100;
+                itemStatus = 89 + Math.Sqrt(EffectManager.Instance.GetEffectPower(runeEffect)) + Math.Sqrt(itemStatus);
                 diceFactor = 40;
                 itemFactor = 54;
                 levelSuccess = 5;
             }
             else
             {
+                effectStatus = Math.Max(0, GetProgress(effectToImprove?.Value ?? 0, parentEffect.Max, parentEffect.Min));
+
+                if (IsOverMax(effectToImprove, runeEffect))
+                {
+
+                    itemStatus = Math.Max(itemStatus, effectStatus/2);
+                    effectStatus += EffectManager.Instance.GetEffectPower(runeEffect);
+                }
+
                 diceFactor = 30;
                 itemFactor = 50;
                 levelSuccess = 5;
-                effectStatus = ((double)(effectToImprove?.Value ?? 0) - parentEffect.Min)/(parentEffect.Max - parentEffect.Min)*100d;
             }
+
+            effectStatus = Math.Min(100, effectStatus);
+            itemStatus = Math.Min(99, itemStatus);
 
             if (effectStatus >= 80)
                 effectSuccess = diceFactor*effectStatus/100;
@@ -323,6 +380,22 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 neutralSuccess = 25 + criticalSuccess;
 
             criticalFailure = 100 - (criticalSuccess + neutralSuccess);
+
+            
+        }
+
+        private double GetProgress(double value, double max, double min)
+        {
+            if (min < 0 || max < 0)
+            {
+                var x = max;
+                max = -min;
+                min = -x;
+            }
+
+            if (max == min && max != 0) return value / max;
+            else if (max == 0) return 1d;
+            else return (value - min) / (max - min);
         }
     }
 }

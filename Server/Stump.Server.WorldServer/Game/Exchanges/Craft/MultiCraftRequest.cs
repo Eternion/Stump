@@ -39,8 +39,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         protected override void OnAccept()
         {
-            var trade = new MultiCraftDialog(Source, Target, Interactive, Skill);
-            trade.Open();
+            if (Skill is SkillCraft)
+            {
+                var trade = new MultiCraftDialog(Source, Target, Interactive, Skill);
+                trade.Open();
+            }
+            else if (Skill is SkillRuneCraft)
+            {
+                var trade = new MultiRuneMagicCraftDialog(Source, Target, Interactive, Skill);
+                trade.Open();
+            }
         }
 
         protected override void OnDeny()

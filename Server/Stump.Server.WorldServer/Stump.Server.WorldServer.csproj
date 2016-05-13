@@ -478,6 +478,8 @@
     <Compile Include="Game\Exchanges\Craft\CraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\MultiCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\MultiCraftRequest.cs" />
+    <Compile Include="Game\Exchanges\Craft\MultiRuneCrafter.cs" />
+    <Compile Include="Game\Exchanges\Craft\MultiRuneMagicCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\SingleRuneMagicCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\SingleCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\Crafter.cs" />

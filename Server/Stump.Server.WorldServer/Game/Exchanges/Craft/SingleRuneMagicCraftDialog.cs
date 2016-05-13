@@ -24,6 +24,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         public override void Close()
         {
+            base.Close();
+
             Character.ResetDialog();
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
         }
@@ -35,7 +37,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             InventoryHandler.SendExchangeStartOkCraftWithInformationMessage(Character.Client, Skill);
 
             Character.SetDialoger(Crafter);
-            Crafter.ItemMoved += OnItemMoved;
             Crafter.ReadyStatusChanged += OnReady;
         }
 
@@ -52,6 +53,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         protected override void OnRuneApplied(CraftResultEnum result, MagicPoolStatus poolStatus)
         {
             InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
+            Character.Inventory.RefreshItem(ItemToImprove.PlayerItem);
         }
 
         protected override void OnAutoCraftStopped(ExchangeReplayStopReasonEnum reason)
@@ -59,8 +61,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             InventoryHandler.SendExchangeItemAutoCraftStopedMessage(Character.Client, reason);
         }
 
-        private void OnItemMoved(Trader trader, TradeItem item, bool modified, int difference)
+        protected override void OnItemMoved(Trader trader, TradeItem item, bool modified, int difference)
         {
+            base.OnItemMoved(trader, item, modified, difference);
+
             if (!modified && item.Stack > 0)
                 InventoryHandler.SendExchangeObjectAddedMessage(Clients, false, item);
 
