@@ -213,20 +213,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public int TaxCollectorHealth
-        {
-            get { return 100 * Level; }
-        }
+        public int TaxCollectorHealth => 100 * Level;
 
-        public int TaxCollectorResistance
-        {
-            get { return Level > 50 ? 50 : Level; }
-        }
+        public int TaxCollectorResistance => Level > 50 ? 50 : Level;
 
-        public int TaxCollectorDamageBonuses
-        {
-            get { return Level; }
-        }
+        public int TaxCollectorDamageBonuses => Level;
 
         public int MaxTaxCollectors
         {
@@ -250,10 +241,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
-        public DateTime CreationDate
-        {
-            get { return Record.CreationDate; }
-        }
+        public DateTime CreationDate => Record.CreationDate;
 
         public string Name
         {
@@ -337,12 +325,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             TaxCollectorHandler.SendTaxCollectorMovementRemoveMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
-        public void RemoveGuildMember(GuildMember member)
-        {
-            m_members.Remove(member);
-            GuildManager.Instance.DeleteGuildMember(member);
-        }
-
         public void RemoveTaxCollectors()
         {
             foreach (var taxCollector in m_taxCollectors.ToArray())
@@ -355,7 +337,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             foreach (var member in m_members.ToArray())
             {
-                RemoveGuildMember(member);
+                RemoveMember(member);
             }
         }
 
@@ -642,8 +624,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (!leave)
                 from.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);  // Vous avez banni <b>%1</b> de votre guilde.
 
-            foreach (var client in m_clients)
-                GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, !leave);
+            GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, !leave);
 
             return true;
         }
@@ -786,14 +767,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (!member.IsConnected)
                 return;
 
-            var character = member.Character;
-
-            character.GuildMember = null;
-            character.RefreshActor();
+            member.Character.GuildMember = null;
+            member.Character.RefreshActor();
 
             // Vous avez quitté la guilde.
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
-            GuildHandler.SendGuildLeftMessage(character.Client);
+            member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+            GuildHandler.SendGuildLeftMessage(member.Character.Client);
         }
 
         protected virtual void OnLevelChanged()

@@ -2572,7 +2572,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (string.Equals(target.Client.IP, Client.IP) && !IsGameMaster())
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
-            if (Level - target.Level > 20)
+            if (Math.Abs(Level - target.Level) > 20)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
             if (IsGhost())
