@@ -34,7 +34,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             m_taxCollectorFirstnames = Database.Query<TaxCollectorFirstnamesRecord>(TaxCollectorFirstnamesRelator.FetchQuery).ToDictionary(x => x.Id);
 
             World.Instance.RegisterSaveableInstance(this);
-
             World.Instance.SpawnTaxCollectors();
         }
 

@@ -4,8 +4,6 @@ using Stump.Server.WorldServer.Database.Arena;
 using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Handlers.Context.RolePlay;
-using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
