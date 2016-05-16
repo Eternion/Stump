@@ -346,7 +346,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             {
                 effectStatus = Math.Max(0, GetProgress(effectToImprove?.Value ?? 0, parentEffect.Max, parentEffect.Min));
 
-                if (IsOverMax(effectToImprove, runeEffect))
+                if (effectToImprove != null && IsOverMax(effectToImprove, runeEffect))
                 {
 
                     itemStatus = Math.Max(itemStatus, effectStatus/2);
