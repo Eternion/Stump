@@ -100,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
             else if (trader == Receiver && !isready) // stop the trade
             {
-                if (Rune.Trader == Receiver)
+                if (Rune != null && Rune.Trader == Receiver)
                     Rune.Trader.MoveItem(Rune.Guid, (int) -Rune.Stack);
 
                 var itemToImprove = ItemToImprove;
