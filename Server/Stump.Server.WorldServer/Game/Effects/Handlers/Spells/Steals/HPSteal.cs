@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
                 var amount = (short)Math.Floor(damage.Amount / 2.0);
                 if (amount > 0)
-                    Caster.HealDirect(amount, target);
+                    Caster.Heal(amount, target, true);
             }
         }
 

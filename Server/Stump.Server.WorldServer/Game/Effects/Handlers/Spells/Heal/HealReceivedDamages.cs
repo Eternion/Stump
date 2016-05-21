@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
             foreach (var actor in GetAffectedActors())
             {
-                actor.HealDirect(healAmount, Caster);
+                actor.Heal(healAmount, Caster, true);
             }
 
             buff.Caster.RemoveBuff(buff);

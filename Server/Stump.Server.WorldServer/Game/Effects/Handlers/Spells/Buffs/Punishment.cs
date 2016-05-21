@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             if (caracteristic == PlayerFields.Health)
             {
-                buff.Target.HealDirect(bonus, Caster);
+                buff.Target.Heal(bonus, Caster, true);
                 return;
             }
 

@@ -42,7 +42,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 else
                 {
                     if (actor.IsAlive())
-                        actor.Heal(integerEffect.Value, Caster);
+                    {
+                        var damage = new Fights.Damage(Dice, EffectSchoolEnum.Healing, Caster, Spell, TargetedCell, EffectZone)
+                        {
+                            MarkTrigger = MarkTrigger,
+                            IsCritical = Critical
+                        };
+                        damage.GenerateDamages();
+                        damage.Amount = (short)(damage.Amount * Efficiency);
+                        actor.Heal(damage);
+                    }
                 }
             }
 

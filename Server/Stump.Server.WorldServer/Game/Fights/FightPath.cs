@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var obstaclesCells = Fight.GetAllFighters(entry => entry != Fighter && entry.Position.Cell != Fighter.Cell && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
 
 
-            while (i < Cells.Length && mp > 0 && !obstaclesCells.Contains(Cells[i].Id) && !Fight.ShouldTriggerOnMove(cell, Fighter))
+            while (i < Cells.Length && mp > 0 && !obstaclesCells.Contains(Cells[i].Id) && (cell == StartCell || !Fight.ShouldTriggerOnMove(cell, Fighter)))
             {
                 int tackledMP = 0;
                 int tackledAP = 0;

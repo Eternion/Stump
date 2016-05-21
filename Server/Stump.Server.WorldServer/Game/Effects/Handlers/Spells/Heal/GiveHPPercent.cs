@@ -40,7 +40,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         {
             var healAmount = (int)(Caster.LifePoints * (percent / 100d));
 
-            actor.Heal(healAmount, Caster, false);
+            var damage = new Fights.Damage(Dice, EffectSchoolEnum.Healing, Caster, Spell, TargetedCell, EffectZone)
+            {
+                MarkTrigger = MarkTrigger,
+                IsCritical = Critical
+            };
+            damage.GenerateDamages();
+            damage.Amount = healAmount;
+
+            actor.Heal(healAmount, Caster, true);
         }
 
         int DealHpPercent(int percent) => (int)(Caster.LifePoints * (percent / 100.0));

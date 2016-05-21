@@ -29,12 +29,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         void OnBuffTriggered(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
-            var @ref = token as Ref<int>;
-            if (@ref == null)
+            var damage = token as Fights.Damage;
+
+            if (damage == null)
                 return;
 
-            var heal = (int)Math.Round(@ref.Target * (Dice.DiceNum / 100.0));
-            @ref.Target = heal;
+            damage.Amount = (int)Math.Round(damage.Amount * (Dice.DiceNum / 100.0));
         }
     }
 }
