@@ -554,7 +554,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool UseMP(short amount)
         {
             if (Stats[PlayerFields.MP].Total - amount < 0)
-                return false;
+                amount = (short)Stats[PlayerFields.MP].Total;
 
             Stats.MP.Used += amount;
 
@@ -566,7 +566,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool LostAP(short amount, FightActor source)
         {
             if (Stats[PlayerFields.AP].Total - amount < 0)
-                return false;
+                amount = (short)Stats[PlayerFields.AP].Total;
 
             Stats.AP.Used += amount;
 
@@ -999,44 +999,55 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return damage.Amount;
         }
 
-        public virtual int HealDirect(int healPoints, FightActor from)
+
+        public virtual int Heal(int amount, FightActor source, bool ignoreBonus = false)
         {
-            var healPointsRef = new Ref<int>(healPoints);
+            return Heal(new Damage(amount) {Source = source, School = EffectSchoolEnum.Healing, IgnoreDamageBoost = ignoreBonus});
+        }
 
-            TriggerBuffs(from, BuffTriggerType.OnHealed, healPointsRef);
-            from.TriggerBuffs(from, BuffTriggerType.OnHeal, healPointsRef);
+        public virtual int Heal(Damage damage)
+        {
+            if (!damage.Generated)
+                damage.GenerateDamages();
 
-            //Allow triggers to edit healPoints
-            healPoints = healPointsRef.Target;
+            if (damage.Source != null && !damage.IgnoreDamageBoost)
+                damage.Amount = damage.Source.CalculateHeal(damage.Amount);
+
+            if (damage.Source != null)
+            {
+                TriggerBuffs(damage.Source, BuffTriggerType.OnHealed, damage);
+                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.OnHeal, damage);
+            }
 
             if (HasState((int)SpellStatesEnum.INSOIGNABLE_76))
             {
-                OnLifePointsChanged(0, 0, 0, from, EffectSchoolEnum.Unknown);
+                OnLifePointsChanged(0, 0, 0, damage.Source, EffectSchoolEnum.Unknown);
                 return 0;
             }
 
-            if (LifePoints + healPoints > MaxLifePoints)
-                healPoints = MaxLifePoints - LifePoints;
+            if (damage.Amount < 0)
+                return 0;
 
-            DamageTaken -= healPoints;
+            if (damage.TargetCell != null && damage.Zone != null)
+            {
+                var efficiency = GetShapeEfficiency(damage.TargetCell, Position.Point, damage.Zone);
+                damage.Amount = (int)(damage.Amount * efficiency);
+            }
 
-            OnLifePointsChanged(healPoints, 0, 0, from, EffectSchoolEnum.Unknown);
+            if (LifePoints + damage.Amount > MaxLifePoints)
+                damage.Amount = MaxLifePoints - LifePoints;
 
-            TriggerBuffs(from, BuffTriggerType.AfterHealed);
-            from.TriggerBuffs(from, BuffTriggerType.AfterHeal);
+            DamageTaken -= damage.Amount;
 
-            return healPoints;
-        }
+            OnLifePointsChanged(damage.Amount, 0, 0, damage.Source, EffectSchoolEnum.Unknown);
 
-        public int Heal(int healPoints, FightActor from , bool withBoost = true)
-        {
-            if (healPoints < 0)
-                healPoints = 0;
+            if (damage.Source != null)
+            {
+                TriggerBuffs(damage.Source, BuffTriggerType.AfterHealed);
+                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterHeal);
+            }
 
-            if (withBoost)
-                healPoints = from.CalculateHeal(healPoints);
-
-            return HealDirect(healPoints, from);
+            return damage.Amount;
         }
 
         public void Revive(int percentHp, FightActor caster)
@@ -1438,16 +1449,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private double GetSingleTacklerPercent(IStatsOwner tackler)
         {
-            var tackleBlock = tackler.Stats[PlayerFields.TackleBlock].Total;
+            var tackleBlock = tackler.Stats[PlayerFields.TackleBlock].TotalSafe;
             var tackleEvade = Stats[PlayerFields.TackleEvade].Total;
 
-            if (tackleBlock < 0)
-                return 0;
-
-            if (tackleEvade < 0)
-                tackleEvade = 0;
-
-            return (tackleEvade + 2) / ((2d * (tackleBlock + 2)));
+            return Math.Min(1, (tackleEvade + 2) / ((2d * (tackleBlock + 2))));
         }
 
         #endregion

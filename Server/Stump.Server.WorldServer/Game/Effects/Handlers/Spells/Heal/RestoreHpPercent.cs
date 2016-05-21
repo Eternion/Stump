@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         {
             var healAmount = (int) (actor.MaxLifePoints*(percent/100d));
 
-            actor.Heal(healAmount, Caster, false);
+            actor.Heal(healAmount, Caster, true);
         }
     }
 }

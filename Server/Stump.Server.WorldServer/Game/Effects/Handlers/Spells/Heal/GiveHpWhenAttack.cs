@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             if (damage.Spell != null && Caster.IsPoisonSpellCast(damage.Spell))
                 return;
 
-            buff.Target.Heal(damage.Amount, damage.Source, false);
+            buff.Target.Heal(damage.Amount, damage.Source, true);
             damage.Amount = 0;
         }
     }
@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         {
             var healAmount = (int)(amount * (percent / 100d));
 
-            actor.Heal(healAmount, actor, false);
+            actor.Heal(healAmount, actor, true);
         }
     }
 }

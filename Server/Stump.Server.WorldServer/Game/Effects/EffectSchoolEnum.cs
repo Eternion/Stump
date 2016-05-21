@@ -8,6 +8,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         Air,
         Fire,
         Pushback,
+        Healing,
         Unknown,
     }
 }

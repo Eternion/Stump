@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                     var inflictedDamages = actor.InflictDamage(damages);
 
                     var heal = (int)Math.Floor(inflictedDamages / 2d);
-                    Caster.Heal(heal, actor, false);
+                    Caster.Heal(heal, actor, true);
                 }
             }
 
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             buff.Target.InflictDirectDamage(damages.Amount);
 
             var heal = (int)Math.Floor(damages.Amount / 2d);
-            buff.Caster.Heal(heal, buff.Target, false);
+            buff.Caster.Heal(heal, buff.Target, true);
         }
     }
 }

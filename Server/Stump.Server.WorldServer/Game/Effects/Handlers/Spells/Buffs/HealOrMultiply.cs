@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             if (new CryptoRandom().Next(0, 2) == 0)
             {
-                buff.Target.Heal((int)Math.Round(damage.Amount * (Dice.Value / 100.0)), buff.Target);
+                buff.Target.Heal((int)Math.Round(damage.Amount * (Dice.Value / 100.0)), buff.Target, true);
                 damage.Amount = 0;
             }
             else
