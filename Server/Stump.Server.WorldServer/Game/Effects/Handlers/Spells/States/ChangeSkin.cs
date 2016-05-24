@@ -34,10 +34,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     case 0:
                         break;
                     case 667: //Pandawa - Picole
-                        bonesId = 44;
+                        bonesId = (short) (driverLook != null ? 1084 : 44);
                         break;
                     case 729: //Xelor - Momification
-                        bonesId = 113;
+                        bonesId = (short) (driverLook != null ? 1068 : 113);
                         break;
                     case 103: //Zobal - Pleutre
                         skinId = 1449;
@@ -51,11 +51,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         skinId = 1955;
                         break;
                     case 874: //Pandawa - Colère de Zatoïshwan
-                        bonesId = 453;
-                        scale = 80;
+                        bonesId = (short)(driverLook != null ? 1202 : 453);
+                        scale = (short)(driverLook != null ? 60 : 80);
                         break;
-                    case 1177: // Arbre - Feuillage
-                        bonesId = 3164;
+                    case 1177: // Arbre - Feuillage, Arbre de vie
+                        bonesId = (short) (Spell.Id == (int)SpellIdEnum.ARBRE_DE_VIE ? 3166 : 3164);
                         scale = 80;
                         break;
                     default:

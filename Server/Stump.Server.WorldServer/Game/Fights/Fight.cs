@@ -2017,14 +2017,20 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var target = GetOneFighter(targetCell);
 
+            if (silentCast)
+                targetCell = GetInvisibleSpellCastCell(caster.Cell, targetCell);
+
             if (spell.Id == 0)
-            {
                 ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, targetCell, critical,
                                                                                 !caster.IsVisibleFor(entry) || silentCast, 0), true);
-            }
             else
                 ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
                                                                                 caster, target, targetCell, critical, !caster.IsVisibleFor(entry) || silentCast, spell), true);
+        }
+
+        private Cell GetInvisibleSpellCastCell(Cell casterCell, Cell targetedCell)
+        {
+            return Cells[((MapPoint) casterCell).GetCellInDirection(((MapPoint) casterCell).OrientationTo(targetedCell), 1).CellId];
         }
 
         protected virtual void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
