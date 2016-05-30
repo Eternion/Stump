@@ -55,7 +55,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         scale = (short)(driverLook != null ? 60 : 80);
                         break;
                     case 1177: // Arbre - Feuillage, Arbre de vie
-                        bonesId = (short) (Spell.Id == (int)SpellIdEnum.ARBRE_DE_VIE ? 3166 : 3164);
+                        bonesId = 3164;
+                        scale = 80;
+                        break;
+                    case 1171:
+                        bonesId = 3166;
                         scale = 80;
                         break;
                     default:
@@ -69,6 +73,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                     if (scale != -1)
                         driverLook.Look.SetScales(scale);
+
+                    if (bonesId != -1)
+                        driverLook.Look.BonesID = bonesId;
 
                     look.SetRiderLook(driverLook.Look);
                 }

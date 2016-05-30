@@ -7,20 +7,43 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using System;
+using Stump.DofusProtocol.Enums.Extensions;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_PushBack)]
     [EffectHandler(EffectsEnum.Effect_PushBack_1103)]
+    [EffectHandler(EffectsEnum.Effect_PullForward)]
     public class Push : SpellEffectHandler
     {
         public Push(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
-            DamagesDisabled = effect.EffectId == EffectsEnum.Effect_PushBack_1103;
+            DamagesDisabled = effect.EffectId == EffectsEnum.Effect_PushBack_1103 ||
+                effect.EffectId == EffectsEnum.Effect_PullForward;
+            Pull = effect.EffectId == EffectsEnum.Effect_PullForward;
         }
 
-        bool DamagesDisabled
+        public bool DamagesDisabled
+        {
+            get;
+            set;
+        }
+
+        public DirectionsEnum? PushDirection
+        {
+            get;
+            set;
+        }
+
+        public bool Pull
+        {
+            get;
+            set;
+        }
+
+        public int Distance
         {
             get;
             set;
@@ -43,19 +66,49 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
 
-                var pushDirection = referenceCell.OrientationTo(actor.Position.Point);
+                if (PushDirection == null)
+                    PushDirection = Pull ? actor.Position.Point.OrientationTo(referenceCell) : referenceCell.OrientationTo(actor.Position.Point);
+
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
-                var range = (short)(referenceCell.IsOnSameDiagonal(startCell) ? Math.Ceiling(integerEffect.Value / 2.0) : integerEffect.Value);
-                var stopCell = startCell.GetCellInDirection(pushDirection, range);
-                var fightersInline = Fight.GetAllFightersInLine(startCell, range, pushDirection);
-
-                if (fightersInline.Any())
+                Distance = (short)(PushDirection.Value.IsDiagonal() ? Math.Ceiling(integerEffect.Value / 2.0) : integerEffect.Value);
+                var stopCell = startCell.GetCellInDirection(PushDirection.Value, Distance);
+                
+                for (var i = 0; i < Distance; i++)
                 {
-                    stopCell = fightersInline.First().Position.Point.GetCellInDirection(pushDirection, -1);
+                    var nextCell = lastCell.GetNearestCellInDirection(PushDirection.Value);
 
-                    if (!DamagesDisabled)
+                    // the next cell is blocking, or an adjacent cell is blocking if it's in diagonal
+                    if (IsBlockingCell(nextCell, actor) ||
+                        (PushDirection.Value.IsDiagonal() && PushDirection.Value.GetDiagonalDecomposition().Any(x => IsBlockingCell(lastCell.GetNearestCellInDirection(x), actor))))
+                    {
+                        if (nextCell == null)
+                        {
+                            stopCell = lastCell;
+                            nextCell = stopCell;
+                        }
+
+                        if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
+                        {
+                            DamagesDisabled = true;
+                            stopCell = nextCell;
+                        }
+                        else
+                            stopCell = lastCell;
+
+                        break;
+                    }
+
+                    if (nextCell != null)
+                        lastCell = nextCell;
+
+                }
+
+                if (!DamagesDisabled)
+                {
+                    var fightersInline = Fight.GetAllFightersInLine(startCell, Distance, PushDirection.Value);
+                    if (fightersInline.Any())
                     {
                         var distance = integerEffect.Value - (fightersInline.First().Position.Point.ManhattanDistanceTo(startCell) - 1);
                         var targets = 0;
@@ -80,39 +133,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                             targets++;
                         }
                     }
-                }
-                else
-                {
-                    for (var i = 0; i < range; i++)
-                    {
-                        var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
-                        if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]) || Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
-                        {
-                            if (nextCell == null)
-                            {
-                                stopCell = lastCell;
-                                nextCell = stopCell;
-                            }
-
-                            if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
-                            {
-                                DamagesDisabled = true;
-                                stopCell = nextCell;
-                            }
-                            else
-                                stopCell = lastCell;
-
-                            break;
-                        }
-
-                        if (nextCell != null)
-                            lastCell = nextCell;
-                    }
-                }
-
-                if (!DamagesDisabled)
-                {
                     var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, (integerEffect.Value - (int)(startCell.ManhattanDistanceTo(stopCell))), 0);
 
                     if (pushbackDamages > 0)
@@ -137,11 +158,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 actor.Position.Cell = Map.Cells[stopCell.CellId];
 
-                actor.TriggerBuffs(actor, BuffTriggerType.OnPushed);
+                if (Effect.EffectId != EffectsEnum.Effect_PullForward)
+                    actor.TriggerBuffs(actor, BuffTriggerType.OnPushed);
                 actor.TriggerBuffs(actor, BuffTriggerType.OnMoved);
             }
 
             return true;
+        }
+
+        private bool IsBlockingCell(MapPoint cell, FightActor target)
+        {
+            return cell == null || !Fight.IsCellFree(Map.Cells[cell.CellId]) || Fight.ShouldTriggerOnMove(Fight.Map.Cells[cell.CellId], target);
         }
     }
 }

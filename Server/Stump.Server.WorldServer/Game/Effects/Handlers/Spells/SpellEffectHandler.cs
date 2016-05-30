@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -98,6 +99,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
             get { return m_duration ?? Dice.Duration; }
             set { m_duration = value; }
+        }
+
+        public int TriggeredBuffDuration
+        {
+            get;
+            set;
         }
 
         public int Delay
@@ -219,12 +226,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStatBuffInternal(target, value, caracteritic, customActionId, triggerrer, true));
+                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStatBuffDirectly(target, value, caracteritic, customActionId, triggerrer, true));
             
-            return AddStatBuffInternal(target, value, caracteritic, customActionId);
+            return AddStatBuffDirectly(target, value, caracteritic, customActionId);
         }
 
-        Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null, FightActor caster = null, bool noDelay = false)
+        protected Buff AddStatBuffDirectly(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null, FightActor caster = null, bool noDelay = false)
         {
             var id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, caster ?? Caster, this, Spell, value, caracteritic, Critical, DefaultDispellableStatus, Priority, customActionId);
@@ -271,13 +278,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Buff AddStateBuff(FightActor target, bool bypassMaxStack, SpellState state)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStateBuffInternal(target, bypassMaxStack, state, triggerrer));
+                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStateBuffDirectly(target, bypassMaxStack, state, triggerrer));
 
-            return AddStateBuffInternal(target, bypassMaxStack, state);
+            return AddStateBuffDirectly(target, bypassMaxStack, state);
 
         }
 
-        Buff AddStateBuffInternal(FightActor target,  bool bypassMaxStack, SpellState state, FightActor caster = null)
+        protected Buff AddStateBuffDirectly(FightActor target,  bool bypassMaxStack, SpellState state, FightActor caster = null)
         {
             var id = target.PopNextBuffId();
             var buff = new StateBuff(id, target, caster ?? Caster, this, Spell, DefaultDispellableStatus, state);
@@ -298,5 +305,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         }
 
         public virtual bool RequireSilentCast() => false;
+        public virtual bool SeeCast(Character character) => true;
     }
 }

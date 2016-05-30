@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -48,13 +49,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 break;
             }
 
-            target.Cell = endCell;
-            target.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
-
             if (target.IsCarrying())
                 target.ThrowActor(Map.Cells[startCell.Id], true);
 
-            Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, target, startCell.Id, target.Cell.Id), true);
+            foreach (var character in Fight.GetCharactersAndSpectators().Where(target.IsVisibleFor))
+                ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, target, startCell.Id, endCell.Id);
+            
+            target.Cell = endCell;
+            target.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
+
 
             return true;
         }

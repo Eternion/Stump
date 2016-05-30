@@ -140,6 +140,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             subLook.SubEntityValidator.ObjectInvalidated += OnSubEntityInvalidated;
         }
 
+        public void SetSubLook(SubActorLook subLook)
+        {
+            m_subLooks.RemoveAll(x => x.BindingCategory == subLook.BindingCategory);
+            AddSubLook(subLook);
+        }
+
         public void SetSubLooks(params SubActorLook[] subLooks)
         {
             foreach (var subLook in m_subLooks)
@@ -180,7 +186,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         public void SetRiderLook(ActorLook look)
         {
-            AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,
+            SetSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,
                                   look));
         }
 

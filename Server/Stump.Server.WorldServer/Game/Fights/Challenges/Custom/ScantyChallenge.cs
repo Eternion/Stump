@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -44,12 +45,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 m_weaponsUsed.Add(fighter);
         }
 
-        void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        void OnSpellCasting(FightActor caster, SpellCastHandler spellCastHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 return;
 
-            var entries = caster.SpellHistory.GetEntries(x => x.Spell.SpellId == spell.Id);
+            var entries = caster.SpellHistory.GetEntries(x => x.Spell.SpellId == spellCastHandler.Spell.Id);
             if (!entries.Any())
                 return;
 
