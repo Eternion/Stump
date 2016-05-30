@@ -100,7 +100,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             Fight.RemoveTrigger(this);
         }
 
-        public abstract void Trigger(FightActor trigger);
+        public void Trigger(FightActor trigger)
+        {
+            Trigger(trigger, trigger.Cell);
+        }
+
+        public abstract void Trigger(FightActor trigger, Cell targetedCell);
         public abstract GameActionMark GetGameActionMark();
         public abstract GameActionMark GetHiddenGameActionMark();
         public abstract bool DoesSeeTrigger(FightActor fighter);

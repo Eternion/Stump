@@ -2,6 +2,7 @@ using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -18,6 +19,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
         public TrapSpawn(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+        }
+
+        public override bool SeeCast(Character character)
+        {
+            return character.Fighter != null && character.Fighter.IsFriendlyWith(Caster);
         }
 
         protected override bool InternalApply()

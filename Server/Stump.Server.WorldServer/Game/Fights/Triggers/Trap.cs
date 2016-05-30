@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return false;
         }
 
-        public override void Trigger(FightActor trigger)
+        public override void Trigger(FightActor trigger, Cell triggerCell)
         {
             if (HasBeenTriggered)
                 return;
@@ -67,11 +67,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             NotifyTriggered(trigger, TrapSpell);
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, TrapSpell, Shape.Cell, false);
             handler.MarkTrigger = this;
+            handler.TriggerCell = triggerCell;
             handler.Initialize();
 
             foreach (var effectHandler in handler.GetEffectHandlers())
             {
                 effectHandler.EffectZone = new Zone(effectHandler.Effect.ZoneShape, Shape.Size);
+
+                if (!effectHandler.GetAffectedActors().Any())
+                    effectHandler.SetAffectedActors(new[] {trigger});
             }
 
             handler.Execute();

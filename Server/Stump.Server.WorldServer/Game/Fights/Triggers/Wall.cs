@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public SummonedBomb[] Bombs => new[] { WallBinding.Bomb1, WallBinding.Bomb2 };
 
-        public override void Trigger(FightActor trigger)
+        public override void Trigger(FightActor trigger, Cell triggerCell)
         {
             if (!CanTrigger(trigger))
                 return;

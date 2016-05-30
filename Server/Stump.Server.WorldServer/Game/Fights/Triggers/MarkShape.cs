@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             MinSize = minSize;
             Color = color;
 
-            m_zone = new Zone(spellShape, size) { MinRadius = MinSize };
+            m_zone = new Zone(spellShape, size, MinSize);
             CheckCells(m_zone.GetCells(Cell, fight.Map));
         }
 

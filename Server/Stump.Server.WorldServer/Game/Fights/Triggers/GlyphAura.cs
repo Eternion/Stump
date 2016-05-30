@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             m_actorsInside.Remove(actor);
         }
 
-        public override void Trigger(FightActor trigger)
+        public override void Trigger(FightActor trigger, Cell triggerCell)
         {
             if (CanTrigger(trigger))
             {

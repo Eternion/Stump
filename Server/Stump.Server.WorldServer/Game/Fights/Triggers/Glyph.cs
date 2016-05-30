@@ -53,12 +53,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return (--Duration) <= 0;
         }
 
-        public override void Trigger(FightActor trigger)
+        public override void Trigger(FightActor trigger, Cell triggerCell)
         {
             NotifyTriggered(trigger, GlyphSpell);
             
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);
             handler.MarkTrigger = this;
+            handler.TriggerCell = triggerCell;
             handler.Initialize();
 
             foreach (var effectHandler in handler.GetEffectHandlers())
