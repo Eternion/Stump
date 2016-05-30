@@ -32,10 +32,7 @@ namespace Stump.Core.Collections
 
         public void Clean()
         {
-            if (First == null || First.Value == null)
-                return;
-
-            while ((DateTime.Now - First.Value.Second).TotalSeconds > MaxDuration)
+            while (First != null && First.Value != null && (DateTime.Now - First.Value.Second).TotalSeconds > MaxDuration)
             {
                 RemoveFirst();
             }

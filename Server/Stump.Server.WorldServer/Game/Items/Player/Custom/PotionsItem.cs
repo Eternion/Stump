@@ -3,7 +3,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
@@ -190,52 +189,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             Owner.SendSystemMessage(63, false);
 
             return 1;
-        }
-    }
-
-    [ItemId(ItemIdEnum.POTION_DE_RENOMMAGE_DE_GUILDE_13273)]
-    public class GuildNameChangePotion : BasePlayerItem
-    {
-        public GuildNameChangePotion(Character owner, PlayerItemRecord record)
-            : base(owner, record)
-        {
-        }
-
-        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
-        {
-            if (Owner.GuildMember == null)
-                return 0;
-
-            if (!Owner.GuildMember.IsBoss)
-                return 0;
-
-            var panel = new GuildModificationPanel(Owner) { ChangeName = true, ChangeEmblem = false };
-            panel.Open();
-
-            return 0;
-        }
-    }
-
-    [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DE_BLASON_DE_GUILDE_13270)]
-    public class GuildEmblemChangePotion : BasePlayerItem
-    {
-        public GuildEmblemChangePotion(Character owner, PlayerItemRecord record)
-            : base(owner, record)
-        {
-        }
-
-        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
-        {
-            if (Owner.GuildMember == null)
-                return 0;
-
-            if (!Owner.GuildMember.IsBoss)
-                return 0;
-
-            var panel = new GuildModificationPanel(Owner) { ChangeName = false, ChangeEmblem = true };
-            panel.Open();
-
-            return 0;
         }
     }
 }

@@ -66,5 +66,6 @@
         EMOTE_CISEAUX = 13,
         EMOTE_LÉZARD = 63,
         EMOTE_STOK = 64,
+        EMOTE_GUILD = 97
     }
 }

@@ -38,15 +38,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             /* Check be the boss of a Guild */
             var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
 
-            if (guildMember != null)
+            if (guildMember != null && guildMember.IsBoss)
             {
-                if (guildMember.IsBoss)
-                {
-                    client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
-                    client.DisconnectLater(1000);
-                    return;
-                }
+                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
+                client.DisconnectLater(1000);
+                return;
             }
+
 
             var secretAnswerHash = message.secretAnswerHash;
 
