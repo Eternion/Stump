@@ -148,24 +148,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler?.Invoke(this);
         }
 
-        public delegate void SpellCastingHandler(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast);
+        public delegate void SpellCastingHandler(FightActor caster, SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast);
 
         public event SpellCastingHandler SpellCasting;
 
-        protected virtual void OnSpellCasting(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasting(SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             var handler = SpellCasting;
             if (handler != null)
-                handler(this, spell, target, critical, silentCast);
+                handler(this, castHandler, target, critical, silentCast);
         }
 
         public event SpellCastingHandler SpellCasted;
 
-        protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
+        protected virtual void OnSpellCasted(SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
         {
-            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) && VisibleState == VisibleStateEnum.INVISIBLE)
+            if (castHandler.SpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) && VisibleState == VisibleStateEnum.INVISIBLE)
             {
-                if (!IsInvisibleSpellCast(spell))
+                if (!IsInvisibleSpellCast(castHandler.Spell))
                 {
                     if (!DispellInvisibilityBuff())
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
@@ -179,19 +179,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             if (history)
-                SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
+                SpellHistory.RegisterCastedSpell(castHandler.SpellLevel, Fight.GetOneFighter(target));
 
             var handler = SpellCasted;
             if (handler != null)
-                handler(this, spell, target, critical, silentCast);
+                handler(this, castHandler, target, critical, silentCast);
         }
 
-        protected virtual void OnSpellCasted(Spell spell, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
+        protected virtual void OnSpellCasted(SpellCastHandler castHandler, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
         {
-            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
+            if (castHandler.SpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
                 VisibleState == VisibleStateEnum.INVISIBLE)
             {
-                if (!IsInvisibleSpellCast(spell))
+                if (!IsInvisibleSpellCast(castHandler.Spell))
                 {
                     if (!DispellInvisibilityBuff())
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
@@ -204,11 +204,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             if (history)
-                SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
+                SpellHistory.RegisterCastedSpell(castHandler.SpellLevel, target);
 
             var handler = SpellCasted;
             if (handler != null)
-                handler(this, spell, target.Cell, critical, silentCast);
+                handler(this, castHandler, target.Cell, critical, silentCast);
         }
 
         public event Action<FightActor, Spell, Cell> SpellCastFailed;
@@ -762,7 +762,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
-                OnSpellCasting(spell, cell, critical, false);
+                OnSpellCasting(new DefaultSpellCastHandler(this, spell, cell, false), cell, critical, false);
 
                 if (!apFree)
                     UseAP((short) spellLevel.ApCost);
@@ -786,7 +786,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            OnSpellCasting(spell, handler.TargetedCell, critical, silent || handler.SilentCast);
+            OnSpellCasting(handler, handler.TargetedCell, critical, silent || handler.SilentCast);
             if (!apFree)
                 UseAP((short)spellLevel.ApCost);
 
@@ -795,9 +795,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Execute();
 
             if (fighter == null)
-                OnSpellCasted(spell, handler.TargetedCell, critical, silent || handler.SilentCast, !force);
+                OnSpellCasted(handler, handler.TargetedCell, critical, silent || handler.SilentCast, !force);
             else
-                OnSpellCasted(spell, fighter, critical, silent || handler.SilentCast, !force);
+                OnSpellCasted(handler, fighter, critical, silent || handler.SilentCast, !force);
 
             return true;
         }
@@ -1450,9 +1450,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private double GetSingleTacklerPercent(IStatsOwner tackler)
         {
             var tackleBlock = tackler.Stats[PlayerFields.TackleBlock].TotalSafe;
-            var tackleEvade = Stats[PlayerFields.TackleEvade].Total;
+            var tackleEvade = Stats[PlayerFields.TackleEvade].TotalSafe;
 
-            return Math.Min(1, (tackleEvade + 2) / ((2d * (tackleBlock + 2))));
+            return Math.Max(0, Math.Min(1, (tackleEvade + 2) / ((2d * (tackleBlock + 2)))));
         }
 
         #endregion

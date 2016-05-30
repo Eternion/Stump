@@ -34,6 +34,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Game.Fights
@@ -2013,19 +2014,16 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
 
-        protected virtual void OnSpellCasting(FightActor caster, Spell spell, Cell targetCell, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasting(FightActor caster, SpellCastHandler castHandler, Cell targetCell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             var target = GetOneFighter(targetCell);
-
-            if (silentCast)
-                targetCell = GetInvisibleSpellCastCell(caster.Cell, targetCell);
-
-            if (spell.Id == 0)
-                ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, targetCell, critical,
+            
+            if (castHandler.Spell.Id == 0)
+                ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, castHandler.SeeCast(entry) ? targetCell : GetInvisibleSpellCastCell(caster.Cell, targetCell), critical,
                                                                                 !caster.IsVisibleFor(entry) || silentCast, 0), true);
             else
                 ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
-                                                                                caster, target, targetCell, critical, !caster.IsVisibleFor(entry) || silentCast, spell), true);
+                                                                                caster, target, castHandler.SeeCast(entry) ? targetCell : GetInvisibleSpellCastCell(caster.Cell, targetCell), critical, !caster.IsVisibleFor(entry) || silentCast, castHandler.Spell), true);
         }
 
         private Cell GetInvisibleSpellCastCell(Cell casterCell, Cell targetedCell)
@@ -2033,7 +2031,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return Cells[((MapPoint) casterCell).GetCellInDirection(((MapPoint) casterCell).OrientationTo(targetedCell), 1).CellId];
         }
 
-        protected virtual void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasted(FightActor caster, SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
@@ -2382,7 +2380,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     continue;
 
                 StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-                markTrigger.Trigger(trigger);
+                markTrigger.Trigger(trigger, cell);
                 EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
             }
         }

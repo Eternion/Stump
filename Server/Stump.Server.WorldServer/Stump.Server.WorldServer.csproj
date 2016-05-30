@@ -709,6 +709,7 @@
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\LifeTreeCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Sram\RepulsionCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Xelor\TemporalDustCastHandler.cs" />
     <Compile Include="Game\Spells\SpellCastResult.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
@@ -861,7 +862,6 @@
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\StatsDebuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Marks\GlyphSpawn.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Marks\TrapSpawn.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Move\Pull.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Push.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\Invisibility.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\StatsSteal.cs" />

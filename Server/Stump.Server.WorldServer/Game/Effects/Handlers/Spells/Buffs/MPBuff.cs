@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
@@ -21,22 +22,49 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
 
-                if (integerEffect == null)
-                    return false;
-
-                if (Effect.Duration != 0 || Effect.Delay != 0)
+                if (IsTriggerBuff())
                 {
-                    AddStatBuff(actor, integerEffect.Value, PlayerFields.MP);
+                    AddTriggerBuff(actor, TriggerBuff);
                 }
                 else
                 {
-                    actor.RegainMP(integerEffect.Value);
+                    var integerEffect = GenerateEffect();
+
+                    if (integerEffect == null)
+                        return false;
+
+                    if (Effect.Duration != 0 || Effect.Delay != 0)
+                    {
+                        AddStatBuff(actor, integerEffect.Value, PlayerFields.MP);
+                    }
+                    else
+                    {
+                        actor.RegainMP(integerEffect.Value);
+                    }
                 }
             }
 
             return true;
+        }
+
+        private void TriggerBuff(TriggerBuff buff, FightActor trigerrer, BuffTriggerType trigger, object token)
+        {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return;
+
+            if (Effect.Duration != 0 || Effect.Delay != 0)
+            {
+                var newBuff = AddStatBuffDirectly(buff.Target, integerEffect.Value, PlayerFields.MP);
+                if (TriggeredBuffDuration > 0)
+                    newBuff.Duration = (short) TriggeredBuffDuration;
+            }
+            else
+            {
+                buff.Target.RegainMP(integerEffect.Value);
+            }
         }
     }
 }
