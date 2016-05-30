@@ -3,6 +3,7 @@ using System.Linq;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
@@ -25,6 +26,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         }
 
         public override bool SilentCast => m_initialized && Handlers.Any(entry => entry.RequireSilentCast());
+
+        public override bool SeeCast(Character character) => Handlers.All(entry => entry.SeeCast(character));
 
         protected bool CheckWhenExecute;
 

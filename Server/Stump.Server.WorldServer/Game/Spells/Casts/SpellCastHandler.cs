@@ -2,6 +2,7 @@
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Fights;
@@ -50,19 +51,13 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         public Cell TargetedCell
         {
             get;
-            protected set;
+            set;
         }
 
         public FightActor TargetedActor
         {
             get;
-            protected set;
-        }
-
-        public MapPoint TargetedPoint
-        {
-            get;
-            protected set;
+            set;
         }
 
         public bool Critical
@@ -77,6 +72,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         }
 
         public MarkTrigger MarkTrigger
+        {
+            get;
+            set;
+        }
+
+        public Cell TriggerCell
         {
             get;
             set;
@@ -113,6 +114,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             return new SpellEffectHandler[0];
         }
 
+        public virtual bool SeeCast(Character character) => true;
         public bool IsCastedBySpell(int spellId)
         {
             if (Spell.Id == spellId)

@@ -1,7 +1,11 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Extensions;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
@@ -20,29 +24,23 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             if (!m_initialized)
                 Initialize();
 
-            var pullHandler = Handlers[2];
+            var debuffHandler = Handlers.OfType<MPDebuff>().First();
+
+            if (debuffHandler != null)
+                debuffHandler.TriggeredBuffDuration = 2;
+
+            var pullHandler = Handlers.OfType<Push>().First(x => x.Effect.EffectId == EffectsEnum.Effect_PullForward);
 
             if (pullHandler == null)
                 return;
 
-            var affectedActors = pullHandler.GetAffectedActors().FirstOrDefault();
-
-            if (affectedActors == null)
-                return;
-
-            pullHandler.Apply();
-
-            TargetedCell = affectedActors.Cell;
-            TargetedPoint = affectedActors.Position.Point;
-
-            Initialize();
-
             foreach (var handler in Handlers)
             {
-                handler.SetAffectedActors(new[] { affectedActors });
-            }
+                if (handler is Push && handler.Effect.EffectId == EffectsEnum.Effect_PushBack && pullHandler.PushDirection.HasValue) // push
+                    (handler as Push).PushDirection = pullHandler.PushDirection.Value.GetOpposedDirection();
 
-            base.Execute();
+                handler.Apply();
+            }
         }
     }
 }

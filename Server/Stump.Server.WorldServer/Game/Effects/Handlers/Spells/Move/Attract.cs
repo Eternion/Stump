@@ -8,17 +8,18 @@ using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_Attract)]
-    public class Attract : Pull
+    public class Attract : Push
     {
         public Attract(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            Pull = true;
         }
 
         protected override bool InternalApply()
         {
             var orientation = Caster.Position.Point.OrientationTo(TargetedPoint);
-            Distance = Spell.CurrentSpellLevel.Range;
+            Distance = (int)Spell.CurrentSpellLevel.Range;
 
             for (var i = 1; i <= Distance; i++)
             {
@@ -29,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (fighter == null)
                     continue;
 
-                Distance = TargetedPoint.ManhattanDistanceTo(fighter.Position.Point);
+                Distance = (int)TargetedPoint.ManhattanDistanceTo(fighter.Position.Point);
                 AddAffectedActor(fighter);
                 break;
             }

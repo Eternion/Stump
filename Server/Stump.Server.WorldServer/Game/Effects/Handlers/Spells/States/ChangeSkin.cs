@@ -70,6 +70,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     if (scale != -1)
                         driverLook.Look.SetScales(scale);
 
+                    if (bonesId != -1)
+                        driverLook.Look.BonesID = bonesId;
+
                     look.SetRiderLook(driverLook.Look);
                 }
                 else
