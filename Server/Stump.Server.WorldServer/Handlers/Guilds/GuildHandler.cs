@@ -254,7 +254,10 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         [WorldHandler(GuildMotdSetRequestMessage.Id)]
         public static void HandleGuildMotdSetRequestMessage(WorldClient client, GuildMotdSetRequestMessage message)
         {
-            client.Send(new GuildMotdMessage(message.content, DateTime.Now.GetUnixTimeStamp(), client.Character.GuildMember.Id, client.Character.Name));
+            if (client.Character.GuildMember == null)
+                return;
+
+            client.Character.Guild.UpdateMotd(client.Character.GuildMember, message.content);
         }
 
         public static void SendGuildMemberWarnOnConnectionStateMessage(IPacketReceiver client, bool state)
@@ -342,7 +345,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildModificationStartedMessage(IPacketReceiver client, bool changeName, bool changeEmblem)
         {
-            client.Send(new GuildModificationStartedMessage());
+            client.Send(new GuildModificationStartedMessage(changeName, changeEmblem));
         }
 
         public static void SendGuildMotdMessage(IPacketReceiver client, Guild guild)

@@ -623,10 +623,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeStartedMessage((sbyte)type));
         }
 
-        public static void SendExchangeStartOkTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
+        public static void SendExchangeStartedTaxCollectorShopMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
         {
-            //Todo: Update
-            //client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), taxCollector.GatheredKamas));
+            client.Send(new ExchangeStartedTaxCollectorShopMessage(taxCollector.Bag.Select(x => x.GetObjectItem()), taxCollector.GatheredKamas));
         }
 
         public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)

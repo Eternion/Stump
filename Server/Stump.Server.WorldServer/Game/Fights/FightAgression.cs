@@ -65,6 +65,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 playerResult.SetEarnedHonor(CalculateEarnedHonor(playerResult.Fighter),
                     CalculateEarnedDishonor(playerResult.Fighter));
+
+                CalculateEarnedPevetons(playerResult);
             }
 
             return results;
@@ -87,6 +89,39 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override bool CanCancelFight() => false;
 
+        void CalculateEarnedPevetons(FightPlayerResult result)
+        {
+            var pvpSeek = result.Character.Inventory.GetItems(x => x.Template.Id == (int)ItemIdEnum.ORDRE_DEXECUTION_10085).FirstOrDefault();
+
+            if (pvpSeek != null && ChallengersTeam.Fighters.Contains(result.Fighter))
+            {
+                var seekEffect = pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) as EffectString;
+
+                if (seekEffect != null)
+                {
+                    var target = result.Fighter.OpposedTeam.GetAllFightersWithLeavers<CharacterFighter>().FirstOrDefault(x => x.Name == seekEffect.Text);
+
+                    if (target != null)
+                    {
+                        result.Character.Inventory.RemoveItem(pvpSeek);
+
+                        if (Winners == result.Fighter.Team)
+                        {
+                            result.Loot.AddItem((int)ItemIdEnum.PEVETON_10275, 2);
+                            result.Character.SendServerMessage("Vous avez abattu votre cible avec succès, vous avez gagné 2 Pévétons !");
+                        }
+                        else
+                        {
+                            target.Loot.AddItem((int)ItemIdEnum.PEVETON_10275, 2);
+                            target.Character.SendServerMessage("Vous avez vaincu votre traqueur, vous avez gagné 2 Pévétons !");
+                        }
+                    }
+                }
+                else
+                    result.Character.Inventory.RemoveItem(pvpSeek);
+            }
+        }
+
         public short CalculateEarnedHonor(CharacterFighter character)
         {
             if (Draw)
@@ -99,40 +134,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             var losersLevel = (double)Losers.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
 
             var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ( losersLevel / winnersLevel ));
-
-            var pvpSeek = character.Character.Inventory.GetItems(x => x.Template.Id == (int)ItemIdEnum.ORDRE_DEXECUTION_10085).FirstOrDefault();
-
-            if (pvpSeek != null && ChallengersTeam.Fighters.Contains(character))
-            {
-                var seekEffect = pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) as EffectString;
-
-                if (seekEffect != null)
-                {
-                    var target = character.OpposedTeam.GetAllFightersWithLeavers<CharacterFighter>().FirstOrDefault(x => x.Name == seekEffect.Text);
-
-                    if (target != null)
-                    {
-                        character.Character.Inventory.RemoveItem(pvpSeek);
-
-                        var peveton = ItemManager.Instance.TryGetTemplate(ItemIdEnum.PEVETON_10275);
-
-                        if (Winners == character.Team)
-                        {
-                            character.Character.Inventory.AddItem(peveton, 2);
-                            character.Character.SendServerMessage("Vous avez abattu votre cible avec succès, vous avez gagné 2 Pévétons !");
-                        }
-                        else
-                        {
-                            target.Character.Inventory.AddItem(peveton, 2);
-                            target.Character.SendServerMessage("Vous avez vaincu votre traqueur, vous avez gagné 2 Pévétons !");
-                        }
-                    }
-                }
-                else
-                {
-                    character.Character.Inventory.RemoveItem(pvpSeek);
-                }
-            }
 
             if (Losers == character.Team)
                 delta = -delta;

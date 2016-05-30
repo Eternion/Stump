@@ -1,0 +1,30 @@
+<project outputDir="Confused" baseDir="bin\Debug-uptodate" xmlns="http://confuser.codeplex.com">
+  <module path="NLog.dll" />
+  <module path="Sniffer.exe">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.Core.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Classes.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.D2oClasses.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Enums.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Messages.dll">
+    <rule pattern="true" preset="aggressive" inherit="false" />
+  </module>
+  <module path="SwfLib.dll" />
+  <module path="zlib.net.dll" />
+  <module path="PcapDotNet.Analysis.dll">
+    <rule pattern="true" inherit="false" />
+  </module>
+  <module path="PcapDotNet.Base.dll" />
+  <module path="PcapDotNet.Core.dll" />
+  <module path="PcapDotNet.Core.Extensions.dll" />
+  <module path="PcapDotNet.Packets.dll" />
+</project>
