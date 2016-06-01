@@ -1037,7 +1037,7 @@
         /// <summary>
         /// Fait oublier un niveau du sort #3
         /// </summary>
-        Effect_624 = 624,
+        Effect_ForgetSpell = 624,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1993,11 +1993,11 @@
         /// <summary>
         /// Renommer la guilde
         /// </summary>
-        Effect_1107 = 1107,
+        Effect_ChangeGuildName = 1107,
         /// <summary>
         /// Changer le blason de la guilde
         /// </summary>
-        Effect_1108 = 1108,
+        Effect_ChangeGuildBlazon = 1108,
         /// <summary>
         /// #1{~1~2 à }#2% (PV rendus)
         /// </summary>

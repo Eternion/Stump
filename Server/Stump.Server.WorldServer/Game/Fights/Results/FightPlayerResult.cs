@@ -18,20 +18,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
         }
 
-        public Character Character
-        {
-            get { return Fighter.Character; }
-        }
+        public Character Character => Fighter.Character;
 
-        public byte Level
-        {
-            get { return Character.Level; }
-        }
+        public byte Level => Character.Level;
 
-        public override bool CanLoot(FightTeam team)
-        {
-            return Fighter.Team == team && (!Fighter.HasLeft() || Fighter.IsDisconnected);
-        }
+        public override bool CanLoot(FightTeam team) => Fighter.Team == team && (!Fighter.HasLeft() || Fighter.IsDisconnected);
 
         public FightExperienceData ExperienceData
         {

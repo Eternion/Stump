@@ -124,8 +124,12 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new FriendListCriterion();
                 case GiftCriterion.Identifier:
                     return new GiftCriterion();
+                case GuildLevelCriterion.Identifier:
+                    return new GuildLevelCriterion();
                 case GuildRightsCriterion.Identifier:
                     return new GuildRightsCriterion();
+                case GuildValidCriterion.Identifier:
+                    return new GuildValidCriterion();
                 case HasItemCriterion.Identifier:
                     return new HasItemCriterion();
                 case HasOrnament.Identifier:
@@ -186,6 +190,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new SubAreaCriterion();
                 case SubscribeCriterion.Identifier:
                     return new SubscribeCriterion();
+                case SubscribeZoneCriterion.Identifier:
+                    return new SubscribeZoneCriterion();
                 case UnusableCriterion.Identifier:
                     return new UnusableCriterion();
                 case UnknownCriterion.Identifier:

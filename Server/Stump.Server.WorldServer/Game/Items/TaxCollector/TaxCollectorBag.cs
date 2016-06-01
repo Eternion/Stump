@@ -19,12 +19,12 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public int BagWeight
         {
-            get { return (int) this.Sum(x => x.Template.RealWeight*x.Stack); }
+            get { return (int)this.Sum(x => x.Template.RealWeight * x.Stack); }
         }
 
         public int BagValue
         {
-            get { return (int) this.Sum(x => x.Template.Price*x.Stack); }
+            get { return (int)this.Sum(x => x.Template.Price * x.Stack); }
         }
 
         /// <summary>
@@ -91,19 +91,15 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             Items = records.Select(entry => new TaxCollectorItem(entry)).ToDictionary(entry => entry.Guid);
         }
 
-        public void DeleteBag(bool lazySave = true)
+        public void DeleteBag()
         {
             DeleteAll(false);
-
-            if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(Save);
-            else
-                Save();
+            WorldServer.Instance.IOTaskPool.AddMessage(Save);
         }
 
         public override void Save()
-        {        
-            if (WorldServer.Instance.IsInitialized)    
+        {
+            if (WorldServer.Instance.IsInitialized)
                 WorldServer.Instance.IOTaskPool.EnsureContext();
 
             base.Save();

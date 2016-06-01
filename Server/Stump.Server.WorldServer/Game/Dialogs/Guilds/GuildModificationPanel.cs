@@ -17,7 +17,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
         public Character Character
         {
             get;
-            private set;
         }
 
         public bool ChangeName
@@ -32,14 +31,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
             set;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get
-            {
-                return DialogTypeEnum.DIALOG_GUILD_RENAME;
-            }
-        }
-
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_GUILD_RENAME;
 
         public void Open()
         {                        

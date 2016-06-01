@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 {
     public class TaxCollectorExchange : IExchange
     {
-        private readonly CharacterCollector m_collector;
+        readonly CharacterCollector m_collector;
 
         public TaxCollectorExchange(TaxCollectorNpc taxCollector, Character character)
         {
@@ -20,24 +20,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
         public TaxCollectorNpc TaxCollector
         {
             get;
-            private set;
         }
 
         public Character Character
         {
             get;
-            private set;
         }
 
-        public ExchangeTypeEnum ExchangeType
-        {
-            get { return ExchangeTypeEnum.TAXCOLLECTOR; }
-        }
+        public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.TAXCOLLECTOR;
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         #region IDialog Members
 
@@ -46,24 +38,22 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
             Character.SetDialoger(m_collector);
             TaxCollector.OnDialogOpened(this);
 
-            InventoryHandler.SendExchangeStartedMessage(Character.Client, ExchangeType);
-            InventoryHandler.SendStorageInventoryContentMessage(Character.Client, TaxCollector);
+            InventoryHandler.SendExchangeStartedTaxCollectorShopMessage(Character.Client, TaxCollector);
 
             //Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
-            Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 2);
+            Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 5);
+            Character.Area.CallDelayed(5000, Close);
         }
 
         public void Close()
         {
+            TaxCollectorHandler.SendGetExchangeGuildTaxCollectorMessage(TaxCollector.Guild.Clients, TaxCollector);
+
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
             TaxCollector.OnDialogClosed(this);
             
             TaxCollector.Guild.AddXP(TaxCollector.GatheredExperience);
-            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
-            TaxCollectorHandler.SendGetExchangeGuildTaxCollectorMessage(TaxCollector.Guild.Clients, TaxCollector);
-            TaxCollectorHandler.SendTaxCollectorMovementMessage(TaxCollector.Guild.Clients, TaxCollectorMovementTypeEnum.TAX_COLLECTOR_HARVESTED, TaxCollector, Character.Id, Character.Name);
-
             TaxCollector.Delete();
         }
 

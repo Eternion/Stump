@@ -1,0 +1,55 @@
+<project outputDir="C:\Users\Orochi\Documents\Stump-Uptodate\Tools\WorldEditor\bin\x86\Debug-uptodate\Confused" baseDir="C:\Users\Orochi\Documents\Stump-Uptodate\Tools\WorldEditor\bin\x86\Debug-uptodate" xmlns="http://confuser.codeplex.com">
+  <module path="AvalonDock.dll" />
+  <module path="DBSynchroniser.exe">
+    <rule pattern="true" preset="maximum" inherit="false">
+      <protection id="constants" action="remove" />
+      <protection id="rename" action="remove" />
+    </rule>
+  </module>
+  <module path="Microsoft.Expression.Effects.dll" />
+  <module path="Microsoft.Expression.Interactions.dll" />
+  <module path="MongoDB.Bson.dll" />
+  <module path="MongoDB.Driver.dll" />
+  <module path="Newtonsoft.Json.dll" />
+  <module path="NLog.dll" />
+  <module path="protobuf-net.dll" />
+  <module path="ServiceStack.Text.dll" />
+  <module path="Stump.Core.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Classes.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.D2oClasses.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Enums.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Messages.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.ORM.dll">
+    <rule pattern="true" preset="maximum" inherit="false">
+      <protection id="constants" action="remove" />
+      <protection id="rename" action="remove" />
+    </rule>
+  </module>
+  <module path="Stump.Server.BaseServer.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.Server.WorldServer.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="System.Windows.Interactivity.dll" />
+  <module path="TreeSharp.dll" />
+  <module path="WorldEditor.exe">
+    <rule pattern="true" preset="maximum" inherit="false">
+      <protection id="constants" action="remove" />
+      <protection id="rename" action="remove" />
+    </rule>
+  </module>
+  <module path="Xceed.Wpf.Toolkit.dll" />
+  <module path="zlib.net.dll" />
+  <module path="ZoomAndPan.dll" />
+</project>
