@@ -19,18 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
             foreach (var actor in GetAffectedActors())
             {
-                var look = actor.Look.Clone();
-                var buffLook = actor.GetBuffs(x => x is SkinBuff).LastOrDefault() as SkinBuff;
-
-                if (Delay == 0)
-                    buffLook = actor.GetBuffs(x => x is SkinBuff && x.Delay == 0).LastOrDefault() as SkinBuff;
-
-                if (buffLook != null)
-                    look = buffLook.Look.Clone();
-
-                look.Rescale((Dice.DiceNum / 100.0) + 1);
-
-                var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, this, look, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH);
+                var buff = new RescaleSkinBuff(actor.PopNextBuffId(), actor, Caster, this, Spell, false, FightDispellableEnum.DISPELLABLE_BY_DEATH, (Dice.DiceNum / 100.0) + 1);
                 actor.AddBuff(buff);
             }
 

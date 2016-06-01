@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
@@ -503,6 +504,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public virtual ObjectPosition GetLeaderBladePosition() => MapPosition.Clone();
+        
 
         #endregion
 
@@ -1646,6 +1648,42 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsImmuneToSpell(int id) => GetBuffs(x => x is SpellImmunityBuff && id == ((SpellImmunityBuff)x).SpellImmune).Any();
 
+
+        #endregion
+
+        #region Look
+
+        public ActorLook OriginalLook
+        {
+            get;
+            protected set;
+        }
+
+        public override ActorLook Look
+        {
+            get { return m_look; }
+            set
+            {
+                if (m_look == null)
+                    OriginalLook = value;
+
+                m_look = value;
+            }
+        }
+
+        public void UpdateLook(FightActor source = null)
+        {
+            var skinBuff = Buffs.OfType<SkinBuff>().LastOrDefault(x => x.Applied);
+            var rescaleBuff = Buffs.OfType<RescaleSkinBuff>().LastOrDefault(x => x.Applied);
+
+            Look = skinBuff == null ? OriginalLook : skinBuff.Look;
+
+            if (rescaleBuff != null)
+                Look.Rescale(rescaleBuff.RescaleFactor);
+
+            ActionsHandler.SendGameActionFightChangeLookMessage(Fight.Clients, source ?? this, this, Look);
+        }
+
         #endregion
 
         #region Summons
@@ -1884,6 +1922,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region Carry/Throw
 
         FightActor m_carriedActor;
+        private ActorLook m_look;
 
         public bool IsCarrying() => m_carriedActor != null;
 

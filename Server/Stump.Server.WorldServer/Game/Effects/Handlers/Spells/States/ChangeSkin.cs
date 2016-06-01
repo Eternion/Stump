@@ -94,8 +94,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 if (Dice.Value >= 0)
                 {
                     //Dispell old skin buffs
-                    foreach (var skinBuff in actor.GetBuffs(x => x is SkinBuff))
-                        skinBuff.Dispell();
+                    //foreach (var skinBuff in actor.GetBuffs(x => x is SkinBuff))
+                    //    skinBuff.Dispell();
 
                     if (Dice.Value == 0)
                         return true;

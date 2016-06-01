@@ -1,36 +1,26 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Actors.Look;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Handlers.Actions;
-using System;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
-    public class SkinBuff : Buff
+    public class RescaleSkinBuff : Buff
     {
-
-        public SkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, ActorLook look, Spell spell, FightDispellableEnum dispelable)
-            : base(id, target, caster, effect, spell, false, dispelable)
+        public RescaleSkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, double rescaleFactor, int priority = 0, short? customActionId = null)
+            : base(id, target, caster, effectHandler, spell, critical, dispelable, priority, customActionId)
         {
-            Look = look;
+            RescaleFactor = rescaleFactor;
         }
 
-        public SkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, ActorLook look, Spell spell, FightDispellableEnum dispelable, int priority, short customActionId)
-            : base(id, target, caster, effect, spell, false, dispelable, priority, customActionId)
-        {
-            Look = look;
-        }
-
-        public ActorLook Look
+        public double RescaleFactor
         {
             get;
-            set;
+            private set;
         }
-        
+
         public override void Apply()
         {
             base.Apply();
