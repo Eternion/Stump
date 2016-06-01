@@ -45,11 +45,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public const int TAXCOLLECTOR_BONES = 714;
 
-        private readonly WorldMapTaxCollectorRecord m_record;
-        private readonly List<IDialog> m_openedDialogs = new List<IDialog>();
-        private string m_name;
-        private ActorLook m_look;
-        private readonly int m_contextId;
+        readonly WorldMapTaxCollectorRecord m_record;
+        readonly List<IDialog> m_openedDialogs = new List<IDialog>();
+        string m_name;
+        ActorLook m_look;
+        readonly int m_contextId;
 
         /// <summary>
         /// Create a new tax collector with a new record (no IO)
@@ -455,7 +455,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
-            return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
+            return new ExchangeGuildTaxCollectorGetMessage("1e,6g", (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
                 (short)Position.Map.SubArea.Id, Record.CallerName, Record.CallerId, Record.CallerName, GatheredExperience, (short)Bag.BagWeight, Bag.Select(x => x.GetObjectItemGenericQuantity()));
         }
 

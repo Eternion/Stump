@@ -37,13 +37,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public GuildMemberRecord Record
         {
             get;
-            private set;
         }
 
-        public int Id
-        {
-            get { return Record.CharacterId; }
-        }
+        public int Id => Record.CharacterId;
 
         /// <summary>
         ///     Null if the character isn't connected.
@@ -183,7 +179,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 Record.AccountId, 0, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_OFFLINE));
         }
 
-        public bool HasRight(GuildRightsBitEnum right) => Rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || Rights.HasFlag(right);
+        public bool HasRight(GuildRightsBitEnum right) => Rights.HasFlag(GuildRightsBitEnum.GUILD_RIGHT_BOSS) || (Rights.HasFlag(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS) && right != GuildRightsBitEnum.GUILD_RIGHT_BOSS) || Rights.HasFlag(right);
 
         public event Action<GuildMember> Connected;
         public event Action<GuildMember, Character> Disconnected;

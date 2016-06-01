@@ -585,8 +585,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 var oldBoss = Boss;
 
-                oldBoss.RankId = 0;
-                oldBoss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+                oldBoss.RankId = 2;
+                oldBoss.Rights = GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS;
 
                 // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
                 BasicHandler.SendTextInformationMessage(m_clients,
@@ -653,7 +653,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                         member.RankId = rankId;
                 }
 
-                if (from.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
+                if (from.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS) && !member.IsBoss && from.GuildMember.Id != member.Id)
                     member.Rights = (GuildRightsBitEnum)rights;
 
                 if (from.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) || (from.GuildMember == member
@@ -754,6 +754,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 GuildHandler.SendGuildInformationsMembersMessage(member.Character.Client, this);
                 GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client, this);
                 member.Character.RefreshActor();
+
+                member.Character.AddEmote(EmotesEnum.EMOTE_GUILD);
             }
 
             UpdateMember(member);
@@ -766,6 +768,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             if (!member.IsConnected)
                 return;
+
+            member.Character.RemoveEmote(EmotesEnum.EMOTE_GUILD);
 
             member.Character.GuildMember = null;
             member.Character.RefreshActor();

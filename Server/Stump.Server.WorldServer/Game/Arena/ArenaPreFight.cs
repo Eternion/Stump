@@ -168,7 +168,10 @@ namespace Stump.Server.WorldServer.Game.Arena
                     if (character1.ArenaPopup != null)
                         character1.ArenaPopup.Cancel();
 
-                    lock(m_charactersMaps)
+                    //Avoid keeping Dialog popup during fight
+                    character1.LeaveDialog();
+
+                    lock (m_charactersMaps)
                         m_charactersMaps.Add(character1, character1.Map);
 
                     if (character1.IsFighting())

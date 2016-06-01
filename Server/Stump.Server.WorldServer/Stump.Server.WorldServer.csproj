@@ -361,7 +361,9 @@
     <Compile Include="Game\Conditions\Criterions\BonusSetCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\CellOccupedCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\GuildLevelCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\GuildValidCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
     <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\InteractiveStateCriterion.cs" />
@@ -396,6 +398,7 @@
     <Compile Include="Game\Conditions\Criterions\StatsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubAreaCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubscribeCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\SubscribeZoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\UnknownCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\UnusableCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\WeightCriterion.cs" />
@@ -416,6 +419,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\GuildPotion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnSmileyPack.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreEnergy.cs" />

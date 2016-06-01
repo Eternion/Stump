@@ -106,6 +106,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 if (Guild.MotdContent != null)
                     GuildHandler.SendGuildMotdMessage(Client, Guild);
             }
+            else
+                RemoveEmote(EmotesEnum.EMOTE_GUILD);
 
             //Arena
             CheckArenaDailyProperties();
@@ -262,7 +264,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public WorldClient Client
         {
             get;
-            private set;
         }
 
         public AccountData Account
@@ -831,6 +832,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         case EmotesEnum.EMOTE_AURA_DE_NELWEEN:
                             auraLook.BonesID = 1501;
                             break;
+                        case EmotesEnum.EMOTE_GUILD:
+                            {
+                                if (Guild == null)
+                                    break;
+
+                                playerLook.AddSkin((short)Guild.Emblem.Template.SkinId);
+
+                                if (playerLook.Colors.ContainsKey(7))
+                                    playerLook.RemoveColor(7);
+                                if (playerLook.Colors.ContainsKey(8))
+                                    playerLook.RemoveColor(8);
+
+                                playerLook.AddColor(8, Guild.Emblem.SymbolColor);
+                                playerLook.AddColor(7, Guild.Emblem.BackgroundColor);
+                            }
+                            break;
                     }
 
                     if (auraLook.BonesID != 0)
@@ -916,10 +933,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Invisible;
         }
 
-        public bool ToggleInvisibility()
-        {
-            return ToggleInvisibility(!Invisible);
-        }
+        public bool ToggleInvisibility() => ToggleInvisibility(!Invisible);
 
         public void UpdateLook(bool send = true)
         {
@@ -1512,6 +1526,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             foreach (var item in Inventory.GetItems(x => x.Position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD && x.AreConditionFilled(this)))
                 Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
+            if (!PvPEnabled)
+            {
+                var amount = (ushort)Math.Round(Honor * 0.05);
+                SubHonor(amount);
+                SendServerMessage($"Vous avez perdu <b>{amount}</b> points d' honneur.");
+            }
 
             Map.Refresh(this);
             RefreshStats();
