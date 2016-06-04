@@ -23,8 +23,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         public Zone(SpellShapeEnum shape, byte radius, byte minRadius)
         {
             Radius = radius;
-            ShapeType = shape;
             MinRadius = minRadius;
+            ShapeType = shape;
         }
 
         public Zone(SpellShapeEnum shape, byte radius, byte minRadius, DirectionsEnum direction, int efficiencyMalus, int maxEfficiency)

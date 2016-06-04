@@ -553,7 +553,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             {
                 client.Send(new GameFightResumeWithSlavesMessage(
                     fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
-                    fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                    fighter.Fight.GetTriggers().Select(entry => entry.GetGameActionMark(fighter)),
                     fighter.Fight.TimeLine.RoundNumber,
                     !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
                     new Idol[0],
@@ -566,7 +566,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             {
                 client.Send(new GameFightResumeMessage(
                     fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
-                    fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                    fighter.Fight.GetTriggers().Select(entry => entry.GetGameActionMark(fighter)),
                     fighter.Fight.TimeLine.RoundNumber,
                     !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
                     new Idol[0],

@@ -34,6 +34,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
