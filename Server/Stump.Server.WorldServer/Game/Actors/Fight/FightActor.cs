@@ -2128,7 +2128,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #endregion
 
         #region Conditions
-
+        
         public virtual bool IsAlive() => Stats.Health.Total > 0;
 
         public bool IsDead() => !IsAlive();

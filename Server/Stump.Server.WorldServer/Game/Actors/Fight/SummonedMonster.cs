@@ -45,6 +45,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CanMove() => base.CanMove() && MonsterGrade.MovementPoints > 0;
 
+        public override bool CanTackle(FightActor fighter) => base.CanTackle(fighter) && Monster.Template.CanTackle;
+
         public MonsterGrade Monster
         {
             get;

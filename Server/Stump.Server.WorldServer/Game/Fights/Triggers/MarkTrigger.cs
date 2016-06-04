@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -103,6 +104,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public void Trigger(FightActor trigger)
         {
             Trigger(trigger, trigger.Cell);
+        }
+
+        public GameActionMark GetGameActionMark(FightActor fighter)
+        {
+            return DoesSeeTrigger(fighter) ? GetGameActionMark() : GetHiddenGameActionMark();
         }
 
         public abstract void Trigger(FightActor trigger, Cell targetedCell);
