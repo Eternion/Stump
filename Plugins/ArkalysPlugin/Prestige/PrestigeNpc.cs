@@ -1,20 +1,21 @@
 ﻿#region License GNU GPL
+
 // PrestigeNpc.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System.Linq;
+#endregion License GNU GPL
+
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -25,6 +26,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System.Linq;
 
 namespace ArkalysPlugin.Prestige
 {
@@ -34,14 +36,19 @@ namespace ArkalysPlugin.Prestige
 
         [Variable]
         public static int NpcId = 3003;
+
         [Variable]
         public static int MessageId = 20016;
+
         [Variable]
         public static int MessageLevelErrorId = 20019;
+
         [Variable]
         public static int MessagePrestigeMaxId = 20021;
+
         [Variable]
         public static short ReplyPrestigeAcceptId = 20017;
+
         [Variable]
         public static short ReplyPrestigeDenyId = 20018;
 
@@ -93,7 +100,7 @@ namespace ArkalysPlugin.Prestige
         {
             get
             {
-                return new [] { NpcActionTypeEnum.ACTION_TALK };
+                return new[] { NpcActionTypeEnum.ACTION_TALK };
             }
         }
 
@@ -133,5 +140,4 @@ namespace ArkalysPlugin.Prestige
             Close();
         }
     }
-
 }

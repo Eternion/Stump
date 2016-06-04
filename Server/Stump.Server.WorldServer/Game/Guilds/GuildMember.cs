@@ -1,8 +1,8 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 using NetworkGuildMember = Stump.DofusProtocol.Types.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Guilds
@@ -17,16 +17,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public GuildMember(Guild guild, Character character)
         {
             Record = new GuildMemberRecord
-                {
-                    CharacterId = character.Id,
-                    AccountId = character.Account.Id,
-                    Character = character.Record,
-                    GivenExperience = 0,
-                    GivenPercent = 0,
-                    RankId = 0,
-                    GuildId = guild.Id,
-                    Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE,
-                };
+            {
+                CharacterId = character.Id,
+                AccountId = character.Account.Id,
+                Character = character.Record,
+                GivenExperience = 0,
+                GivenPercent = 0,
+                RankId = 0,
+                GuildId = guild.Id,
+                Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE,
+            };
 
             Guild = guild;
             Character = character;
@@ -175,13 +175,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return new NetworkGuildMember(Id, Name, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
                 (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
                 GivenExperience, (sbyte)GivenPercent, (int)Rights, 0,
-                (sbyte)AlignementSide, LastConnection!= null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
+                (sbyte)AlignementSide, LastConnection != null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
                 Record.AccountId, 0, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_OFFLINE));
         }
 
         public bool HasRight(GuildRightsBitEnum right) => Rights.HasFlag(GuildRightsBitEnum.GUILD_RIGHT_BOSS) || (Rights.HasFlag(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS) && right != GuildRightsBitEnum.GUILD_RIGHT_BOSS) || Rights.HasFlag(right);
 
         public event Action<GuildMember> Connected;
+
         public event Action<GuildMember, Character> Disconnected;
 
         public void OnCharacterConnected(Character character)
@@ -225,7 +226,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void Save(ORM.Database database)
         {
-            WorldServer.Instance.IOTaskPool.ExecuteInContext(() => {
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+            {
                 if (IsNew)
                     database.Insert(Record);
                 else
@@ -234,7 +236,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 IsDirty = false;
                 IsNew = false;
             });
-            
         }
     }
 }

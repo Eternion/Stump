@@ -382,9 +382,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightSynchronizeMessage(WorldClient client, IFight fight)
         {
             client.Send(new GameFightSynchronizeMessage(
-                    fight.GetAllFighters().Select(entry => entry is SummonedClone ?
-                        ((SummonedClone)entry).GetGameFightFighterNamedInformations() :
-                        entry.GetGameFightFighterInformations(client))));
+                    fight.GetAllFighters().Select(entry => entry.GetGameFightFighterInformations(client))));
         }
 
         public static void SendFighterStatsListMessage(IPacketReceiver client, Character character)
@@ -431,18 +429,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
         {
-            var clone = fighter as SummonedClone;
-            var fighterInfos = clone != null ? clone.GetGameFightFighterNamedInformations() : fighter.GetGameFightFighterInformations(client);
-
-            client.Send(new GameFightShowFighterMessage(fighterInfos));
+            client.Send(new GameFightShowFighterMessage(fighter.GetGameFightFighterInformations(client)));
         }
 
         public static void SendGameFightRefreshFighterMessage(WorldClient client, FightActor fighter)
         {
-            var clone = fighter as SummonedClone;
-            var fighterInfos = clone != null ? clone.GetGameFightFighterNamedInformations() : fighter.GetGameFightFighterInformations(client);
-
-            client.Send(new GameFightRefreshFighterMessage(fighterInfos));
+            client.Send(new GameFightRefreshFighterMessage(fighter.GetGameFightFighterInformations(client)));
         }
 
         public static void SendGameFightRemoveTeamMemberMessage(IPacketReceiver client, FightActor fighter)
