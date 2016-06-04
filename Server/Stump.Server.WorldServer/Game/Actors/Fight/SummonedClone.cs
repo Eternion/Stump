@@ -38,17 +38,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override StatsFields Stats => m_stats;
 
-        public GameFightFighterNamedInformations GetGameFightFighterNamedInformations()
-        {
-            var casterInfos = Caster.GetGameFightFighterInformations();
-
-            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), GetGameFightMinimalStats(),
-                MovementHistory.GetEntries(2).Select(x => x.Cell.Id).ToArray(), Name, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE));
-        }
-
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
+
+            if (casterInfos is GameFightCharacterInformations)
+            {
+                var characterInfos = casterInfos as GameFightCharacterInformations;
+
+                return new GameFightCharacterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId,
+                    0, IsAlive(), GetGameFightMinimalStats(), MovementHistory.GetEntries(2).Select(x => x.Cell.Id).ToArray(),
+                    characterInfos.name, characterInfos.status, characterInfos.level, characterInfos.alignmentInfos, characterInfos.breed, characterInfos.sex);
+            }
+
             return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId,
                 0, IsAlive(), GetGameFightMinimalStats(), MovementHistory.GetEntries(2).Select(x => x.Cell.Id).ToArray());
         }

@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
         }
 
-        public EmoteItemEffect(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply) 
+        public EmoteItemEffect(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply)
             : base(effect, target, itemSet, apply)
         {
         }

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Items;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -43,6 +42,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get { return true; }
         }
+
         public override bool IsMultiAccountRestricted
         {
             get { return true; }
@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override TimeSpan GetPlacementTimeLeft()
         {
-            var timeleft = FightConfiguration.PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+            var timeleft = FightConfiguration.PlacementPhaseTime - (DateTime.Now - CreationTime).TotalMilliseconds;
 
             if (timeleft < 0)
                 timeleft = 0;
@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override bool CanCancelFight() => false;
 
-        void CalculateEarnedPevetons(FightPlayerResult result)
+        private void CalculateEarnedPevetons(FightPlayerResult result)
         {
             var pvpSeek = result.Character.Inventory.GetItems(x => x.Template.Id == (int)ItemIdEnum.ORDRE_DEXECUTION_10085).FirstOrDefault();
 
@@ -133,21 +133,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             var winnersLevel = (double)Winners.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
             var losersLevel = (double)Losers.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
 
-            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ( losersLevel / winnersLevel ));
+            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * (losersLevel / winnersLevel));
 
             if (Losers == character.Team)
                 delta = -delta;
 
-            return (short) delta;
+            return (short)delta;
         }
-
 
         public short CalculateEarnedDishonor(CharacterFighter character)
         {
             if (Draw)
                 return 0;
 
-            return character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL ? (short) 0 : (short) 1;
+            return character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL ? (short)0 : (short)1;
         }
     }
 }

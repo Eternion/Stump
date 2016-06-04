@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     [Discriminator("PvPSeek", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class PvPSeekReply : NpcReply
     {
-        TimedStack<Pair<int, int>> m_pvpSeekHistory = new TimedStack<Pair<int, int>>(60 * 10);
+        private TimedStack<Pair<int, int>> m_pvpSeekHistory = new TimedStack<Pair<int, int>>(60 * 10);
 
         public PvPSeekReply(NpcReplyRecord record)
             : base(record)

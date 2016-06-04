@@ -39,11 +39,11 @@ namespace Stump.Server.WorldServer.Game.Arena
                 kamas = Fighter.Character.ComputeWonArenaKamas();
             }
 
-            var items = amount > 0 ? new[] {(short) ItemIdEnum.KOLIZETON_12736, (short) amount} : new short[0];
+            var items = amount > 0 ? new[] { (short)ItemIdEnum.KOLIZETON_12736, (short)amount } : new short[0];
 
             var loot = new DofusProtocol.Types.FightLoot(items, kamas);
 
-            return new FightResultPlayerListEntry((short) Outcome, 0, loot, Id, Alive, (byte)Level,
+            return new FightResultPlayerListEntry((short)Outcome, 0, loot, Id, Alive, (byte)Level,
                 new FightResultAdditionalData[0]);
         }
 

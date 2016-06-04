@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 
             if (Target.HasEmote((EmotesEnum)integerEffect.Value))
                 return false;
-            
+
             UsedItems = 1;
 
             Target.AddEmote((EmotesEnum)integerEffect.Value);

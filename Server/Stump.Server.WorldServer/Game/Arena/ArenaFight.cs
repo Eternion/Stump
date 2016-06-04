@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
@@ -28,9 +28,9 @@ namespace Stump.Server.WorldServer.Game.Arena
         public override bool CanKickPlayer => false;
 
         public override void StartPlacement()
-        {            
-             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
-                            PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+        {
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
+                           PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
 
             base.StartPlacement();
 
@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public override TimeSpan GetPlacementTimeLeft()
         {
-            var timeleft = FightConfiguration.PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+            var timeleft = FightConfiguration.PlacementPhaseTime - (DateTime.Now - CreationTime).TotalMilliseconds;
 
             if (timeleft < 0)
                 timeleft = 0;
@@ -65,14 +65,16 @@ namespace Stump.Server.WorldServer.Game.Arena
         protected override List<IFightResult> GetResults()
         {
             var challengersRank =
-                (int) ChallengersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+                (int)ChallengersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             var defendersRank =
-                (int) DefendersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+                (int)DefendersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
 
-            return (from fighter in GetFightersAndLeavers().OfType<CharacterFighter>() let outcome = fighter.GetFighterOutcome() select new ArenaFightResult(fighter, outcome, fighter.Loot,
-                ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
-                    fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
-                    outcome == FightOutcomeEnum.RESULT_VICTORY)) as IFightResult).ToList();
+            return (from fighter in GetFightersAndLeavers().OfType<CharacterFighter>()
+                    let outcome = fighter.GetFighterOutcome()
+                    select new ArenaFightResult(fighter, outcome, fighter.Loot,
+                        ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
+                        fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
+                        outcome == FightOutcomeEnum.RESULT_VICTORY)) as IFightResult).ToList();
         }
 
         protected override IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver, out IFightResult leaverResult)

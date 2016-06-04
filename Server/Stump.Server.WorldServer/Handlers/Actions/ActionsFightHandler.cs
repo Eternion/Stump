@@ -33,7 +33,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
             if (summon is SummonedClone)
             {
-                fighterInfos = (summon as SummonedClone).GetGameFightFighterNamedInformations();
                 action = summon is SummonedImage ? (short)EffectsEnum.Effect_Illusions : (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE;
             }
 
