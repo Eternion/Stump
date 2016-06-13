@@ -168,6 +168,9 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
         public int GetCraftXp(RecipeRecord recipe, int amount)
         {
+            if (Id == 1)
+                return 0;
+
             var level = Level;
 
             if (level == 200)

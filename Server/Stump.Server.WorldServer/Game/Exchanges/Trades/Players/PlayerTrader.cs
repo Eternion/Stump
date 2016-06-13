@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             return amount > 0 ? MoveItemToPanel(guid, (uint)amount) : MoveItemToInventory(guid, (uint)( -amount ));
         }
 
-        public bool MoveItemToPanel(int guid, uint amount)
+        public virtual bool MoveItemToPanel(int guid, uint amount)
         {
             var playerItem = Character.Inventory[guid];
             var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             return true;
         }
 
-        public bool MoveItemToInventory(int guid, uint amount)
+        public virtual bool MoveItemToInventory(int guid, uint amount)
         {
             var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
 
