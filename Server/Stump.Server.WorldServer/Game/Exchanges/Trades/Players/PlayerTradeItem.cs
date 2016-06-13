@@ -30,14 +30,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
         private readonly BasePlayerItem m_item;
         private uint m_stack;
 
-        public PlayerTradeItem(Trader trader, BasePlayerItem item, uint stack)
+        public PlayerTradeItem(Exchanger trader, BasePlayerItem item, uint stack)
         {
             Trader = trader;
             m_item = item;
             m_stack = stack;
         }
 
-        public Trader Trader
+        public Exchanger Trader
         {
             get;
         }

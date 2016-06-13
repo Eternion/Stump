@@ -113,7 +113,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             set { m_delay = value; }
         }
 
-        public virtual int Priority => Effect.Priority;
+        private int? m_customPriority;
+        public virtual int Priority
+        {
+            get { return m_customPriority ?? Effect.Priority; }
+            set { m_customPriority = value; }
+        }
 
         public Cell CastCell
         {

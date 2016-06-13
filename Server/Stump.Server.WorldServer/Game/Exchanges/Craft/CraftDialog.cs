@@ -81,7 +81,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             }
 
             var xp = Job.GetCraftXp(recipe, Amount);
-            Job.Experience += xp;
+
+            if (xp > 0)
+                Job.Experience += xp;
 
             if (!ItemManager.Instance.HasToBeGenerated(recipe.ItemTemplate))
             {

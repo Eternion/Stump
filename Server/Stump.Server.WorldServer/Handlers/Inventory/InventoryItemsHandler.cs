@@ -327,7 +327,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeKamaModifiedMessage(remote, kamasAmount));
         }
 
-        public static void SendObjectAddedMessage(IPacketReceiver client, BasePlayerItem addedItem)
+        public static void SendObjectAddedMessage(IPacketReceiver client, IItem addedItem)
         {
             client.Send(new ObjectAddedMessage(addedItem.GetObjectItem()));
         }
@@ -352,7 +352,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObjectsDeletedMessage(guids.Select(entry => entry).ToList()));
         }
 
-        public static void SendObjectModifiedMessage(IPacketReceiver client, BasePlayerItem item)
+        public static void SendObjectModifiedMessage(IPacketReceiver client, IItem item)
         {
             client.Send(new ObjectModifiedMessage(item.GetObjectItem()));
         }

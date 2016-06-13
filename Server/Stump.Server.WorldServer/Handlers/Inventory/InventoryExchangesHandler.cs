@@ -853,5 +853,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(new ExchangeItemAutoCraftStopedMessage((sbyte)reason));
         }
+
+        public static void SendExchangeStartOkRunesTradeMessage(IPacketReceiver client)
+        {
+            client.Send(new ExchangeStartOkRunesTradeMessage());
+        }
+
+        public static void SendDecraftResultMessage(IPacketReceiver client, IEnumerable<DecraftedItemStackInfo> itemsInfo )
+        {
+            client.Send(new DecraftResultMessage(itemsInfo));
+        }
     }
 }
