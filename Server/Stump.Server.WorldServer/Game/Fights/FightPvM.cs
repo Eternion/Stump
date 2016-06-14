@@ -71,13 +71,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             var results = new List<IFightResult>();
             results.AddRange(GetFightersAndLeavers().Where(entry => entry.HasResult).Select(entry => entry.GetFightResult()));
 
-            if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
-                results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));
+            var taxCollectors = Map.SubArea.Maps.Select(x => x.TaxCollector).Where(x => x != null && x.CanGatherLoots());
+            results.AddRange(taxCollectors.Select(x => new TaxCollectorProspectingResult(x, this)));
 
             foreach (var team in m_teams)
             {
                 IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead() && entry.CanDrop()).ToList();
-                var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
+                var looters = results.Where(x => x.CanLoot(team) && !(x is TaxCollectorProspectingResult)).OrderByDescending(entry => entry.Prospecting).
+                    Concat(results.OfType<TaxCollectorProspectingResult>().Where(x => x.CanLoot(team)).OrderByDescending(x => x.Prospecting)); // tax collector loots at the end
                 var teamPP = team.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
 

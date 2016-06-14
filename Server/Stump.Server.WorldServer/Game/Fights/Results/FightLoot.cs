@@ -9,6 +9,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
     {
         private readonly Dictionary<int, DroppedItem> m_items = new Dictionary<int, DroppedItem>();
 
+        public FightLoot()
+        {
+            
+        }
+        
         public IReadOnlyDictionary<int, DroppedItem> Items
         {
             get { return new ReadOnlyDictionary<int, DroppedItem>(m_items); }

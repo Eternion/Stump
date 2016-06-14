@@ -709,7 +709,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return false;
             }
 
-            if (!skill.IsEnabled(character))
+            if (!skill.IsEnabled(character) || character.CurrentUsedSkill != null)
             {
                 InteractiveHandler.SendInteractiveUseErrorMessage(character.Client, interactiveId, skillId);
                 return false;
@@ -720,7 +720,10 @@ namespace Stump.Server.WorldServer.Game.Maps
             var delay = skill.StartExecute(character);
 
             if (delay > 0)
+            {
+                character.SetCurrentSkill(skill);
                 Area.CallDelayed(delay, () => InteractiveUsedCallback(character, skill));
+            }
             else if (delay == 0)
                 InteractiveUsedCallback(character, skill);
 
@@ -736,6 +739,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private void InteractiveUsedCallback(Character character, Skill skill)
         {
             skill.EndExecute(character);
+            character.ResetCurrentSkill();
 
             OnInteractiveUseEnded(character, skill.InteractiveObject, skill);
         }

@@ -70,6 +70,8 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using Stump.Server.WorldServer.Game.Interactives;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
@@ -359,6 +361,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion Jobs
+
+        #region Interactives
+
+        public InteractiveObject CurrentUsedInteractive => CurrentUsedSkill?.InteractiveObject;
+
+        public Skill CurrentUsedSkill
+        {
+            get;
+            private set;
+        }
+            
+        public void SetCurrentSkill(Skill skill)
+        {
+            CurrentUsedSkill = skill;
+        }
+
+        public void ResetCurrentSkill()
+        {
+            CurrentUsedSkill = null;
+        }
+
+        #endregion
 
         #region Position
 
@@ -2169,6 +2193,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (IsRiding() && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
                 Mount.Dismount(this);
+
+            ResetCurrentSkill();
 
             foreach (var job in Jobs.Where(x => x.IsIndexed))
             {

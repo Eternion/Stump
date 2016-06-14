@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             {
                 effectHandler.EffectZone = new Zone(effectHandler.Effect.ZoneShape, Shape.Size);
 
-                if (!effectHandler.GetAffectedActors().Any())
+                if (!effectHandler.GetAffectedActors().Any() && effectHandler.IsValidTarget(trigger))
                     effectHandler.SetAffectedActors(new[] {trigger});
             }
 
