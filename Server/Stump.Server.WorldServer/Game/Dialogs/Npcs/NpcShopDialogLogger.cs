@@ -35,16 +35,21 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             if (!base.BuyItem(itemId, amount)) 
                 return false;
 
+            if (Token == null)
+                return true;
+
             var itemToSell = Items.FirstOrDefault(entry => entry.Item.Id == itemId);
 
             var document = new BsonDocument
             {
                 { "AcctId", Character.Account.Id },
+                { "AcctName", Character.Account.Login },
                 { "CharacterId", Character.Id },
+                { "CharacterName", Character.Name },
                 { "ItemId", itemToSell.ItemId },
+                { "ItemName", itemToSell.Item.Name },
                 { "Amount", amount },
                 { "FinalPrice", (itemToSell.Price * amount) },
-                { "IsToken", Token != null },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
             };
 

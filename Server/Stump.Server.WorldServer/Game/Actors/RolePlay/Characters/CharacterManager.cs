@@ -230,7 +230,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
 
             if (guildMember != null)
-                GuildManager.Instance.DeleteGuildMember(guildMember);
+                guildMember.Guild.RemoveMember(guildMember);
 
             Database.Delete(character);
             client.Characters.Remove(character);

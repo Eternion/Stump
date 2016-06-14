@@ -130,10 +130,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public event Action<Map, InteractiveObject> InteractiveSpawned;
 
-
         public event Action<Map, InteractiveObject> InteractiveUnSpawned;
-
-
 
         public event Action<Map, Character, InteractiveObject, Skill> InteractiveUsed;
 
@@ -150,7 +147,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUseEnded(Character user, InteractiveObject interactive, Skill skill)
         {
-            InteractiveHandler.SendInteractiveUseEndedMessage(Clients, interactive, skill);
+            //InteractiveHandler.SendInteractiveUseEndedMessage(Clients, interactive, skill);
 
             var handler = InteractiveUseEnded;
             if (handler != null)
@@ -701,7 +698,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return false;
             }
 
-            Skill skill = interactiveObject.GetSkill(skillId);
+            var skill = interactiveObject.GetSkill(skillId);
 
             if (skill == null)
             {
@@ -726,8 +723,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
             else if (delay == 0)
                 InteractiveUsedCallback(character, skill);
-
-            if (delay < 0)
+            else if (delay < 0)
             {
                 InteractiveHandler.SendInteractiveUseErrorMessage(character.Client, interactiveId, skillId);
                 return false;
@@ -1611,12 +1607,12 @@ namespace Stump.Server.WorldServer.Game.Maps
                 mapObstacles.AddRange(((AnimateTrigger)trigger).Obstacles);
             }
 
-            foreach (var skill in GetInteractiveObjects().Select(x => x.GetSkills()).Where(skill => skill is SkillAnimate))
+            foreach (var skill in GetInteractiveObjects().SelectMany(x => x.GetSkills()).Where(skill => skill is SkillAnimate))
             {
                 mapObstacles.AddRange(((SkillAnimate)skill).Obstacles);
             }
 
-            return mapObstacles;
+            return mapObstacles.OrderByDescending(x => x.state == (sbyte)MapObstacleStateEnum.OBSTACLE_OPENED).DistinctBy(x => x.obstacleCellId).ToList();
         }
 
         public void MoveCharactersToWalkableCell()

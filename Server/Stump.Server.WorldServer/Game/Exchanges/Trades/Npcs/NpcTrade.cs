@@ -95,7 +95,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
             var document = new BsonDocument
                     {
                         { "NpcId", SecondTrader.Npc.TemplateId },
-                        { "PlayerId", FirstTrader.Id },
+                        { "PlayerId", FirstTrader.Character.Id },
+                        { "PlayerName", FirstTrader.Character.Name },
                         { "NpcKamas", SecondTrader.Kamas },
                         { "PlayerItems", FirstTrader.ItemsString },
                         { "NpcItems", SecondTrader.ItemsString },

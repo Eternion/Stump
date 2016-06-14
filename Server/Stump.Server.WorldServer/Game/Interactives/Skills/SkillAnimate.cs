@@ -90,7 +90,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public override int StartExecute(Character character)
         {
             if (!Record.IsConditionFilled(character))
+            {
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
                 return -1;
+            }
 
             var map = World.Instance.GetMap(MapId);
 
