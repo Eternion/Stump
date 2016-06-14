@@ -35,17 +35,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            /* Check be the boss of a Guild */
-            var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
-
-            if (guildMember != null && guildMember.IsBoss)
-            {
-                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
-                client.DisconnectLater(1000);
-                return;
-            }
-
-
             var secretAnswerHash = message.secretAnswerHash;
 
             /* Level < 20 or > 20 and Good secret Answer */
