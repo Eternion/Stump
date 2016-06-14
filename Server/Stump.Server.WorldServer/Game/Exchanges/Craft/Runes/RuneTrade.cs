@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
                     while(amount > 0)
                     {
-                        var rune = runes.Last(x => x.Amount <= amount);
+                        var rune = runes.LastOrDefault(x => x.Amount <= amount);
 
                         if (rune == null)
                             break;

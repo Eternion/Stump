@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             TaxCollector = taxCollector;
             Fight = fight;
-            Loot = fight.TaxCollectorLoot;
+            Loot = new FightLoot();
         }
 
         public TaxCollectorNpc TaxCollector

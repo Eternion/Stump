@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -7,6 +8,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace ArkalysPlugin
@@ -50,7 +52,13 @@ namespace ArkalysPlugin
             if (fight is FightPvM)
             {
                 fight.GeneratingResults += OnGeneratingResults;
+                fight.ResultsGenerated += OnResultsGenerated;
             }
+        }
+
+        private static void OnResultsGenerated(IFight fight, List<IFightResult> results)
+        {
+            
         }
 
         private static void OnGeneratingResults(IFight fight)
@@ -72,7 +80,8 @@ namespace ArkalysPlugin
                     player.Loot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
             }
 
-            if (fight.Map.TaxCollector == null)
+            // TODO
+            /*if (fight.Map.TaxCollector == null)
                 return;
 
             var item = fight.Map.TaxCollector.Bag.TryGetItem(OrbItemTemplate);
@@ -89,7 +98,7 @@ namespace ArkalysPlugin
             if (collectorOrbs > limit)
                 collectorOrbs = (uint)limit;
 
-            fight.TaxCollectorLoot.AddItem(new DroppedItem(OrbItemTemplateId, collectorOrbs));
+            fight.TaxCollectorLoot.AddItem(new DroppedItem(OrbItemTemplateId, collectorOrbs));*/
         }
 
         private static uint GetMonsterDroppedOrbs(MonsterFighter monster)

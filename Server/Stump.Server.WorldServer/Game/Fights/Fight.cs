@@ -174,11 +174,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        FightLoot TaxCollectorLoot
-        {
-            get;
-        }
-
         SequenceTypeEnum Sequence
         {
             get;
@@ -481,7 +476,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             ChallengersTeam.FighterRemoved += OnFighterRemoved;
 
             CreationTime = DateTime.Now;
-            TaxCollectorLoot = new FightLoot();
         }
 
         #endregion Constructor
@@ -659,12 +653,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         public bool BladesVisible
-        {
-            get;
-            private set;
-        }
-
-        public FightLoot TaxCollectorLoot
         {
             get;
             private set;
