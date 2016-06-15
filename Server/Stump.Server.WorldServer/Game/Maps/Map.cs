@@ -245,7 +245,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
         private TimedTimerEntry m_autoMoveTimer;
-        private TimedTimerEntry m_regrowRessourcesTimer;
 
         private Map m_bottomNeighbour;
         private Map m_leftNeighbour;
@@ -646,11 +645,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveSpawned(InteractiveObject interactive)
         {
-            if (m_regrowRessourcesTimer == null && interactive.GetSkills().Any(x => x is SkillHarvest))
-            {
-                m_regrowRessourcesTimer = Area.CallPeriodically(SkillHarvest.RegrowTime/4, CheckHarvestRessourcesState);
-            }
-
             Action<Map, InteractiveObject> handler = InteractiveSpawned;
             if (handler != null)
                 handler(this, interactive);
@@ -745,19 +739,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             foreach(var character in GetAllCharacters())
             {
                 InteractiveHandler.SendInteractiveElementUpdatedMessage(character.Client, character, interactive);
-            }
-        }
-
-        private void CheckHarvestRessourcesState()
-        {
-            foreach(var io in m_interactives.Values)
-            {
-                foreach (var skill in io.GetSkills().OfType<SkillHarvest>())
-                {
-                    if (skill.Harvested && skill.HarvestedSince != null &&
-                        (DateTime.Now - skill.HarvestedSince.Value).TotalMilliseconds > SkillHarvest.RegrowTime)
-                        skill.SetHarvestedState(false);
-                }
             }
         }
 
@@ -1800,7 +1781,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 new HouseInformations[0],
                 m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations(character) as GameRolePlayActorInformations),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
-                m_interactives.Where(entry => entry.Value.CanBeSee(character)).Where(x => x.Value.Spawn.Animated).Select(entry => entry.Value.GetStatedElement()),
+                m_interactives.Where(entry => entry.Value.CanBeSee(character)).Where(x => x.Value.Animated).Select(entry => entry.Value.GetStatedElement()),
                 GetMapObstacles(),
                 m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),
                 (short)Position.X,

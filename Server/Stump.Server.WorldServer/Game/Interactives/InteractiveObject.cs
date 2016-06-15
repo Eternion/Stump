@@ -20,7 +20,6 @@ namespace Stump.Server.WorldServer.Game.Interactives
         {
             Spawn = spawn;
             Position = new ObjectPosition(map, spawn.CellId);
-            Animated = spawn.Animated;
 
             GenerateSkills();
         }
@@ -30,10 +29,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
             get;
         }
 
-        public bool Animated
-        {
-            get;
-        }
+        public bool Animated => Spawn.Animated || m_skills.Values.Any(x => x is SkillHarvest);
 
         public InteractiveStateEnum State
         {
@@ -54,6 +50,9 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         public void SetInteractiveState(InteractiveStateEnum state)
         {
+            if (state == InteractiveStateEnum.STATE_ANIMATED && !Animated)
+                return;
+
             State = state;
 
             InteractiveHandler.SendStatedElementUpdatedMessage(Map.Clients, Id, Cell.Id, (int) State);
@@ -96,7 +95,12 @@ namespace Stump.Server.WorldServer.Game.Interactives
             => m_skills.Values.Where(entry => entry is SkillHarvest && !entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
 
         public InteractiveElement GetInteractiveElement(Character character)
-            => new InteractiveElement(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
+        {
+            if (m_skills.Values.Any(x => x is ISkillWithAgeBonus))
+                return new InteractiveElementWithAgeBonus(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character), m_skills.Values.OfType<ISkillWithAgeBonus>().Max(x => x.AgeBonus));
+
+            return new InteractiveElement(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
+        }
 
         public StatedElement GetStatedElement() => new StatedElement(Id, Cell.Id, (int)State);
     }
