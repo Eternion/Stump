@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
+using Stump.Server.WorldServer.Game.Items.Player;
 
-namespace Stump.Server.WorldServer.Game.Exchanges.Craft
+namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 {
     public class RuneTrader : PlayerTrader
     {
@@ -15,18 +14,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         {
         }
 
-        public override bool MoveItemToPanel(int guid, uint amount)
+        public override bool MoveItemToPanel(BasePlayerItem item, int amount)
         {
-            var playerItem = Character.Inventory[guid];
-            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
-            
-            if (playerItem == null)
-                return false;
+            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == item.Guid);
 
             if (Items.Count >= MAX_ITEMS_COUNT && tradeItem == null)
                 return false;
 
-            return base.MoveItemToPanel(guid, amount);
+            return base.MoveItemToPanel(item, amount);
         }
 
         public override bool SetKamas(int amount)

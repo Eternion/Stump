@@ -167,7 +167,7 @@ namespace ArkalysPlugin.Npcs
                 }
                 else
                 {
-                    FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
+                    FirstTrader.MoveItemToInventory(item, (int) item.Stack);
                 }
             }
 

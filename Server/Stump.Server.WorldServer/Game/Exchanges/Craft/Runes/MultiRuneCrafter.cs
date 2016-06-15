@@ -1,6 +1,6 @@
 ﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
-namespace Stump.Server.WorldServer.Game.Exchanges.Craft
+namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 {
     public class MultiRuneCrafter : Crafter
     {

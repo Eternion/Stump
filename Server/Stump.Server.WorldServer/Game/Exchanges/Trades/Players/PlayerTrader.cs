@@ -1,6 +1,7 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
@@ -24,80 +25,74 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             get { return Character.Id; }
         }
 
-        public override bool MoveItem(int guid, int amount)
+
+        public override bool MoveItem(int id, int quantity)
         {
-            if (amount == 0)
-                return false;
-
-            return amount > 0 ? MoveItemToPanel(guid, (uint)amount) : MoveItemToInventory(guid, (uint)( -amount ));
-        }
-
-        public virtual bool MoveItemToPanel(int guid, uint amount)
-        {
-            var playerItem = Character.Inventory[guid];
-            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
-
-            ToggleReady(false);
-
-            if (playerItem == null)
-                return false;
-
-            if (amount > playerItem.Stack || amount <= 0)
-                return false;
-
-            if ((playerItem.IsLinkedToAccount() || playerItem.IsLinkedToPlayer()) && Trade is PlayerTrade)
+            if (quantity > 0)
             {
-                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, playerItem.Template.Id, playerItem.Guid);
-                return false;
-            }
+                var item = Character.Inventory[id];
 
-            if (tradeItem != null)
-            {
-                if (playerItem.Stack < tradeItem.Stack + amount)
+                if (item == null)
                     return false;
 
-                var currentStack = tradeItem.Stack;
-                tradeItem.Stack += amount;
-
-                if (tradeItem.Stack <= 0)
-                    RemoveItem(tradeItem);
-
-                OnItemMoved(tradeItem, true, (int) (tradeItem.Stack - currentStack));
-
-                return true;
+                return MoveItemToPanel(item, quantity);
             }
+            else
+            {
+                var item = Items.FirstOrDefault(x => x.Guid == id);
 
-            tradeItem = new PlayerTradeItem(this, playerItem, amount);
-            AddItem(tradeItem);
+                if (item == null)
+                    return false;
 
-            OnItemMoved(tradeItem, false, (int) amount);
+                return MoveItemToInventory(item, -quantity);
+            }
+        }
+
+        public virtual bool MoveItemToInventory(TradeItem item, int quantity)
+        {
+            if (quantity >= item.Stack || quantity == 0)
+            {
+                if (RemoveItem(item))
+                    OnItemMoved(item, true, quantity);
+            }
+            else
+            {
+                item.Stack -= (uint)quantity;
+                OnItemMoved(item, true, quantity);
+            }
 
             return true;
         }
 
-        public virtual bool MoveItemToInventory(int guid, uint amount)
+        public virtual bool MoveItemToPanel(BasePlayerItem item, int quantity)
         {
-            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
-
-            if (amount == 0)
+            if (quantity <= 0 || quantity > item.Stack)
                 return false;
 
-            ToggleReady(false);
-
-            if (tradeItem == null)
+            if ((item.IsLinkedToAccount() || item.IsLinkedToPlayer()) && Trade is PlayerTrade)
+            {
+                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, item.Template.Id, item.Guid);
                 return false;
-
-            if (tradeItem.Stack <= amount)
-            {
-                RemoveItem(tradeItem);
-                tradeItem.Stack = 0;
-            }
-            else
-            {
-                tradeItem.Stack -= amount;
             }
 
-            OnItemMoved(tradeItem, tradeItem.Stack != 0, (int)-amount);
+            var existingItem = Items.FirstOrDefault(x => x.Guid == item.Guid);
+            if (existingItem != null)
+            {
+                if (existingItem.Stack + quantity > item.Stack)
+                    quantity = (int)(item.Stack - existingItem.Stack);
+
+                existingItem.Stack += (uint)quantity;
+
+                OnItemMoved(existingItem, true, quantity);
+
+                return true;
+            }
+
+
+            var newItem = new PlayerTradeItem(this, item, (uint)quantity);
+            AddItem(newItem);
+            OnItemMoved(newItem, false, quantity);
+
             return true;
         }
 

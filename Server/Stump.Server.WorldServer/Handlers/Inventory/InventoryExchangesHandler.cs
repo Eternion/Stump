@@ -31,6 +31,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Dialogs.Jobs;
 using Stump.Server.WorldServer.Game.Exchanges.Bank;
+using Stump.Server.WorldServer.Game.Exchanges.Craft.Runes;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {

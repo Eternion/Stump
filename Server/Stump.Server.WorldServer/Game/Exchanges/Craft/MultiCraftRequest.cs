@@ -1,6 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs;
+using Stump.Server.WorldServer.Game.Exchanges.Craft.Runes;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;

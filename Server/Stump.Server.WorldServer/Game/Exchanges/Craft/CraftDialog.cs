@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             if (recipe.JobId != Job.Id)
                 return false;
 
-            if (recipe.ResultLevel > Job.Level)
+            if (recipe.ResultLevel > Job.Level && Job.Id != (int)JobEnum.BASE)
                 return false;
 
             bool valid = true;
@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 return false;
             }
 
-            if (recipe.ResultLevel > Job.Level)
+            if (recipe.ResultLevel > Job.Level && Job.Id != (int)JobEnum.BASE)
             {
                 InventoryHandler.SendExchangeCraftResultWithObjectIdMessage(Clients, ExchangeCraftResultEnum.CRAFT_FAILED, recipe.ItemTemplate);
                 return false;
