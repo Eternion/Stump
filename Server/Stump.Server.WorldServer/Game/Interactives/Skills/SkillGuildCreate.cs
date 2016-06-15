@@ -1,4 +1,5 @@
-﻿using Stump.Server.BaseServer.Database;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
@@ -13,12 +14,16 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
         }
 
-        public override bool IsEnabled(Character character) => base.IsEnabled(character) && Record.IsConditionFilled(character);
-
         public override int StartExecute(Character character)
         {
             if (character.IsBusy())
                 return -1;
+
+            if (!Record.IsConditionFilled(character))
+            {
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
+                return -1;
+            }
 
             var panel = new GuildCreationPanel(character);
             panel.Open();

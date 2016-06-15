@@ -18,10 +18,14 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
         }
 
-        public override bool IsEnabled(Character character) => Record.IsConditionFilled(character);
-
         public override int StartExecute(Character character)
         {
+            if (!Record.IsConditionFilled(character))
+            {
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
+                return -1;
+            }
+
             character.Teleport(GetPosition());
             return base.StartExecute(character);
         }

@@ -131,20 +131,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public ReadOnlyCollection<GuildMember> Members
-        {
-            get { return m_members.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<GuildMember> Members => m_members.AsReadOnly();
 
-        public WorldClientCollection Clients
-        {
-            get { return m_clients; }
-        }
+        public WorldClientCollection Clients => m_clients;
 
-        public ReadOnlyCollection<TaxCollectorNpc> TaxCollectors
-        {
-            get { return m_taxCollectors.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<TaxCollectorNpc> TaxCollectors => m_taxCollectors.AsReadOnly();
 
         public GuildRecord Record
         {
@@ -604,12 +595,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool KickMember(GuildMember from, GuildMember kickedMember)
         {
-            if (m_members.Count == 1)
-            {
-                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
-                return true;
-            }
-
             var leave = from.Id == kickedMember.Id;
 
             if (!from.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) && !leave)
@@ -740,6 +725,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 m_clients.Remove(member.Character.Client);
 
             OnMemberRemoved(member);
+
             return true;
         }
 
@@ -765,6 +751,24 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             GuildManager.Instance.DeleteGuildMember(member);
             UnBindMemberEvents(member);
+
+            if (Members.Count == 0)
+            {
+                GuildManager.Instance.DeleteGuild(this);
+            }
+            else if (member.IsBoss)
+            {
+                var newBoss = Members.OrderBy(x => x.RankId).FirstOrDefault();
+                if (newBoss != null)
+                {
+                    SetBoss(newBoss);
+
+                    // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
+                    BasicHandler.SendTextInformationMessage(m_clients,
+                        TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199,
+                        newBoss.Name, member.Name, Name);
+                }
+            }
 
             if (!member.IsConnected)
                 return;

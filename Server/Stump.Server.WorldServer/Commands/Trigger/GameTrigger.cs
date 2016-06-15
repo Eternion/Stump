@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using System.Linq;
 using MongoDB.Bson;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
@@ -25,18 +24,9 @@ namespace Stump.Server.WorldServer.Commands.Trigger
             Character = character;
         }
 
-        public override RoleEnum UserRole
-        {
-            get { return Character.UserGroup.Role; }
-        }
+        public override RoleEnum UserRole => Character.UserGroup.Role;
 
-        public override bool CanFormat
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool CanFormat => true;
 
         public Character Character
         {
@@ -44,10 +34,7 @@ namespace Stump.Server.WorldServer.Commands.Trigger
             protected set;
         }
 
-        public override bool CanAccessCommand(CommandBase command)
-        {
-            return Character.UserGroup.IsCommandAvailable(command);
-        }
+        public override bool CanAccessCommand(CommandBase command) => Character.UserGroup.IsCommandAvailable(command);
 
         public override void Log()
         {
@@ -57,7 +44,9 @@ namespace Stump.Server.WorldServer.Commands.Trigger
             var document = new BsonDocument
             {
                 { "AcctId", Character.Account.Id },
+                { "AcctName", Character.Account.Login },
                 { "CharacterId", Character.Id },
+                { "CharacterName", Character.Name },
                 { "Command", BoundCommand.Aliases[0] },
                 { "Parameters", Args.String },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }

@@ -1,0 +1,46 @@
+<project outputDir="Confused" baseDir="bin\x86\Debug-uptodate" xmlns="http://confuser.codeplex.com">
+  <module path="Microsoft.Owin.dll" />
+  <module path="Microsoft.Owin.Hosting.dll" />
+  <module path="MongoDB.Bson.dll" />
+  <module path="MongoDB.Driver.Core.dll" />
+  <module path="MongoDB.Driver.dll" />
+  <module path="MongoDB.Driver.Legacy.dll" />
+  <module path="Newtonsoft.Json.dll" />
+  <module path="NLog.dll" />
+  <module path="Owin.dll" />
+  <module path="protobuf-net.dll" />
+  <module path="ServiceStack.Text.dll" />
+  <module path="Stump.Core.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Classes.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.D2oClasses.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Enums.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.DofusProtocol.Messages.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.ORM.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.Server.BaseServer.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.Server.WorldServer.dll">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="Stump.Tools.SpellsExplorer.exe">
+    <rule pattern="true" preset="maximum" inherit="false" />
+  </module>
+  <module path="SwfLib.dll" />
+  <module path="System.Net.Http.Formatting.dll" />
+  <module path="System.Web.Http.dll" />
+  <module path="System.Web.Http.Owin.dll" />
+  <module path="TreeSharp.dll" />
+  <module path="zlib.net.dll" />
+</project>

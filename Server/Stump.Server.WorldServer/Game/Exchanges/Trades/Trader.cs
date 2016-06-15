@@ -55,10 +55,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
             get { return m_items.AsReadOnly(); }
         }
 
-        public string ItemsString
-        {
-            get { return string.Join("|", m_items.Select(item => item.Template.Id + "_" + item.Stack)); }
-        }
+        public string ItemsString => string.Join("|", m_items.Select(item => item.Template.Id + "_" + item.Stack));
 
         public abstract int Id
         {

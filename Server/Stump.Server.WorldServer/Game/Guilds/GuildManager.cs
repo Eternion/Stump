@@ -47,6 +47,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(1);
 
+
+            foreach (var guild in m_guilds.Where(x => x.Value.Members.Count == 0).ToList())
+                DeleteGuild(guild.Value);
+
             World.Instance.RegisterSaveableInstance(this);
         }
 

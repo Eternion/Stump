@@ -10,6 +10,9 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Social;
+using MongoDB.Bson;
+using Stump.Server.BaseServer.Logging;
+using System.Globalization;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
 {
@@ -67,6 +70,21 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE
                 && sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_PRIVATE || !sender.FriendsBook.IsFriend(receiver.Account.Id))
                 sender.SetStatus(PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
+
+            var document = new BsonDocument
+                    {
+                        { "SenderId", sender.Id },
+                        { "SenderName", sender.Name },
+                        { "SenderAccountId", sender.Account.Id },
+                        { "ReceiverId", receiver.Id },
+                        { "ReceiverName", receiver.Name },
+                        { "ReceiverAccountId", receiver.Account.Id },
+                        { "Message", message.content },
+                        { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+            MongoLogger.Instance.Insert("Chats", document);
 
             //Send to receiver
             SendChatServerMessage(receiver.Client, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
@@ -129,6 +147,21 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE
                 && sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_PRIVATE || !sender.FriendsBook.IsFriend(receiver.Account.Id))
                 sender.SetStatus(PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
+
+            var document = new BsonDocument
+                    {
+                        { "SenderId", sender.Id },
+                        { "SenderName", sender.Name },
+                        { "SenderAccountId", sender.Account.Id },
+                        { "ReceiverId", receiver.Id },
+                        { "ReceiverName", receiver.Name },
+                        { "ReceiverAccountId", receiver.Account.Id },
+                        { "Message", message.content },
+                        { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+            MongoLogger.Instance.Insert("Chats", document);
 
             //Send to receiver
             SendChatServerWithObjectMessage(receiver.Client, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content, "", message.objects);

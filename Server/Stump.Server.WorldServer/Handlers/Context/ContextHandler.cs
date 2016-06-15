@@ -57,7 +57,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (message is GameCautiousMapMovementRequestMessage)
                 movementPath.SetWalk();
 
-            client.Character.StartMove(movementPath);
+            if (!client.Character.StartMove(movementPath))
+                SendGameMapNoMovementMessage(client, (short)client.Character.Position.Point.X, (short)client.Character.Position.Point.Y);
         }
 
         [WorldHandler(GameMapMovementConfirmMessage.Id)]
@@ -85,6 +86,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameMapNoMovementMessage(IPacketReceiver client)
         {
             client.Send(new GameMapNoMovementMessage());
+        }
+
+        public static void SendGameMapNoMovementMessage(IPacketReceiver client, short cellX, short cellY)
+        {
+            client.Send(new GameMapNoMovementMessage(cellX, cellY));
         }
 
         public static void SendGameContextCreateMessage(IPacketReceiver client, sbyte context)
