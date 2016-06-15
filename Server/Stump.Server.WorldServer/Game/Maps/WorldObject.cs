@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public SubArea SubArea => Position != null && Position.Map != null ? Position.Map.SubArea : null;
 
-        public Area Area => Position != null && Position.Map != null ? Position.Map.Area : null;
+        public Area Area => Position != null && Position.Map != null && Position.Map.Area != null ? Position.Map.Area : null;
 
         public SuperArea SuperArea => Position != null && Position.Map != null ? Position.Map.SuperArea : null;
 

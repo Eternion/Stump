@@ -350,7 +350,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildMotdMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildMotdMessage(guild.MotdContent, guild.MotdDate.GetUnixTimeStamp(), guild.MotdMember.Id, guild.MotdMember.Name));
+            client.Send(new GuildMotdMessage(guild.MotdContent, guild.MotdDate.GetUnixTimeStamp(), guild.MotdMember != null ? guild.MotdMember.Id : 0, guild.MotdMember != null ? guild.MotdMember.Name : "Unknown"));
         }
     }
 }

@@ -101,10 +101,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public bool IsBoss
-        {
-            get { return RankId == 1; }
-        }
+        public bool IsBoss => RankId == 1;
 
         public string Name
         {

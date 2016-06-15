@@ -157,7 +157,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var document = new BsonDocument
             {
                 { "AcctId", Account.Id },
+                { "AcctName", Account.Login },
                 { "CharacterId", Id },
+                { "CharacterName", Name },
                 { "IPAddress", Client.IP },
                 { "Action", "Login" },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
@@ -203,7 +205,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var document = new BsonDocument
             {
                 { "AcctId", Client.Account.Id },
+                { "AcctName", Client.Account.Login },
                 { "CharacterId", Id },
+                { "CharacterName", Name },
                 { "IPAddress", Client.IP },
                 { "Action", "Loggout" },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
