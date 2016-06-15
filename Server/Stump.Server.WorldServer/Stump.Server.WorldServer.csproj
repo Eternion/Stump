@@ -630,6 +630,7 @@
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
     <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
+    <Compile Include="Game\Interactives\Skills\ISkillWithAgeBonus.cs" />
     <Compile Include="Game\Interactives\Skills\SkillAnimate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillCraft.cs" />
     <Compile Include="Game\Interactives\Skills\SkillDecraftItem.cs" />

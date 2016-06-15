@@ -7,12 +7,22 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Core.Mathematics;
+using Stump.Core.Timers;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Jobs;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    public class SkillHarvest : Skill
+    public class SkillHarvest : Skill, ISkillWithAgeBonus
     {
+        [Variable(true)]
+        public static int StarsBonusRate = 1800;
+
+        [Variable(true)]
+        public static short StarsBonusLimit = 200;
+
+        public const short ClientStarsBonusLimit = 200;
+
         [Variable]
         public static int HarvestTime = 3000;
 
@@ -20,27 +30,49 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public static int RegrowTime = 60000;
 
         ItemTemplate m_harvestedItem;
+        private TimedTimerEntry m_regrowTimer;
 
         public SkillHarvest(int id, InteractiveSkillTemplate skillTemplate, InteractiveObject interactiveObject)
             : base(id, skillTemplate, interactiveObject)
         {
             m_harvestedItem = ItemManager.Instance.TryGetTemplate(SkillTemplate.GatheredRessourceItem);
+            CreationDate = DateTime.Now;
 
             if (m_harvestedItem == null)
                 throw new Exception($"Harvested item {SkillTemplate.GatheredRessourceItem} doesn't exist");
         }
 
-        public bool Harvested
+        public bool Harvested => HarvestedSince.HasValue && (DateTime.Now - HarvestedSince).Value.TotalMilliseconds < RegrowTime;
+
+        public DateTime CreationDate
         {
             get;
             private set;
         }
+
+        public DateTime EnabledSince => HarvestedSince + TimeSpan.FromMilliseconds(RegrowTime) ?? CreationDate;
 
         public DateTime? HarvestedSince
         {
             get;
             private set;
         }
+
+
+        public short AgeBonus
+        {
+            get
+            {
+                var bonus = (DateTime.Now - EnabledSince).TotalSeconds / (StarsBonusRate);
+
+                if (bonus > StarsBonusLimit)
+                    bonus = StarsBonusLimit;
+
+                return (short)bonus;
+            }
+            set { HarvestedSince = DateTime.Now -TimeSpan.FromMilliseconds(RegrowTime) - TimeSpan.FromSeconds(value * StarsBonusRate); }
+        }
+
 
         public override int GetDuration(Character character, bool forNetwork = false) => HarvestTime;
 
@@ -50,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public override int StartExecute(Character character)
         {
             InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ANIMATED);
-            SetHarvestedState(true);
+            SetHarvested();
 
             base.StartExecute(character);
 
@@ -83,21 +115,30 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             base.EndExecute(character);
         }
 
-        public void SetHarvestedState(bool state)
+        public void SetHarvested()
         {
-            Harvested = state;
-            HarvestedSince = state ? (DateTime?)DateTime.Now : null;
+            HarvestedSince = DateTime.Now;
             InteractiveObject.Map.Refresh(InteractiveObject);
+            m_regrowTimer = InteractiveObject.Area.CallDelayed(RegrowTime, Regrow);
+        }
 
-            if (!state)
-                InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_NORMAL);
+        public void Regrow()
+        {
+            if (m_regrowTimer != null)
+            {
+                m_regrowTimer.Stop();
+                m_regrowTimer = null;
+            }
+
+            InteractiveObject.Map.Refresh(InteractiveObject);
+            InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_NORMAL);
         }
 
         int RollHarvestedItemCount(Character character)
         {
             var job = character.Jobs[SkillTemplate.ParentJobId];
             var minMax = JobManager.Instance.GetHarvestItemMinMax(job.Template, job.Level, SkillTemplate);
-            return new CryptoRandom().Next(minMax.First, minMax.Second + 1);
+            return (int)Math.Floor(new CryptoRandom().Next(minMax.First, minMax.Second + 1) * (1 + AgeBonus/100d));
         }
     }
 }

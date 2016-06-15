@@ -98,7 +98,7 @@ namespace Stump.Core.Collections
             if (m_occurenceDict.Count == 0)
                 return 0;
 
-            return m_occurenceDict.Values.OrderBy(x => x).ElementAt((int)(m_occurenceDict.Count* percentile));
+            return m_occurenceDict.Values.OrderBy(x => x).ElementAt((int)((m_occurenceDict.Count-1)*percentile));
         }
 
         public int GetMedian()
