@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.UI;
-using MongoDB.Driver.Linq;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Mathematics;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Jobs;
 
-namespace Stump.Server.WorldServer.Game.Exchanges.Craft
+namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 {
     public abstract class RuneMagicCraftDialog : BaseCraftDialog
     {

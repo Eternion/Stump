@@ -122,6 +122,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
         {
             base.OnTraderItemMoved(trader, item, modified, difference);
 
+            FirstTrader.ToggleReady(false);
+            SecondTrader.ToggleReady(false);
+
             if (item.Stack == 0)
             {
                 InventoryHandler.SendExchangeObjectRemovedMessage(FirstTrader.Character.Client, trader != FirstTrader, item.Guid);

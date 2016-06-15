@@ -262,6 +262,7 @@
     <Compile Include="Attributes\VariableAttribute.cs" />
     <Compile Include="Cache\ObjectValidator.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
+    <Compile Include="Collections\LimitedOccurenceCounter.cs" />
     <Compile Include="Collections\TimedStack.cs" />
     <Compile Include="Collections\Pair.cs" />
     <Compile Include="Collections\SerializableDictionary.cs" />

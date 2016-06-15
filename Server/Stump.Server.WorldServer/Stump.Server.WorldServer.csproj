@@ -263,6 +263,7 @@
     <Compile Include="Database\Interactives\InteractiveCustomSkillRecord.cs" />
     <Compile Include="Database\ISaveable.cs" />
     <Compile Include="Database\Items\PlayerPresetRecord.cs" />
+    <Compile Include="Database\Items\Runes\DecraftItemRecord.cs" />
     <Compile Include="Database\Items\TaxCollectorItemRecord.cs" />
     <Compile Include="Database\Items\Templates\PetTemplate.cs" />
     <Compile Include="Database\Items\PlayerItemRecord.cs" />
@@ -482,6 +483,7 @@
     <Compile Include="Game\Exchanges\Craft\CraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\MultiCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\MultiCraftRequest.cs" />
+    <Compile Include="Game\Exchanges\Craft\Runes\DecraftResult.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\MultiRuneCrafter.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\MultiRuneMagicCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\RuneInformation.cs" />

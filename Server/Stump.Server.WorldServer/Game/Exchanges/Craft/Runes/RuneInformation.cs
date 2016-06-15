@@ -1,6 +1,6 @@
 ﻿using Stump.Server.WorldServer.Database.Items.Templates;
 
-namespace Stump.Server.WorldServer.Game.Exchanges.Craft
+namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 {
     public class RuneInformation
     {
