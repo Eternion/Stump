@@ -320,7 +320,7 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public void AddItemConstructor(Type type)
+        public void AddItemTypeConstructor(Type type)
         {
             var attr = type.GetCustomAttribute<ItemTypeAttribute>();
 
@@ -338,6 +338,30 @@ namespace Stump.Server.WorldServer.Game.Items
 
             m_itemCtorByTypes.Add(attr.ItemType, type.GetConstructor(new [] {typeof(Character), typeof(PlayerItemRecord) }).CreateDelegate<PlayerItemConstructor>());
 
+        }
+
+        public void AddItemIdConstructor(Type type)
+        {
+            var attr = type.GetCustomAttribute<ItemIdAttribute>();
+
+            if (attr == null)
+            {
+                logger.Error("Item Constructor {0} has no attribute !", type);
+                return;
+            }
+
+            if (m_itemCtorById.ContainsKey(attr.ItemId))
+            {
+                logger.Error("Item Constructor with Type {0} defined twice or more !", attr.ItemId);
+                return;
+            }
+
+            AddItemIdConstructor(type, attr.ItemId);
+        }
+
+        public void AddItemIdConstructor(Type type, ItemIdEnum itemId)
+        {
+            m_itemCtorById.Add(itemId, type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) }).CreateDelegate<PlayerItemConstructor>());
         }
 
         #endregion

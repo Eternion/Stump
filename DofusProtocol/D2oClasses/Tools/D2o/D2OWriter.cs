@@ -319,6 +319,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             if (!m_allocatedClassId.ContainsKey(classType))
                 AllocateClassId(classType);
 
+
             object[] attributes = classType.GetCustomAttributes(typeof (D2OClassAttribute), false);
 
             if (attributes.Length != 1)

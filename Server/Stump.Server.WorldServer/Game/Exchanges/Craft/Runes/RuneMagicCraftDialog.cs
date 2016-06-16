@@ -159,9 +159,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
                 
             }
 
-
-            Rune.Owner.Inventory.RemoveItem(Rune.PlayerItem, 1, true, false);
-            Crafter.MoveItem(Rune.Guid, -1);
+            var rune = Rune;
+            Crafter.MoveItem(rune.Guid, -1);
+            rune.Owner.Inventory.RemoveItem(rune.PlayerItem, 1, true, false);
             ItemToImprove.PlayerItem.Invalidate();
 
         }
@@ -309,7 +309,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
             var maxPwr = EffectManager.Instance.GetItemMaxPower(ItemToImprove);
             var pwr = EffectManager.Instance.GetItemPower(ItemToImprove);
 
-            double itemStatus = Math.Max(0, GetProgress(pwr, maxPwr, minPwr));
+            double itemStatus = Math.Max(0, GetProgress(pwr, maxPwr, minPwr)*100);
             var parentEffect = GetTemplateEffect(runeEffect);
 
             if (effectToImprove != null && 
@@ -339,7 +339,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
             }
             else
             {
-                effectStatus = Math.Max(0, GetProgress(effectToImprove?.Value ?? 0, parentEffect.Max, parentEffect.Min));
+                effectStatus = Math.Max(0, GetProgress(effectToImprove?.Value ?? 0, parentEffect.Max, parentEffect.Min) * 100);
 
                 if (effectToImprove != null && IsOverMax(effectToImprove, runeEffect))
                 {
