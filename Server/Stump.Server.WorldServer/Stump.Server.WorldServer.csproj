@@ -270,9 +270,11 @@
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
     <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
+    <Compile Include="Database\Items\Usables\TeleportPotionRecord.cs" />
     <Compile Include="Database\Jobs\JobRecord.cs" />
     <Compile Include="Database\Jobs\JobTemplate.cs" />
     <Compile Include="Database\Jobs\RecipeRecord.cs" />
+    <Compile Include="Database\Jobs\SecretRecipeRecord.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
     <Compile Include="Database\Monsters\MonsterDungeonSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
@@ -656,10 +658,12 @@
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MimisymbicItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />
+    <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotionManager.cs" />
     <Compile Include="Game\Items\Player\Custom\Watches.cs" />
     <Compile Include="Game\Items\Player\Custom\WrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
-    <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Potions\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />
     <Compile Include="Game\Items\Player\DefaultItem.cs" />

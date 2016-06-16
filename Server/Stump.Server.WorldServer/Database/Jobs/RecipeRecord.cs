@@ -52,13 +52,13 @@ namespace Stump.Server.WorldServer.Database.Jobs
         }
 
         [Ignore]
-        public List<int> IngredientIds
+        public int[] IngredientIds
         {
             get { return m_ingredientIds; }
             set
             {
                 m_ingredientIds = value;
-                m_ingredientIdsBin = value?.ToBinary();
+                m_ingredientIdsCSV = value.ToCSV(",");
             }
         }
 
@@ -67,41 +67,41 @@ namespace Stump.Server.WorldServer.Database.Jobs
             get { return m_ingredients ?? (m_ingredients = IngredientIds.Select(x => ItemManager.Instance.TryGetTemplate(x)).ToArray());}
         }
 
-        private byte[] m_ingredientIdsBin;
-        public byte[] IngredientIdsBin
+        private string m_ingredientIdsCSV;
+        public string IngredientIdsCSV
         {
-            get { return m_ingredientIdsBin; }
+            get { return m_ingredientIdsCSV; }
             set
             {
-                m_ingredientIdsBin = value;
-                m_ingredientIds = value?.ToObject<List<int>>();
+                m_ingredientIdsCSV = value;
+                m_ingredientIds = value.FromCSV<int>(",");
             }
         }
 
         [Ignore]
-        public List<uint> Quantities
+        public uint[] Quantities
         {
             get { return m_quantities; }
             set
             {
                 m_quantities = value;
-                m_quantitiesBin = value?.ToBinary();
+                m_quantitiesCSV = value.ToCSV(",");
             }
         }
 
-        private byte[] m_quantitiesBin;
-        private List<int> m_ingredientIds;
-        private List<uint> m_quantities;
+        private string m_quantitiesCSV;
+        private int[] m_ingredientIds;
+        private uint[] m_quantities;
         private ItemTemplate m_template;
         private ItemTemplate[] m_ingredients;
 
-        public byte[] QuantitiesBin
+        public string QuantitiesBin
         {
-            get { return m_quantitiesBin; }
+            get { return m_quantitiesCSV; }
             set
             {
-                m_quantitiesBin = value;
-                m_quantities = value?.ToObject<List<uint>>();
+                m_quantitiesCSV = value;
+                m_quantities = value.FromCSV<uint>(",");
             }
         }
 
@@ -119,8 +119,8 @@ namespace Stump.Server.WorldServer.Database.Jobs
 
         public virtual void BeforeSave(bool insert)
         {
-            m_ingredientIdsBin = m_ingredientIds?.ToBinary();
-            m_quantitiesBin = m_quantities?.ToBinary();
+            m_ingredientIdsCSV = m_ingredientIds.ToCSV(",");
+            m_quantitiesCSV = m_quantities.ToCSV(",");
 
         }
 
@@ -132,8 +132,8 @@ namespace Stump.Server.WorldServer.Database.Jobs
             ResultNameId = castedObj.resultNameId;
             ResultTypeId = castedObj.resultTypeId;
             ResultLevel = castedObj.resultLevel;
-            IngredientIds = castedObj.ingredientIds;
-            Quantities = castedObj.quantities;
+            IngredientIds = castedObj.ingredientIds.ToArray();
+            Quantities = castedObj.quantities.ToArray();
             JobId = castedObj.jobId;
             SkillId = castedObj.skillId;
         }

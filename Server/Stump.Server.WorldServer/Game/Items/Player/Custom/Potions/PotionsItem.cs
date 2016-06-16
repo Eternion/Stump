@@ -6,56 +6,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemId(ItemIdEnum.POTION_DE_CITE_BONTA_6965)]
-    public class BontarianPotion : BasePlayerItem
-    {
-        [Variable]
-        const int m_destinationMap = 5506048;
-
-        [Variable]
-        const int m_destinationCell = 359;
-
-        public BontarianPotion(Character owner, PlayerItemRecord record)
-            : base(owner, record)
-        {
-        }
-
-        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
-        {
-            var map = World.Instance.GetMap(m_destinationMap);
-            var cell = map.Cells[m_destinationCell];
-
-            Owner.Teleport(map, cell);
-
-            return 1;
-        }
-    }
-
-    [ItemId(ItemIdEnum.POTION_DE_CITE_BRAKMAR_6964)]
-    public class BrakmarianPotion : BasePlayerItem
-    {
-        [Variable]
-        private const int m_destinationMap = 13631488;
-
-        [Variable]
-        private const int m_destinationCell = 373;
-
-        public BrakmarianPotion(Character owner, PlayerItemRecord record)
-            : base(owner, record)
-        {
-        }
-
-        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
-        {
-            var map = World.Instance.GetMap(m_destinationMap);
-            var cell = map.Cells[m_destinationCell];
-
-            Owner.Teleport(map, cell);
-
-            return 1;
-        }
-    }
-
     [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DE_NOM_10860)]
     public class NameChangePotion : BasePlayerItem
     {

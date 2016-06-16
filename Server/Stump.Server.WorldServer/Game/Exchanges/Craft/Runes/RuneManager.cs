@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
         private Dictionary<int, DecraftItemRecord> m_historyRecords = new Dictionary<int, DecraftItemRecord>();
         
         [Initialization(typeof (ItemManager))]
-        public void Initiliaze()
+        public override void Initialize()
         {
             var runes = new Dictionary<EffectsEnum, List<RuneInformation>>();
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
@@ -31,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 return false;
 
             bool valid = true;
-            for (int i = 0; valid && i < recipe.IngredientIds.Count; i++)
+            for (int i = 0; valid && i < recipe.Ingredients.Length; i++)
             {
                 var item = actor.Character.Inventory.TryGetItem(recipe.Ingredients[i]);
 
@@ -130,9 +131,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             }
 
             return (from recipe in Skill.SkillTemplate.Recipes
-                    where recipe.IngredientIds.Count == combinedIngredients.Count
+                    where recipe.IngredientIds.Length == combinedIngredients.Count
                     let valid = !(from item in combinedIngredients
-                                  let index = recipe.IngredientIds.IndexOf(item.Key)
+                                  let index = Array.IndexOf(recipe.IngredientIds, item.Key)
                                   where index < 0 || recipe.Quantities[index] != item.Value
                                   select item).Any()
                     where valid

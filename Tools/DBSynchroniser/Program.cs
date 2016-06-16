@@ -160,7 +160,7 @@ namespace DBSynchroniser
 
         private static IEnumerable<D2OTable> EnumerateTables(Assembly assembly)
         {
-            return from type in assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
+            return from type in assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null && type.GetCustomAttribute<D2OIgnore>(false) == null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
             {
                 Type = type,
                 ClassName = attr.Name,
