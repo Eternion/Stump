@@ -153,8 +153,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
             InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Crafter.Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
             InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Receiver.Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
 
+            InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Client, ItemToImprove.PlayerItem, ItemToImprove.Owner, (ExchangeCraftResultEnum)result);
+            InventoryHandler.SendExchangeCraftInformationObjectMessage(Receiver.Character.Client, ItemToImprove.PlayerItem, ItemToImprove.Owner, (ExchangeCraftResultEnum)result);
+
             ItemToImprove.Owner.Inventory.RefreshItem(ItemToImprove.PlayerItem);
-            InventoryHandler.SendExchangeObjectModifiedMessage(Crafter.Character.Client, true, ItemToImprove);
         }
 
         protected override void OnAutoCraftStopped(ExchangeReplayStopReasonEnum reason)

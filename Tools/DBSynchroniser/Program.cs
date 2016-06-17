@@ -104,6 +104,8 @@ namespace DBSynchroniser
 
         private static void Main()
         {
+            Http.PetsExplorer.GetPetWebInfo("http://www.dofus.com/fr/mmorpg/encyclopedie/familiers/17511-minikrone");
+
             m_tables = EnumerateTables(Assembly.GetExecutingAssembly()).ToDictionary(x => x.ClassName);
             Console.WriteLine("Load {0}...", ConfigFile);
             m_config = new XmlConfig(ConfigFile);

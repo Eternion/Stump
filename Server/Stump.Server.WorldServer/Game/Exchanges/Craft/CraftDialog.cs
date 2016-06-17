@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, Amount);
                 InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
                     ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, Amount);
-                InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character);
+                InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character, ExchangeCraftResultEnum.CRAFT_SUCCESS);
             }
             else
             {
@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                     var createdItem = Receiver.Character.Inventory.AddItem(recipe.ItemTemplate, keyPair.Key, keyPair.Value);
                     InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Clients,
                         ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, keyPair.Value);
-                    InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character);
+                    InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Map.Clients, createdItem, Receiver.Character, ExchangeCraftResultEnum.CRAFT_SUCCESS);
                 }
             }
 

@@ -800,9 +800,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeCraftResultWithObjectDescMessage((sbyte)result, new ObjectItemNotInContainer((short) createdItem.Template.Id, createdItem.Effects.Select(x => x.GetObjectEffect()), createdItem.Guid, amount)));
         }
 
-        public static void SendExchangeCraftInformationObjectMessage(IPacketReceiver client, BasePlayerItem item, Character owner)
+        public static void SendExchangeCraftInformationObjectMessage(IPacketReceiver client, BasePlayerItem item, Character owner, ExchangeCraftResultEnum result)
         {
-            client.Send(new ExchangeCraftInformationObjectMessage((sbyte)ExchangeCraftResultEnum.CRAFT_SUCCESS, (short)item.Template.Id, owner.Id));
+            client.Send(new ExchangeCraftInformationObjectMessage((sbyte)result, (short)item.Template.Id, owner.Id));
         }
 
         public static void SendExchangeOkMultiCraftMessage(IPacketReceiver client, Character initiator, Character other, ExchangeTypeEnum role)

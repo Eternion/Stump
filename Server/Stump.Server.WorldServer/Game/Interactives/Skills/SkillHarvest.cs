@@ -93,6 +93,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
             InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
             var count = RollHarvestedItemCount(character);
+            var bonus = (int)Math.Floor(count*(AgeBonus/100d));
 
             if (character.Inventory.IsFull(m_harvestedItem, count))
             {
@@ -103,8 +104,8 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
                 return;
             }
 
-            character.Inventory.AddItem(m_harvestedItem, count);
-            InventoryHandler.SendObtainedItemMessage(character.Client, m_harvestedItem, count);
+            character.Inventory.AddItem(m_harvestedItem, count + bonus);
+            InventoryHandler.SendObtainedItemWithBonusMessage(character.Client, m_harvestedItem, count, bonus);
 
             if (SkillTemplate.ParentJobId != 1)
             {
@@ -138,7 +139,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
             var job = character.Jobs[SkillTemplate.ParentJobId];
             var minMax = JobManager.Instance.GetHarvestItemMinMax(job.Template, job.Level, SkillTemplate);
-            return (int)Math.Floor(new CryptoRandom().Next(minMax.First, minMax.Second + 1) * (1 + AgeBonus/100d));
+            return new CryptoRandom().Next(minMax.First, minMax.Second + 1);
         }
     }
 }
