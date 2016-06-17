@@ -52,7 +52,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
         protected override void OnRuneApplied(CraftResultEnum result, MagicPoolStatus poolStatus)
         {
             InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
-            Character.Inventory.RefreshItem(ItemToImprove.PlayerItem);
+
+            InventoryHandler.SendExchangeCraftInformationObjectMessage(Character.Client, ItemToImprove.PlayerItem, ItemToImprove.Owner, (ExchangeCraftResultEnum)result);
+            ItemToImprove.Owner.Inventory.RefreshItem(ItemToImprove.PlayerItem);
         }
 
         protected override void OnAutoCraftStopped(ExchangeReplayStopReasonEnum reason)

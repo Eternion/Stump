@@ -147,7 +147,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUseEnded(Character user, InteractiveObject interactive, Skill skill)
         {
-            //InteractiveHandler.SendInteractiveUseEndedMessage(Clients, interactive, skill);
+            InteractiveHandler.SendInteractiveUseEndedMessage(Clients, interactive, skill);
 
             var handler = InteractiveUseEnded;
             if (handler != null)

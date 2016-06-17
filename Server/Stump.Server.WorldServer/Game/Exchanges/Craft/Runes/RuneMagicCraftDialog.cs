@@ -127,7 +127,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
             if (ItemToImprove == null || Rune == null)
                 return;
 
-            foreach (var effect in Rune.Effects.OfType<EffectInteger>())
+            var rune = Rune;
+            rune.Owner.Inventory.RemoveItem(rune.PlayerItem, 1);
+            Crafter.MoveItem(rune.Guid, -1);
+
+            foreach (var effect in rune.Effects.OfType<EffectInteger>())
             {
                 var existantEffect = GetEffectToImprove(effect);
 
@@ -159,9 +163,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
                 
             }
 
-            var rune = Rune;
-            Crafter.MoveItem(rune.Guid, -1);
-            rune.Owner.Inventory.RemoveItem(rune.PlayerItem, 1, true, false);
             ItemToImprove.PlayerItem.Invalidate();
 
         }

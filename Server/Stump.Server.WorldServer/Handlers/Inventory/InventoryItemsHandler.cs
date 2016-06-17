@@ -394,6 +394,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObtainedItemMessage((short)item.Id, count));
         }
 
+        public static void SendObtainedItemWithBonusMessage(IPacketReceiver client, ItemTemplate item, int count, int bonus)
+        {
+            client.Send(new ObtainedItemWithBonusMessage((short)item.Id, count, bonus));
+        }
+
         public static void SendExchangeObjectPutInBagMessage(IPacketReceiver client, bool remote, IItem item)
         {
             client.Send(new ExchangeObjectPutInBagMessage(remote, item.GetObjectItem()));

@@ -134,6 +134,8 @@
   <ItemGroup>
     <Compile Include="BinaryFieldAttribute.cs" />
     <Compile Include="D2OTable.cs" />
+    <Compile Include="Http\PetsExplorer.cs" />
+    <Compile Include="Http\PetWebInfo.cs" />
     <Compile Include="Maps\Placements\PlacementComplexityCalculator.cs" />
     <Compile Include="Maps\Placements\PlacementPattern.cs" />
     <Compile Include="Maps\Placements\PlacementsFix.cs" />
@@ -301,6 +303,10 @@
     <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
       <Name>Stump.DofusProtocol.D2oClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
+      <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
+      <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

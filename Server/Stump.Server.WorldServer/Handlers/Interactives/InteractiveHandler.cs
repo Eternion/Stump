@@ -18,12 +18,6 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
             client.Character.Map.UseInteractiveObject(client.Character, message.elemId, message.skillInstanceUid);
         }
 
-        [WorldHandler(InteractiveUseEndedMessage.Id)]
-        public static void HandleInteractiveUseEndedMessage(WorldClient client, InteractiveUseEndedMessage message)
-        {
-
-        }
-
         [WorldHandler(TeleportRequestMessage.Id)]
         public static void HandleTeleportRequestMessage(WorldClient client, TeleportRequestMessage message)
         {
