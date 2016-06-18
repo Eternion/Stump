@@ -1,6 +1,6 @@
 ﻿namespace Stump.DofusProtocol.Enums
 {
-    public enum EffectsEnum : short
+    public enum EffectsEnum
     {
         /// <summary>
         /// Téléporte sur la map ciblée
@@ -1377,7 +1377,7 @@
         /// <summary>
         /// (not found)
         /// </summary>
-        Effect_813 = 813,
+        Effect_MealCount = 813,
         /// <summary>
         /// #1
         /// </summary>

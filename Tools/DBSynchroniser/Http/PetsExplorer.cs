@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Stump.Server.WorldServer.Database.Items.Pets;
 
 namespace DBSynchroniser.Http
 {
@@ -15,14 +16,16 @@ namespace DBSynchroniser.Http
         public const int MIN_PETS_COUNT = 200;
         public const string DOFUS_URL = "http://www.dofus.com/";
 
-        public static async Task<IEnumerable<string>> EnumeratePetsLinks()
+        public static string[] FetchPetsLinks()
         {
             var resultat = new HtmlDocument();
 
             try
             {
                 var http = new HttpClient();
-                var response = await http.GetByteArrayAsync("http://www.dofus.com/fr/mmorpg/encyclopedie/familiers?size=" + MIN_PETS_COUNT);
+                var query = http.GetByteArrayAsync("http://www.dofus.com/fr/mmorpg/encyclopedie/familiers?size=" + MIN_PETS_COUNT);
+                query.Wait();
+                var response = query.Result;
                 var source = Encoding.GetEncoding("utf-8").GetString(response, 0, response.Length - 1);
                 source = WebUtility.HtmlDecode(source);
                 resultat.LoadHtml(source);
@@ -30,7 +33,7 @@ namespace DBSynchroniser.Http
             catch (Exception ex)
             {
                 Console.WriteLine("HTTP ERROR while exploring pets list). Exception: {0}", ex.Message);
-                return Enumerable.Empty<string>();
+                return new string[0];
             }
 
             var petsLinks = resultat.DocumentNode.Descendants()
@@ -39,7 +42,7 @@ namespace DBSynchroniser.Http
                             && x.Attributes["href"].Value.StartsWith("/fr/mmorpg/encyclopedie/familiers/")
                             && x.ParentNode.Name == "span"
                             && x.ParentNode.Attributes["class"] != null
-                            && x.ParentNode.Attributes["class"].Value.Contains("ak-linker")).Select(x => DOFUS_URL + x.Attributes["href"].Value).ToList();
+                            && x.ParentNode.Attributes["class"].Value.Contains("ak-linker")).Select(x => DOFUS_URL + x.Attributes["href"].Value).Distinct().ToArray();
 
             return petsLinks;
         }
@@ -80,25 +83,28 @@ namespace DBSynchroniser.Http
 
         private static PetWebFood ParseFood(HtmlNode divNode, HtmlNode aNode)
         {
-            var bonusStr = divNode.Descendants().Where(x => x.Name == "strong").Select(x => x.InnerText).First(); // + 1 Agilité
+            var bonusStrs = divNode.Descendants().Where(x => x.Name == "strong").Select(x => x.InnerText).First().Split(','); // + 1 Agilité
 
-            var bonusQuantity = int.Parse(Regex.Match(bonusStr, @"(\d+)").Groups[1].Value);
+            var bonusQuantities = bonusStrs.Select(x => int.Parse(Regex.Match(x, @"(\d+)").Groups[1].Value)).ToArray();
+            var bonusEffects = bonusStrs.Select(x => new string(x.ToCharArray().Where(c => !char.IsDigit(c)).ToArray()).Trim()).ToArray();
 
-            FoodType type;
+            FoodTypeEnum type;
             if (aNode.Attributes["href"].Value.Contains("monstres"))
-                type = FoodType.Monster;
+                type = FoodTypeEnum.MONSTER;
             else if (aNode.Attributes["href"].Value.Contains("type_id"))
-                type = FoodType.ItemType;
+                type = FoodTypeEnum.ITEMTYPE;
             else
-                type = FoodType.Item;
+                type = FoodTypeEnum.ITEM;
 
             var id = int.Parse(Regex.Match(aNode.Attributes["href"].Value, @"(\d+)").Groups[1].Value);
 
             var spanNode = aNode.ParentNode;
 
-            int quantity = spanNode.PreviousSibling == null ? 1 : int.Parse(Regex.Match(spanNode.PreviousSibling.InnerText, @"(\d+)").Groups[1].Value);
+            int quantity;
+            if (spanNode.PreviousSibling == null || !int.TryParse(Regex.Match(spanNode.PreviousSibling.InnerText, @"(\d+)").Groups[1].Value, out quantity))
+                quantity = 1;
 
-            return new PetWebFood(bonusStr, bonusQuantity, type, id, quantity);
+            return new PetWebFood(bonusEffects, bonusQuantities, type, id, quantity);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿
+using Stump.Server.WorldServer.Database.Items.Pets;
+
 namespace DBSynchroniser.Http
 {
     public class PetWebInfo
@@ -24,28 +26,28 @@ namespace DBSynchroniser.Http
 
     public class PetWebFood
     {
-        public PetWebFood(string effect, int boostQuantity, FoodType foodType, int foodId, int quantity)
+        public PetWebFood(string[] effects, int[] boostQuantities, FoodTypeEnum foodType, int foodId, int quantity)
         {
-            Effect = effect;
+            Effects = effects;
             FoodType = foodType;
-            BoostQuantity = boostQuantity;
+            BoostQuantities = boostQuantities;
             FoodId = foodId;
             Quantity = quantity;
         }
 
-        public string Effect
+        public string[] Effects
         {
             get;
             set;
         }
 
-        public FoodType FoodType
+        public FoodTypeEnum FoodType
         {
             get;
             set;
         }
 
-        public int BoostQuantity
+        public int[] BoostQuantities
         {
             get;
             set;
@@ -62,12 +64,5 @@ namespace DBSynchroniser.Http
             get;
             set;
         }
-    }
-
-    public enum FoodType
-    {
-        Item,
-        ItemType,
-        Monster
     }
 }
