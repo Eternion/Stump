@@ -74,11 +74,19 @@ namespace DBSynchroniser.Http
                 .Where(x => x.Name == "div" && x.Attributes["class"]?.Value == "ak-list-element"
                             && x.ParentNode.Name == "div" && x.ParentNode.Attributes["class"]?.Value == "ak-container ak-content-list ak-food-effects-list ");
 
+            var ghostNode = resultat.DocumentNode
+                .Descendants().FirstOrDefault(x => x.Name == "a" && (x.Attributes["href"]?.Value.Contains("fantome") ?? false));
+
+            int? ghost = null;
+            if (ghostNode != null)
+                ghost = int.Parse(Regex.Match(ghostNode.Attributes["href"].Value, @"(\d+)-").Groups[1].Value);
+
+
             var foods = (from div in foodsDiv
                 from a in div.Descendants().Where(x => x.Name == "a")
                 select ParseFood(div, a)).ToArray();
 
-            return new PetWebInfo(id, foods);
+            return new PetWebInfo(id, foods, ghost);
         }
 
         private static PetWebFood ParseFood(HtmlNode divNode, HtmlNode aNode)

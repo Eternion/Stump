@@ -135,6 +135,13 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
                 m_possibleEffectsBin = value?.ToBinary();
             }
         }
+
+        public int? GhostItemId
+        {
+            get;
+            set;
+        }
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)

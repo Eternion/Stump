@@ -1008,6 +1008,11 @@ namespace DBSynchroniser
                     }
                 }
 
+                if (info.Ghost != null)
+                {
+                    worldDatabase.Database.Execute($"UPDATE items_pets SET GhostItemId={info.Ghost.Value} WHERE Id={info.Id}");
+                }
+
 
                 UpdateCounter(i, links.Length);
             }
