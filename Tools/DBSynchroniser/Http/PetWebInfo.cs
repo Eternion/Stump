@@ -5,10 +5,11 @@ namespace DBSynchroniser.Http
 {
     public class PetWebInfo
     {
-        public PetWebInfo(int id, PetWebFood[] petWebFood)
+        public PetWebInfo(int id, PetWebFood[] petWebFood, int? ghost)
         {
             Id = id;
             Foods = petWebFood;
+            Ghost = ghost;
         }
 
         public int Id
@@ -16,7 +17,13 @@ namespace DBSynchroniser.Http
             get;
             set;
         }
-        
+
+        public int? Ghost
+        {
+            get;
+            set;
+        }
+
         public PetWebFood[] Foods
         {
             get;

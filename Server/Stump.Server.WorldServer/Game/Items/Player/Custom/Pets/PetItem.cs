@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
@@ -26,14 +28,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         [Variable]
         public static int MealsPerBonus = 3;
-        
+
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public PetItem(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
             PetTemplate = PetManager.Instance.GetPetTemplate(Template.Id);
             MaxPower = PetTemplate.PossibleEffects.OfType<EffectDice>().Max(x => EffectManager.Instance.GetEffectMaxPower(x));
 
-           InitializeEffects();
+            InitializeEffects();
 
             if (IsEquiped())
                 Owner.FightEnded += OnFightEnded;
@@ -192,7 +196,17 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private void Die()
         {
-            
+            ItemTemplate ghostItem; 
+            if (PetTemplate.GhostItemId == null || (ghostItem = ItemManager.Instance.TryGetTemplate(PetTemplate.GhostItemId.Value)) == null)
+            {
+                LifePoints = 1;
+                logger.Error($"Pet {PetTemplate.Id} died but has not ghost item");
+                return;
+            }
+
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, ghostItem, 1, Effects.Clone());
+            Owner.Inventory.RemoveItem(this);
+            Owner.Inventory.AddItem(item);
         }
 
         public override bool Feed(BasePlayerItem food)
@@ -202,6 +216,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             if (possibleFood == null)
                 return false;
+
+            if (Corpulence == 3)
+            {
+
+            }
 
             var effectMealCount = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == MealCountEffect);
 
