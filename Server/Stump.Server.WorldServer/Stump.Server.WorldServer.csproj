@@ -255,6 +255,8 @@
     <Compile Include="Database\Interactives\ISkillRecord.cs" />
     <Compile Include="Database\Items\BidHouse\BidHouseItemRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
+    <Compile Include="Database\Items\Pets\FoodTypeEnum.cs" />
+    <Compile Include="Database\Items\Pets\PetFoodRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSkillTemplate.cs" />
@@ -658,11 +660,12 @@
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MimisymbicItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Pets\PetManager.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotionManager.cs" />
     <Compile Include="Game\Items\Player\Custom\Watches.cs" />
     <Compile Include="Game\Items\Player\Custom\WrapperObjectItem.cs" />
-    <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Pets\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />

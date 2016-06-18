@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using DBSynchroniser.Maps.Placements;
 using DBSynchroniser.Records;
 using DBSynchroniser.Records.Icons;
-using DBSynchroniser.Records.Langs;
 using DBSynchroniser.Records.Maps;
 using Stump.Core.Attributes;
 using Stump.Core.I18N;
@@ -32,7 +31,16 @@ using System.Text;
 using HtmlAgilityPack;
 using System.Net.Http;
 using System.Threading;
+using DBSynchroniser.Http;
 using Stump.Core.IO;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Effects;
+using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Database.Items.Pets;
+using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Effects;
+using LangText = DBSynchroniser.Records.Langs.LangText;
+using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
 
 namespace DBSynchroniser
 {
@@ -98,14 +106,13 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Fix fight placement (on stump_data)", PlacementsFix.ApplyFix),
             Tuple.Create<string, Action>("Generate interactive spawn (on stump_world)", GenerateInteractiveSpawnWithWarning),
             Tuple.Create<string, Action>("Generate monsters spells, spawns and drops (on stump_world)", GenerateMonstersSpawnsAndDrops),
+            Tuple.Create<string, Action>("Import pets foods (on stump_world)", ImportPetsFoods),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
 
         private static void Main()
         {
-            Http.PetsExplorer.GetPetWebInfo("http://www.dofus.com/fr/mmorpg/encyclopedie/familiers/17511-minikrone");
-
             m_tables = EnumerateTables(Assembly.GetExecutingAssembly()).ToDictionary(x => x.ClassName);
             Console.WriteLine("Load {0}...", ConfigFile);
             m_config = new XmlConfig(ConfigFile);
@@ -912,6 +919,99 @@ namespace DBSynchroniser
                 i++;
                 UpdateCounter(i, rows.Count);
             }
+            EndCounter();
+        }
+
+        public static void ImportPetsFoods()
+        {
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'items_pets_foods'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            Console.WriteLine("Importing pets foods ...");
+            var worldDatabase = ConnectToWorld();
+            if (worldDatabase == null)
+                return;
+
+            Console.WriteLine("Initializing texts ...");
+            TextManager.Instance.ChangeDataSource(worldDatabase.Database);
+            TextManager.Instance.Initialize();
+            TextManager.Instance.SetDefaultLanguage(Languages.French);
+
+
+            Console.WriteLine("Fetch effects template ...");
+            var effectsTemplates = worldDatabase.Database.Fetch<EffectTemplate>(EffectTemplateRelator.FetchQuery).ToDictionary(entry => (short)entry.Id);
+
+            worldDatabase.Database.Execute("DELETE FROM items_pets_foods");
+            worldDatabase.Database.Execute("ALTER TABLE items_pets_foods AUTO_INCREMENT=1");
+
+            Console.WriteLine("Fetching pets web links ...");
+
+            var links = PetsExplorer.FetchPetsLinks();
+
+            Console.WriteLine("Importing pets foods from web site...");
+
+            var templates = Database.Database.Query<PetRecord>("SELECT * FROM Pets").ToDictionary(x => x.Id);
+
+
+            InitializeCounter();
+            for (int i = 0; i < links.Length; i++)
+            {
+                var petLink = links[i];
+                var info = PetsExplorer.GetPetWebInfo(petLink);
+
+                if (!templates.ContainsKey(info.Id))
+                    continue; // some pets doesn't eat
+
+                var petTemplate = templates[info.Id];
+
+                foreach (var webFood in info.Foods)
+                {
+                    for (int j = 0; j < webFood.Effects.Length; j++)
+                    {
+                        EffectsEnum effect;
+
+                        if (petTemplate.PossibleEffects.Count == 0)
+                        {
+                            Console.WriteLine("");
+                            Console.WriteLine($"ERROR - Pets {petTemplate.Id} has no effect");
+                            break;
+                        }
+
+                        if (petTemplate.PossibleEffects.Count == 1)
+                            effect = (EffectsEnum) petTemplate.PossibleEffects[0].EffectId;
+                        else
+                        {
+                            var possibleEffect = petTemplate.PossibleEffects.OrderByDescending(x => effectsTemplates[(short) x.EffectId].Description.ToLower().Count(c => webFood.Effects[j].Contains(c))).FirstOrDefault();
+                            if (possibleEffect == null)
+                            {
+                                Console.WriteLine("");
+                                Console.WriteLine($"ERROR - Effect \"{webFood.Effects[j]}\" not found");
+                                break;
+                            }
+
+                            Console.WriteLine($"{webFood.Effects[j]} -> {(EffectsEnum) possibleEffect.EffectId}");
+                            effect = (EffectsEnum) possibleEffect.EffectId;
+                        }
+
+                        var record = new PetFoodRecord()
+                        {
+                            PetId = info.Id,
+                            FoodId = webFood.FoodId,
+                            FoodType = webFood.FoodType,
+                            FoodQuantity = webFood.Quantity,
+                            BoostedEffect = effect,
+                            BoostAmount = webFood.BoostQuantities[j],
+                        };
+
+                        worldDatabase.Database.Insert(record);
+                    }
+                }
+
+
+                UpdateCounter(i, links.Length);
+            }
+
             EndCounter();
         }
 
