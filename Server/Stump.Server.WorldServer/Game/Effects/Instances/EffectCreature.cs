@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
@@ -18,6 +19,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             : this(copy.Id, copy.MonsterFamily, copy)
         {
             
+        }
+
+        public EffectCreature(EffectsEnum id, short monsterfamily)
+            : this((short)id, monsterfamily, new EffectBase())
+        {
         }
 
         public EffectCreature(short id, short monsterfamily, EffectBase effectBase)

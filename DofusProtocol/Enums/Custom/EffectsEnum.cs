@@ -1165,15 +1165,15 @@
         /// <summary>
         /// #1 : #3
         /// </summary>
-        Effect_715 = 715,
+        Effect_MonsterSuperRaceKilledCount = 715,
         /// <summary>
         /// #1 : #3
         /// </summary>
-        Effect_716 = 716,
+        Effect_MonsterRaceKilledCount = 716,
         /// <summary>
         /// #1 : #3
         /// </summary>
-        Effect_717 = 717,
+        Effect_MonsterKilledCount = 717,
         /// <summary>
         /// Nombre de victimes : #2
         /// </summary>
