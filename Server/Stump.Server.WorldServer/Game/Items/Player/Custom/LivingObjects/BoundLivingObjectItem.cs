@@ -31,10 +31,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             Initialize();
         }
 
-        public override bool AllowFeeding
+        public override bool CanFeed(BasePlayerItem item)
         {
-            // regular feeding is not allowed.
-            get { return false; }
+            return false;
         }
 
         public override bool Feed(BasePlayerItem food)
