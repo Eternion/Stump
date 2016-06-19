@@ -1664,7 +1664,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return m_look; }
             set
             {
-                if (m_look == null)
+                if (OriginalLook == null)
                     OriginalLook = value;
 
                 m_look = value;

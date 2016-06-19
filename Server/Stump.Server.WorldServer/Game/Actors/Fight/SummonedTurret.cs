@@ -12,7 +12,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SummonedTurret : SummonedFighter, ICreature
+    public sealed class SummonedTurret : SummonedFighter, ICreature
     {
         protected readonly StatsFields m_stats;
         protected Spell m_spell;
@@ -22,6 +22,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Caster = summoner;
             Monster = template;
+            Look = Monster.Template.EntityLook.Clone();
 
             m_spell = spell;
             m_stats = new StatsFields(this);
@@ -109,8 +110,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override ObjectPosition MapPosition => Position;
 
         public override byte Level => (byte)Monster.Level;
-
-        public override ActorLook Look => Monster.Template.EntityLook;
 
         public override StatsFields Stats => m_stats;
 
