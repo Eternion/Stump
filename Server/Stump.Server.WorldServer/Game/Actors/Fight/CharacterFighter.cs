@@ -73,12 +73,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get { return Character.Name; }
         }
-
-        public override ActorLook Look
-        {
-            get;
-            set;
-        }
+        
 
         public override ObjectPosition MapPosition
         {
