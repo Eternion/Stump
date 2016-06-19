@@ -982,7 +982,7 @@ namespace DBSynchroniser
                             effect = (EffectsEnum) petTemplate.PossibleEffects[0].EffectId;
                         else
                         {
-                            var possibleEffect = petTemplate.PossibleEffects.OrderByDescending(x => effectsTemplates[(short) x.EffectId].Description.ToLower().Count(c => webFood.Effects[j].Contains(c))).FirstOrDefault();
+                            var possibleEffect = petTemplate.PossibleEffects.OrderByDescending(x => effectsTemplates[(short) x.EffectId].Description.ToLower().Split(' ').Count(c => webFood.Effects[j].ToLower().Contains(c))).FirstOrDefault();
                             if (possibleEffect == null)
                             {
                                 Console.WriteLine("");

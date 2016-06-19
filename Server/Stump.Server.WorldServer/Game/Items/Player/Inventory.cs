@@ -680,7 +680,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 // check if an item is already on the desired position
                 ((equipedItem = TryGetItem(position)) != null))
             {
-                if (equipedItem.AllowFeeding)
+                if (equipedItem.CanFeed(item))
                 {
                     if (!equipedItem.Feed(item))
                         return;
@@ -689,7 +689,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     return;
                 }
 
-                if (item.AllowDropping)
+                if (item.CanDrop(equipedItem))
                 {
                     if (!item.Drop(equipedItem))
                         return;

@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 
@@ -63,7 +64,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             }
         }
 
-        public override bool AllowFeeding => true;
+        public override bool CanFeed(BasePlayerItem item)
+        {
+            return item.Template.Type.SuperType != ItemSuperTypeEnum.SUPERTYPE_PET;
+        }
 
         private EffectInteger LifePointsEffect
         {
@@ -94,8 +98,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             get { return LifePointsEffect.Value; }
             set { LifePointsEffect.Value = (short)value;
 
+                Invalidate();
+
                 if (value <= 0)
                     Die();
+
             }
         }
 
@@ -119,6 +126,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                     else
                         Effects.Add(LastMealDateEffect = new EffectDate(EffectsEnum.Effect_LastMealDate, value.Value));
                 }
+
+
+                Invalidate();
             }
         }
 
@@ -142,6 +152,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                     else
                         Effects.Add(LastMealEffect = new EffectInteger(EffectsEnum.Effect_LastMeal, (short)value.Value));
                 }
+
+
+                Invalidate();
             }
         }
 
@@ -165,6 +178,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                     else
                         Effects.Add(CorpulenceEffect = new EffectInteger(EffectsEnum.Effect_Corpulence, (short)value.Value));
                 }
+
+
+                Invalidate();
             }
         }
 
@@ -261,9 +277,34 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 return false;
 
             if (effect == null)
-                Effects.Add(new EffectInteger(food.BoostedEffect, (short) food.BoostAmount));
+            {
+                Effects.Add(effect = new EffectInteger(food.BoostedEffect, (short) food.BoostAmount));
+                if (IsEquiped())
+                {
+                    var handler = EffectManager.Instance.GetItemEffectHandler(effect, Owner, this);
+                    handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
+                    handler.Apply();
+
+                    Owner.RefreshStats();
+                }
+            }
             else
-                effect.Value += (short)food.BoostAmount;
+            {
+                if (IsEquiped())
+                {
+                    var handler = EffectManager.Instance.GetItemEffectHandler(effect, Owner, this);
+                    handler.Operation = ItemEffectHandler.HandlerOperation.UNAPPLY;
+                    handler.Apply();
+
+                    effect.Value += (short) food.BoostAmount;
+
+                    handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
+                    handler.Apply();
+                    Owner.RefreshStats();
+                }
+                else
+                    effect.Value += (short) food.BoostAmount;
+            }
 
             return true;
         }
@@ -286,12 +327,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private void OnFightEnded(Character character, CharacterFighter fighter)
         {
+            bool update = false;
             if (!fighter.Fight.IsDeathTemporarily && fighter.Fight.Losers == fighter.Team)
+            {
                 LifePoints--;
+                update = true;
+            }
 
             if (fighter.Fight is FightPvM)
             {
-                bool fed = false;
                 foreach(var monster in fighter.OpposedTeam.Fighters.OfType<MonsterFighter>().Where(x => x.IsDead()))
                 {
                     var food = PetTemplate.Foods.FirstOrDefault(x => x.FoodType == FoodTypeEnum.MONSTER && x.FoodId == monster.Monster.Template.Id);
@@ -302,13 +346,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                             AddBonus(food);
 
                         Invalidate();
-                        fed = true;
+                        update = true;
                     }
                 }
 
-                if (fed)
-                    Owner.Inventory.RefreshItem(this);
             }
+
+
+            if (update && LifePoints > 0)
+                Owner.Inventory.RefreshItem(this);
         }
     }
 }

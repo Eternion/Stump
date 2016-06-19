@@ -138,12 +138,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return true;
         }
 
-        public virtual bool AllowFeeding
+        public virtual bool CanFeed(BasePlayerItem item)
         {
-            get
-            {
-                return false;
-            }
+            return false;
         }
 
         public virtual bool Feed(BasePlayerItem food)
@@ -151,12 +148,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return false;
         }
 
-        public virtual bool AllowDropping
+        public virtual bool CanDrop(BasePlayerItem item)
         {
-            get
-            {
-                return false;
-            }
+            return false;
         }
 
         public virtual bool Drop(BasePlayerItem dropOnItem)

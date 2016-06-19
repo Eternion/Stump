@@ -26,7 +26,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             Initialize();
         }
 
-        public override bool AllowDropping => true;
+        public override bool CanDrop(BasePlayerItem item)
+        {
+            return true;
+        }
 
         public override bool Drop(BasePlayerItem dropOnItem)
         {

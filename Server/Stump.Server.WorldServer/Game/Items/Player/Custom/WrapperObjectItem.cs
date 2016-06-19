@@ -15,7 +15,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override bool AllowDropping => true;
+        public override bool CanDrop(BasePlayerItem item)
+        {
+            return true;
+        }
 
         public override bool CanEquip()
         {
