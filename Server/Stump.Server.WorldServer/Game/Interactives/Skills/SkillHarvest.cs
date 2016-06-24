@@ -82,7 +82,6 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public override int StartExecute(Character character)
         {
             InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ANIMATED);
-            SetHarvested();
 
             base.StartExecute(character);
 
@@ -91,9 +90,12 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override void EndExecute(Character character)
         {
-            InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
             var count = RollHarvestedItemCount(character);
-            var bonus = (int)Math.Floor(count*(AgeBonus/100d));
+            var bonus = (int)Math.Floor(count * (AgeBonus / 100d));
+
+            SetHarvested();
+
+            InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
 
             if (character.Inventory.IsFull(m_harvestedItem, count))
             {

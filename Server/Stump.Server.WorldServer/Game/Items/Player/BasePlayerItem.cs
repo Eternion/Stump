@@ -103,6 +103,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         /// <returns>True whenever the item can be removed</returns>
         public virtual bool OnRemoveItem()
         {
+            if (IsEquiped())
+                OnEquipItem(true);
+
             return true;
         }
 

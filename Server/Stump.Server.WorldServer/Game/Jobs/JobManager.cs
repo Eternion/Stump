@@ -25,8 +25,17 @@ namespace Stump.Server.WorldServer.Game.Jobs
         public void Initialize()
         {
             m_jobTemplates = Database.Query<JobTemplate>(JobTemplateRelator.FetchQuery).ToDictionary(x => x.Id);
-            m_recipeRecords = Database.Query<RecipeRecord>(RecipeRelator.FetchQuery).
-                Concat(Database.Query<SecretRecipeRecord>(SecretRecipeRelator.FetchQuery)).ToDictionary(x => x.Id);
+
+            m_recipeRecords = Database.Query<RecipeRecord>(RecipeRelator.FetchQuery).ToDictionary(x => x.Id);
+            var secretRecipes = Database.Query<SecretRecipeRecord>(SecretRecipeRelator.FetchQuery).ToDictionary(x => x.Id);
+
+            foreach(var recipe in secretRecipes)
+            {
+                if (m_recipeRecords.ContainsKey(recipe.Key))
+                    m_recipeRecords[recipe.Key] = recipe.Value;
+                else
+                    m_recipeRecords.Add(recipe.Key, recipe.Value);
+            }
         }
 
         public IReadOnlyDictionary<int, RecipeRecord> Recipes => m_recipeRecords;

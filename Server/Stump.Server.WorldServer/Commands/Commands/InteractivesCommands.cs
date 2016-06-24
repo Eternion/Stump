@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Interactives;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -203,6 +204,73 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(character.Client);
             });
             trigger.ReplyBold("Delete Interactive {0} on map {1}", elementId, mapSrc.Id);
+        }
+    }
+
+    public class InteractivesStarsCommand : SubCommand
+    {
+        public InteractivesStarsCommand()
+        {
+            Aliases = new[] { "stars" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Set monster group stars bonus";
+            ParentCommandType = typeof(InteractivesCommands);
+            AddParameter<int>("bonus", "stars", "Bonus bewteen 0 and " + SkillHarvest.StarsBonusLimit + "%");
+            AddParameter("map", "m", "Map", isOptional: true, converter: ParametersConverter.MapConverter);
+            AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
+            AddParameter<bool>("all", "all", "All interactives", isOptional: true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            Map map = null;
+            SubArea subarea = null;
+            var bonus = trigger.Get<int>("bonus");
+
+            if (bonus < 0 || bonus > SkillHarvest.StarsBonusLimit)
+            {
+                trigger.ReplyError("Bonus between 0 and 200%");
+                return;
+            }
+            if (!trigger.IsArgumentDefined("map") && !trigger.IsArgumentDefined("subarea") && !trigger.IsArgumentDefined("all"))
+            {
+                if (!(trigger is GameTrigger))
+                {
+                    trigger.ReplyError("You have to define a map or a subarea if your are not ingame");
+                    return;
+                }
+
+                map = (trigger as GameTrigger).Character.Map;
+            }
+            else if (trigger.IsArgumentDefined("map"))
+                map = trigger.Get<Map>("map");
+            else if (trigger.IsArgumentDefined("subarea"))
+                subarea = trigger.Get<SubArea>("subarea");
+
+            if (map != null)
+            {
+                foreach (var skill in map.GetInteractiveObjects().SelectMany(x => x.GetSkills()).OfType<ISkillWithAgeBonus>())
+                {
+                    skill.AgeBonus = (short)bonus;
+                }
+            }
+            else if (subarea != null)
+            {
+                foreach (var skill in subarea.Maps.SelectMany(x => x.GetInteractiveObjects().SelectMany(y => y.GetSkills()).OfType<ISkillWithAgeBonus>()))
+                {
+                    skill.AgeBonus = (short)bonus;
+                }
+
+            }
+            else
+            {
+                foreach (var skill in World.Instance.GetMaps().SelectMany(x => x.GetInteractiveObjects().SelectMany(y => y.GetSkills()).OfType<ISkillWithAgeBonus>()))
+                {
+                    skill.AgeBonus = (short)bonus;
+                }
+            }
+
+            trigger.Reply("Interactives stars set to " + bonus);
         }
     }
 }

@@ -16,14 +16,6 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override int StartExecute(Character character)
         {
-            if (character.IsBusy())
-                return -1;
-
-            if (!Record.IsConditionFilled(character))
-            {
-                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
-                return -1;
-            }
 
             var panel = new GuildCreationPanel(character);
             panel.Open();
