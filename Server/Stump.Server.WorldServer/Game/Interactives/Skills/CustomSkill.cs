@@ -12,7 +12,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             Record = record;
         }
 
-        public override bool IsEnabled(Character character) => base.IsEnabled(character);
+        public override bool AreConditionsFilled(Character character)
+        {
+            return Record.AreConditionsFilled(character);
+        }
 
         public InteractiveCustomSkillRecord Record
         {

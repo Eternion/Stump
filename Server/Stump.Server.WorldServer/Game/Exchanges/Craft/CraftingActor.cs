@@ -54,14 +54,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             if (item == null)
                 return false;
 
-            if (quantity >= item.Stack || quantity == 0)
+            if (-quantity >= item.Stack || quantity == 0)
             {
                 if (RemoveItem(panelItem))
                     OnItemMoved(panelItem, true, quantity);
             }
             else
             {
-                item.Stack -= (uint)quantity;
+                item.Stack += (uint)quantity;
                 OnItemMoved(panelItem, true, quantity);
             }
             return false;

@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             if (character.IsBusy())
                 return -1;
 
-            if (!Record.IsConditionFilled(character))
+            if (!Record.AreConditionsFilled(character))
             {
                 character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
                 return -1;

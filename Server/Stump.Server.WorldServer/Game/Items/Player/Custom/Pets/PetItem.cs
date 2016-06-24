@@ -225,6 +225,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             Owner.Inventory.AddItem(item);
         }
 
+        public override bool OnRemoveItem()
+        {
+            return base.OnRemoveItem();
+        }
+
         public override bool Feed(BasePlayerItem food)
         {
             var possibleFood = PetTemplate.Foods.FirstOrDefault(x => (x.FoodType == FoodTypeEnum.ITEM && x.FoodId == food.Template.Id) ||

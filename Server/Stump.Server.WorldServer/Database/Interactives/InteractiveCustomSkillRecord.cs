@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             ? InteractiveManager.Instance.GetSkillTemplate(CustomTemplateId.Value)
             : InteractiveManager.Instance.GetDefaultSkillTemplate();
 
-        public bool IsConditionFilled(Character character)
+        public bool AreConditionsFilled(Character character)
         {
             return ConditionExpression == null || ConditionExpression.Eval(character);
         }

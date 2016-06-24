@@ -660,6 +660,7 @@
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MimisymbicItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Pets\EniripsaPowder.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\PetManager.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotionManager.cs" />

@@ -700,7 +700,14 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return false;
             }
 
-            if (!skill.IsEnabled(character) || character.CurrentUsedSkill != null)
+            if (!skill.AreConditionsFilled(character))
+            {
+                // Conditions non satisfaites
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
+                return false;
+            }
+
+            if (!skill.CanUse(character) || character.CurrentUsedSkill != null)
             {
                 InteractiveHandler.SendInteractiveUseErrorMessage(character.Client, interactiveId, skillId);
                 return false;
