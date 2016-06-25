@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         public RecipeRecord[] Recipes
         {
-            get { return m_recipes ?? (m_recipes = CraftableItemIds.Where(x => JobManager.Instance.Recipes.ContainsKey(x)).Select(x => JobManager.Instance.Recipes[x]).ToArray()); }
+            get { return m_recipes ?? (m_recipes = JobManager.Instance.Recipes.Values.Where(x => x.SkillId == Id).ToArray()); }
         }
 
         public int InteractiveId

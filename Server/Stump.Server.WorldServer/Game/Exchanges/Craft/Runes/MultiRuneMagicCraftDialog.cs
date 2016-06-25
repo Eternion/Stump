@@ -1,7 +1,9 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -25,6 +27,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 
         public override void Close()
         {
+            foreach (var item in Crafter.Items.OfType<PlayerTradeItem>().ToArray())
+            {
+                if (Crafter.Character == item.Owner)
+                    Crafter.MoveItemToInventory(item, 0);
+                else if (item.Owner == Receiver.Character)
+                    RuneCrafter.MoveItemFromBag(item.PlayerItem, Receiver, 0);
+            }
+
             Crafter.Character.ResetDialog();
             Receiver.Character.ResetDialog();
             InventoryHandler.SendExchangeLeaveMessage(Clients, DialogType, false);
@@ -58,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 
             if (item != null)
             {
-                Crafter.MoveItemFromBag(item, Receiver, quantity);
+                RuneCrafter.MoveItemFromBag(item, Receiver, quantity);
                 Receiver.MoveItem(id, -quantity);
             }
         }
@@ -150,8 +160,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 
         protected override void OnRuneApplied(CraftResultEnum result, MagicPoolStatus poolStatus)
         {
-            InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Crafter.Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
-            InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Receiver.Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
+            InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Crafter.Character.Client, result, ItemToImprove.PlayerItem, ItemEffects, poolStatus);
+            InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Receiver.Character.Client, result, ItemToImprove.PlayerItem, ItemEffects, poolStatus);
 
             InventoryHandler.SendExchangeCraftInformationObjectMessage(Crafter.Character.Client, ItemToImprove.PlayerItem, ItemToImprove.Owner, (ExchangeCraftResultEnum)result);
             InventoryHandler.SendExchangeCraftInformationObjectMessage(Receiver.Character.Client, ItemToImprove.PlayerItem, ItemToImprove.Owner, (ExchangeCraftResultEnum)result);

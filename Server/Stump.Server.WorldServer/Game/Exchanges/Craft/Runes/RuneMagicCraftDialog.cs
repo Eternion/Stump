@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Jobs;
 
@@ -28,14 +29,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
         {
         }
 
+        public RuneCrafter RuneCrafter => Crafter as RuneCrafter;
+
         public PlayerTradeItem ItemToImprove
         {
             get;
             private set;
         }
 
-        private IEnumerable<EffectInteger> ItemEffects => ItemToImprove.Effects.OfType<EffectInteger>();
-
+        public IEnumerable<EffectInteger> ItemEffects => ItemToImprove.Effects.OfType<EffectInteger>();
+        
         public PlayerTradeItem Rune
         {
             get;
@@ -87,11 +90,17 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
             {
                 Rune = playerItem.Stack > 0 ? playerItem : null;
             }
-            else if (Skill.SkillTemplate.ModifiableItemTypes.Contains((int) item.Template.TypeId) && (playerItem != ItemToImprove || playerItem.Stack == 0))
+            else if (IsItemEditable(item) && (playerItem != ItemToImprove || playerItem.Stack == 0))
             {
                 ItemToImprove = playerItem.Stack > 0 ? playerItem : null;
             }
         }
+
+        public bool IsItemEditable(IItem item)
+        {
+            return Skill.SkillTemplate.ModifiableItemTypes.Contains((int) item.Template.TypeId);
+        }
+        
 
         public override bool CanMoveItem(BasePlayerItem item)
         {

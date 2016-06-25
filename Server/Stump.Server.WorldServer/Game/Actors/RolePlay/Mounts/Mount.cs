@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
@@ -318,7 +319,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             var item = ItemManager.Instance.CreatePlayerItem(Owner, 7806, 1);
             item.Effects.AddRange(Effects);
 
-            Owner.Inventory.ApplyItemEffects(item, send, true);
+            Owner.Inventory.ApplyItemEffects(item, send, ItemEffectHandler.HandlerOperation.APPLY);
         }
 
         public void UnApplyMountEffects()

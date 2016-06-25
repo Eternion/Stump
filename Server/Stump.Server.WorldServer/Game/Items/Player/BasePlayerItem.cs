@@ -7,9 +7,12 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -33,6 +36,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
 
             Owner = owner;
+
+            if (IsEquiped() && Template.FavoriteSubAreas.Length > 0)
+                Owner.EnterMap += OnEnterMap;
+
         }
 
         #endregion
@@ -84,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public virtual bool IsUsable() => Template.Usable;
 
-        public virtual bool IsEquiped() => Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
+        public bool IsEquiped() => Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
 
         public virtual bool CanEquip() => true;
 
@@ -138,7 +145,36 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public virtual bool OnEquipItem(bool unequip)
         {
+            if (!unequip && Template.FavoriteSubAreas.Length > 0)
+            {
+                Owner.EnterMap += OnEnterMap;
+            }
+            else if (unequip && Template.FavoriteSubAreas.Length > 0)
+            {
+                Owner.EnterMap -= OnEnterMap;
+            }
             return true;
+        }
+
+        private void OnEnterMap(RolePlayActor actor, Map map)
+        {
+            CheckFavoriteSubAreas();
+        }
+
+        private void CheckFavoriteSubAreas()
+        {
+            if (Owner.LastMap != null && Template.FavoriteSubAreas.Contains((uint)Owner.LastMap.SubArea.Id) &&
+                !Template.FavoriteSubAreas.Contains((uint)Owner.Map.SubArea.Id))
+            {
+                Owner.Inventory.ApplyItemEffects(this, false, ItemEffectHandler.HandlerOperation.UNAPPLY, 1 + Template.FavoriteSubAreasBonus/100d);
+                Owner.Inventory.ApplyItemEffects(this, true, ItemEffectHandler.HandlerOperation.APPLY, 1);
+            }
+            if ((Owner.LastMap != null && !Template.FavoriteSubAreas.Contains((uint)Owner.LastMap.SubArea.Id)) &&
+                Template.FavoriteSubAreas.Contains((uint)Owner.Map.SubArea.Id))
+            {
+                Owner.Inventory.ApplyItemEffects(this, false, ItemEffectHandler.HandlerOperation.UNAPPLY, 1);
+                Owner.Inventory.ApplyItemEffects(this, true, ItemEffectHandler.HandlerOperation.APPLY, 1 + Template.FavoriteSubAreasBonus/100d);
+            }
         }
 
         public virtual bool CanFeed(BasePlayerItem item)
@@ -219,7 +255,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        public override ItemTemplate Template
+        public sealed override ItemTemplate Template
         {
             get { return base.Template; }
             protected set
@@ -242,7 +278,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public override List<EffectBase> Effects
         {
             get { return base.Effects; }
-            protected set
+            set
             {
                 base.Effects = value;
                 Invalidate();
@@ -314,6 +350,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public virtual int Weight
         {
             get { return (int) (Template.RealWeight*Stack); }
+        }
+
+        public double CurrentSubAreaBonus
+        {
+            get { return Template.FavoriteSubAreas.Contains((uint) Owner.SubArea.Id) ? Template.FavoriteSubAreasBonus : 0; }
         }
 
         #endregion

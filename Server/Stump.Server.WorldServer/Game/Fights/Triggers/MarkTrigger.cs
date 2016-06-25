@@ -89,7 +89,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         {
             get;
         }
-
         public virtual bool StopMovement => true;
 
         public bool ContainsCell(Cell cell) => Shape.GetCells().Contains(cell);
