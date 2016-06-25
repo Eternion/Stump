@@ -30,8 +30,10 @@ using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Dialogs.Jobs;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges.Bank;
 using Stump.Server.WorldServer.Game.Exchanges.Craft.Runes;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -800,7 +802,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeCraftResultWithObjectDescMessage((sbyte)result, new ObjectItemNotInContainer((short) createdItem.Template.Id, createdItem.Effects.Select(x => x.GetObjectEffect()), createdItem.Guid, amount)));
         }
 
-        public static void SendExchangeCraftInformationObjectMessage(IPacketReceiver client, BasePlayerItem item, Character owner, ExchangeCraftResultEnum result)
+        public static void SendExchangeCraftInformationObjectMessage(IPacketReceiver client, IItem item, Character owner, ExchangeCraftResultEnum result)
         {
             client.Send(new ExchangeCraftInformationObjectMessage((sbyte)result, (short)item.Template.Id, owner.Id));
         }
@@ -845,9 +847,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new JobCrafterDirectoryRemoveMessage((sbyte)entry.Template.Id, entry.Owner.Id));
         }
 
-        public static void SendExchangeCraftResultMagicWithObjectDescMessage(IPacketReceiver client, CraftResultEnum craftResult, BasePlayerItem item, MagicPoolStatus poolStatus)
+        public static void SendExchangeCraftResultMagicWithObjectDescMessage(IPacketReceiver client, CraftResultEnum craftResult, IItem item, IEnumerable<EffectBase> effects , MagicPoolStatus poolStatus)
         {
-            client.Send(new ExchangeCraftResultMagicWithObjectDescMessage((sbyte)craftResult, item.GetObjectItemNotInContainer(), (sbyte)poolStatus));
+            client.Send(new ExchangeCraftResultMagicWithObjectDescMessage((sbyte)craftResult, new ObjectItemNotInContainer((short) item.Template.Id, effects.Select(x => x.GetObjectEffect()), item.Guid, (int) item.Stack), (sbyte)poolStatus));
         }
 
         public static void SendExchangeItemAutoCraftStopedMessage(IPacketReceiver client, ExchangeReplayStopReasonEnum reason)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NLog;
 using Stump.DofusProtocol.Enums;
@@ -12,13 +13,13 @@ using Stump.Server.WorldServer.Game.Items.Player;
     {
         #region Delegates
 
-        public delegate void EffectComputeHandler(Character target, EffectInteger effect, bool isBoost);
+        public delegate void EffectComputeHandler(Character target, EffectInteger effect, bool isBoost, double efficiency);
 
         #endregion
 
         #region Binds
 
-        static readonly Dictionary<PlayerFields, EffectComputeHandler> m_addMethods = new Dictionary
+         readonly Dictionary<PlayerFields, EffectComputeHandler> m_addMethods = new Dictionary
             <PlayerFields, EffectComputeHandler>
             {
                 {PlayerFields.Health, AddHealth},
@@ -88,7 +89,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
                 {PlayerFields.Weight, AddWeight},
             };
 
-        static readonly Dictionary<PlayerFields, EffectComputeHandler> m_subMethods = new Dictionary
+         readonly Dictionary<PlayerFields, EffectComputeHandler> m_subMethods = new Dictionary
             <PlayerFields, EffectComputeHandler>
             {
                 {PlayerFields.Health, SubHealth},
@@ -159,7 +160,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
             };
 
 
-        private static readonly Dictionary<EffectsEnum, PlayerFields> m_addEffectsBinds =
+        private  readonly Dictionary<EffectsEnum, PlayerFields> m_addEffectsBinds =
             new Dictionary<EffectsEnum, PlayerFields>
                 {
                     {EffectsEnum.Effect_AddHealth, PlayerFields.Health},
@@ -232,7 +233,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
                     {EffectsEnum.Effect_IncreaseWeight, PlayerFields.Weight}
                 };
 
-        private static readonly Dictionary<EffectsEnum, PlayerFields> m_subEffectsBinds =
+        private  readonly Dictionary<EffectsEnum, PlayerFields> m_subEffectsBinds =
             new Dictionary<EffectsEnum, PlayerFields>
                 {
                     //EffectsEnum.Effect_SubHealth,PlayerFields.Health},
@@ -347,665 +348,665 @@ using Stump.Server.WorldServer.Game.Items.Player;
             }
 
             if (handler != null)
-                handler(Target, (EffectInteger) Effect, Boost);
+                handler(Target, (EffectInteger) Effect, Boost, Efficiency);
 
             return true;
         }
 
         #region Add Methods
 
-        private static void AddHealth(Character target, EffectInteger effect, bool isBoost)
+        private static void AddHealth(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Health].Given += effect.Value; else target.Stats[PlayerFields.Health].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Health].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Health].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddInitiative(Character target, EffectInteger effect, bool isBoost)
+        private static void AddInitiative(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Initiative].Given += effect.Value; else target.Stats[PlayerFields.Initiative].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Initiative].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Initiative].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddProspecting(Character target, EffectInteger effect, bool isBoost)
+        private static void AddProspecting(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Prospecting].Given += effect.Value; else target.Stats[PlayerFields.Prospecting].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Prospecting].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Prospecting].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddAP(Character target, EffectInteger effect, bool isBoost)
+        private static void AddAP(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AP].Given += effect.Value; else target.Stats[PlayerFields.AP].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AP].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AP].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddMP(Character target, EffectInteger effect, bool isBoost)
+        private static void AddMP(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.MP].Given += effect.Value; else target.Stats[PlayerFields.MP].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MP].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MP].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddStrength(Character target, EffectInteger effect, bool isBoost)
+        private static void AddStrength(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Strength].Given += effect.Value; else target.Stats[PlayerFields.Strength].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Strength].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Strength].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddVitality(Character target, EffectInteger effect, bool isBoost)
+        private static void AddVitality(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Vitality].Given += effect.Value; else target.Stats[PlayerFields.Vitality].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Vitality].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Vitality].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddWisdom(Character target, EffectInteger effect, bool isBoost)
+        private static void AddWisdom(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Wisdom].Given += effect.Value; else target.Stats[PlayerFields.Wisdom].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Wisdom].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Wisdom].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddChance(Character target, EffectInteger effect, bool isBoost)
+        private static void AddChance(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Chance].Given += effect.Value; else target.Stats[PlayerFields.Chance].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Chance].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Chance].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddAgility(Character target, EffectInteger effect, bool isBoost)
+        private static void AddAgility(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Agility].Given += effect.Value; else target.Stats[PlayerFields.Agility].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Agility].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Agility].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddIntelligence(Character target, EffectInteger effect, bool isBoost)
+        private static void AddIntelligence(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Intelligence].Given += effect.Value; else target.Stats[PlayerFields.Intelligence].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Intelligence].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Intelligence].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddRange(Character target, EffectInteger effect, bool isBoost)
+        private static void AddRange(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Range].Given += effect.Value; else target.Stats[PlayerFields.Range].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Range].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Range].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddSummonLimit(Character target, EffectInteger effect, bool isBoost)
+        private static void AddSummonLimit(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.SummonLimit].Given += effect.Value; else target.Stats[PlayerFields.SummonLimit].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.SummonLimit].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.SummonLimit].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddDamageReflection(Character target, EffectInteger effect, bool isBoost)
+        private static void AddDamageReflection(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageReflection].Given += effect.Value; else target.Stats[PlayerFields.DamageReflection].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageReflection].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DamageReflection].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddCriticalHit(Character target, EffectInteger effect, bool isBoost)
+        private static void AddCriticalHit(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalHit].Given += effect.Value; else target.Stats[PlayerFields.CriticalHit].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalHit].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalHit].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddCriticalMiss(Character target, EffectInteger effect, bool isBoost)
+        private static void AddCriticalMiss(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalMiss].Given += effect.Value; else target.Stats[PlayerFields.CriticalMiss].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalMiss].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalMiss].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddHealBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddHealBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.HealBonus].Given += effect.Value; else target.Stats[PlayerFields.HealBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.HealBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.HealBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageBonus].Given += effect.Value; else target.Stats[PlayerFields.DamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddWeaponDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddWeaponDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WeaponDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.WeaponDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WeaponDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WeaponDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddDamageBonusPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddDamageBonusPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageBonusPercent].Given += effect.Value; else target.Stats[PlayerFields.DamageBonusPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageBonusPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DamageBonusPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddTrapBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddTrapBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TrapBonus].Given += effect.Value; else target.Stats[PlayerFields.TrapBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TrapBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TrapBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddTrapBonusPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddTrapBonusPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TrapBonusPercent].Given += effect.Value; else target.Stats[PlayerFields.TrapBonusPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TrapBonusPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TrapBonusPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPermanentDamagePercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPermanentDamagePercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PermanentDamagePercent].Given += effect.Value; else target.Stats[PlayerFields.PermanentDamagePercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PermanentDamagePercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PermanentDamagePercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddTackleBlock(Character target, EffectInteger effect, bool isBoost)
+        private static void AddTackleBlock(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TackleBlock].Given += effect.Value; else target.Stats[PlayerFields.TackleBlock].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TackleBlock].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TackleBlock].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddTackleEvade(Character target, EffectInteger effect, bool isBoost)
+        private static void AddTackleEvade(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TackleEvade].Given += effect.Value; else target.Stats[PlayerFields.TackleEvade].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TackleEvade].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TackleEvade].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddAPAttack(Character target, EffectInteger effect, bool isBoost)
+        private static void AddAPAttack(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.APAttack].Given += effect.Value; else target.Stats[PlayerFields.APAttack].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.APAttack].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.APAttack].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddMPAttack(Character target, EffectInteger effect, bool isBoost)
+        private static void AddMPAttack(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost)  target.Stats[PlayerFields.MPAttack].Given += effect.Value; else target.Stats[PlayerFields.MPAttack].Equiped += effect.Value;
+            if (isBoost)  target.Stats[PlayerFields.MPAttack].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MPAttack].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPushDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPushDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PushDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.PushDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PushDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PushDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddCriticalDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddCriticalDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.CriticalDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddNeutralDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddNeutralDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.NeutralDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.NeutralDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.NeutralDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.NeutralDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddEarthDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddEarthDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.EarthDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.EarthDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.EarthDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.EarthDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddWaterDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddWaterDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WaterDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.WaterDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WaterDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WaterDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddAirDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddAirDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AirDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.AirDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AirDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AirDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddFireDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void AddFireDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.FireDamageBonus].Given += effect.Value; else target.Stats[PlayerFields.FireDamageBonus].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.FireDamageBonus].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.FireDamageBonus].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddDodgeAPProbability(Character target, EffectInteger effect, bool isBoost)
+        private static void AddDodgeAPProbability(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DodgeAPProbability].Given += effect.Value; else target.Stats[PlayerFields.DodgeAPProbability].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DodgeAPProbability].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DodgeAPProbability].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddDodgeMPProbability(Character target, EffectInteger effect, bool isBoost)
+        private static void AddDodgeMPProbability(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DodgeMPProbability].Given += effect.Value; else target.Stats[PlayerFields.DodgeMPProbability].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DodgeMPProbability].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DodgeMPProbability].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddNeutralResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddNeutralResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.NeutralResistPercent].Given += effect.Value; else target.Stats[PlayerFields.NeutralResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.NeutralResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.NeutralResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddEarthResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddEarthResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.EarthResistPercent].Given += effect.Value; else target.Stats[PlayerFields.EarthResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.EarthResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.EarthResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddWaterResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddWaterResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WaterResistPercent].Given += effect.Value; else target.Stats[PlayerFields.WaterResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WaterResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WaterResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddAirResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddAirResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AirResistPercent].Given += effect.Value; else target.Stats[PlayerFields.AirResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AirResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AirResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddFireResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddFireResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.FireResistPercent].Given += effect.Value; else target.Stats[PlayerFields.FireResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.FireResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.FireResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddNeutralElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddNeutralElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.NeutralElementReduction].Given += effect.Value; else target.Stats[PlayerFields.NeutralElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.NeutralElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.NeutralElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddEarthElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddEarthElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.EarthElementReduction].Given += effect.Value; else target.Stats[PlayerFields.EarthElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.EarthElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.EarthElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddWaterElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddWaterElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WaterElementReduction].Given += effect.Value; else target.Stats[PlayerFields.WaterElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WaterElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WaterElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddAirElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddAirElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AirElementReduction].Given += effect.Value; else target.Stats[PlayerFields.AirElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AirElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AirElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddFireElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddFireElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.FireElementReduction].Given += effect.Value; else target.Stats[PlayerFields.FireElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.FireElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.FireElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPushDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPushDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PushDamageReduction].Given += effect.Value; else target.Stats[PlayerFields.PushDamageReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PushDamageReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PushDamageReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddCriticalDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddCriticalDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalDamageReduction].Given += effect.Value; else target.Stats[PlayerFields.CriticalDamageReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalDamageReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalDamageReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpNeutralResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpNeutralResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpNeutralResistPercent].Given += effect.Value; else target.Stats[PlayerFields.PvpNeutralResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpNeutralResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpNeutralResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpEarthResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpEarthResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpEarthResistPercent].Given += effect.Value; else target.Stats[PlayerFields.PvpEarthResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpEarthResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpEarthResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpWaterResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpWaterResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpWaterResistPercent].Given += effect.Value; else target.Stats[PlayerFields.PvpWaterResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpWaterResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpWaterResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpAirResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpAirResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpAirResistPercent].Given += effect.Value; else target.Stats[PlayerFields.PvpAirResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpAirResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpAirResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpFireResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpFireResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpFireResistPercent].Given += effect.Value; else target.Stats[PlayerFields.PvpFireResistPercent].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpFireResistPercent].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpFireResistPercent].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpNeutralElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpNeutralElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpNeutralElementReduction].Given += effect.Value; else target.Stats[PlayerFields.PvpNeutralElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpNeutralElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpNeutralElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpEarthElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpEarthElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpEarthElementReduction].Given += effect.Value; else target.Stats[PlayerFields.PvpEarthElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpEarthElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpEarthElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpWaterElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpWaterElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpWaterElementReduction].Given += effect.Value; else target.Stats[PlayerFields.PvpWaterElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpWaterElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpWaterElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpAirElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpAirElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpAirElementReduction].Given += effect.Value; else target.Stats[PlayerFields.PvpAirElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpAirElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpAirElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPvpFireElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPvpFireElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpFireElementReduction].Given += effect.Value; else target.Stats[PlayerFields.PvpFireElementReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpFireElementReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpFireElementReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddGlobalDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddGlobalDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.GlobalDamageReduction].Given += effect.Value; else target.Stats[PlayerFields.GlobalDamageReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.GlobalDamageReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.GlobalDamageReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddDamageMultiplicator(Character target, EffectInteger effect, bool isBoost)
+        private static void AddDamageMultiplicator(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given += (effect.Value * 100); else target.Stats[PlayerFields.DamageMultiplicator].Equiped += (effect.Value * 100);
+            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given += ((int)Math.Floor(effect.Value*efficiency) * 100); else target.Stats[PlayerFields.DamageMultiplicator].Equiped += ((int)Math.Floor(effect.Value*efficiency) * 100);
         }
 
-        private static void AddPhysicalDamage(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPhysicalDamage(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PhysicalDamage].Given += effect.Value; else target.Stats[PlayerFields.PhysicalDamage].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PhysicalDamage].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PhysicalDamage].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddMagicDamage(Character target, EffectInteger effect, bool isBoost)
+        private static void AddMagicDamage(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.MagicDamage].Given += effect.Value; else target.Stats[PlayerFields.MagicDamage].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MagicDamage].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MagicDamage].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddPhysicalDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddPhysicalDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PhysicalDamageReduction].Given += effect.Value; else target.Stats[PlayerFields.PhysicalDamageReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PhysicalDamageReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PhysicalDamageReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddMagicDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void AddMagicDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.MagicDamageReduction].Given += effect.Value; else target.Stats[PlayerFields.MagicDamageReduction].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MagicDamageReduction].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MagicDamageReduction].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void AddWeight(Character target, EffectInteger effect, bool isBoost)
+        private static void AddWeight(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Weight].Given += effect.Value; else target.Stats[PlayerFields.Weight].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Weight].Given += (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Weight].Equiped += (int)Math.Floor(effect.Value*efficiency);
         }
 
         #endregion
 
         #region Sub Methods
 
-        private static void SubHealth(Character target, EffectInteger effect, bool isBoost)
+        private static void SubHealth(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Health].Given -= effect.Value; else target.Stats[PlayerFields.Health].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Health].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Health].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubInitiative(Character target, EffectInteger effect, bool isBoost)
+        private static void SubInitiative(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Initiative].Given -= effect.Value; else target.Stats[PlayerFields.Initiative].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Initiative].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Initiative].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubProspecting(Character target, EffectInteger effect, bool isBoost)
+        private static void SubProspecting(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Prospecting].Given -= effect.Value; else target.Stats[PlayerFields.Prospecting].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Prospecting].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Prospecting].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubAP(Character target, EffectInteger effect, bool isBoost)
+        private static void SubAP(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AP].Given -= effect.Value; else target.Stats[PlayerFields.AP].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AP].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AP].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubMP(Character target, EffectInteger effect, bool isBoost)
+        private static void SubMP(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.MP].Given -= effect.Value; else target.Stats[PlayerFields.MP].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MP].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MP].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubStrength(Character target, EffectInteger effect, bool isBoost)
+        private static void SubStrength(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Strength].Given -= effect.Value; else target.Stats[PlayerFields.Strength].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Strength].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Strength].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubVitality(Character target, EffectInteger effect, bool isBoost)
+        private static void SubVitality(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Vitality].Given -= effect.Value; else target.Stats[PlayerFields.Vitality].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Vitality].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Vitality].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubWisdom(Character target, EffectInteger effect, bool isBoost)
+        private static void SubWisdom(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Wisdom].Given -= effect.Value; else target.Stats[PlayerFields.Wisdom].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Wisdom].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Wisdom].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubChance(Character target, EffectInteger effect, bool isBoost)
+        private static void SubChance(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Chance].Given -= effect.Value; else target.Stats[PlayerFields.Chance].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Chance].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Chance].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubAgility(Character target, EffectInteger effect, bool isBoost)
+        private static void SubAgility(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Agility].Given -= effect.Value; else target.Stats[PlayerFields.Agility].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Agility].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Agility].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubIntelligence(Character target, EffectInteger effect, bool isBoost)
+        private static void SubIntelligence(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Intelligence].Given -= effect.Value; else target.Stats[PlayerFields.Intelligence].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Intelligence].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Intelligence].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubRange(Character target, EffectInteger effect, bool isBoost)
+        private static void SubRange(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Range].Given -= effect.Value; else target.Stats[PlayerFields.Range].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Range].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Range].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubSummonLimit(Character target, EffectInteger effect, bool isBoost)
+        private static void SubSummonLimit(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.SummonLimit].Given -= effect.Value; else target.Stats[PlayerFields.SummonLimit].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.SummonLimit].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.SummonLimit].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubDamageReflection(Character target, EffectInteger effect, bool isBoost)
+        private static void SubDamageReflection(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageReflection].Given -= effect.Value; else target.Stats[PlayerFields.DamageReflection].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageReflection].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DamageReflection].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubCriticalHit(Character target, EffectInteger effect, bool isBoost)
+        private static void SubCriticalHit(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalHit].Given -= effect.Value; else target.Stats[PlayerFields.CriticalHit].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalHit].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalHit].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubCriticalMiss(Character target, EffectInteger effect, bool isBoost)
+        private static void SubCriticalMiss(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalMiss].Given -= effect.Value; else target.Stats[PlayerFields.CriticalMiss].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalMiss].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalMiss].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubHealBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubHealBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.HealBonus].Given -= effect.Value; else target.Stats[PlayerFields.HealBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.HealBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.HealBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.DamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubWeaponDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubWeaponDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WeaponDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.WeaponDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WeaponDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WeaponDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubDamageBonusPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubDamageBonusPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageBonusPercent].Given -= effect.Value; else target.Stats[PlayerFields.DamageBonusPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DamageBonusPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DamageBonusPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubTrapBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubTrapBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TrapBonus].Given -= effect.Value; else target.Stats[PlayerFields.TrapBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TrapBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TrapBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubTrapBonusPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubTrapBonusPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TrapBonusPercent].Given -= effect.Value; else target.Stats[PlayerFields.TrapBonusPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TrapBonusPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TrapBonusPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPermanentDamagePercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPermanentDamagePercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PermanentDamagePercent].Given -= effect.Value; else target.Stats[PlayerFields.PermanentDamagePercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PermanentDamagePercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PermanentDamagePercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubTackleBlock(Character target, EffectInteger effect, bool isBoost)
+        private static void SubTackleBlock(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TackleBlock].Given -= effect.Value; else target.Stats[PlayerFields.TackleBlock].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TackleBlock].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TackleBlock].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubTackleEvade(Character target, EffectInteger effect, bool isBoost)
+        private static void SubTackleEvade(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.TackleEvade].Given -= effect.Value; else target.Stats[PlayerFields.TackleEvade].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.TackleEvade].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.TackleEvade].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubAPAttack(Character target, EffectInteger effect, bool isBoost)
+        private static void SubAPAttack(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.APAttack].Given -= effect.Value; else target.Stats[PlayerFields.APAttack].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.APAttack].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.APAttack].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubMPAttack(Character target, EffectInteger effect, bool isBoost)
+        private static void SubMPAttack(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.MPAttack].Given -= effect.Value; else target.Stats[PlayerFields.MPAttack].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MPAttack].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MPAttack].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPushDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPushDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PushDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.PushDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PushDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PushDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubCriticalDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubCriticalDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.CriticalDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubNeutralDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubNeutralDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.NeutralDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.NeutralDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.NeutralDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.NeutralDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubEarthDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubEarthDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.EarthDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.EarthDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.EarthDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.EarthDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubWaterDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubWaterDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WaterDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.WaterDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WaterDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WaterDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubAirDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubAirDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AirDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.AirDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AirDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AirDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubFireDamageBonus(Character target, EffectInteger effect, bool isBoost)
+        private static void SubFireDamageBonus(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.FireDamageBonus].Given -= effect.Value; else target.Stats[PlayerFields.FireDamageBonus].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.FireDamageBonus].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.FireDamageBonus].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubDodgeAPProbability(Character target, EffectInteger effect, bool isBoost)
+        private static void SubDodgeAPProbability(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DodgeAPProbability].Given -= effect.Value; else target.Stats[PlayerFields.DodgeAPProbability].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DodgeAPProbability].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DodgeAPProbability].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubDodgeMPProbability(Character target, EffectInteger effect, bool isBoost)
+        private static void SubDodgeMPProbability(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DodgeMPProbability].Given -= effect.Value; else target.Stats[PlayerFields.DodgeMPProbability].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.DodgeMPProbability].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.DodgeMPProbability].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubNeutralResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubNeutralResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.NeutralResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.NeutralResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.NeutralResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.NeutralResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubEarthResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubEarthResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.EarthResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.EarthResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.EarthResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.EarthResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubWaterResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubWaterResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WaterResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.WaterResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WaterResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WaterResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubAirResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubAirResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AirResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.AirResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AirResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AirResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubFireResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubFireResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.FireResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.FireResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.FireResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.FireResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubNeutralElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubNeutralElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.NeutralElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.NeutralElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.NeutralElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.NeutralElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubEarthElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubEarthElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.EarthElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.EarthElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.EarthElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.EarthElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubWaterElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubWaterElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.WaterElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.WaterElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.WaterElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.WaterElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubAirElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubAirElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.AirElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.AirElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.AirElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.AirElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubFireElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubFireElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.FireElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.FireElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.FireElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.FireElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPushDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPushDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PushDamageReduction].Given -= effect.Value; else target.Stats[PlayerFields.PushDamageReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PushDamageReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PushDamageReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubCriticalDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubCriticalDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.CriticalDamageReduction].Given -= effect.Value; else target.Stats[PlayerFields.CriticalDamageReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.CriticalDamageReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.CriticalDamageReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpNeutralResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpNeutralResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpNeutralResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.PvpNeutralResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpNeutralResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpNeutralResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpEarthResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpEarthResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpEarthResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.PvpEarthResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpEarthResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpEarthResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpWaterResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpWaterResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpWaterResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.PvpWaterResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpWaterResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpWaterResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpAirResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpAirResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpAirResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.PvpAirResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpAirResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpAirResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpFireResistPercent(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpFireResistPercent(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpFireResistPercent].Given -= effect.Value; else target.Stats[PlayerFields.PvpFireResistPercent].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpFireResistPercent].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpFireResistPercent].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpNeutralElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpNeutralElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpNeutralElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.PvpNeutralElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpNeutralElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpNeutralElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpEarthElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpEarthElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpEarthElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.PvpEarthElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpEarthElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpEarthElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpWaterElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpWaterElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpWaterElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.PvpWaterElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpWaterElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpWaterElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpAirElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpAirElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpAirElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.PvpAirElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpAirElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpAirElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPvpFireElementReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPvpFireElementReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PvpFireElementReduction].Given -= effect.Value; else target.Stats[PlayerFields.PvpFireElementReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PvpFireElementReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PvpFireElementReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubGlobalDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubGlobalDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.GlobalDamageReduction].Given -= effect.Value; else target.Stats[PlayerFields.GlobalDamageReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.GlobalDamageReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.GlobalDamageReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubDamageMultiplicator(Character target, EffectInteger effect, bool isBoost)
+        private static void SubDamageMultiplicator(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given -= (effect.Value * 100); else target.Stats[PlayerFields.DamageMultiplicator].Equiped -= (effect.Value * 100);
+            if (isBoost) target.Stats[PlayerFields.DamageMultiplicator].Given -= ((int)Math.Floor(effect.Value*efficiency) * 100); else target.Stats[PlayerFields.DamageMultiplicator].Equiped -= ((int)Math.Floor(effect.Value*efficiency) * 100);
         }
 
-        private static void SubPhysicalDamage(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPhysicalDamage(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PhysicalDamage].Given -= effect.Value; else target.Stats[PlayerFields.PhysicalDamage].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PhysicalDamage].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PhysicalDamage].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubMagicDamage(Character target, EffectInteger effect, bool isBoost)
+        private static void SubMagicDamage(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.MagicDamage].Given -= effect.Value; else target.Stats[PlayerFields.MagicDamage].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MagicDamage].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MagicDamage].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubPhysicalDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubPhysicalDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.PhysicalDamageReduction].Given -= effect.Value; else target.Stats[PlayerFields.PhysicalDamageReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.PhysicalDamageReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.PhysicalDamageReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubMagicDamageReduction(Character target, EffectInteger effect, bool isBoost)
+        private static void SubMagicDamageReduction(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.MagicDamageReduction].Given -= effect.Value; else target.Stats[PlayerFields.MagicDamageReduction].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MagicDamageReduction].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.MagicDamageReduction].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
-        private static void SubWeight(Character target, EffectInteger effect, bool isBoost)
+        private static void SubWeight(Character target, EffectInteger effect, bool isBoost, double efficiency)
         {
-            if (isBoost) target.Stats[PlayerFields.Weight].Given -= effect.Value; else target.Stats[PlayerFields.Weight].Equiped -= effect.Value;
+            if (isBoost) target.Stats[PlayerFields.Weight].Given -= (int)Math.Floor(effect.Value*efficiency); else target.Stats[PlayerFields.Weight].Equiped -= (int)Math.Floor(effect.Value*efficiency);
         }
 
         #endregion

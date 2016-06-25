@@ -2387,7 +2387,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public IEnumerable<MarkTrigger> GetTriggers() => m_triggers;
 
         public bool ShouldTriggerOnMove(Cell cell, FightActor actor)
-            => m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement && entry.ContainsCell(cell) && entry.CanTrigger(actor));
+            => m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement  && entry.ContainsCell(cell) && entry.CanTrigger(actor));
 
         public MarkTrigger[] GetTriggersByCell(Cell cell) => m_triggers.Where(entry => entry.ContainsCell(cell)).ToArray();
 
@@ -2422,10 +2422,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
         {
-            var triggers = m_triggers.ToArray();
+            var triggers = m_triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell) && markTrigger.CanTrigger(trigger)).OrderByDescending(x => x.Priority).ToArray();
+
+            foreach (var markTrigger in triggers.OfType<Trap>())
+                markTrigger.WillBeTriggered = true;
 
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
-            foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)).OrderByDescending(x => x.Priority))
+            foreach (var markTrigger in triggers)
             {
                 if (!trigger.CanPlay() && (triggerType == TriggerType.OnTurnBegin || triggerType == TriggerType.OnTurnEnd)
                     && (markTrigger is Wall || markTrigger is Glyph))

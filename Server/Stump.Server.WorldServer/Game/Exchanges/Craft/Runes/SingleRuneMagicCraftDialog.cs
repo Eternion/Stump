@@ -1,7 +1,9 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -13,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
         public SingleRuneMagicCraftDialog(Character character, InteractiveObject interactive, Skill skill)
             : base(interactive, skill, character.Jobs[skill.SkillTemplate.ParentJobId])
         {
-            Crafter = new Crafter(this, character);
+            Crafter = new RuneCrafter(this, character);
             Clients = new WorldClientCollection(character.Client);
         }
 
@@ -24,6 +26,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
         public override void Close()
         {
             base.Close();
+
+            foreach (var item in Crafter.Items.OfType<PlayerTradeItem>().ToArray())
+            {
+                Crafter.MoveItemToInventory(item, 0);
+            }
 
             Character.ResetDialog();
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
@@ -51,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 
         protected override void OnRuneApplied(CraftResultEnum result, MagicPoolStatus poolStatus)
         {
-            InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Character.Client, result, ItemToImprove.PlayerItem, poolStatus);
+            InventoryHandler.SendExchangeCraftResultMagicWithObjectDescMessage(Character.Client, result, ItemToImprove.PlayerItem, ItemEffects, poolStatus);
 
             InventoryHandler.SendExchangeCraftInformationObjectMessage(Character.Client, ItemToImprove.PlayerItem, ItemToImprove.Owner, (ExchangeCraftResultEnum)result);
             ItemToImprove.Owner.Inventory.RefreshItem(ItemToImprove.PlayerItem);

@@ -30,26 +30,64 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         [Variable]
         public static int MealsPerBonus = 3;
 
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public PetItem(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
             PetTemplate = PetManager.Instance.GetPetTemplate(Template.Id);
-            MaxPower = PetTemplate.PossibleEffects.OfType<EffectDice>().Max(x => EffectManager.Instance.GetEffectMaxPower(x));
-
+            MaxPower = IsRegularPet ? GetItemMaxPower() : 0;
+            
             InitializeEffects();
 
-            if (IsEquiped())
+            if (IsEquiped() && IsRegularPet)
                 Owner.FightEnded += OnFightEnded;
         }
 
+        private double GetItemMaxPower()
+        {
+            var groups = PetTemplate.Foods.GroupBy(x => x.BoostedEffect).ToArray();
+            double max = 0;
+
+            foreach(var group1 in groups)
+            {
+                var possibleEffect = PetTemplate.PossibleEffects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == group1.Key);
+
+                if (possibleEffect == null)
+                    continue;
+
+                var sum = PetManager.Instance.GetEffectMaxPower(possibleEffect);
+                foreach(var group2 in groups.Where(x => x != group1))
+                {
+                    if (group1.CompareEnumerable(group2)) // same conditions
+                    {
+                        possibleEffect = PetTemplate.PossibleEffects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == group1.Key);
+
+                        if (possibleEffect == null)
+                            continue;
+
+                        sum += PetManager.Instance.GetEffectMaxPower(possibleEffect);
+                    }
+                }
+
+                if (sum > max)
+                    max = sum;
+            }
+
+            return max;
+        }
+
+        public bool IsRegularPet => PetTemplate.PossibleEffects.Count > 0;
         private void InitializeEffects()
         {
             // new item
             if (Effects.OfType<EffectInteger>().All(x => x.EffectId != MealCountEffect))
             {
-                Effects.Clear();
+                Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_LifePoints ||
+                                       x.EffectId == EffectsEnum.Effect_LastMeal ||
+                                       x.EffectId == EffectsEnum.Effect_LastMealDate ||
+                                       x.EffectId == EffectsEnum.Effect_Corpulence);
                 Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, Template.Effects.OfType<EffectDice>().First(x => x.EffectId == EffectsEnum.Effect_LifePoints).DiceNum));
                 m_monsterKilledEffects = new Dictionary<int, EffectDice>();
             }
@@ -66,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool CanFeed(BasePlayerItem item)
         {
-            return item.Template.Type.SuperType != ItemSuperTypeEnum.SUPERTYPE_PET;
+            return IsRegularPet && item.Template.Type.SuperType != ItemSuperTypeEnum.SUPERTYPE_PET;
         }
 
         private EffectInteger LifePointsEffect
@@ -278,7 +316,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (effect?.Value >= possibleEffect.Max)
                 return false;
 
-            if (EffectManager.Instance.GetItemPower(this) >= MaxPower)
+            if (PetTemplate.PossibleEffects.Count > 1 && EffectManager.Instance.GetItemPower(this) >= MaxPower)
                 return false;
 
             if (effect == null)
@@ -316,10 +354,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool OnEquipItem(bool unequip)
         {
-            if (unequip)
-                Owner.FightEnded -= OnFightEnded;
-            else
-                Owner.FightEnded += OnFightEnded;
+            if (IsRegularPet)
+            {
+                if (unequip)
+                    Owner.FightEnded -= OnFightEnded;
+                else
+                    Owner.FightEnded += OnFightEnded;
+            }
 
             if (unequip)
                 return base.OnEquipItem(true);

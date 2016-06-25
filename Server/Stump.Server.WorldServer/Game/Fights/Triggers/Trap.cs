@@ -26,6 +26,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
+        public bool WillBeTriggered
+        {
+            get;
+            set;
+        }
+
+
         public Spell TrapSpell
         {
             get;
@@ -37,6 +44,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             get;
             set;
         }
+
+        public override bool StopMovement => !WillBeTriggered;
 
         public override GameActionMarkTypeEnum Type
         {
@@ -97,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override bool CanTrigger(FightActor actor)
         {
-            return true;
+            return !HasBeenTriggered && !WillBeTriggered;
         }
 
         private static Color GetTrapColorBySpell(Spell spell)

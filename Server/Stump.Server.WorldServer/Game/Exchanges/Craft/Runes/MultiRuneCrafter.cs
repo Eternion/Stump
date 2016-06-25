@@ -2,7 +2,7 @@
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 {
-    public class MultiRuneCrafter : Crafter
+    public class MultiRuneCrafter : RuneCrafter
     {
         public MultiRuneCrafter(BaseCraftDialog exchange, Character character)
             : base(exchange, character)

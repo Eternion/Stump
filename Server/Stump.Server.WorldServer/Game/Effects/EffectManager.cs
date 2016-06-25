@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects
 {
     public class EffectManager : DataManager<EffectManager>
     {
-        public const double DEFAULT_STAT_POWER = 0;
+        public const double DEFAULT_STAT_POWER = 1;
 
         // http://dofuswiki.wikia.com/wiki/Mage#Rune_Maging
         public static readonly Dictionary<CharacteristicEnum, double> POWER_PER_STAT = new Dictionary<CharacteristicEnum, double>

@@ -22,7 +22,6 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public InteractiveSkillTemplate SkillTemplate
         {
             get;
-            set;
         }
 
         public InteractiveObject InteractiveObject
@@ -33,13 +32,13 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public DateTime SkillEndTime
         {
             get;
-            set;
+            private set;
         }
 
         public virtual int GetDuration(Character character, bool forNetwork = false) => 0;
 
-        public virtual bool IsEnabled(Character character) => !character.IsGhost();
-        public virtual bool CanUse(Character character) => IsEnabled(character) && AreConditionsFilled(character) && !character.IsBusy();
+        public virtual bool IsEnabled(Character character) => !character.IsGhost() && AreConditionsFilled(character);
+        public virtual bool CanUse(Character character) => IsEnabled(character) && !character.IsBusy();
         public virtual bool AreConditionsFilled(Character character) => true;
 
         public virtual int StartExecute(Character character)

@@ -1457,7 +1457,7 @@
         /// <summary>
         /// Capacités accrues
         /// </summary>
-        Effect_940 = 940,
+        Effect_IncreasePetStats = 940,
         /// <summary>
         /// Retirer temporairement un objet d'élevage
         /// </summary>

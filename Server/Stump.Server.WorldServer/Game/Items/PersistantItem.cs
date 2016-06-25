@@ -40,6 +40,7 @@ namespace Stump.Server.WorldServer.Game.Items
         List<EffectBase> Effects
         {
             get;
+            set;
         }
 
         ObjectItem GetObjectItem();
@@ -69,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public virtual List<EffectBase> Effects
         {
             get;
-            protected set;
+            set;
         }
 
         public abstract ObjectItem GetObjectItem();
@@ -119,7 +120,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public virtual List<EffectBase> Effects
         {
             get { return Record.Effects; }
-            protected set { Record.Effects = value; }
+            set { Record.Effects = value; }
         }
 
         public bool IsTemporarily

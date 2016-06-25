@@ -680,20 +680,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 // check if an item is already on the desired position
                 ((equipedItem = TryGetItem(position)) != null))
             {
-                if (equipedItem.CanFeed(item))
+                if (item.CanDrop(equipedItem) && item.Drop(equipedItem))
                 {
-                    if (!equipedItem.Feed(item))
-                        return;
-
                     UnStackItem(item, 1);
                     return;
                 }
 
-                if (item.CanDrop(equipedItem))
+                if (equipedItem.CanFeed(item) && equipedItem.Feed(item))
                 {
-                    if (!item.Drop(equipedItem))
-                        return;
-
                     UnStackItem(item, 1);
                     return;
                 }
@@ -715,7 +709,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (item.Stack > 1) // if the item to move is stack we cut it
             {
-                var newItem = CutItem(item);
+                var newItem = CutItem(item, 1);
                 // now we have 2 stack : itemToMove, stack = 1
                 //						 newitem, stack = itemToMove.Stack - 1
 
@@ -893,14 +887,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public BasePlayerItem CutItem(BasePlayerItem item)
+        public BasePlayerItem CutItem(BasePlayerItem item, int amount)
         {
-            if (item.Stack <= 1)
+            if (item.Stack <= amount)
                 return item;
 
-            UnStackItem(item, 1);
+            UnStackItem(item, amount);
 
-            var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, 1);
+            var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, amount);
 
             Items.Add(newitem.Guid, newitem);
 
@@ -909,12 +903,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return newitem;
         }
 
-        public void ApplyItemEffects(BasePlayerItem item, bool send = true, bool forceApply = false)
+        public void ApplyItemEffects(BasePlayerItem item, bool send = true, ItemEffectHandler.HandlerOperation? force = null, double? efficiency = null)
         {
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
-                if (forceApply)
-                    handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
+                if (force != null)
+                    handler.Operation = force.Value;
+
+                handler.Efficiency = efficiency ?? 1+item.CurrentSubAreaBonus/100d;
 
                 handler.Apply();
             }
