@@ -86,6 +86,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
                 item.Stack += (uint) quantity;
                 OnItemMoved(panelItem, true, quantity);
             }
+
+            owner.MoveItem(item.Guid, quantity != 0 ? -quantity : (int)item.Stack);
+
             return false;
             
         }

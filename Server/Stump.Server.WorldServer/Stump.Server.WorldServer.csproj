@@ -489,6 +489,7 @@
     <Compile Include="Game\Exchanges\Craft\MultiCraftRequest.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\DecraftResult.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\MultiRuneCrafter.cs" />
+    <Compile Include="Game\Exchanges\Craft\Runes\MultiRuneCustomer.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\MultiRuneMagicCraftDialog.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\RuneCrafter.cs" />
     <Compile Include="Game\Exchanges\Craft\Runes\RuneInformation.cs" />
