@@ -206,6 +206,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return dist <= ExplosionZone;
         }
 
+        public SummonedBomb[] GetBombsBoundedWith()
+        {
+            var bombs = new List<SummonedBomb> { this };
+            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(x => IsBoundWith(x) || IsInExplosionZone(x)))
+            {
+                bombs.Add(bomb);
+                var bomb1 = bomb;
+                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(x => bomb1.IsBoundWith(x) || bomb1.IsInExplosionZone(x)))
+                {
+                    bombs.Add(bomb2);
+                }
+            }
+
+            return bombs.ToArray();
+        }
+
         public void Explode()
         {
             // check reaction
