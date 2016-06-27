@@ -38,7 +38,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, CastedSpell, trigger.Cell, false);
             handler.MarkTrigger = this;
             handler.Initialize();
-            var bonus = Bombs.Sum(x => x.DamageBonusPercent);
+            var boundedBombs = Bombs.First().GetBombsBoundedWith();
+            var bonus = boundedBombs.Sum(x => x.DamageBonusPercent);
 
             foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
             {
