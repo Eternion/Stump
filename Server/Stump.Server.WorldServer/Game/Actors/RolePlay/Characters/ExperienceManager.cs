@@ -26,6 +26,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public ushort HighestGradeHonor => m_highestGrade.Value.AlignmentHonor.Value;
 
+        public byte HighestJobLevel => m_highestJobLevel.Key;
+
         #region Character
 
         /// <summary>

@@ -211,6 +211,7 @@
     <Compile Include="Commands\Commands\InteractivesCommands.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\Commands\JailCommands.cs" />
+    <Compile Include="Commands\Commands\JobsCommands.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
