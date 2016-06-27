@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
             : base(interactive, skill, crafter.Jobs[skill.SkillTemplate.ParentJobId])
         {
             Crafter = new MultiRuneCrafter(this, crafter);
-            Receiver = new CraftCustomer(this, customer);
+            Receiver = new MultiRuneCustomer(this, customer);
             Clients = new WorldClientCollection(new[] { crafter.Client, customer.Client });
             Amount = 1;
         }
@@ -107,12 +107,20 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft.Runes
 
             else if (trader == Receiver && !isready) // stop the trade
             {
+                foreach (var item in Crafter.Items.OfType<PlayerTradeItem>().ToArray())
+                {
+                    if (Crafter.Character == item.Owner)
+                        Crafter.MoveItemToInventory(item, 0);
+                    else if (item.Owner == Receiver.Character)
+                        RuneCrafter.MoveItemFromBag(item.PlayerItem, Receiver, 0);
+                }
+                /*
                 if (Rune != null && Rune.Trader == Receiver)
                     Rune.Trader.MoveItem(Rune.Guid, (int) -Rune.Stack);
 
                 var itemToImprove = ItemToImprove;
                 Crafter.MoveItem(itemToImprove.Guid, (int) -itemToImprove.Stack);
-                Receiver.MoveItem(itemToImprove.Guid, (int) itemToImprove.Stack);
+                Receiver.MoveItem(itemToImprove.Guid, (int) itemToImprove.Stack);*/
             }
         }
 
