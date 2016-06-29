@@ -14,10 +14,12 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Pool;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
@@ -41,6 +43,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
         public override int Id
         {
             get { return Npc.Id; }
+        }
+
+        public void Clear()
+        {
+            foreach (var item in Items)
+            {
+                OnItemMoved(item, true, 0);
+            }
+
+            ClearItems();
         }
 
         public override bool MoveItem(int id, int quantity)
@@ -71,6 +83,25 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
                 OnItemMoved(item, false, (int)amount);
             }
         }
+
+        
+        public void AddItem(ItemTemplate template, uint amount, List<EffectBase> effects)
+        {
+            var item = Items.FirstOrDefault(x => x.Template == template);
+
+            if (item != null)
+            {
+                item.Stack += amount;
+                OnItemMoved(item, true, (int)amount);
+            }
+            else
+            {
+                item = new NpcTradeItem(m_idProvider.Pop(), template, amount, effects);
+                AddItem(item);
+                OnItemMoved(item, false, (int)amount);
+            }
+        }
+
 
         public bool RemoveItem(ItemTemplate template, uint amount)
         {

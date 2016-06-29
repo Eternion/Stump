@@ -152,6 +152,7 @@
     <Compile Include="Global\ZaapFinder.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
     <Compile Include="Npcs\NpcBank.cs" />
+    <Compile Include="Npcs\NpcPet.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Global\IncarnamSpawningPool.cs" />

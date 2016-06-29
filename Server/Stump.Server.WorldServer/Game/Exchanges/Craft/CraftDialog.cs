@@ -21,6 +21,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         protected CraftDialog(InteractiveObject interactive, Skill skill, Job job)
             : base(interactive, skill, job)
         {
+            Amount = 1;
         }
 
         public bool ChangeRecipe(CraftingActor actor, RecipeRecord recipe)
