@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -63,6 +64,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         };
 
         private Dictionary<int, PetTemplate> m_pets;
+        public ReadOnlyDictionary<int, PetTemplate> Pets => new ReadOnlyDictionary<int, PetTemplate>(m_pets);
 
         [Initialization(typeof(ItemManager))]
         public override void Initialize()

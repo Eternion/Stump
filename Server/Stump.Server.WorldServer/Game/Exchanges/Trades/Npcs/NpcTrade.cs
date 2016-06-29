@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
             foreach (var tradeItem in FirstTrader.Items)
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
-                    FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
+                FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
             }
 
             foreach (var tradeItem in SecondTrader.Items)
@@ -123,7 +123,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
         {
             base.OnTraderItemMoved(trader, item, modified, difference);
 
-            if (item.Stack == 0)
+            if (item.Stack == 0 || difference == 0)
             {
                 InventoryHandler.SendExchangeObjectRemovedMessage(FirstTrader.Character.Client, trader != FirstTrader, item.Guid);
             }

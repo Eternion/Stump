@@ -942,6 +942,11 @@ namespace DBSynchroniser
             Console.WriteLine("Fetch effects template ...");
             var effectsTemplates = worldDatabase.Database.Fetch<EffectTemplate>(EffectTemplateRelator.FetchQuery).ToDictionary(entry => (short)entry.Id);
 
+            
+            Console.WriteLine("Fetch items template ...");
+            var itemsTemplates = worldDatabase.Database.Fetch<ItemTemplate>(ItemTemplateRelator.FetchQuery).ToDictionary(entry => (short)entry.Id);
+
+
             worldDatabase.Database.Execute("DELETE FROM items_pets_foods");
             worldDatabase.Database.Execute("ALTER TABLE items_pets_foods AUTO_INCREMENT=1");
 
@@ -1013,7 +1018,13 @@ namespace DBSynchroniser
                     worldDatabase.Database.Execute($"UPDATE items_pets SET GhostItemId={info.Ghost.Value} WHERE Id={info.Id}");
                 }
 
-
+                if (itemsTemplates.ContainsKey((short)info.Id))
+                {
+                    var template = itemsTemplates[(short)info.Id];
+                    var certificate = itemsTemplates.Values.FirstOrDefault(x => x.Name.Contains("Certificat") && x.Name.Contains(template.Name));
+                    if (certificate != null)
+                        worldDatabase.Database.Execute($"UPDATE items_pets SET CertificateItemId={certificate.Id} WHERE Id={info.Id}");
+                }
                 UpdateCounter(i, links.Length);
             }
 

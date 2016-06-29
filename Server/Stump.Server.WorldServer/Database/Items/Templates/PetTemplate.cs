@@ -142,6 +142,13 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        public int? CertificateItemId
+        {
+            get;
+            set;
+        }
+
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)

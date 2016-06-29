@@ -172,6 +172,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if ((Owner.LastMap != null && !Template.FavoriteSubAreas.Contains((uint)Owner.LastMap.SubArea.Id)) &&
                 Template.FavoriteSubAreas.Contains((uint)Owner.Map.SubArea.Id))
             {
+                // Votre $item%1 se sent plus fort(e) dans cette zone, ses bonus sont augmentés temporairement de %2%%.
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 233, Template.Id, Template.FavoriteSubAreasBonus);
                 Owner.Inventory.ApplyItemEffects(this, false, ItemEffectHandler.HandlerOperation.UNAPPLY, 1);
                 Owner.Inventory.ApplyItemEffects(this, true, ItemEffectHandler.HandlerOperation.APPLY, 1 + Template.FavoriteSubAreasBonus/100d);
             }

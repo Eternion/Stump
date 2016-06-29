@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Sadida
 {
-    [SpellCastHandler(SpellIdEnum.SACRIFICE_440)]
+    [SpellCastHandler(SpellIdEnum.SACRIFICE_2006)]
     public class SacrificeSpellCastHandler : DefaultSpellCastHandler
     {
         public SacrificeSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Sadida
         {
             if (base.Initialize())
             {
-                Handlers[1].Priority = 0;
+                Handlers[0].Priority = 0;
                 return true;
             }
 

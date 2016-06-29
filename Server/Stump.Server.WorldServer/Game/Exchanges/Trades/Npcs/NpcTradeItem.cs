@@ -26,23 +26,28 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
         private readonly int m_guid;
         private readonly ItemTemplate m_template;
         private uint m_stack;
+        private List<EffectBase> m_effects;
 
         public NpcTradeItem(int guid, ItemTemplate template, uint stack)
         {
             m_guid = guid;
             m_template = template;
             m_stack = stack;
+            m_effects = template.Effects;
         }
 
-        public override int Guid
+        public NpcTradeItem(int guid, ItemTemplate template, uint amount, List<EffectBase> effects)
         {
-            get { return m_guid; }
+
+            m_guid = guid;
+            m_template = template;
+            m_stack = amount;
+            m_effects = effects;
         }
 
-        public override ItemTemplate Template
-        {
-            get { return m_template; }
-        }
+        public override int Guid => m_guid;
+
+        public override ItemTemplate Template => m_template;
 
         public override uint Stack
         {
@@ -50,14 +55,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
             set { m_stack = value; }
         }
 
-        public override List<EffectBase> Effects
-        {
-            get { return m_template.Effects; }
-        }
+        public override List<EffectBase> Effects => m_effects;
 
-        public override CharacterInventoryPositionEnum Position
-        {
-            get { return CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED; }
-        }
+        public override CharacterInventoryPositionEnum Position => CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
     }
 }

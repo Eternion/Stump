@@ -38,10 +38,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             PetTemplate = PetManager.Instance.GetPetTemplate(Template.Id);
             MaxPower = IsRegularPet ? GetItemMaxPower() : 0;
+            MaxLifePoints = Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints)?.DiceNum ?? 0;
             
             InitializeEffects();
 
-            if (IsEquiped() && IsRegularPet)
+            if (IsEquiped())
                 Owner.FightEnded += OnFightEnded;
         }
 
@@ -78,6 +79,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             return max;
         }
 
+        public int MaxLifePoints
+        {
+            get;
+        }
+
         public bool IsRegularPet => PetTemplate.PossibleEffects.Count > 0;
         private void InitializeEffects()
         {
@@ -88,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                                        x.EffectId == EffectsEnum.Effect_LastMeal ||
                                        x.EffectId == EffectsEnum.Effect_LastMealDate ||
                                        x.EffectId == EffectsEnum.Effect_Corpulence);
-                Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, Template.Effects.OfType<EffectDice>().First(x => x.EffectId == EffectsEnum.Effect_LifePoints).DiceNum));
+                Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, (short)MaxLifePoints));
                 m_monsterKilledEffects = new Dictionary<int, EffectDice>();
             }
             else
