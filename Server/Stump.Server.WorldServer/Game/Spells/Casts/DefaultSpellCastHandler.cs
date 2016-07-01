@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             }
 
 
-            Handlers = handlers.OrderBy(x => x.Priority).ToArray();
+            Handlers = handlers.ToArray();
             m_initialized = true;
 
             return true;
@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             if (!m_initialized)
                 Initialize();
 
-            foreach (var handler in Handlers)
+            foreach (var handler in Handlers.OrderBy(x => x.Priority))
             {
                 handler.Apply();
             }

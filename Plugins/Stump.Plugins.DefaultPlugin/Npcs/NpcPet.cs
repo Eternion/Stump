@@ -123,7 +123,8 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
 
             if (eniripsaPowder)
             {
-                effects.RemoveAll(x => x != hpEffect);
+                if (petTemplate.PossibleEffects.Count > 0)
+                    effects.RemoveAll(x => x != hpEffect && x.EffectId != EffectsEnum.Effect_MealCount);
                 hpEffect.Value = 1;
             }
             else
@@ -269,9 +270,18 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
 
         protected override void Apply()
         {
-            FirstTrader.Character.Inventory.SubKamas(Kamas);
+            foreach (var tradeItem in FirstTrader.Items)
+            {
+                var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
+                FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
+            }
 
-            base.Apply();
+            foreach (var tradeItem in SecondTrader.Items)
+            {
+                FirstTrader.Character.Inventory.AddItem(tradeItem.Template, tradeItem.Effects, (int)tradeItem.Stack);
+            }
+
+            FirstTrader.Character.Inventory.SubKamas(Kamas);
         }
     }
 }
