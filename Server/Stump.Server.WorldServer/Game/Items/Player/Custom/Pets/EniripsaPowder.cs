@@ -24,10 +24,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (pet == null)
                 return false;
 
-            pet.LifePoints++;
-            Owner.Inventory.RefreshItem(pet);
+            if (pet.LifePoints < pet.MaxLifePoints)
+            {
+                pet.LifePoints++;
+                Owner.Inventory.RefreshItem(pet);
 
-            return true;
+
+            }
+
+            return false;
+
         }
     }
 }

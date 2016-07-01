@@ -360,13 +360,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool OnEquipItem(bool unequip)
         {
-            if (IsRegularPet)
-            {
-                if (unequip)
-                    Owner.FightEnded -= OnFightEnded;
-                else
-                    Owner.FightEnded += OnFightEnded;
-            }
+            if (unequip)
+                Owner.FightEnded -= OnFightEnded;
+            else
+                Owner.FightEnded += OnFightEnded;
 
             if (unequip)
                 return base.OnEquipItem(true);
@@ -380,7 +377,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         private void OnFightEnded(Character character, CharacterFighter fighter)
         {
             bool update = false;
-            if (!fighter.Fight.IsDeathTemporarily && fighter.Fight.Losers == fighter.Team)
+            if (!fighter.Fight.IsDeathTemporarily && fighter.Fight.Losers == fighter.Team && IsEquiped())
             {
                 LifePoints--;
                 update = true;
