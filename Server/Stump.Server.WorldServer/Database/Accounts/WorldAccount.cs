@@ -69,6 +69,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
+        [ResultColumn("NewTokens")]
         public int NewTokens
         {
             get;
