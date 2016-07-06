@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.ReplyBold("Kamas : {0}", character.Inventory.Kamas);
                 trigger.ReplyBold("Items : {0}", character.Inventory.Count);
                 trigger.ReplyBold("Spells : {0}", character.Spells.Count());
-                trigger.ReplyBold("Tokens : {0}", character.Account.Tokens);
+                trigger.ReplyBold("Tokens : {0}", character.Inventory.Tokens);
                 trigger.ReplyBold("Fight : {0}",
                     character.IsFighting() ? character.Fight.Id.ToString(CultureInfo.InvariantCulture) : "Not fighting");
 

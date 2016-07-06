@@ -192,6 +192,14 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                               AccountManager.Instance.CreateWorldAccount(client);
                 client.WorldAccount = account;
             }
+            
+            // update tokens
+            if (client.WorldAccount.Tokens + client.WorldAccount.NewTokens <= 0)
+                client.WorldAccount.Tokens = 0;
+            else
+                client.WorldAccount.Tokens += client.WorldAccount.NewTokens;
+            
+            client.WorldAccount.NewTokens = 0;
 
             client.Character = new Character(character, client);
             client.Character.LoadRecord();
@@ -263,6 +271,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.WorldAccount.LastConnection = DateTime.Now;
             client.WorldAccount.LastIp = client.IP;
             client.WorldAccount.ConnectedCharacter = character.Id;
+
             WorldServer.Instance.DBAccessor.Database.Update(client.WorldAccount);
         }
 
