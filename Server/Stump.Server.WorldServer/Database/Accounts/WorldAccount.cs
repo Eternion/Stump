@@ -63,6 +63,19 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
+        public int Tokens
+        {
+            get;
+            set;
+        }
+
+        public int NewTokens
+        {
+            get;
+            set;
+        }
+
+
         public int LastConnectionTimeStamp
         {
             get { return LastConnection.HasValue ? (int) (DateTime.Now - LastConnection.Value).TotalHours : 0; }

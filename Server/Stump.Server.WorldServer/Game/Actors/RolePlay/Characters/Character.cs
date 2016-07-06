@@ -280,6 +280,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Client.Account; }
         }
 
+        public WorldAccount WorldAccount
+        {
+            get { return Client.WorldAccount; }
+        }
+
+
         public UserGroup UserGroup
         {
             get
@@ -3358,6 +3364,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                         m_record.BaseHealth = Stats.Health.Base;
                         m_record.DamageTaken = Stats.Health.DamageTaken;
+
 
                         WorldServer.Instance.DBAccessor.Database.Update(m_record);
                         WorldServer.Instance.DBAccessor.Database.Update(Client.WorldAccount);

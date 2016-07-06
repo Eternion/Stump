@@ -154,18 +154,6 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        public uint Tokens
-        {
-            get;
-            set;
-        }
-
-        public int NewTokens
-        {
-            get;
-            set;
-        }
-
         public DateTime? LastVote
         {
             get;
@@ -310,7 +298,6 @@ namespace Stump.Server.AuthServer.Database
                            LastHardwareId = LastHardwareId,
                            SubscriptionEndDate = SubscriptionEnd,
                            Characters = WorldCharacters.Select(entry => new WorldCharacterData(entry.CharacterId, entry.WorldId)).ToList(),
-                           Tokens = Tokens,
                            LastVote = LastVote,
                        };
         }

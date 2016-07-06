@@ -198,13 +198,6 @@ namespace Stump.Server.BaseServer.IPC.Objects
             set;
         }
 
-        [ProtoMember(22)]
-        public uint Tokens
-        {
-            get;
-            set;
-        }
-
         [ProtoMember(23)]
         public DateTime? LastVote
         {
