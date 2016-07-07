@@ -1,3 +1,4 @@
+using System;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
@@ -48,7 +49,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     return;
                 }
 
-                CharacterManager.Instance.DeleteCharacterOnAccount(character, client);
+                character.DeletedDate = DateTime.Now;
+                CharacterManager.Instance.Database.Update(character);
 
                 SendCharactersListWithRemodelingMessage(client);
                 BasicHandler.SendBasicNoOperationMessage(client);
