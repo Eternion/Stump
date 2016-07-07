@@ -23,6 +23,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public class CharacterManager : DataManager<CharacterManager>
     {
+
+        [Variable]
+        public static int CharacterDeletionDaysDelay = 15;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -79,6 +83,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             foreach (var id in characterIds.Where(id => characters.All(character => character.Id != id)).Where(id => IPCAccessor.Instance.IsConnected))
             {
                 IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
+            }
+
+            foreach (var record in characters.Where(x => x.DeletedDate > DateTime.Now + TimeSpan.FromDays(CharacterDeletionDaysDelay)))
+            {
+                DeleteCharacterOnAccount(record, client);
             }
 
             return characters;

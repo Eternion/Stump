@@ -581,6 +581,14 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public DateTime? DeletedDate
+        {
+            get;
+            set;
+        }
+
+        public bool IsDeleted => DeletedDate != null;
+
         #endregion
 
       
