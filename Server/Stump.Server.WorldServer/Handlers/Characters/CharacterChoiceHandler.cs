@@ -246,10 +246,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
 
             //Mount
-            if (client.Character.Mount != null)
+            if (client.Character.EquippedMount != null)
             {
-                MountHandler.SendMountSetMessage(client, client.Character.Mount.GetMountClientData());
-                MountHandler.SendMountXpRatioMessage(client, client.Character.Mount.GivenExperience);
+                MountHandler.SendMountSetMessage(client, client.Character.EquippedMount.GetMountClientData());
+                MountHandler.SendMountXpRatioMessage(client, client.Character.EquippedMount.GivenExperience);
             }
 
             client.Character.SendConnectionMessages();

@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
         {
             foreach (var merchant in m_activeMerchants.Where(merchant => merchant.IsRecordDirty))
             {
-                merchant.Save();
+                merchant.Save(Database);
             }
         }
     }

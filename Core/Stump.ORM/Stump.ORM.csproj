@@ -143,6 +143,9 @@
     <Compile Include="ISaveIntercepter.cs" />
     <Compile Include="PetaPoco.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Relator\IJoined.cs" />
+    <Compile Include="Relator\IOneToManyRecord1.cs" />
+    <Compile Include="Relator\OneToManyRelator.cs" />
     <Compile Include="SubSonic\DataProviders\Connection.cs" />
     <Compile Include="SubSonic\DataProviders\DbDataProvider.cs" />
     <Compile Include="SubSonic\DataProviders\IDataProvider.cs" />

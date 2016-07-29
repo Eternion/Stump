@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.Core.Pool;
@@ -96,7 +97,29 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                var guild = new Guild(m_idProvider.Pop(), name);
+                var id = m_idProvider.Pop();
+
+                var record = new GuildRecord
+                {
+                    Id = id,
+                    Name = name,
+                    CreationDate = DateTime.Now,
+                    IsNew = true,
+                    Experience = 0,
+                    Boost = 0,
+                    Prospecting = 100,
+                    Wisdom = 0,
+                    Pods = 1000,
+                    MaxTaxCollectors = 1,
+                    EmblemBackgroundColor = Color.White.ToArgb(),
+                    EmblemBackgroundShape = 1,
+                    EmblemForegroundColor = Color.Black.ToArgb(),
+                    EmblemForegroundShape = 1
+                };
+
+                var guild = new Guild(record, new GuildMember[0]);
+
+
                 m_guilds.Add(guild.Id, guild);
 
                 return guild;

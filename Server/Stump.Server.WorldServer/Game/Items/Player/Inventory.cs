@@ -264,16 +264,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }*/
         }
 
-        public override void Save()
+        public override void Save(ORM.Database database)
         {
-            Save(true);
+            Save(database, true);
         }
 
-        public void Save(bool updateAccount)
+        public void Save(ORM.Database database, bool updateAccount)
         {
             lock (Locker)
             {
-                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items.Where(item => Tokens == null || item.Value != Tokens).Where(item => !item.Value.IsTemporarily))
                 {
                     if (item.Value.Record.IsNew)

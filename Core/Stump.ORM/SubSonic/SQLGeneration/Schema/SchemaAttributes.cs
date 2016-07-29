@@ -166,7 +166,7 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
 
         public void Apply(IColumn column)
         {
-            var index = column.Table.Indexes.FirstOrDefault(x => x.Name.ToLower() == Name.ToLower());
+            var index = column.Table.Indexes.FirstOrDefault(x => x.Name?.ToLower() == Name?.ToLower());
             if (index == null || string.IsNullOrEmpty(Name))
             {
                 index = new DatabaseColumnIndex(column)

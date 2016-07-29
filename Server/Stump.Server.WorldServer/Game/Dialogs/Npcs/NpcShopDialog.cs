@@ -113,12 +113,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
-            //Todo: Find better way to assign Mount Effects
-            var mount = MountManager.Instance.CreateMount(Character, itemId);
-            if (mount == null)
-                Character.Inventory.AddItem(item);
-            else
-                finalPrice = (int)itemToSell.Price;
+            Character.Inventory.AddItem(item);
 
             if (Token != null)
             {
