@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
@@ -22,6 +23,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
+        public EffectDuration(EffectsEnum effect, TimeSpan duration)
+            : this((short)effect, (short)duration.Days, (short)duration.Hours, (short)duration.Minutes, new EffectBase())
+        {
+            
+        }
+
         public EffectDuration(short id, short days, short hours, short minutes, EffectBase effect)
             : base(id, effect)
         {
@@ -36,6 +43,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_days = (short) effect.days;
             m_hours = (short) effect.hours;
             m_minutes = (short) effect.minutes;
+        }
+
+        public void Update(TimeSpan duration)
+        {
+            m_days = (short) duration.Days;
+            m_hours = (short) duration.Hours;
+            m_minutes = (short) duration.Minutes;
         }
 
         public override int ProtocoleId

@@ -1,5 +1,8 @@
 ﻿using System;
+using ServiceStack.Text;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
@@ -8,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
     public class EffectMount : EffectBase
     {
         protected double m_date;
-        protected short m_modelId;
+        protected int m_modelId;
         protected int m_mountId;
 
         public EffectMount()
@@ -30,6 +33,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_modelId = (short) modelid;
         }
 
+        public EffectMount(EffectsEnum effect, int mountid, DateTime date, int modelId)
+            : this((short)effect, mountid, date.GetUnixTimeStampLong(), modelId, new EffectBase())
+        {
+            
+        }
+
         public EffectMount(EffectInstanceMount effect)
             : base(effect)
         {
@@ -37,19 +46,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
            m_date = effect.date;
            m_modelId = (short) effect.modelId;
         }
-
-        public override int ProtocoleId
+        
+        public int MountId
         {
-            get { return 179; }
+            get { return m_mountId; }
+            set { m_mountId = value; }
         }
 
-        public override byte SerializationIdenfitier
+        public DateTime Date
         {
-            get
+            get { return ((long)m_date).FromUnixTimeMs(); }
+            set { m_date = value.GetUnixTimeStampLong(); }
+        }
+
+        public int ModelId
+        {
+            get { return m_modelId; }
+            set
             {
-                return 9;
+                m_modelId = value;
             }
         }
+
+        public override int ProtocoleId => 179;
+
+        public override byte SerializationIdenfitier => 9;
 
         public override object[] GetValues()
         {
@@ -58,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override ObjectEffect GetObjectEffect()
         {
-            return new ObjectEffectMount(Id, m_mountId, m_date, m_modelId);
+            return new ObjectEffectMount(Id, m_mountId, m_date, (short)m_modelId);
         }
         public override EffectInstance GetEffectInstance()
         {

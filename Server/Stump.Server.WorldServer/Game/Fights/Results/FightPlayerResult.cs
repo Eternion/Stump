@@ -87,10 +87,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (ExperienceData == null)
                 ExperienceData = new FightExperienceData(Character);
 
-            if (Character.IsRiding() && Character.Mount.GivenExperience > 0)
+            if (Character.IsRiding && Character.EquippedMount.GivenExperience > 0)
             {
-                var xp = (int)(experience * (Character.Mount.GivenExperience * 0.01));
-                var mountXp = (int)Character.Mount.AdjustGivenExperience(Character, xp);
+                var xp = (int)(experience * (Character.EquippedMount.GivenExperience * 0.01));
+                var mountXp = (int)Character.EquippedMount.AdjustGivenExperience(Character, xp);
 
                 experience -= mountXp;
 

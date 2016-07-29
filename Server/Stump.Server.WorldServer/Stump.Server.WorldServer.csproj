@@ -287,8 +287,7 @@
     <Compile Include="Database\Monsters\MonsterStaticSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
-    <Compile Include="Database\Mounts\MountCharacter.cs" />
-    <Compile Include="Database\Mounts\MountPaddock.cs" />
+    <Compile Include="Database\Mounts\MountBonus.cs" />
     <Compile Include="Database\Mounts\MountRecord.cs" />
     <Compile Include="Database\Mounts\MountTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
@@ -663,6 +662,7 @@
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MimisymbicItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\MountCertificate.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\EniripsaPowder.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\PetManager.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />

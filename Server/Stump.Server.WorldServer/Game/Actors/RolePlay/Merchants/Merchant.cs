@@ -133,14 +133,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             Bag.LoadRecord();
         }
 
-        public void Save()
+        public void Save(ORM.Database database)
         {
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 if (Bag.IsDirty)
-                    Bag.Save();
+                    Bag.Save(database);
 
-                WorldServer.Instance.DBAccessor.Database.Update(m_record);
+                database.Update(m_record);
             });
         }
 

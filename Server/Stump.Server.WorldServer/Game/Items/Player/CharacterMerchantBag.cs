@@ -89,8 +89,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             Owner.Inventory.AddItem(newItem);
 
-            WorldServer.Instance.IOTaskPool.AddMessage(Save);
-
             return true;
         }
 
@@ -110,8 +108,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 TakeBack(item, (int) (item.Stack - quantity));
 
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
-
-            WorldServer.Instance.IOTaskPool.AddMessage(Save);
 
             return true;
         }
