@@ -121,10 +121,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             base.InternalDeserialize(ref reader);
 
-            m_mountId = reader.ReadInt16();
+            m_mountId = reader.ReadInt32();
             m_date = reader.ReadDouble();
-            m_modelId = reader.ReadInt16();
-            m_modelId = reader.ReadInt16();//TODO: Ugly fix (Position mismatch)
+            m_modelId = reader.ReadInt32();
         }
 
         public override bool Equals(object obj)

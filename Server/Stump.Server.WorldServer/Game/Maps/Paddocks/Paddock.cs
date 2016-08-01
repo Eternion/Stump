@@ -181,7 +181,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 
         public void RemoveMountFromPaddock(Mount mount)
         {
-            if (mount.Paddock == this && mount.IsInStable)
+            if (mount.Paddock == this && !mount.IsInStable)
             {
                 IsRecordDirty = true;
 
@@ -197,9 +197,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
             }
         }
 
-        public Mount GetPaddockedMount(int mountId)
+        public Mount GetPaddockedMount(Character character, int mountId)
         {
-            return PaddockedMounts.FirstOrDefault(x => x.Id == mountId);
+            return IsPublicPaddock() ? character.GetPublicPaddockedMount(mountId) : PaddockedMounts.FirstOrDefault(x => x.Id == mountId);
         }
 
         #region Network

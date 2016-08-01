@@ -1542,13 +1542,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (EquippedMount == null)
                 return false;
 
-            if (Level < Mount.RequiredLevel)
+            if (!IsRiding && Level < Mount.RequiredLevel)
             {
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
                 return false;
             }
 
-             if (IsBusy() || IsInFight())
+            if (!IsRiding && (IsBusy() || IsInFight()))
             {
                 //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);

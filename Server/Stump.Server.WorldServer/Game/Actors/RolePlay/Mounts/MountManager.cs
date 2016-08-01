@@ -128,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         public BasePlayerItem StoreMount(Character character, Mount mount)
         {
             // null effect bypass initialization
-            var item = ItemManager.Instance.CreatePlayerItem(character, mount.ScrollItem, 1, new List<EffectBase> { null }) as MountCertificate;
+            var item = ItemManager.Instance.CreatePlayerItem(character, mount.ScrollItem, 1, new List<EffectBase> { new EffectBase(-1, new EffectBase()) }) as MountCertificate;
 
             if (item == null)
                 throw new Exception($"Item {mount.ScrollItem} type isn't MountCertificate");

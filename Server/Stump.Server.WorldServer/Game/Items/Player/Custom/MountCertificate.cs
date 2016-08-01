@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (Effects.Count > 0)
             {
                 // hack to bypass initialization (see MountManager.StoreMount)
-                if (Effects.Any(x => x == null))
+                if (Effects.Any(x => x.Id == -1))
                     return;
 
                 m_mountEffect = Effects.OfType<EffectMount>().FirstOrDefault();
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public bool CanConvert()
         {
-            return m_mountEffect != null && m_mountEffect.Date + MountManager.MountStorageValidity < DateTime.Now;
+            return m_mountEffect != null && m_mountEffect.Date + MountManager.MountStorageValidity > DateTime.Now;
         }
 
         public override ObjectItem GetObjectItem()
