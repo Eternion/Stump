@@ -20,8 +20,8 @@ namespace Stump.Server.WorldServer.Game.Items
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
-                        item.Value.Record.IsNew = false;
                         item.Value.OnPersistantItemAdded();
+                        item.Value.Record.IsNew = false;
                     }
                     else if (item.Value.Record.IsDirty)
                     {

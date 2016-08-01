@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool PaddockToEquip(int mountId)
         {
-            var mount = Paddock.GetPaddockedMount(mountId);
+            var mount = Paddock.GetPaddockedMount(Character, mountId);
             if (mount == null)
                 return false;
 
@@ -116,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool PaddockToStable(int mountId)
         {
-            var mount = Paddock.GetPaddockedMount(mountId);
+            var mount = Paddock.GetPaddockedMount(Character, mountId);
             if (mount == null)
                 return false;
 
@@ -187,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool PaddockToInventory(int mountId)
         {
-            var mount = Paddock.GetPaddockedMount(mountId);
+            var mount = Paddock.GetPaddockedMount(Character, mountId);
             if (mount == null)
                 return false;
 

@@ -278,11 +278,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
+                        item.Value.OnPersistantItemAdded();
                         item.Value.Record.IsNew = false;
                     }
                     else if (item.Value.Record.IsDirty)
                     {
                         database.Update(item.Value.Record);
+                        item.Value.OnPersistantItemUpdated();
                     }
                 }
 
@@ -304,6 +306,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     var item = ItemsToDelete.Dequeue();
 
                     database.Delete(item.Record);
+                    item.OnPersistantItemDeleted();
                 }
 
                 while (PresetsToDelete.Count > 0)
