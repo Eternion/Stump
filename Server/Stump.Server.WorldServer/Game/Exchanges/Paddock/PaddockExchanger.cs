@@ -98,6 +98,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool PaddockToEquip(int mountId)
         {
+            if (Character.Level < Mount.RequiredLevel)
+            {
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
+
             var mount = Paddock.GetPaddockedMount(Character, mountId);
             if (mount == null)
                 return false;
@@ -153,6 +159,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
         public bool StableToEquip(int mountId)
         {
             var mount = GetStabledMount(mountId);
+
+            if (Character.Level < Mount.RequiredLevel)
+            {
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
+
             if (mount == null)
                 return false;
 
@@ -258,6 +271,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
         {
             if (Character.HasEquippedMount())
                 return false;
+
+            if (Character.Level < Mount.RequiredLevel)
+            {
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
+
             var item = Character.Inventory.TryGetItem(itemId) as MountCertificate;
             if (item == null || !item.CanConvert())
                 return false;

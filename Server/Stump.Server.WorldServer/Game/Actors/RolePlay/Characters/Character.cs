@@ -1436,14 +1436,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void SaveMounts()
         {
+            var database = MountManager.Instance.Database;
             if (EquippedMount != null && (EquippedMount.IsDirty || EquippedMount.Record.IsNew))
-                MountManager.Instance.SaveMount(EquippedMount.Record);
+                EquippedMount.Save(database);
 
             foreach (var mount in m_publicPaddockedMounts.Where(x => x.IsDirty || x.Record.IsNew))
-                MountManager.Instance.SaveMount(mount.Record);
+                mount.Save(database);
 
             foreach (var mount in m_stabledMounts.Where(x => x.IsDirty || x.Record.IsNew))
-                MountManager.Instance.SaveMount(mount.Record);
+                mount.Save(database);
 
             while (m_releaseMounts.Count > 0)
             {

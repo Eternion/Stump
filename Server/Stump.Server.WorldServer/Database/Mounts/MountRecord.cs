@@ -19,10 +19,10 @@ namespace Stump.Server.WorldServer.Database.Mounts
 
         public static string FindByOwner = "SELECT * FROM mounts WHERE OwnerId = {0}";
         
-        public static string FindByOwnerStabled = "SELECT * FROM mounts WHERE OwnerId = {0} AND IsInStable = 1";
+        public static string FindByOwnerStabled = "SELECT * FROM mounts WHERE OwnerId = {0} AND IsInStable = 1 AND PaddockId IS NOT NULL";
 
         public static string FindByOwnerPublicPaddocked = "SELECT * FROM mounts " +
-            "INNER JOIN world_maps_paddock ON world_maps_paddock.Id = mounts.PaddockId WHERE mounts.OwnerId = {0} AND mounts.PaddockId IS NOT NULL AND world_maps_paddock.GuildId IS NULL";
+            "INNER JOIN world_maps_paddock ON world_maps_paddock.Id = mounts.PaddockId WHERE mounts.OwnerId = {0} AND mounts.PaddockId IS NOT NULL AND mounts.IsInStable = 0 AND world_maps_paddock.GuildId IS NULL";
 
         public static string FetchByPaddockId = "SELECT * FROM mounts WHERE PaddockId={0} AND IsInStable=0";
 

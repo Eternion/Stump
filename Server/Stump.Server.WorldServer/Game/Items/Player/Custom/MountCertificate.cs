@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             Effects.Add(m_validityEffect = new EffectDuration(EffectsEnum.Effect_Validity, MountManager.MountStorageValidity));
 
             Mount = mount;
-            mount.Record.StoredSince = DateTime.Now;
+            mount.StoredSince = DateTime.Now;
             Owner.SetOwnedMount(mount);
         }
 
@@ -127,6 +127,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             if (Mount != null)
                 MountManager.Instance.SaveMount(Mount.Record);
+        }
+
+        public override bool OnRemoveItem()
+        {
+            if (Mount != null)
+                Mount.StoredSince = null;
+            return base.OnRemoveItem();
         }
     }
 }
