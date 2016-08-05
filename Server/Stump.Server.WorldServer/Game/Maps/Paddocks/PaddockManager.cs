@@ -16,15 +16,21 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
         [Initialization(InitializationPass.Eighth)]
         public override void Initialize()
         {
-            m_paddocks = Database.Query<WorldMapPaddockRecord, MountRecord, WorldMapPaddockRecord>(new WorldMapPaddockRelator().Map, WorldMapPaddockRelator.FetchQuery).ToDictionary(entry => entry.MapId, x => new Paddock(x));
+            m_paddocks = Database.Query<WorldMapPaddockRecord, MountRecord, WorldMapPaddockRecord>(new WorldMapPaddockRelator().Map, WorldMapPaddockRelator.FetchQuery).ToDictionary(entry => entry.Id, x => new Paddock(x));
 
             World.Instance.RegisterSaveableInstance(this);
         }
-
-        public Paddock GetPaddock(int mapId)
+        
+        
+        public Paddock GetPaddock(int id)
         {
             Paddock paddock;
-            return m_paddocks.TryGetValue(mapId, out paddock) ? paddock : null;
+            return m_paddocks.TryGetValue(id, out paddock) ? paddock : null;
+        }
+
+        public Paddock GetPaddockByMap(int mapId)
+        {
+            return m_paddocks.Values.FirstOrDefault(x => x.Map.Id == mapId);
         }
 
         public void Save()
