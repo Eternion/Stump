@@ -22,11 +22,11 @@ namespace Stump.Server.WorldServer.Database.Mounts
         public static string FindByOwnerStabled = "SELECT * FROM mounts WHERE OwnerId = {0} AND IsInStable = 1";
 
         public static string FindByOwnerPublicPaddocked = "SELECT * FROM mounts " +
-            "INNER JOIN world_maps_paddock ON world_maps_paddock.Id = mounts.PaddockId WHERE mounts.OwnerId = {0} AND mounts.PaddockId <> NULL AND world_maps_paddock.GuildId > 0";
+            "INNER JOIN world_maps_paddock ON world_maps_paddock.Id = mounts.PaddockId WHERE mounts.OwnerId = {0} AND mounts.PaddockId IS NOT NULL AND world_maps_paddock.GuildId IS NULL";
 
         public static string FetchByPaddockId = "SELECT * FROM mounts WHERE PaddockId={0} AND IsInStable=0";
 
-        public static string DeleteStoredSince = "DELETE FROM mounts WHERE StoredSince <> NULL AND StoredSince > \"{0}\"";
+        public static string DeleteStoredSince = "DELETE FROM mounts WHERE StoredSince IS NOT NULL AND StoredSince > \"{0}\"";
     }
 
     [TableName("mounts")]

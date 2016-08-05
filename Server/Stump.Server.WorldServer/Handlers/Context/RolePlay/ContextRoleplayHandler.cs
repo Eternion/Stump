@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             foreach (var objectItem in objectItems.ToArray())
                 SendObjectGroundAddedMessage(client, objectItem);
 
-            var paddock = PaddockManager.Instance.GetPaddock(message.mapId);
+            var paddock = PaddockManager.Instance.GetPaddockByMap(message.mapId);
             if (paddock != null)
                 client.Send(paddock.GetPaddockPropertiesMessage());
 
