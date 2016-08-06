@@ -62,13 +62,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                     return;
                 }
 
-                Mount = new Mount(Owner, MountManager.Instance.GetMount(m_mountEffect.MountId));
+                var record = MountManager.Instance.GetMount(m_mountEffect.MountId);
 
-                if (Record == null)
-                {
-                    logger.Error($"Invalid certificate mount id {m_mountEffect.MountId} doesn't exist");
-                    CreateMount();
-                }
+                if (record == null) // mount has been deleted, the certificate isn't valid anymore
+                    return;
+
+                Mount = new Mount(Owner, record);
+
             }
             else
                 CreateMount();
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public bool CanConvert()
         {
-            return m_mountEffect != null && m_mountEffect.Date + MountManager.MountStorageValidity > DateTime.Now;
+            return Mount != null && m_mountEffect != null && m_mountEffect.Date + MountManager.MountStorageValidity > DateTime.Now;
         }
 
         public override ObjectItem GetObjectItem()
