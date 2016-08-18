@@ -20,7 +20,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         private EffectString m_nameEffect;
         private EffectString m_belongsToEffect;
         private EffectDuration m_validityEffect;
-        private uint m_stack;
 
         public MountCertificate(Character owner, PlayerItemRecord record)
             : base(owner, record)
@@ -32,8 +31,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint Stack
         {
-            get { return m_stack; }
-            set { m_stack = Math.Min(value, 1); }
+            get { return Math.Min(Record.Stack, 1); }
+            set { Record.Stack = Math.Min(value, 1); }
         }
 
         public Mount Mount
@@ -61,6 +60,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                     CreateMount();
                     return;
                 }
+
+                // invalid certificate
+                if (m_mountEffect.Date < DateTime.Now - MountManager.MountStorageValidity)
+                    return;
 
                 var record = MountManager.Instance.GetMount(m_mountEffect.MountId);
 
