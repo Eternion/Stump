@@ -65,6 +65,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
         private void OnInteracted(NpcActionTypeEnum actionType, NpcAction action, Character character)
         {
+            character.OnInteractingWith(this, actionType, action);
             var handler = Interacted;
             if (handler != null) handler(this, actionType, action, character);
         }
