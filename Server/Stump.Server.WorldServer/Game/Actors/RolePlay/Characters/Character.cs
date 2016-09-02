@@ -70,6 +70,9 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Quests;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
@@ -269,6 +272,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (handler != null) handler(this);
         }
 
+        public event Action<Character, Npc, NpcActionTypeEnum, NpcAction> InteractingWith;
+        
+        public void OnInteractingWith(Npc npc, NpcActionTypeEnum actionType, NpcAction action)
+        {
+            InteractingWith?.Invoke(this, npc, actionType, action);
+        }
         #endregion Events
 
         #region Properties
@@ -2732,6 +2741,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion Party
+
+        #region Quest
+
+        private List<Quest> m_quests = new List<Quest>();
+
+        public ReadOnlyCollection<Quest> Quests => m_quests.AsReadOnly();
+        
+         
+        #endregion
 
         #region Fight
 

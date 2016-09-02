@@ -1,0 +1,51 @@
+﻿using System;
+using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Items;
+
+namespace Stump.Server.WorldServer.Game.Quests.Objectives
+{
+    public class BringItemsToObjective : QuestObjective
+    {
+        public BringItemsToObjective(Character character, int npcId, int amount, int itemId)
+        {
+            Npc = NpcManager.Instance.GetNpcTemplate(npcId);
+            Character = character;
+            Amount = amount;
+            Item = ItemManager.Instance.TryGetTemplate(itemId);
+            
+        }
+
+        public NpcTemplate Npc
+        {
+            get;
+            set;
+        }
+
+        public Character Character
+        {
+            get;
+            set;
+        }
+
+        public int Amount
+        {
+            get;
+            set;
+        }
+
+        public ItemTemplate Item
+        {
+            get;
+            set;
+        }
+
+        public override QuestObjectiveInformations GetQuestObjectiveInformations()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

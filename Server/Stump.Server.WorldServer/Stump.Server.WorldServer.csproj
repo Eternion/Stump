@@ -312,6 +312,11 @@
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
     <Compile Include="Database\Npcs\Replies\DeleteItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
+    <Compile Include="Database\Quests\QuestObjectiveTemplate.cs" />
+    <Compile Include="Database\Quests\QuestRecord.cs" />
+    <Compile Include="Database\Quests\QuestRewardTemplate.cs" />
+    <Compile Include="Database\Quests\QuestStepTemplate.cs" />
+    <Compile Include="Database\Quests\QuestTemplate.cs" />
     <Compile Include="Database\Shortcuts\PresetShortcut.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
@@ -707,6 +712,12 @@
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\Mount.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\MountManager.cs" />
+    <Compile Include="Game\Quests\Objectives\BringItemsToObjective.cs" />
+    <Compile Include="Game\Quests\Quest.cs" />
+    <Compile Include="Game\Quests\QuestManager.cs" />
+    <Compile Include="Game\Quests\QuestObjective.cs" />
+    <Compile Include="Game\Quests\QuestReward.cs" />
+    <Compile Include="Game\Quests\QuestStep.cs" />
     <Compile Include="Game\Social\ChatEntry.cs" />
     <Compile Include="Game\Social\ChatHistory.cs" />
     <Compile Include="Game\Social\Friend.cs" />
