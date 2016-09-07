@@ -214,6 +214,7 @@
     <Compile Include="Commands\Commands\JobsCommands.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
+    <Compile Include="Commands\Commands\MerchantCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
     <Compile Include="Commands\Commands\MountCommand.cs" />
     <Compile Include="Commands\Commands\MuteCommand.cs" />

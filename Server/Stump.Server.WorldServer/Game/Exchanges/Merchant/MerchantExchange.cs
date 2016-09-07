@@ -24,10 +24,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
             get { return ExchangeTypeEnum.DISCONNECTED_VENDOR; }
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         #region IDialog Members
 
