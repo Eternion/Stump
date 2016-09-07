@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (sender.IsMuted())
             {
                 //Le principe de précaution vous a rendu muet pour %1 seconde(s).
-                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)sender.GetMuteRemainingTime().TotalSeconds);
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)client.Character.GetMuteRemainingTime().TotalSeconds);
                 return;
             }
 
@@ -49,6 +49,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
             if (sender == receiver)
             {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
                 SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
                 return;
             }

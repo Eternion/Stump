@@ -64,18 +64,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
                 (DirectionsEnum)m_record.Direction);
         }
 
-        public WorldMapMerchantRecord Record
-        {
-            get
-            {
-                return m_record;
-            }
-        }
+        public WorldMapMerchantRecord Record => m_record;
 
-        public ReadOnlyCollection<MerchantShopDialog> OpenDialogs
-        {
-            get { return m_openedDialogs.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<MerchantShopDialog> OpenDialogs => m_openedDialogs.AsReadOnly();
 
         public override int Id
         {
@@ -95,10 +86,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             set { m_record.EntityLook = value; }
         }
 
-        public override string Name
-        {
-            get { return m_record.Name; }
-        }
+        public override string Name => m_record.Name;
 
         public bool IsRecordDirty
         {
@@ -118,15 +106,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             base.OnDisposed();
         }
 
-        public override bool CanBeSee(Maps.WorldObject byObj)
-        {
-            return base.CanBeSee(byObj) && !IsBagEmpty();
-        }
+        public override bool CanBeSee(Maps.WorldObject byObj) => base.CanBeSee(byObj) && !IsBagEmpty();
 
-        public bool IsBagEmpty()
-        {
-            return Bag.Count == 0;
-        }
+        public bool IsBagEmpty() => Bag.Count == 0;
 
         public void LoadRecord()
         {
@@ -144,10 +126,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             });
         }
 
-        public bool IsMerchantOwner(WorldAccount account)
-        {
-            return account.Id == m_record.AccountId;
-        }
+        public bool IsMerchantOwner(WorldAccount account) => account.Id == m_record.AccountId;
 
         public void OnDialogOpened(MerchantShopDialog dialog)
         {
@@ -168,9 +147,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         #endregion
 
-        public override string ToString()
-        {
-            return string.Format("{0} ({1})", Name, Id);
-        }
+        public override string ToString() => string.Format("{0} ({1})", Name, Id);
     }
 }

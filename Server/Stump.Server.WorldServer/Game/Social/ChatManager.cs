@@ -97,7 +97,15 @@ namespace Stump.Server.WorldServer.Game.Social
             switch (channel)
             {
                 case ChatActivableChannelsEnum.CHANNEL_GLOBAL:
-                    return (!character.Map.IsMuted || character.UserGroup.Role >= AdministratorChatMinAccess);
+                    {
+                        if (character.Map.IsMuted && character.UserGroup.Role <= AdministratorChatMinAccess)
+                        {
+                            character.SendServerMessage("La map est actuellement réduite au silence !");
+                            return false;
+                        }
+                        return true;
+                    }
+
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
                 case ChatActivableChannelsEnum.CHANNEL_ARENA:

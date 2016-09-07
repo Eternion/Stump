@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
 
 namespace ArkalysPlugin.Commands
 {
@@ -47,6 +48,13 @@ namespace ArkalysPlugin.Commands
                 return;
             }
 
+            if (trigger.Character.MustBeJailed())
+            {
+                var remainingTime = trigger.Character.Account.BanEndDate == null ? -1 : (trigger.Character.Account.BanEndDate - DateTime.Now).Value.TotalMinutes;
+                trigger.Reply($"Vous ne pouvez pas bouger, vous êtes en prison pour encore {remainingTime} minutes");
+                return;
+            }
+
             var cell = map.Cells[NpcCell];
 
             trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)NpcDirection));
@@ -83,6 +91,13 @@ namespace ArkalysPlugin.Commands
                 return;
             }
 
+            if (trigger.Character.MustBeJailed())
+            {
+                var remainingTime = trigger.Character.Account.BanEndDate == null ? -1 : (trigger.Character.Account.BanEndDate - DateTime.Now).Value.TotalMinutes;
+                trigger.Reply($"Vous ne pouvez pas bouger, vous êtes en prison pour encore {remainingTime} minutes");
+                return;
+            }
+
             var cell = map.Cells[ShopCell];
 
             trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)ShopDirection));
@@ -116,6 +131,13 @@ namespace ArkalysPlugin.Commands
             if (map == null)
             {
                 trigger.ReplyError("Map {0} not found", PvPMap);
+                return;
+            }
+
+            if (trigger.Character.MustBeJailed())
+            {
+                var remainingTime = trigger.Character.Account.BanEndDate == null ? -1 : (trigger.Character.Account.BanEndDate - DateTime.Now).Value.TotalMinutes;
+                trigger.Reply($"Vous ne pouvez pas bouger, vous êtes en prison pour encore {remainingTime} minutes");
                 return;
             }
 
