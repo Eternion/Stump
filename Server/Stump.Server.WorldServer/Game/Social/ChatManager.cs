@@ -106,6 +106,9 @@ namespace Stump.Server.WorldServer.Game.Social
                         return true;
                     }
 
+                        return true;
+                    }
+
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
                 case ChatActivableChannelsEnum.CHANNEL_ARENA:
