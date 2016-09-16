@@ -71,6 +71,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Database.Quests;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Quests;
 using Stump.Server.WorldServer.Database.Mounts;
@@ -2747,7 +2748,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private List<Quest> m_quests = new List<Quest>();
 
         public ReadOnlyCollection<Quest> Quests => m_quests.AsReadOnly();
-        
+
+        public void AddQuest(QuestTemplate template)
+        {
+            var 
+        }
          
         #endregion
 

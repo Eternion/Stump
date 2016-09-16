@@ -41,6 +41,8 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             set { Record.ConditionExpression = value; }
         }
 
+        public int Priority
+
         public override bool CanExecute(Npc npc, Character character)
         {
             return ConditionExpression == null || ConditionExpression.Eval(character);
