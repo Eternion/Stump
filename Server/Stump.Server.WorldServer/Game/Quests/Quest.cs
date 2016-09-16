@@ -1,4 +1,6 @@
-﻿using NLog;
+﻿using System.Linq;
+using NLog;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Quests;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -54,6 +56,11 @@ namespace Stump.Server.WorldServer.Game.Quests
         {
             get;
             set;
+        }
+
+        public QuestActiveInformations GetQuestActiveInformations()
+        {
+            return new QuestActiveDetailedInformations((short) Id, (short) CurrentStep.Id, CurrentStep.Objectives.Select(x => x.GetQuestObjectiveInformations()));
         }
      }
 }

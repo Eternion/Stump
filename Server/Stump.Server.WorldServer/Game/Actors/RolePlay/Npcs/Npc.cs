@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (!CanInteractWith(actionType, dialoguer))
                 return;
 
-            var action = Actions.First(entry => entry.ActionType.Contains(actionType) && entry.CanExecute(this, dialoguer));
+            var action = Actions.Where(entry => entry.ActionType.Contains(actionType) && entry.CanExecute(this, dialoguer)).OrderBy(x => x.Priority).First();
 
             action.Execute(this, dialoguer);
             OnInteracted(actionType, action, dialoguer);

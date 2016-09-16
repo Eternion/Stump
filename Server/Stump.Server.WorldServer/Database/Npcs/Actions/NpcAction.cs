@@ -13,6 +13,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             get;
         }
 
+        public abstract int Priority
+        {
+            get;
+        }
+
         public abstract void Execute(Npc npc, Character character);
 
         public virtual bool CanExecute(Npc npc, Character character)

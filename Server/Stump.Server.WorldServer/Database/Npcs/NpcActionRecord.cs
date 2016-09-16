@@ -77,6 +77,12 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
+        public int Priority
+        {
+            get;
+            set;
+        }
+
         public NpcActionDatabase GenerateAction()
         {
             return DiscriminatorManager<NpcActionDatabase>.Instance.Generate(Type, this);
