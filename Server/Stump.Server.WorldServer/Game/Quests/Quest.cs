@@ -26,7 +26,19 @@ namespace Stump.Server.WorldServer.Game.Quests
                 return;
             }
 
+            CurrentStep = new QuestStep(this, QuestManager.Instance.GetQuestStep(record.StepId));
+        }
 
+        public Quest(Character owner, QuestStepTemplate step)
+        {
+            m_record = new QuestRecord()
+            {
+                Finished = false,
+                QuestId = step.QuestId,
+                StepId = step.Id,
+            };
+
+            CurrentStep = new QuestStep(this, step);
         }
 
         public Character Owner
@@ -55,7 +67,13 @@ namespace Stump.Server.WorldServer.Game.Quests
         public QuestStep CurrentStep
         {
             get;
-            set;
+            private set;
+        }
+
+        public void ChangeQuestStep(QuestStepTemplate step)
+        {
+            CurrentStep?.CancelQuest();
+            CurrentStep = new QuestStep(this, step);
         }
 
         public QuestActiveInformations GetQuestActiveInformations()

@@ -80,6 +80,19 @@ namespace Stump.Server.WorldServer.Database.Quests
             set;
         }
 
+        public int TriggeredByObjectiveId
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public QuestObjectiveTemplate[] ObjectivesToTrigger
+        {
+            get;
+            set;
+        }
+
         public Game.Quests.QuestObjective GenerateObjective()
         {
             switch (Type)

@@ -49,11 +49,8 @@ namespace Stump.Server.WorldServer.Game.Quests.Objectives
 
         }
 
-        public bool 
-
         private void CharacterOnInteractingWith(Character character, Npc npc, NpcActionTypeEnum actionType, NpcAction action)
         {
-            if (npc.Template != Npc || actionType != NpcActionTypeEnum.ACTION_TALK)
         }
 
         public override QuestObjectiveInformations GetQuestObjectiveInformations()

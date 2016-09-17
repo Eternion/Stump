@@ -13,10 +13,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             get;
         }
 
-        public abstract int Priority
-        {
-            get;
-        }
+        public virtual int Priority => 0;
 
         public abstract void Execute(Npc npc, Character character);
 

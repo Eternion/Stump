@@ -16,14 +16,18 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
 
         public override bool CanExecute(Npc npc, Character character)
         {
-            return base.CanExecute(npc, character);
+            return base.CanExecute(npc, character) &&
+                   character.Quests.Any(x => x.CurrentStep.Objectives.Any(y => y.Template.Id == ObjectiveId));
         }
 
         public override bool Execute(Npc npc, Character character)
         {
             var objective = character.Quests.SelectMany(x => x.CurrentStep.Objectives).FirstOrDefault(x => x.Template.Id == ObjectiveId);
 
-            objective.
+            if (objective == null)
+                return false;
+
+            objective.CompleteObjective();
 
             return base.Execute(npc, character);
         }
