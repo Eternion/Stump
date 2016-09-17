@@ -31,6 +31,11 @@ namespace Stump.Server.WorldServer.Game.Quests
                 step.Objectives = step.ObjectiveIds.Select(x => m_questsObjectives[x]).ToArray();
                 step.Rewards = step.RewardsIds.Select(x => m_questsRewards[x]).ToArray();
             }
+
+            foreach (var objective in m_questsObjectives.Values)
+            {
+                objective.ObjectivesToTrigger = m_questsObjectives.Values.Where(x => x.TriggeredByObjectiveId == objective.Id).ToArray();
+            }
         }
 
         public QuestTemplate GetQuestTemplate(int id)

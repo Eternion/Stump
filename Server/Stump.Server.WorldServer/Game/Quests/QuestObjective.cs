@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Quests
         public bool Finished
         {
             get;
-            set;
+            private set;
         }
 
         public Character Character
@@ -35,15 +35,17 @@ namespace Stump.Server.WorldServer.Game.Quests
 
         public void CompleteObjective()
         {
-
+            OnCompleted();
         }
 
         public event Action<QuestObjective> Completed;
         public abstract QuestObjectiveInformations GetQuestObjectiveInformations();
 
-        protected virtual void OnCompleted(QuestObjective obj)
+        protected virtual void OnCompleted()
         {
-            Completed?.Invoke(obj);
+            DisableObjective();
+            Finished = true;
+            Completed?.Invoke(this);
         }
     }
 }
