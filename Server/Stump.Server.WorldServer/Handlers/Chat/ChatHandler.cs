@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (receiver.IsMuted())
             {
                 //Message automatique : Le joueur <b>%1</b> a été rendu muet pour ne pas avoir respecté les règles. <b>%1</b> ne pourra pas vous répondre avant <b>%2</b> minutes.
-                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 168, receiver.Name, receiver.Name, (int)receiver.GetMuteRemainingTime().TotalMinutes);
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 168, receiver.Name, (int)receiver.GetMuteRemainingTime().TotalMinutes);
                 return;
             }
 
