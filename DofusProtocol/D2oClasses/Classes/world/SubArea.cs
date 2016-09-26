@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:18:02
+// Generated on 09/26/2016 01:50:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -32,6 +32,12 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<uint> entranceMapIds;
         public List<uint> exitMapIds;
         public Boolean capturable;
+        public List<uint> achievements;
+        public List<List<int>> quests;
+        public List<List<int>> npcs;
+        public int exploreAchievementId;
+        public Boolean isDiscovered;
+        public List<int> harvestables;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -143,6 +149,42 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.capturable; }
             set { this.capturable = value; }
+        }
+        [D2OIgnore]
+        public List<uint> Achievements
+        {
+            get { return this.achievements; }
+            set { this.achievements = value; }
+        }
+        [D2OIgnore]
+        public List<List<int>> Quests
+        {
+            get { return this.quests; }
+            set { this.quests = value; }
+        }
+        [D2OIgnore]
+        public List<List<int>> Npcs
+        {
+            get { return this.npcs; }
+            set { this.npcs = value; }
+        }
+        [D2OIgnore]
+        public int ExploreAchievementId
+        {
+            get { return this.exploreAchievementId; }
+            set { this.exploreAchievementId = value; }
+        }
+        [D2OIgnore]
+        public Boolean IsDiscovered
+        {
+            get { return this.isDiscovered; }
+            set { this.isDiscovered = value; }
+        }
+        [D2OIgnore]
+        public List<int> Harvestables
+        {
+            get { return this.harvestables; }
+            set { this.harvestables = value; }
         }
     }
 }

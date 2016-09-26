@@ -1,12 +1,11 @@
 
 
-// Generated on 04/19/2016 10:18:04
+// Generated on 09/26/2016 01:50:36
 using System;
 using System.Collections.Generic;
 
 namespace Stump.DofusProtocol.Enums
 {
-    [Flags]
     public enum GuildRightsBitEnum
     {
         GUILD_RIGHT_NONE = 0,
@@ -26,6 +25,6 @@ namespace Stump.DofusProtocol.Enums
         GUILD_RIGHT_DEFENSE_PRIORITY = 32768,
         GUILD_RIGHT_COLLECT_MY_TAX_COLLECTOR = 65536,
         GUILD_RIGHT_SET_ALLIANCE_PRISM = 131072,
-        GUILD_RIGHT_TALK_IN_ALLIANCE_CHAN = 262144
+        GUILD_RIGHT_TALK_IN_ALLIANCE_CHAN = 262144,
     }
 }

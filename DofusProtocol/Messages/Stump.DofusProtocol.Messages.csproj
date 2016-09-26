@@ -279,6 +279,9 @@
     <Compile Include="Messages\game\actions\GameActionNoopMessage.cs" />
     <Compile Include="Messages\game\actions\sequence\SequenceEndMessage.cs" />
     <Compile Include="Messages\game\actions\sequence\SequenceStartMessage.cs" />
+    <Compile Include="Messages\game\alliance\AllianceBulletinMessage.cs" />
+    <Compile Include="Messages\game\alliance\AllianceBulletinSetErrorMessage.cs" />
+    <Compile Include="Messages\game\alliance\AllianceBulletinSetRequestMessage.cs" />
     <Compile Include="Messages\game\alliance\AllianceChangeGuildRightsMessage.cs" />
     <Compile Include="Messages\game\alliance\AllianceCreationResultMessage.cs" />
     <Compile Include="Messages\game\alliance\AllianceCreationStartedMessage.cs" />
@@ -303,6 +306,9 @@
     <Compile Include="Messages\game\alliance\AllianceModificationNameAndTagValidMessage.cs" />
     <Compile Include="Messages\game\alliance\AllianceModificationStartedMessage.cs" />
     <Compile Include="Messages\game\alliance\AllianceModificationValidMessage.cs" />
+    <Compile Include="Messages\game\alliance\AllianceMotdMessage.cs" />
+    <Compile Include="Messages\game\alliance\AllianceMotdSetErrorMessage.cs" />
+    <Compile Include="Messages\game\alliance\AllianceMotdSetRequestMessage.cs" />
     <Compile Include="Messages\game\alliance\AlliancePartialListMessage.cs" />
     <Compile Include="Messages\game\alliance\AllianceVersatileInfoListMessage.cs" />
     <Compile Include="Messages\game\alliance\KohUpdateMessage.cs" />
@@ -444,6 +450,7 @@
     <Compile Include="Messages\game\context\fight\GameFightTurnStartMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnStartPlayingMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightUpdateTeamMessage.cs" />
+    <Compile Include="Messages\game\context\fight\RefreshCharacterStatsMessage.cs" />
     <Compile Include="Messages\game\context\fight\SlaveSwitchContextMessage.cs" />
     <Compile Include="Messages\game\context\GameCautiousMapMovementMessage.cs" />
     <Compile Include="Messages\game\context\GameCautiousMapMovementRequestMessage.cs" />
@@ -481,6 +488,8 @@
     <Compile Include="Messages\game\context\mount\MountEmoteIconUsedOkMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountEquipedErrorMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountFeedRequestMessage.cs" />
+    <Compile Include="Messages\game\context\mount\MountHarnessColorsUpdateRequestMessage.cs" />
+    <Compile Include="Messages\game\context\mount\MountHarnessDissociateRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountInformationInPaddockRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountInformationRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountReleasedMessage.cs" />
@@ -788,6 +797,9 @@
     <Compile Include="Messages\game\guest\GuestLimitationMessage.cs" />
     <Compile Include="Messages\game\guest\GuestModeMessage.cs" />
     <Compile Include="Messages\game\guild\ChallengeFightJoinRefusedMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildBulletinMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildBulletinSetErrorMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildBulletinSetRequestMessage.cs" />
     <Compile Include="Messages\game\guild\GuildChangeMemberParametersMessage.cs" />
     <Compile Include="Messages\game\guild\GuildCharacsUpgradeRequestMessage.cs" />
     <Compile Include="Messages\game\guild\GuildCreationResultMessage.cs" />
@@ -1123,11 +1135,15 @@
     <Compile Include="Messages\game\shortcut\ShortcutBarRemoveRequestMessage.cs" />
     <Compile Include="Messages\game\shortcut\ShortcutBarSwapErrorMessage.cs" />
     <Compile Include="Messages\game\shortcut\ShortcutBarSwapRequestMessage.cs" />
+    <Compile Include="Messages\game\social\BulletinMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookErrorMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestByIdMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestByNameMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestMessage.cs" />
+    <Compile Include="Messages\game\social\SocialNoticeMessage.cs" />
+    <Compile Include="Messages\game\social\SocialNoticeSetErrorMessage.cs" />
+    <Compile Include="Messages\game\social\SocialNoticeSetRequestMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionAddMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionFinishedMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionsAllAttributionMessage.cs" />

@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:18:00
+// Generated on 09/26/2016 01:50:31
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +15,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint grade;
         public int monsterId;
         public uint level;
+        public int vitality;
         public int paDodge;
         public int pmDodge;
         public int wisdom;
@@ -50,6 +51,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.level; }
             set { this.level = value; }
+        }
+        [D2OIgnore]
+        public int Vitality
+        {
+            get { return this.vitality; }
+            set { this.vitality = value; }
         }
         [D2OIgnore]
         public int PaDodge

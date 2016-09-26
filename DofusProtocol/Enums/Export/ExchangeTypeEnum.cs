@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:18:03
+// Generated on 09/26/2016 01:50:35
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Enums
         MOUNT = 15,
         MOUNT_STABLE = 16,
         NPC_RESURECT_PET = 17,
-        NPC_TRADE_MOUNT = 18,
+        NPC_TRADE_RIDE = 18,
         REALESTATE_HOUSE = 19,
         REALESTATE_FARM = 20,
         RUNES_TRADE = 21,
@@ -34,5 +34,6 @@ namespace Stump.DofusProtocol.Enums
         TRASHBIN = 24,
         ALLIANCE_PRISM = 25,
         HAVENBAG = 26,
+        NPC_TRADE_MULDO = 27,
     }
 }

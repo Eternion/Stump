@@ -36,6 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
                 character.Id,
                 (short)character.Map.Area.Id,
                 (short)WorldServer.ServerInformation.Id,
+                (short)WorldServer.ServerInformation.Id,
                 character.GuildMember == null ? new AbstractSocialGroupInfos[0] : new[] { character.Guild.GetBasicGuildInformations() },
                 character.IsInFight() ? (sbyte)PlayerStateEnum.GAME_TYPE_FIGHT : (sbyte)PlayerStateEnum.GAME_TYPE_ROLEPLAY));
         }
@@ -63,6 +64,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
                     character.Name,
                     character.Id,
                     (short)character.Map.SubArea.Id,
+                    (short)WorldServer.ServerInformation.Id,
                     (short)WorldServer.ServerInformation.Id,
                     character.GuildMember == null ? new AbstractSocialGroupInfos[0] : new[] { character.Guild.GetBasicGuildInformations() },
                     character.IsInFight() ? (sbyte)PlayerStateEnum.GAME_TYPE_FIGHT : (sbyte)PlayerStateEnum.GAME_TYPE_ROLEPLAY));

@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:54
+// Generated on 09/26/2016 01:50:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +21,7 @@ namespace Stump.DofusProtocol.Types
         public bool isRideable;
         public bool isWild;
         public bool isFecondationReady;
+        public bool useHarnessColors;
         public double id;
         public int model;
         public IEnumerable<int> ancestor;
@@ -48,18 +49,20 @@ namespace Stump.DofusProtocol.Types
         public double boostMax;
         public int reproductionCount;
         public int reproductionCountMax;
+        public short harnessGID;
         public IEnumerable<Types.ObjectEffectInteger> effectList;
         
         public MountClientData()
         {
         }
         
-        public MountClientData(bool sex, bool isRideable, bool isWild, bool isFecondationReady, double id, int model, IEnumerable<int> ancestor, IEnumerable<int> behaviors, string name, int ownerId, long experience, long experienceForLevel, double experienceForNextLevel, sbyte level, int maxPods, int stamina, int staminaMax, int maturity, int maturityForAdult, int energy, int energyMax, int serenity, int aggressivityMax, int serenityMax, int love, int loveMax, int fecondationTime, int boostLimiter, double boostMax, int reproductionCount, int reproductionCountMax, IEnumerable<Types.ObjectEffectInteger> effectList)
+        public MountClientData(bool sex, bool isRideable, bool isWild, bool isFecondationReady, bool useHarnessColors, double id, int model, IEnumerable<int> ancestor, IEnumerable<int> behaviors, string name, int ownerId, long experience, long experienceForLevel, double experienceForNextLevel, sbyte level, int maxPods, int stamina, int staminaMax, int maturity, int maturityForAdult, int energy, int energyMax, int serenity, int aggressivityMax, int serenityMax, int love, int loveMax, int fecondationTime, int boostLimiter, double boostMax, int reproductionCount, int reproductionCountMax, short harnessGID, IEnumerable<Types.ObjectEffectInteger> effectList)
         {
             this.sex = sex;
             this.isRideable = isRideable;
             this.isWild = isWild;
             this.isFecondationReady = isFecondationReady;
+            this.useHarnessColors = useHarnessColors;
             this.id = id;
             this.model = model;
             this.ancestor = ancestor;
@@ -87,6 +90,7 @@ namespace Stump.DofusProtocol.Types
             this.boostMax = boostMax;
             this.reproductionCount = reproductionCount;
             this.reproductionCountMax = reproductionCountMax;
+            this.harnessGID = harnessGID;
             this.effectList = effectList;
         }
         
@@ -97,6 +101,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, isRideable);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 2, isWild);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 3, isFecondationReady);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 4, useHarnessColors);
             writer.WriteByte(flag1);
             writer.WriteDouble(id);
             writer.WriteVarInt(model);
@@ -149,6 +154,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteDouble(boostMax);
             writer.WriteInt(reproductionCount);
             writer.WriteVarInt(reproductionCountMax);
+            writer.WriteVarShort(harnessGID);
             var effectList_before = writer.Position;
             var effectList_count = 0;
             writer.WriteUShort(0);
@@ -171,6 +177,7 @@ namespace Stump.DofusProtocol.Types
             isRideable = BooleanByteWrapper.GetFlag(flag1, 1);
             isWild = BooleanByteWrapper.GetFlag(flag1, 2);
             isFecondationReady = BooleanByteWrapper.GetFlag(flag1, 3);
+            useHarnessColors = BooleanByteWrapper.GetFlag(flag1, 4);
             id = reader.ReadDouble();
             if (id < -9007199254740990 || id > 9007199254740990)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9007199254740990 || id > 9007199254740990");
@@ -250,6 +257,9 @@ namespace Stump.DofusProtocol.Types
             reproductionCountMax = reader.ReadVarInt();
             if (reproductionCountMax < 0)
                 throw new Exception("Forbidden value on reproductionCountMax = " + reproductionCountMax + ", it doesn't respect the following condition : reproductionCountMax < 0");
+            harnessGID = reader.ReadVarShort();
+            if (harnessGID < 0)
+                throw new Exception("Forbidden value on harnessGID = " + harnessGID + ", it doesn't respect the following condition : harnessGID < 0");
             limit = reader.ReadUShort();
             var effectList_ = new Types.ObjectEffectInteger[limit];
             for (int i = 0; i < limit; i++)

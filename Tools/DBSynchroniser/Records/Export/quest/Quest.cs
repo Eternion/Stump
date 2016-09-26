@@ -1,7 +1,7 @@
  
 
 
-// Generated on 04/19/2016 10:18:10
+// Generated on 09/26/2016 01:50:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +29,7 @@ namespace DBSynchroniser.Records
         public uint levelMin;
         public uint levelMax;
         public Boolean isPartyQuest;
+        public String startCriterion;
 
         int ID2ORecord.Id
         {
@@ -127,6 +128,14 @@ namespace DBSynchroniser.Records
             set { isPartyQuest = value; }
         }
 
+        [D2OIgnore]
+        [NullString]
+        public String StartCriterion
+        {
+            get { return startCriterion; }
+            set { startCriterion = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Quest)obj;
@@ -141,6 +150,7 @@ namespace DBSynchroniser.Records
             LevelMin = castedObj.levelMin;
             LevelMax = castedObj.levelMax;
             IsPartyQuest = castedObj.isPartyQuest;
+            StartCriterion = castedObj.startCriterion;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -156,6 +166,7 @@ namespace DBSynchroniser.Records
             obj.levelMin = LevelMin;
             obj.levelMax = LevelMax;
             obj.isPartyQuest = IsPartyQuest;
+            obj.startCriterion = StartCriterion;
             return obj;
         }
         

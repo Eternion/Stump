@@ -187,6 +187,7 @@
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />
     <Compile Include="Custom\OrnamentEnum.cs" />
     <Compile Include="Custom\PartyFightReasonEnum.cs" />
+    <Compile Include="Custom\ServerConstantTypeEnum.cs" />
     <Compile Include="Custom\SkillTemplateEnum.cs" />
     <Compile Include="Custom\SmileyPacksEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />

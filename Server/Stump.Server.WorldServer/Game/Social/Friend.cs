@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     Character.FriendsBook.IsFriend(asker.Account.Id) ? (sbyte)Character.AlignmentSide : (sbyte)AlignmentSideEnum.ALIGNMENT_UNKNOWN,
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
-                    Character.GuildMember == null ? new BasicGuildInformations(0, "", 0) : Character.GuildMember.Guild.GetBasicGuildInformations(),
+                    Character.GuildMember == null ? new GuildInformations(0, "", 0, new GuildEmblem(0,0,0,0)) : Character.GuildMember.Guild.GetGuildInformations(),
                     -1,
                     Character.Status);
             }

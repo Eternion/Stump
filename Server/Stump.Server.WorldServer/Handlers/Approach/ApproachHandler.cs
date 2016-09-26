@@ -7,6 +7,7 @@ using NLog;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -142,6 +143,14 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
             SendServerOptionalFeaturesMessage(client, OptionalFeaturesEnum.PvpArena);
+            SendServerSessionConstantsMessage(client,
+                new ServerSessionConstantInteger((short) ServerConstantTypeEnum.TIME_BEFORE_DISCONNECTION, BaseServer.Settings.InactivityDisconnectionTime*1000 ?? -1),
+                new ServerSessionConstantInteger((short) ServerConstantTypeEnum.KOH_DURATION, 7200000),
+                new ServerSessionConstantInteger((short) ServerConstantTypeEnum.KOH_WINNING_SCORE, 30),
+                new ServerSessionConstantInteger((short) ServerConstantTypeEnum.MINIMAL_TIME_BEFORE_KOH, 86400000),
+                new ServerSessionConstantInteger((short) ServerConstantTypeEnum.TIME_BEFORE_WEIGH_IN_KOH, 60000),
+                new ServerSessionConstantInteger((short) ServerConstantTypeEnum.UNKOWN_6, 10),
+                new ServerSessionConstantInteger((short) ServerConstantTypeEnum.UNKNOW_7, 2000));
             SendAccountCapabilitiesMessage(client);
 
             client.Send(new TrustStatusMessage(true, true)); // Restrict actions if account is not trust
@@ -159,6 +168,11 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         public static void SendServerOptionalFeaturesMessage(IPacketReceiver client, params OptionalFeaturesEnum[] features)
         {
             client.Send(new ServerOptionalFeaturesMessage(features.Select(x => (sbyte)x)));
+        }
+
+        public static void SendServerSessionConstantsMessage(IPacketReceiver client, params ServerSessionConstant[] constants)
+        {
+            client.Send(new ServerSessionConstantsMessage(constants));
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)

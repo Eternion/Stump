@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:53
+// Generated on 09/26/2016 01:50:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         public sbyte alignmentSide;
         public sbyte breed;
         public bool sex;
-        public Types.BasicGuildInformations guildInfo;
+        public Types.GuildInformations guildInfo;
         public short moodSmileyId;
         public Types.PlayerStatus status;
         
@@ -31,7 +31,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, short lastConnection, int achievementPoints, long playerId, string playerName, byte level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, short moodSmileyId, Types.PlayerStatus status)
+        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, short lastConnection, int achievementPoints, long playerId, string playerName, byte level, sbyte alignmentSide, sbyte breed, bool sex, Types.GuildInformations guildInfo, short moodSmileyId, Types.PlayerStatus status)
          : base(accountId, accountName, playerState, lastConnection, achievementPoints)
         {
             this.playerId = playerId;
@@ -75,7 +75,7 @@ namespace Stump.DofusProtocol.Types
             if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage)
                 throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage");
             sex = reader.ReadBoolean();
-            guildInfo = new Types.BasicGuildInformations();
+            guildInfo = new Types.GuildInformations();
             guildInfo.Deserialize(reader);
             moodSmileyId = reader.ReadVarShort();
             if (moodSmileyId < 0)

@@ -301,6 +301,7 @@
     <Compile Include="Classes\items\criterion\MariedItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\MaxRankCriterion.cs" />
     <Compile Include="Classes\items\criterion\MonthItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\MountFamilyItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\NameItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\ObjectItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\PremiumAccountItemCriterion.cs" />
@@ -356,6 +357,7 @@
     <Compile Include="Classes\mounts\Mount.cs" />
     <Compile Include="Classes\mounts\MountBehavior.cs" />
     <Compile Include="Classes\mounts\MountBone.cs" />
+    <Compile Include="Classes\mounts\MountFamily.cs" />
     <Compile Include="Classes\mounts\RideFood.cs" />
     <Compile Include="Classes\notifications\Notification.cs" />
     <Compile Include="Classes\npcs\Npc.cs" />

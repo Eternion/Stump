@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:08
+// Generated on 09/26/2016 01:49:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightCloseCombatMessage(short actionId, double sourceId, double targetId, short destinationCellId, sbyte critical, bool silentCast, short weaponGenericId)
-         : base(actionId, sourceId, targetId, destinationCellId, critical, silentCast)
+        public GameActionFightCloseCombatMessage(short actionId, double sourceId, bool silentCast, bool verboseCast, double targetId, short destinationCellId, sbyte critical, short weaponGenericId)
+         : base(actionId, sourceId, silentCast, verboseCast, targetId, destinationCellId, critical)
         {
             this.weaponGenericId = weaponGenericId;
         }

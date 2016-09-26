@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:53
+// Generated on 09/26/2016 01:50:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FriendSpouseOnlineInformations(int spouseAccountId, long spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide, bool inFight, bool followSpouse, int mapId, short subAreaId)
+        public FriendSpouseOnlineInformations(int spouseAccountId, long spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.GuildInformations guildInfo, sbyte alignmentSide, bool inFight, bool followSpouse, int mapId, short subAreaId)
          : base(spouseAccountId, spouseId, spouseName, spouseLevel, breed, sex, spouseEntityLook, guildInfo, alignmentSide)
         {
             this.inFight = inFight;

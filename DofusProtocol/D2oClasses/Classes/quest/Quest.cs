@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:18:01
+// Generated on 09/26/2016 01:50:31
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -24,6 +24,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint levelMin;
         public uint levelMax;
         public Boolean isPartyQuest;
+        public String startCriterion;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -87,6 +88,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.isPartyQuest; }
             set { this.isPartyQuest = value; }
+        }
+        [D2OIgnore]
+        public String StartCriterion
+        {
+            get { return this.startCriterion; }
+            set { this.startCriterion = value; }
         }
     }
 }
