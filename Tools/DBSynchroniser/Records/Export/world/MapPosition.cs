@@ -1,7 +1,7 @@
  
 
 
-// Generated on 04/19/2016 10:18:11
+// Generated on 09/26/2016 01:50:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +31,7 @@ namespace DBSynchroniser.Records
         public int subAreaId;
         public int worldMap;
         public Boolean hasPriorityOnWorldmap;
+        public Boolean isUnderWater;
 
         int ID2ORecord.Id
         {
@@ -162,6 +163,13 @@ namespace DBSynchroniser.Records
             set { hasPriorityOnWorldmap = value; }
         }
 
+        [D2OIgnore]
+        public Boolean IsUnderWater
+        {
+            get { return isUnderWater; }
+            set { isUnderWater = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (MapPosition)obj;
@@ -178,6 +186,7 @@ namespace DBSynchroniser.Records
             SubAreaId = castedObj.subAreaId;
             WorldMap = castedObj.worldMap;
             HasPriorityOnWorldmap = castedObj.hasPriorityOnWorldmap;
+            IsUnderWater = castedObj.isUnderWater;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -195,6 +204,7 @@ namespace DBSynchroniser.Records
             obj.subAreaId = SubAreaId;
             obj.worldMap = WorldMap;
             obj.hasPriorityOnWorldmap = HasPriorityOnWorldmap;
+            obj.isUnderWater = IsUnderWater;
             return obj;
         }
         

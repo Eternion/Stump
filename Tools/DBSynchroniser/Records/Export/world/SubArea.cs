@@ -1,7 +1,7 @@
  
 
 
-// Generated on 04/19/2016 10:18:11
+// Generated on 09/26/2016 01:50:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +37,12 @@ namespace DBSynchroniser.Records
         public List<uint> entranceMapIds;
         public List<uint> exitMapIds;
         public Boolean capturable;
+        public List<uint> achievements;
+        public List<List<int>> quests;
+        public List<List<int>> npcs;
+        public int exploreAchievementId;
+        public Boolean isDiscovered;
+        public List<int> harvestables;
 
         int ID2ORecord.Id
         {
@@ -343,6 +349,124 @@ namespace DBSynchroniser.Records
             set { capturable = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> Achievements
+        {
+            get { return achievements; }
+            set
+            {
+                achievements = value;
+                m_achievementsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_achievementsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] AchievementsBin
+        {
+            get { return m_achievementsBin; }
+            set
+            {
+                m_achievementsBin = value;
+                achievements = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<List<int>> Quests
+        {
+            get { return quests; }
+            set
+            {
+                quests = value;
+                m_questsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_questsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] QuestsBin
+        {
+            get { return m_questsBin; }
+            set
+            {
+                m_questsBin = value;
+                quests = value == null ? null : value.ToObject<List<List<int>>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<List<int>> Npcs
+        {
+            get { return npcs; }
+            set
+            {
+                npcs = value;
+                m_npcsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_npcsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] NpcsBin
+        {
+            get { return m_npcsBin; }
+            set
+            {
+                m_npcsBin = value;
+                npcs = value == null ? null : value.ToObject<List<List<int>>>();
+            }
+        }
+
+        [D2OIgnore]
+        public int ExploreAchievementId
+        {
+            get { return exploreAchievementId; }
+            set { exploreAchievementId = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean IsDiscovered
+        {
+            get { return isDiscovered; }
+            set { isDiscovered = value; }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<int> Harvestables
+        {
+            get { return harvestables; }
+            set
+            {
+                harvestables = value;
+                m_harvestablesBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_harvestablesBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] HarvestablesBin
+        {
+            get { return m_harvestablesBin; }
+            set
+            {
+                m_harvestablesBin = value;
+                harvestables = value == null ? null : value.ToObject<List<int>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SubArea)obj;
@@ -365,6 +489,12 @@ namespace DBSynchroniser.Records
             EntranceMapIds = castedObj.entranceMapIds;
             ExitMapIds = castedObj.exitMapIds;
             Capturable = castedObj.capturable;
+            Achievements = castedObj.achievements;
+            Quests = castedObj.quests;
+            Npcs = castedObj.npcs;
+            ExploreAchievementId = castedObj.exploreAchievementId;
+            IsDiscovered = castedObj.isDiscovered;
+            Harvestables = castedObj.harvestables;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -388,6 +518,12 @@ namespace DBSynchroniser.Records
             obj.entranceMapIds = EntranceMapIds;
             obj.exitMapIds = ExitMapIds;
             obj.capturable = Capturable;
+            obj.achievements = Achievements;
+            obj.quests = Quests;
+            obj.npcs = Npcs;
+            obj.exploreAchievementId = ExploreAchievementId;
+            obj.isDiscovered = IsDiscovered;
+            obj.harvestables = Harvestables;
             return obj;
         }
         
@@ -402,6 +538,10 @@ namespace DBSynchroniser.Records
             m_monstersBin = monsters == null ? null : monsters.ToBinary();
             m_entranceMapIdsBin = entranceMapIds == null ? null : entranceMapIds.ToBinary();
             m_exitMapIdsBin = exitMapIds == null ? null : exitMapIds.ToBinary();
+            m_achievementsBin = achievements == null ? null : achievements.ToBinary();
+            m_questsBin = quests == null ? null : quests.ToBinary();
+            m_npcsBin = npcs == null ? null : npcs.ToBinary();
+            m_harvestablesBin = harvestables == null ? null : harvestables.ToBinary();
         
         }
     }

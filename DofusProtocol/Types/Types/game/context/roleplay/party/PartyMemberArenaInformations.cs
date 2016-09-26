@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:47
+// Generated on 09/26/2016 01:50:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +39,8 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             rank = reader.ReadVarShort();
-            if (rank < 0 || rank > 2300)
-                throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0 || rank > 2300");
+            if (rank < 0 || rank > 20000)
+                throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0 || rank > 20000");
         }
         
         

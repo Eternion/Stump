@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:30
+// Generated on 09/26/2016 01:50:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class GuildMotdSetRequestMessage : Message
+    public class GuildMotdSetRequestMessage : SocialNoticeSetRequestMessage
     {
         public const uint Id = 6588;
         public override uint MessageId
@@ -31,11 +31,13 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
+            base.Serialize(writer);
             writer.WriteUTF(content);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            base.Deserialize(reader);
             content = reader.ReadUTF();
         }
         

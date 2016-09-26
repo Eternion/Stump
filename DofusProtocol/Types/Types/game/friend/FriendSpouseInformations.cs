@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:53
+// Generated on 09/26/2016 01:50:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +24,14 @@ namespace Stump.DofusProtocol.Types
         public sbyte breed;
         public sbyte sex;
         public Types.EntityLook spouseEntityLook;
-        public Types.BasicGuildInformations guildInfo;
+        public Types.GuildInformations guildInfo;
         public sbyte alignmentSide;
         
         public FriendSpouseInformations()
         {
         }
         
-        public FriendSpouseInformations(int spouseAccountId, long spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide)
+        public FriendSpouseInformations(int spouseAccountId, long spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.GuildInformations guildInfo, sbyte alignmentSide)
         {
             this.spouseAccountId = spouseAccountId;
             this.spouseId = spouseId;
@@ -73,7 +73,7 @@ namespace Stump.DofusProtocol.Types
             sex = reader.ReadSByte();
             spouseEntityLook = new Types.EntityLook();
             spouseEntityLook.Deserialize(reader);
-            guildInfo = new Types.BasicGuildInformations();
+            guildInfo = new Types.GuildInformations();
             guildInfo.Deserialize(reader);
             alignmentSide = reader.ReadSByte();
         }

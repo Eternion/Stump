@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:18:02
+// Generated on 09/26/2016 01:50:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -26,6 +26,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int subAreaId;
         public int worldMap;
         public Boolean hasPriorityOnWorldmap;
+        public Boolean isUnderWater;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -101,6 +102,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.hasPriorityOnWorldmap; }
             set { this.hasPriorityOnWorldmap = value; }
+        }
+        [D2OIgnore]
+        public Boolean IsUnderWater
+        {
+            get { return this.isUnderWater; }
+            set { this.isUnderWater = value; }
         }
     }
 }

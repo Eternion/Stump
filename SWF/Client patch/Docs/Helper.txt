@@ -39,8 +39,8 @@ initscopedepth 5
 maxscopedepth 10
 
 code
-getlex Multiname("Vector",[PrivateNamespace("*","1037"),StaticProtectedNs("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("","180"),PackageNamespace("com.ankamagames.dofus.logic.connection.managers"),PrivateNamespace("*","3389"),PackageInternalNs("com.ankamagames.dofus.logic.connection.managers"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("__AS3__.vec")])
-getlex Qname(PackageNamespace("","180"),"int")
+getlex Multiname("Vector",[PrivateNamespace("*","1126"),StaticProtectedNs("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("","249"),PackageNamespace("com.ankamagames.dofus.logic.connection.managers"),PrivateNamespace("*","3416"),PackageInternalNs("com.ankamagames.dofus.logic.connection.managers"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("__AS3__.vec")])
+getlex Qname(PackageNamespace("","249"),"int")
 applytype 1
 construct 0
 returnvalue
@@ -115,7 +115,8 @@ maxstack 4
 localcount 10
 initscopedepth 0
 maxscopedepth 3
-try from ofs001d to ofs0030 target ofs0034 type Qname(PackageNamespace(""),"Error") name Qname(PackageInternalNs(""),"e")
+try from ofs001d to ofs0030 target ofs0034 type Qname(PackageNamespace("","249"),"Error") name Qname(PackageNamespace("","249"),"e")
+
 
 code
 getlocal_0
@@ -167,3 +168,9 @@ pushbyte 0
 setproperty Qname(PackageNamespace(""),"position")
 pushtrue
 returnvalue
+
+================================
+================================
+
+
+(jerakine.utils.crypto.Signature::verify):

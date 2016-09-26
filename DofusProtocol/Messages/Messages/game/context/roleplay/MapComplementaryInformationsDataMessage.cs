@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:18
+// Generated on 09/26/2016 01:49:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +26,13 @@ namespace Stump.DofusProtocol.Messages
         public IEnumerable<Types.StatedElement> statedElements;
         public IEnumerable<Types.MapObstacle> obstacles;
         public IEnumerable<Types.FightCommonInformations> fights;
+        public bool hasAggressiveMonsters;
         
         public MapComplementaryInformationsDataMessage()
         {
         }
         
-        public MapComplementaryInformationsDataMessage(short subAreaId, int mapId, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights)
+        public MapComplementaryInformationsDataMessage(short subAreaId, int mapId, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights, bool hasAggressiveMonsters)
         {
             this.subAreaId = subAreaId;
             this.mapId = mapId;
@@ -41,6 +42,7 @@ namespace Stump.DofusProtocol.Messages
             this.statedElements = statedElements;
             this.obstacles = obstacles;
             this.fights = fights;
+            this.hasAggressiveMonsters = hasAggressiveMonsters;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -128,6 +130,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)fights_count);
             writer.Seek((int)fights_after);
 
+            writer.WriteBoolean(hasAggressiveMonsters);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -186,6 +189,7 @@ namespace Stump.DofusProtocol.Messages
                  fights_[i].Deserialize(reader);
             }
             fights = fights_;
+            hasAggressiveMonsters = reader.ReadBoolean();
         }
         
     }

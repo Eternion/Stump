@@ -1791,6 +1791,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Where(x => x.Value.Animated).Select(entry => entry.Value.GetStatedElement()),
                 GetMapObstacles(),
                 m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),
+                false,
                 (short)Position.X,
                 (short)Position.Y);
         }

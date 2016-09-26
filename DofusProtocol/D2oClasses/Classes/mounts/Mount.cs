@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:18:00
+// Generated on 09/26/2016 01:50:31
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,6 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         private String MODULE = "Mounts";
         public uint id;
+        public uint familyId;
         [I18NField]
         public uint nameId;
         public String look;
@@ -26,6 +27,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.id; }
             set { this.id = value; }
+        }
+        [D2OIgnore]
+        public uint FamilyId
+        {
+            get { return this.familyId; }
+            set { this.familyId = value; }
         }
         [D2OIgnore]
         public uint NameId

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 04/19/2016 10:18:09
+// Generated on 09/26/2016 01:50:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +19,7 @@ namespace DBSynchroniser.Records
     {
         private String MODULE = "Mounts";
         public uint id;
+        public uint familyId;
         [I18NField]
         public uint nameId;
         public String look;
@@ -35,6 +36,13 @@ namespace DBSynchroniser.Records
         {
             get { return id; }
             set { id = value; }
+        }
+
+        [D2OIgnore]
+        public uint FamilyId
+        {
+            get { return familyId; }
+            set { familyId = value; }
         }
 
         [D2OIgnore]
@@ -58,6 +66,7 @@ namespace DBSynchroniser.Records
             var castedObj = (Mount)obj;
             
             Id = castedObj.id;
+            FamilyId = castedObj.familyId;
             NameId = castedObj.nameId;
             Look = castedObj.look;
         }
@@ -66,6 +75,7 @@ namespace DBSynchroniser.Records
         {
             var obj = parent != null ? (Mount)parent : new Mount();
             obj.id = Id;
+            obj.familyId = FamilyId;
             obj.nameId = NameId;
             obj.look = Look;
             return obj;

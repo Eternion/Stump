@@ -1,7 +1,7 @@
  
 
 
-// Generated on 04/19/2016 10:18:11
+// Generated on 09/26/2016 01:50:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +19,6 @@ namespace DBSynchroniser.Records
     {
         public const String MODULE = "Hints";
         public int id;
-        public uint categoryId;
         public uint gfx;
         [I18NField]
         public uint nameId;
@@ -31,6 +30,7 @@ namespace DBSynchroniser.Records
         public Boolean outdoor;
         public int subareaId;
         public int worldMapId;
+        public uint level;
 
         int ID2ORecord.Id
         {
@@ -44,13 +44,6 @@ namespace DBSynchroniser.Records
         {
             get { return id; }
             set { id = value; }
-        }
-
-        [D2OIgnore]
-        public uint CategoryId
-        {
-            get { return categoryId; }
-            set { categoryId = value; }
         }
 
         [D2OIgnore]
@@ -118,12 +111,18 @@ namespace DBSynchroniser.Records
             set { worldMapId = value; }
         }
 
+        [D2OIgnore]
+        public uint Level
+        {
+            get { return level; }
+            set { level = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Hint)obj;
             
             Id = castedObj.id;
-            CategoryId = castedObj.categoryId;
             Gfx = castedObj.gfx;
             NameId = castedObj.nameId;
             MapId = castedObj.mapId;
@@ -133,13 +132,13 @@ namespace DBSynchroniser.Records
             Outdoor = castedObj.outdoor;
             SubareaId = castedObj.subareaId;
             WorldMapId = castedObj.worldMapId;
+            Level = castedObj.level;
         }
         
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Hint)parent : new Hint();
             obj.id = Id;
-            obj.categoryId = CategoryId;
             obj.gfx = Gfx;
             obj.nameId = NameId;
             obj.mapId = MapId;
@@ -149,6 +148,7 @@ namespace DBSynchroniser.Records
             obj.outdoor = Outdoor;
             obj.subareaId = SubareaId;
             obj.worldMapId = WorldMapId;
+            obj.level = Level;
             return obj;
         }
         

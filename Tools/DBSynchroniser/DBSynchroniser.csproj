@@ -227,6 +227,7 @@
     <Compile Include="Records\Export\mounts\Mount.cs" />
     <Compile Include="Records\Export\mounts\MountBehavior.cs" />
     <Compile Include="Records\Export\mounts\MountBone.cs" />
+    <Compile Include="Records\Export\mounts\MountFamily.cs" />
     <Compile Include="Records\Export\mounts\RideFood.cs" />
     <Compile Include="Records\Export\notifications\Notification.cs" />
     <Compile Include="Records\Export\npcs\Npc.cs" />

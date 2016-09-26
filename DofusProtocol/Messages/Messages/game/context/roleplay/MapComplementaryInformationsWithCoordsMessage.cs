@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:18
+// Generated on 09/26/2016 01:49:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +25,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public MapComplementaryInformationsWithCoordsMessage(short subAreaId, int mapId, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights, short worldX, short worldY)
-         : base(subAreaId, mapId, houses, actors, interactiveElements, statedElements, obstacles, fights)
+        public MapComplementaryInformationsWithCoordsMessage(short subAreaId, int mapId, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights, bool hasAggressiveMonsters, short worldX, short worldY)
+         : base(subAreaId, mapId, houses, actors, interactiveElements, statedElements, obstacles, fights, hasAggressiveMonsters)
         {
             this.worldX = worldX;
             this.worldY = worldY;

@@ -1,6 +1,6 @@
 
 
-// Generated on 04/19/2016 10:17:52
+// Generated on 09/26/2016 01:50:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +18,16 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte type;
-        public IEnumerable<int> parameters;
+        public IEnumerable<int> @params;
         
         public DareCriteria()
         {
         }
         
-        public DareCriteria(sbyte type, IEnumerable<int> parameters)
+        public DareCriteria(sbyte type, IEnumerable<int> @params)
         {
             this.type = type;
-            this.parameters = parameters;
+            this.@params = @params;
         }
         
         public virtual void Serialize(IDataWriter writer)
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             var params_before = writer.Position;
             var params_count = 0;
             writer.WriteUShort(0);
-            foreach (var entry in parameters)
+            foreach (var entry in @params)
             {
                  writer.WriteInt(entry);
                  params_count++;
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Types
             {
                  params_[i] = reader.ReadInt();
             }
-            parameters = params_;
+            @params = params_;
         }
         
         
