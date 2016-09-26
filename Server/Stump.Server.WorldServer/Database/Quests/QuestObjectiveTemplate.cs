@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -67,6 +68,12 @@ namespace Stump.Server.WorldServer.Database.Quests
                 m_parametersCsv = value?.ToCSV(",");
             }
         }
+
+        public bool DungeonOnly
+        {
+            get;
+            set;
+        }
         
         public int CoordsX
         {
@@ -109,7 +116,15 @@ namespace Stump.Server.WorldServer.Database.Quests
             StepId = (int) objective.stepId;
             TypeId = (int) objective.TypeId;
             DialogId = objective.DialogId;
-            ParametersCSV = objective.Parameters.ToCSV(",");
+            Parameters = new[]
+            {
+                objective.Parameters.Parameter0,
+                objective.Parameters.Parameter1,
+                objective.Parameters.Parameter2,
+                objective.Parameters.Parameter3,
+                objective.Parameters.Parameter4
+            }.Take((int)objective.Parameters.NumParams).ToArray();
+            DungeonOnly = objective.Parameters.dungeonOnly;
             CoordsX = objective.Coords.x;
             CoordsY = objective.coords.y;
         }
