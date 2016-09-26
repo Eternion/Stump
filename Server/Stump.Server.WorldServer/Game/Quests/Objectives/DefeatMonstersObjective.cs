@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Quests.Objectives
 
         public override QuestObjectiveInformations GetQuestObjectiveInformations()
         {
-            return new QuestObjectiveInformationsWithCompletion((short)Template.Id, Finished, (short)Completion, (short)Amount);
+            return new QuestObjectiveInformationsWithCompletion((short)Template.Id, Finished, new string[0], (short)Completion, (short)Amount);
         }
     }
 }
