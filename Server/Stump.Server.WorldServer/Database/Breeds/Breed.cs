@@ -27,9 +27,9 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
             if (m_current != null && m_current.Id == breed.Id)
             {
-                if (item.Id != 0)
+                if (item.Id != 0 && !m_current.Items.Exists(x => x.Id == item.Id))
                     m_current.Items.Add(item);
-                if (spell.Id != 0)
+                if (spell.Id != 0 && !m_current.Spells.Exists(x => x.Id == spell.Id))
                     m_current.Spells.Add(spell);
                 return null;
             }
@@ -37,9 +37,9 @@ namespace Stump.Server.WorldServer.Database.Breeds
             var previous = m_current;
 
             m_current = breed;
-            if (item.Id != 0)
+            if (item.Id != 0 && !m_current.Items.Exists(x => x.Id == item.Id))
                 m_current.Items.Add(item);
-            if (spell.Id != 0)
+            if (spell.Id != 0 && !m_current.Spells.Exists(x => x.Id == spell.Id))
                 m_current.Spells.Add(spell);
 
             return previous;
