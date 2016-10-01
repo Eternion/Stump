@@ -311,6 +311,7 @@
     <Compile Include="Database\Npcs\Replies\PvPSeekReply.cs" />
     <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\SpellResetReply.cs" />
+    <Compile Include="Database\Npcs\Replies\StartQuestReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
     <Compile Include="Database\Npcs\Replies\DeleteItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
