@@ -172,5 +172,11 @@ namespace Stump.Server.WorldServer.Database.Mounts
             get;
             set;
         }
+
+        public override void BeforeSave(bool insert)
+        {
+            BehaviorsCSV = Behaviors.ToCSV(",");
+            base.BeforeSave(insert);
+        }
     }
 }
