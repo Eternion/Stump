@@ -12,7 +12,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.CERTIFICAT_DE_MONTURE)]
-    public class MountCertificate : BasePlayerItem
+    public sealed class MountCertificate : BasePlayerItem
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -27,6 +27,17 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             // default template is used to apply mount effects
             if (Template.Id != MountTemplate.DEFAULT_SCROLL_ITEM)
                 Initialize();
+
+            if (record.Stack > 1)
+            {
+                for (int i = 0; i < record.Stack - 1; i++)
+                {
+                    Owner.Inventory.AddItem(Template);
+                }
+
+                record.Stack = 1;
+            }
+
         }
 
         public override uint Stack
