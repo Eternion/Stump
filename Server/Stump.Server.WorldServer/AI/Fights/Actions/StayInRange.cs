@@ -44,8 +44,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
                 Fighter.Brain.Environment.CellInformationProvider.IsCellWalkable(x.CellId)).
                               OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
+            // too far away, just try to move closer
             if (result == null)
-                return RunStatus.Failure;
+            {
+                result = zone.EnumerateValidPoints().OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
+
+                if (result == null)
+                    return RunStatus.Failure;
+            }
 
             var move = new MoveAction(Fighter, result) {AttemptOnly = true};
             return move.YieldExecute(context);
