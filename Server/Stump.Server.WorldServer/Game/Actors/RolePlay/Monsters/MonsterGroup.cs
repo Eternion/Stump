@@ -114,6 +114,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             private set;
         }
 
+        public Character AuthorizedAgressor
+        {
+            get;
+            set;
+        }
+
         public override bool CanMove()
         {
             return true;
@@ -154,9 +160,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             if (character.Map != Map)
                 return;
 
-            var reason = character.CanAttack(this);
-            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+            // only this character and his group can join the fight
+            if (AuthorizedAgressor != null && AuthorizedAgressor != character && AuthorizedAgressor.Client.Connected)
             {
+                ContextHandler.SendChallengeFightJoinRefusedMessage(character.Client, character, FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER);
+                return;
+            }
+
+            Map.Leave(this);
+
+            if (Map.GetBlueFightPlacement().Length < m_monsters.Count)
+            var reason = character.CanAttack(this);
+            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)            {
                 ContextHandler.SendChallengeFightJoinRefusedMessage(character.Client, character, reason);
                 return;
             }
@@ -181,6 +196,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             Fight = fight;
 
             fight.StartPlacement();
+
+            if (AuthorizedAgressor != null)
+                fight.ChallengersTeam.ToggleOption(FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY);
 
             OnEnterFight(character);
             Fight.FightEnded += OnFightEnded;

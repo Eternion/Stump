@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         private void OnGeneratingResults(IFight obj)
         {
             var fightPvM = Owner.Fighter.Fight as FightPvM;
-            if (fightPvM == obj && fightPvM != null && Owner.Fighter.HasWin() && Owner.Fighter.HasState((int) SpellStatesEnum.Soul_Seeker))
+            if (fightPvM == obj && fightPvM != null && !fightPvM.IsPvMArenaFight && Owner.Fighter.HasWin() && Owner.Fighter.HasState((int) SpellStatesEnum.Soul_Seeker))
             {
                 var highestLevel = Owner.Fighter.OpposedTeam.Fighters.Max(x => x.Level);
 
