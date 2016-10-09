@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_Double:
                 case EffectsEnum.Effect_185:
                 case EffectsEnum.Effect_621:
-                case EffectsEnum.Effect_623:
+                case EffectsEnum.Effect_SoulStoneSummon:
                 case EffectsEnum.Effect_Glyph:
                 case EffectsEnum.Effect_Glyph_402:
                     return SpellCategory.Summoning;

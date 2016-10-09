@@ -56,6 +56,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
             foreach (var drop in Loot.Items.Values)
             {
+                // just diplay purpose
+                if (drop.IgnoreGeneration)
+                    continue;
+
                 var template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
 
                 if (template.Effects.Count > 0)

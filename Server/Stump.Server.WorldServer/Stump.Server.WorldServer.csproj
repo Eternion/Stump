@@ -689,6 +689,8 @@
     <Compile Include="Game\Items\Player\Custom\Potions\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\SoulStone.cs" />
+    <Compile Include="Game\Items\Player\Custom\SoulStoneFilled.cs" />
     <Compile Include="Game\Items\Player\DefaultItem.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\BoundLivingObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\CandyItem.cs" />
