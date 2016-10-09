@@ -1,4 +1,5 @@
 using System;
+using Stump.Core.Xml.Config;
 
 namespace Stump.Server.BaseServer.Plugins
 {
@@ -33,6 +34,11 @@ namespace Stump.Server.BaseServer.Plugins
         }
 
         Version Version
+        {
+            get;
+        }
+        
+        XmlConfig Config
         {
             get;
         }
