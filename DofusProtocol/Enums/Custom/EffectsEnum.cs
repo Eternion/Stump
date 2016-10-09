@@ -1033,7 +1033,7 @@
         /// <summary>
         /// #3 (#2)
         /// </summary>
-        Effect_623 = 623,
+        Effect_SoulStoneSummon = 623,
         /// <summary>
         /// Fait oublier un niveau du sort #3
         /// </summary>
@@ -1149,7 +1149,7 @@
         /// <summary>
         /// #1% capture d'âme de puissance #3
         /// </summary>
-        Effect_705 = 705,
+        Effect_SoulStone = 705,
         /// <summary>
         /// #1% de proba de capturer une monture
         /// </summary>

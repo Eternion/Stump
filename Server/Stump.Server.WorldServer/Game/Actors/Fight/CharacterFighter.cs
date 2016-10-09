@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Character.Position; }
         }
 
-        public override byte Level
+        public override short Level
         {
             get { return Character.Level; }
         }

@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CanMove() => base.CanMove() && MonsterGrade.MovementPoints > 0;
 
-        public override byte Level => (byte)MonsterBombTemplate.Level;
+        public override short Level => (short)MonsterBombTemplate.Level;
 
         public override StatsFields Stats => m_stats;
 

@@ -21,5 +21,11 @@ namespace Stump.Server.WorldServer.Game.Items
             get;
             set;
         }
+
+        public bool IgnoreGeneration
+        {
+            get;
+            set;
+        }
     }
 }
