@@ -2,16 +2,21 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights;
+using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.FULL_SOUL_STONE)]
     public class SoulStoneFilled : BasePlayerItem
     {
+        public static int[] FIGHT_MAPS = {11796994, 4981250}; // Brakmar and bonta arenas
+
         public SoulStoneFilled(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
@@ -24,9 +29,24 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
+            if (!FIGHT_MAPS.Contains(Owner.Map.Id))
+                return 0;
 
+            var group = Owner.Map.SpawnMonsterGroup(GetMonsterGroup(), Owner.Position.Clone());
+            group.AuthorizedAgressor = Owner;
 
-            return base.UseItem(amount, targetCell, target);
+            group.EnterFight += OnEnterFight;
+
+            return 1;
+        }
+
+        private void OnEnterFight(MonsterGroup group, Character fighter)
+        {
+            group.EnterFight -= OnEnterFight;
+
+            var fightPvM = @group.Fight as FightPvM;
+            if (fightPvM != null)
+                fightPvM.IsPvMArenaFight = true;
         }
 
         public void SetMonsterGroup(IEnumerable<Monster> group)
@@ -40,12 +60,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             Owner.Inventory.RefreshItem(this);
         }
 
-        public void PopulateMonsterGroup(MonsterGroup group)
+        public IEnumerable<MonsterGrade> GetMonsterGroup()
         {
-            foreach (var effect in Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_SoulStoneSummon))
-            {
-                group.AddMonster(new Monster(MonsterManager.Instance.GetMonsterGrade(effect.Value, effect.DiceNum), group));
-            }
+            return Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_SoulStoneSummon).
+                Select(effect => MonsterManager.Instance.GetMonsterGrade(effect.Value, effect.DiceNum));
         }
     }
 }
