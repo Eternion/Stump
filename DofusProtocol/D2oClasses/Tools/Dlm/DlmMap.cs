@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // DlmMap.cs
 // 
 // Copyright (C) 2012 - BehaviorIsManaged
@@ -12,6 +13,7 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
 using System;
@@ -23,19 +25,13 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
 {
     public class DlmMap : IDataObject
     {
-        private static readonly Point[] s_orthogonalGridReference = new Point[DlmMap.CellCount];
-        private static bool m_initialized;
-
         public const uint Width = 14;
         public const uint Height = 20;
 
         public const int CellCount = 560;
+        private static readonly Point[] s_orthogonalGridReference = new Point[CellCount];
+        private static bool m_initialized;
 
-
-        public DlmMap()
-        {
-            
-        }
 
         public byte Version
         {
@@ -104,6 +100,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
         }
 
         public Color BackgroundColor
+        {
+            get;
+            set;
+        }
+
+        public Color GridColor
         {
             get;
             set;
@@ -189,120 +191,147 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
 
         public static DlmMap ReadFromStream(IDataReader givenReader, DlmReader dlmReader)
         {
-            var reader = givenReader;
-            var map = new DlmMap {
-                Version = reader.ReadByte(),
-                Id = reader.ReadInt()
-            };
+            DlmMap map = null;
 
-            if (map.Version > DlmReader.VERSION)
-                throw new Exception(string.Format("Reader outdated for this map (old version:{0} new version:{1})",
-                    DlmReader.VERSION, map.Version));
-
-            if (map.Version >= 7)
+            try
             {
-                map.Encrypted = reader.ReadBoolean();
-                map.EncryptionVersion = reader.ReadByte();
-
-                var len = reader.ReadInt();
-
-                if (map.Encrypted)
+                var reader = givenReader;
+                map = new DlmMap
                 {
-                    var key = dlmReader.DecryptionKey;
+                    Version = reader.ReadByte(),
+                    Id = reader.ReadInt()
+                };
 
-                    if (key == null && dlmReader.DecryptionKeyProvider != null)
-                        key = dlmReader.DecryptionKeyProvider(map.Id);
+                if (map.Version > DlmReader.VERSION)
+                    throw new Exception(string.Format("Reader outdated for this map (old version:{0} new version:{1})",
+                        DlmReader.VERSION, map.Version));
 
-                    if (key == null)
+                if (map.Version >= 7)
+                {
+                    map.Encrypted = reader.ReadBoolean();
+                    map.EncryptionVersion = reader.ReadByte();
+
+                    var len = reader.ReadInt();
+
+                    if (map.Encrypted)
                     {
-                        throw new InvalidOperationException(string.Format("Cannot decrypt the map {0} without decryption key", map.Id));
-                    }
+                        var key = dlmReader.DecryptionKey;
 
-                    var data = reader.ReadBytes(len);
-                    var encodedKey = Encoding.Default.GetBytes(key);
+                        if (key == null && dlmReader.DecryptionKeyProvider != null)
+                            key = dlmReader.DecryptionKeyProvider(map.Id);
 
-                    if (key.Length > 0)
-                    {
-                        for (int i = 0; i < data.Length; i++)
+                        if (key == null)
                         {
-                            data[i] = (byte)( data[i] ^ encodedKey[i % key.Length] );
+                            throw new InvalidOperationException(string.Format("Cannot decrypt the map {0} without decryption key", map.Id));
                         }
 
-                        reader = new FastBigEndianReader(data);
+                        var data = reader.ReadBytes(len);
+                        var encodedKey = Encoding.Default.GetBytes(key);
+
+                        if (key.Length > 0)
+                        {
+                            for (var i = 0; i < data.Length; i++)
+                            {
+                                data[i] = (byte) (data[i] ^ encodedKey[i%key.Length]);
+                            }
+
+                            reader = new FastBigEndianReader(data);
+                        }
                     }
                 }
+
+                map.RelativeId = reader.ReadUInt();
+                map.MapType = reader.ReadByte();
+
+                // temp, just to know if the result is coherent
+                if (map.MapType < 0 || map.MapType > 1)
+                    throw new Exception("Invalid decryption key");
+
+                map.SubAreaId = reader.ReadInt();
+                map.TopNeighbourId = reader.ReadInt();
+                map.BottomNeighbourId = reader.ReadInt();
+                map.LeftNeighbourId = reader.ReadInt();
+                map.RightNeighbourId = reader.ReadInt();
+                map.ShadowBonusOnEntities = reader.ReadInt();
+
+                if (map.Version >= 9)
+                {
+                    map.BackgroundColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                    map.GridColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                }
+
+                else if (map.Version >= 3)
+                {
+                    map.BackgroundColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                }
+
+                if (map.Version >= 4)
+                {
+                    map.ZoomScale = reader.ReadUShort();
+                    map.ZoomOffsetX = reader.ReadShort();
+                    map.ZoomOffsetY = reader.ReadShort();
+                }
+
+                map.UseLowPassFilter = reader.ReadByte() == 1;
+                map.UseReverb = reader.ReadByte() == 1;
+
+                if (map.UseReverb)
+                {
+                    map.PresetId = reader.ReadInt();
+                }
+                {
+                    map.PresetId = -1;
+                }
+
+                map.BackgroudFixtures = new DlmFixture[reader.ReadByte()];
+                for (var i = 0; i < map.BackgroudFixtures.Length; i++)
+                {
+                    map.BackgroudFixtures[i] = DlmFixture.ReadFromStream(map, reader);
+                }
+
+                map.ForegroundFixtures = new DlmFixture[reader.ReadByte()];
+                for (var i = 0; i < map.ForegroundFixtures.Length; i++)
+                {
+                    map.ForegroundFixtures[i] = DlmFixture.ReadFromStream(map, reader);
+                }
+
+                reader.ReadInt();
+                map.GroundCRC = reader.ReadInt();
+
+                map.Layers = new DlmLayer[reader.ReadByte()];
+                for (var i = 0; i < map.Layers.Length; i++)
+                {
+                    map.Layers[i] = DlmLayer.ReadFromStream(map, reader);
+                }
+
+                map.Cells = new DlmCellData[CellCount];
+                int? lastMoveZone = null;
+                for (short i = 0; i < map.Cells.Length; i++)
+                {
+                    map.Cells[i] = DlmCellData.ReadFromStream(i, map.Version, reader);
+                    if (!lastMoveZone.HasValue)
+                        lastMoveZone = map.Cells[i].MoveZone;
+                    else if (lastMoveZone != map.Cells[i].MoveZone) // if a cell is different the new system is used
+                        map.UsingNewMovementSystem = true;
+                }
+
+                return map;
             }
-
-            map.RelativeId = reader.ReadUInt();
-            map.MapType = reader.ReadByte();
-
-            // temp, just to know if the result is coherent
-            if (map.MapType < 0 || map.MapType > 1)
-                throw new Exception("Invalid decryption key");
-
-            map.SubAreaId = reader.ReadInt();
-            map.TopNeighbourId = reader.ReadInt();
-            map.BottomNeighbourId = reader.ReadInt();
-            map.LeftNeighbourId = reader.ReadInt();
-            map.RightNeighbourId = reader.ReadInt();
-            map.ShadowBonusOnEntities = reader.ReadInt();
-
-            if (map.Version >= 3)
+            catch (Exception ex)
             {
-                map.BackgroundColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                throw new BadEncodedMapException(ex, map);
             }
+        }
+    }
 
-            if (map.Version >= 4)
-            {
-                map.ZoomScale = reader.ReadUShort();
-                map.ZoomOffsetX = reader.ReadShort();
-                map.ZoomOffsetY = reader.ReadShort();
-            }
+    public class BadEncodedMapException : Exception
+    {
+        public DlmMap Map {get;}
 
-            map.UseLowPassFilter = reader.ReadByte() == 1;
-            map.UseReverb = reader.ReadByte() == 1;
-
-            if (map.UseReverb)
-            {
-                map.PresetId = reader.ReadInt();
-            }
-            {
-                map.PresetId = -1;
-            }
-
-            map.BackgroudFixtures = new DlmFixture[reader.ReadByte()];
-            for (int i = 0; i < map.BackgroudFixtures.Length; i++)
-            {
-                map.BackgroudFixtures[i] = DlmFixture.ReadFromStream(map, reader);
-            }
-
-            map.ForegroundFixtures = new DlmFixture[reader.ReadByte()];
-            for (int i = 0; i < map.ForegroundFixtures.Length; i++)
-            {
-                map.ForegroundFixtures[i] = DlmFixture.ReadFromStream(map, reader);
-            }
-
-            reader.ReadInt();
-            map.GroundCRC = reader.ReadInt();
-
-            map.Layers = new DlmLayer[reader.ReadByte()];
-            for (int i = 0; i < map.Layers.Length; i++)
-            {
-                map.Layers[i] = DlmLayer.ReadFromStream(map, reader);
-            }
-
-            map.Cells = new DlmCellData[CellCount];
-            int? lastMoveZone = null;
-            for (short i = 0; i < map.Cells.Length; i++)
-            {
-                map.Cells[i] = DlmCellData.ReadFromStream(i, map.Version, reader);
-                if (!lastMoveZone.HasValue)
-                    lastMoveZone = map.Cells[i].MoveZone;
-                else if (lastMoveZone != map.Cells[i].MoveZone) // if a cell is different the new system is used
-                    map.UsingNewMovementSystem = true;
-            }
-
-            return map;
+        public BadEncodedMapException(Exception exception, DlmMap map)
+            : base("Bad encoded map", exception)
+        {
+            Map = map;
         }
     }
 }

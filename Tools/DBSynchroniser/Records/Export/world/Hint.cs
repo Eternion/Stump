@@ -31,6 +31,7 @@ namespace DBSynchroniser.Records
         public int subareaId;
         public int worldMapId;
         public uint level;
+        public uint categoryId;
 
         int ID2ORecord.Id
         {
@@ -117,7 +118,13 @@ namespace DBSynchroniser.Records
             get { return level; }
             set { level = value; }
         }
-
+        
+        [D2OIgnore]
+        public uint CategoryId
+        {
+            get { return categoryId; }
+            set { categoryId = value; }
+        }
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Hint)obj;
@@ -133,6 +140,7 @@ namespace DBSynchroniser.Records
             SubareaId = castedObj.subareaId;
             WorldMapId = castedObj.worldMapId;
             Level = castedObj.level;
+            CategoryId = castedObj.categoryId;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -149,6 +157,7 @@ namespace DBSynchroniser.Records
             obj.subareaId = SubareaId;
             obj.worldMapId = WorldMapId;
             obj.level = Level;
+            obj.categoryId = CategoryId;
             return obj;
         }
         

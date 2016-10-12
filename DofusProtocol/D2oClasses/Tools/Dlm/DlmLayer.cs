@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
         {
             var layer = new DlmLayer(map);
 
-            layer.LayerId = reader.ReadInt();
+            layer.LayerId = map.Version >= 9 ? reader.ReadByte() : reader.ReadInt();
             layer.Cells = new DlmCell[reader.ReadShort()];
             for (int i = 0; i < layer.Cells.Length; i++)
             {

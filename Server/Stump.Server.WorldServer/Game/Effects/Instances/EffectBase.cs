@@ -496,6 +496,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
             else
             {
+                writer.Write('F'); // full
                 writer.Write(TargetMask);
                 writer.Write(Id); // writer id second 'cause targets can't equals to 'C' but id can
                 writer.Write(Duration);
@@ -529,12 +530,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         protected virtual void InternalDeserialize(ref BinaryReader reader)
         {
-            if (reader.PeekChar() == 'C')
+            var header = reader.ReadChar();
+            if (header == 'C')
             {
-                reader.ReadChar();
                 m_id = reader.ReadInt16();
             }
-            else
+            else if (header == 'F')
             {
                 TargetMask = reader.ReadString();
                 m_id = reader.ReadInt16();
@@ -548,6 +549,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 m_hidden = reader.ReadBoolean();
                 ParseRawZone(reader.ReadString());
                 ParseTargets();
+            }
+            else
+            {
+                throw new Exception($"Wrong header : {header}");
             }
         }
 
