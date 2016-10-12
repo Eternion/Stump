@@ -26,6 +26,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public int subareaId;
         public int worldMapId;
         public uint level;
+        public uint categoryId;
+
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -95,6 +97,13 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.level; }
             set { this.level = value; }
+        }
+
+        [D2OIgnore]
+        public uint CategoryId
+        {
+            get { return this.categoryId; }
+            set { this.categoryId = value; }
         }
     }
 }

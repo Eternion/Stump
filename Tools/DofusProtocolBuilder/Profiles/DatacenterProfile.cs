@@ -63,6 +63,9 @@ namespace DofusProtocolBuilder.Profiles
 
                         // shouldn't be public
                         {@"public var type:QuestObjectiveType", "private var type:QuestObjectiveType"},
+
+                        // Hint.as
+                        {"private var _categoryId:uint;", "public var categoryId:uint;" },
                     };
         }
 
@@ -70,10 +73,7 @@ namespace DofusProtocolBuilder.Profiles
         {
             string file = Path.Combine(Program.Configuration.Output, OutPutPath, GetRelativePath(parser.Filename),
                                        Path.GetFileNameWithoutExtension(parser.Filename));
-
-            string moduleFile =
-                parser.Fields.Where(entry => entry.Name == "MODULE").Select(entry => entry.Value).SingleOrDefault();
-
+            
             var engine = new Engine();
             var host = new TemplateHost(TemplatePath);
             host.Session["Parser"] = parser;
