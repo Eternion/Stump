@@ -24,7 +24,6 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using ServiceStack.Text;
-using SharpRaven.Data;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
