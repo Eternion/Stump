@@ -184,16 +184,16 @@ namespace Stump.Server.WorldServer.Game.Maps
             m_clientMapsAround.Clear();
 
             if (TopNeighbourId != -1 && !m_clientMapsAround.ContainsKey(TopNeighbourId))
-                m_clientMapsAround.Add(Record.ClientTopNeighbourId, MapNeighbour.Top);
+                m_clientMapsAround.Add(TopNeighbourId, MapNeighbour.Top);
 
             if (BottomNeighbourId != -1 && !m_clientMapsAround.ContainsKey(BottomNeighbourId))
-                m_clientMapsAround.Add(Record.ClientBottomNeighbourId, MapNeighbour.Bottom);
+                m_clientMapsAround.Add(BottomNeighbourId, MapNeighbour.Bottom);
 
             if (LeftNeighbourId != -1 && !m_clientMapsAround.ContainsKey(LeftNeighbourId))
-                m_clientMapsAround.Add(Record.ClientLeftNeighbourId, MapNeighbour.Left);
+                m_clientMapsAround.Add(LeftNeighbourId, MapNeighbour.Left);
 
             if (RightNeighbourId != -1 && !m_clientMapsAround.ContainsKey(RightNeighbourId))
-                m_clientMapsAround.Add(Record.ClientRightNeighbourId, MapNeighbour.Right);
+                m_clientMapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
         public void UpdateFightPlacements()

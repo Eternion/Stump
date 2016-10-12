@@ -16,7 +16,9 @@
 
 #endregion
 
+using System;
 using Stump.Core.IO;
+using Stump.Core.Mathematics;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
 {
@@ -25,65 +27,44 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
         private short? m_floor;
         private short m_id;
 
-        private byte m_losMov;
+        private short m_data;
 
         private byte m_mapChangeData;
         private byte m_moveZone;
         private sbyte m_rawFloor;
         private byte m_speed;
-        private byte m_arrow;
 
         public DlmCellData(short id)
         {
             m_id = id;
-            m_losMov = 3;
+            m_data = 3;
             m_rawFloor = 0;
             m_floor = 0;
             m_speed = 0;
             m_mapChangeData = 0;
             m_moveZone = 0;
-            m_arrow = 0;
         }
 
-        public short Floor
-        {
-            get { return m_floor ?? (m_floor = (short) (m_rawFloor*10)).Value; }
-        }
+        public short Floor => m_floor ?? (m_floor = (short) (m_rawFloor*10)).Value;
 
-        public bool Los
-        {
-            get { return (m_losMov & 2) >> 1 == 1; }
-        }
+        public bool Mov => (m_data & 1) != 0 && !NonWalkableDuringFight && !FarmCell;
 
-        public bool Mov
-        {
-            get { return (m_losMov & 1) == 1 && !NonWalkableDuringFight && !FarmCell; }
-        }
+        public bool NonWalkableDuringFight => (m_data & 2) != 0;
 
-        public bool NonWalkableDuringFight
-        {
-            get { return (m_losMov & 4) >> 2 == 1; }
-        }
+        public bool NonWalkableDuringRP => (m_data & 4) != 0;
 
-        public bool Red
-        {
-            get { return (m_losMov & 8) >> 3 == 1; }
-        }
+        public bool Los => (m_data & 8) != 0;
 
-        public bool Blue
-        {
-            get { return (m_losMov & 16) >> 4 == 1; }
-        }
+        public bool Blue => (m_data & 16) != 0;
 
-        public bool FarmCell
-        {
-            get { return (m_losMov & 32) >> 5 == 1; }
-        }
+        public bool Red => (m_data & 32) != 0;
 
-        public bool Visible
-        {
-            get { return (m_losMov & 64) >> 6 == 1; }
-        }
+        public bool FarmCell => (m_data & 64) != 0;
+
+        public bool Visible => (m_data & 128) != 0;
+
+        public bool HavenbagCell => (m_data & 256) != 0;
+
 
         public short Id
         {
@@ -109,36 +90,31 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
             set { m_speed = value; }
         }
 
-        public byte LosMov
+        public short Data
         {
-            get { return m_losMov; }
-            set { m_losMov = value; }
+            get { return m_data; }
+            set { m_data = value; }
         }
-
-        public byte Arrow
-        {
-            get { return m_arrow; }
-            set { m_arrow = value; }
-        }
+        
 
         public bool UseTopArrow
         {
-            get { return (m_arrow & 1) != 0; }
+            get { return (m_data & 512) != 0; }
         }
 
         public bool UseBottomArrow
         {
-            get { return (m_arrow & 2) != 0; }
+            get { return (m_data & 1024) != 0; }
         }   
      
         public bool UseRightArrow
         {
-            get { return (m_arrow & 4) != 0; }
+            get { return (m_data & 2048) != 0; }
         }     
    
         public bool UseLeftArrow
         {
-            get { return (m_arrow & 8) != 0; }
+            get { return (m_data & 4096) != 0; }
         }
         public static DlmCellData ReadFromStream(short id, byte version, IDataReader reader)
         {
@@ -151,8 +127,32 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
                 return cell;
             }
 
+            if (version >= 9)
+            {
+                var data = reader.ReadShort();
+                // invert first bit
+                data = data.FlipBit(0);
+                data = data.FlipBit(3);
 
-            cell.m_losMov = reader.ReadByte();
+                if (version < 10)
+                {
+                    // havenbag bit (8th) not used
+                    data = data.ShiftBitsLeft(8, 1);
+                }
+                
+                cell.m_data = data;
+            }
+            else
+            {
+                var data = reader.ReadByte();
+                data = data.ShiftBitsLeft(1, 1);
+                data = data.SwapBits(7, 1);
+                data = data.SwapBits(2, 3);
+                data = data.SwapBits(4, 5);
+
+                cell.m_data = data;
+            }
+
             cell.m_speed = reader.ReadByte();
             cell.m_mapChangeData = reader.ReadByte();
 
@@ -161,9 +161,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
                 cell.m_moveZone = reader.ReadByte();
             }
 
-            if (version > 7)
+            if (version > 7 && version < 9)
             {
-                cell.m_arrow = (byte)(15 & reader.ReadByte());
+                cell.m_data |= (byte)(0xF & reader.ReadByte() << 9);
             }
 
             return cell;

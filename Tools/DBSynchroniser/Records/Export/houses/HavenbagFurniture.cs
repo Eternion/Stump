@@ -35,7 +35,7 @@ namespace DBSynchroniser.Records
             get { return (int)themeId; }
         }
 
-
+        [PrimaryKey("TypeId", false)]
         [D2OIgnore]
         public int TypeId
         {
@@ -44,7 +44,6 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        [PrimaryKey("ThemeId", false)]
         public int ThemeId
         {
             get { return themeId; }

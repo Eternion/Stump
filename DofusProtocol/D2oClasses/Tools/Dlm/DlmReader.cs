@@ -22,7 +22,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
 {
     public class DlmReader : IDisposable
     {        
-        public const int VERSION = 8;
+        public const int VERSION = 10;
 
         /// <summary>
         /// Returns the decryption key
