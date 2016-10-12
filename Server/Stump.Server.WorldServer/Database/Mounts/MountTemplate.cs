@@ -136,6 +136,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
             set;
         }
 
+        [Ignore]
         public List<MountBonus> Bonuses
         {
             get;

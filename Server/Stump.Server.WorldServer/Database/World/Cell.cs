@@ -5,55 +5,33 @@ namespace Stump.Server.WorldServer.Database.World
     [Serializable]
     public class Cell
     {
-        public const int StructSize = 2 + 2 + 1 + 1 + 1 + 4;
+        public const int StructSize = 2 + 2 + 2 + 1 + 1 + 4;
 
         public short Floor;
         public short Id;
-        public byte LosMov;
+        public short Data;
         public byte MapChangeData;
         public uint MoveZone;
         public byte Speed;
 
-        public bool Walkable
-        {
-            get { return (LosMov & 1) == 1; }
-        }
+        public bool Walkable => (Data & 1) != 0;
 
-        public bool LineOfSight
-        {
-            get { return (LosMov & 2) == 2; }
-        }
+        public bool NonWalkableDuringFight => (Data & 2) != 0;
 
-        public bool NonWalkableDuringFight
-        {
-            get { return (LosMov & 4) == 4; }
-        }
+        public bool NonWalkableDuringRP => (Data & 4) != 0;
 
-        public bool Red
-        {
-            get { return (LosMov & 8) == 8; }
-        }
+        public bool LineOfSight => (Data & 8) != 0;
 
-        public bool Blue
-        {
-            get { return (LosMov & 16) == 16; }
-        }
+        public bool Blue => (Data & 16) != 0;
 
-        public bool FarmCell
-        {
-            get { return (LosMov & 32) == 32; }
-        }
+        public bool Red => (Data & 32) != 0;
 
-        public bool Visible
-        {
-            get { return (LosMov & 64) == 64; }
-        }
+        public bool FarmCell => (Data & 64) != 0;
 
-        public bool NonWalkableDuringRP
-        {
-            get { return (LosMov & 128) == 128; }
-        }
+        public bool Visible => (Data & 128) != 0;
 
+        public bool HavenbagCell => (Data & 256) != 0;
+        
         public byte[] Serialize()
         {
             var bytes = new byte[StructSize];
@@ -63,15 +41,16 @@ namespace Stump.Server.WorldServer.Database.World
 
             bytes[2] = (byte) (Floor >> 8);
             bytes[3] = (byte) (Floor & 0xFF);
+            
+            bytes[4] = (byte)(Data >> 8);
+            bytes[5] = (byte)(Data & 0xFF);
+            bytes[6] = MapChangeData;
+            bytes[7] = Speed;
 
-            bytes[4] = LosMov;
-            bytes[5] = MapChangeData;
-            bytes[6] = Speed;
-
-            bytes[7] = (byte) (MoveZone >> 24);
-            bytes[8] = (byte) (MoveZone >> 16);
-            bytes[9] = (byte) (MoveZone >> 8);
-            bytes[10] = (byte) (MoveZone & 0xFF);
+            bytes[8] = (byte) (MoveZone >> 24);
+            bytes[9] = (byte) (MoveZone >> 16);
+            bytes[10] = (byte) (MoveZone >> 8);
+            bytes[11] = (byte) (MoveZone & 0xFF);
 
             return bytes;
         }
@@ -82,12 +61,12 @@ namespace Stump.Server.WorldServer.Database.World
 
             Floor = (short) ((data[index + 2] << 8) | data[index + 3]);
 
-            LosMov = data[index + 4];
-            MapChangeData = data[index + 5];
-            Speed = data[index + 6];
+            Data = (short) ((data[index + 4] << 8) | data[index + 5]);
+            MapChangeData = data[index + 6];
+            Speed = data[index + 7];
 
             MoveZone =
-                (uint) ((data[index + 7] << 24) | (data[index + 8] << 16) | (data[index + 9] << 8) | (data[index + 10]));
+                (uint) ((data[index + 8] << 24) | (data[index + 9] << 16) | (data[index + 10] << 8) | (data[index + 11]));
         }
     }
 }

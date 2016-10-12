@@ -267,7 +267,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool IsDirty
         {
-            get { return m_isDirty || Emblem.IsDirty; }
+            get { return m_isDirty || Emblem.IsDirty || Members.Any(x => x.IsDirty || x.IsNew); }
             set
             {
                 m_isDirty = value;
@@ -716,6 +716,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         protected virtual void OnMemberAdded(GuildMember member)
         {
+            IsDirty = true;
+
             BindMemberEvents(member);
             GuildManager.Instance.RegisterGuildMember(member);
 
@@ -734,6 +736,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         protected virtual void OnMemberRemoved(GuildMember member)
         {
+            IsDirty = true;
+
             GuildManager.Instance.DeleteGuildMember(member);
             UnBindMemberEvents(member);
 

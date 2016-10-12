@@ -8,6 +8,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     [Discriminator("Objective", typeof (NpcReply), typeof (NpcReplyRecord))]
     public class CompleteQuestObjectiveReply : NpcReply
     {
+        public CompleteQuestObjectiveReply(NpcReplyRecord record)
+            : base(record)
+        {
+        }
+
         public int ObjectiveId
         {
             get { return Record.GetParameter<int>(0); }

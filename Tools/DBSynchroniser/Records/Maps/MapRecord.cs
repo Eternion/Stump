@@ -54,7 +54,7 @@ namespace DBSynchroniser.Records.Maps
                         {
                             Id = x.Id,
                             Floor = x.Floor,
-                            LosMov = x.LosMov,
+                            Data = x.Data,
                             MapChangeData = x.MapChangeData,
                             MoveZone = x.MoveZone,
                             Speed = x.Speed

@@ -39,6 +39,7 @@ using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Items.Pets;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Maps;
 using LangText = DBSynchroniser.Records.Langs.LangText;
 using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
 
@@ -747,17 +748,33 @@ namespace DBSynchroniser
             var d2pFile = new D2pFile(mapsfilePath);
             var entries = d2pFile.ReadAllFiles();
             var i = 0;
+            int fails = 0;
+            var failures = new List<int>();
             foreach (var mapBytes in entries.Values)
             {
                 var mapFile = new DlmReader(mapBytes) { DecryptionKey = MapDecryptionKey };
-                var record = new MapRecord(mapFile.ReadMap());
+                MapRecord record;
+                try
+                {
+                    record = new MapRecord(mapFile.ReadMap());
+                }
+                catch(BadEncodedMapException ex)
+                {
+                    fails++;
+                    failures.Add(ex.Map.Id);
+                    continue;
+                }
 
                 Database.Database.Insert(record);
 
                 UpdateCounter(i++, entries.Count);
             }
             EndCounter();
-
+            if (fails > 0)
+            {
+                Console.WriteLine($"{fails} fails !");
+                Console.WriteLine(string.Join(", ", failures.Select(x => x.ToString())));
+            }
         }
 
         public static void GenerateInteractiveSpawnWithWarning()
@@ -788,11 +805,23 @@ namespace DBSynchroniser
             var i = 0;
             var ids = new List<int>();
             var failures = new List<int>();
+            int fails = 0;
             InitializeCounter();
             foreach (var mapBytes in entries.Values)
             {
-                var mapFile = new DlmReader(mapBytes) {DecryptionKey = MapDecryptionKey};
-                var map = mapFile.ReadMap();
+                DlmReader mapFile;
+                DlmMap map = null;
+                try
+                {
+                    mapFile = new DlmReader(mapBytes) {DecryptionKey = MapDecryptionKey};
+                    map = mapFile.ReadMap();
+                }
+                catch (Exception)
+                {
+                    fails++;
+                    continue;
+                }
+                
                 var elements = map.Layers.SelectMany(
                    x => x.Cells.SelectMany(
                            y => y.Elements.OfType<DlmGraphicalElement>()
@@ -826,6 +855,9 @@ namespace DBSynchroniser
                 UpdateCounter(i++, entries.Count);
             }
             EndCounter();
+
+            if (fails > 0)
+                Console.WriteLine($"{fails} failes !");
         }
 
         public static void GenerateMonstersSpawnsAndDrops()
