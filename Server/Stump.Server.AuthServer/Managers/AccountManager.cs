@@ -180,8 +180,17 @@ namespace Stump.Server.AuthServer.Managers
                     account);
             }
             else
+            {
+                var alreadyCachedAccounts = m_accountsCache.Where(x => x.Value.Item2.Id == account.Id).ToArray();
+
+                foreach (var keyPair in alreadyCachedAccounts)
+                {
+                    m_accountsCache.Remove(keyPair.Key);
+                }
+
                 m_accountsCache.Add(account.Ticket,
                     Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
+            }
         }
 
         public void UnCacheAccount(Account account)
