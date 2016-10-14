@@ -139,6 +139,7 @@
     <Compile Include="Maps\Placements\PlacementComplexityCalculator.cs" />
     <Compile Include="Maps\Placements\PlacementPattern.cs" />
     <Compile Include="Maps\Placements\PlacementsFix.cs" />
+    <Compile Include="Maps\Transitions\MapTransitionFix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Records\Export\abuse\AbuseReasons.cs" />
