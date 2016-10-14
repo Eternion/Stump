@@ -107,29 +107,25 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
-        [DefaultSetting(-1)]
-        public short TopNeighbourCellId
+        public short? TopNeighbourCellId
         {
             get;
             set;
         }
 
-        [DefaultSetting(-1)]
-        public short BottomNeighbourCellId
+        public short? BottomNeighbourCellId
         {
             get;
             set;
         }
 
-        [DefaultSetting(-1)]
-        public short LeftNeighbourCellId
+        public short? LeftNeighbourCellId
         {
             get;
             set;
         }
 
-        [DefaultSetting(-1)]
-        public short RightNeighbourCellId
+        public short? RightNeighbourCellId
         {
             get;
             set;

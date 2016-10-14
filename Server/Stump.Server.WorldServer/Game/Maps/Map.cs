@@ -1725,13 +1725,13 @@ namespace Stump.Server.WorldServer.Game.Maps
             switch (mapneighbour)
             {
                 case MapNeighbour.Top:
-                    return Record.TopNeighbourCellId == -1 ? (short)(currentCell + 532) : Record.TopNeighbourCellId;
+                    return Record.TopNeighbourCellId ?? (short)(currentCell + 532);
                 case MapNeighbour.Bottom:
-                    return Record.BottomNeighbourCellId == -1 ? (short)(currentCell - 532) : Record.BottomNeighbourCellId;
+                    return Record.BottomNeighbourCellId ?? (short)(currentCell - 532);
                 case MapNeighbour.Right:
-                    return Record.RightNeighbourCellId == -1 ? (short)(currentCell - 13) : Record.RightNeighbourCellId;
+                    return Record.RightNeighbourCellId ?? (short)(currentCell - 13);
                 case MapNeighbour.Left:
-                    return Record.LeftNeighbourCellId == -1 ? (short)(currentCell + 13) : Record.LeftNeighbourCellId;
+                    return Record.LeftNeighbourCellId ?? (short)(currentCell + 13);
                 default:
                     return 0;
             }

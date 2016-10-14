@@ -32,6 +32,7 @@ using HtmlAgilityPack;
 using System.Net.Http;
 using System.Threading;
 using DBSynchroniser.Http;
+using DBSynchroniser.Maps.Transitions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Effects;
@@ -108,6 +109,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Generate interactive spawn (on stump_world)", GenerateInteractiveSpawnWithWarning),
             Tuple.Create<string, Action>("Generate monsters spells, spawns and drops (on stump_world)", GenerateMonstersSpawnsAndDrops),
             Tuple.Create<string, Action>("Import pets foods (on stump_world)", ImportPetsFoods),
+            Tuple.Create<string, Action>("Fix map transitions (on stump_world)", MapTransitionFix.ApplyFix),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
