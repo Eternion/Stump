@@ -3,7 +3,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Exchanges.Bank;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -12,37 +12,38 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public BankCommands()
         {
-            Aliases = new[] {"bank"};
+            Aliases = new[] { "bank" };
             Description = "Gives commands to manage bank";
             RequiredRole = RoleEnum.GameMaster;
         }
     }
 
-    public class BankOpenCommand : InGameSubCommand
+    public class BankOpenCommand : TargetSubCommand
     {
         public BankOpenCommand()
         {
-            Aliases = new[] {"open"};
+            Aliases = new[] { "open" };
             Description = "Open target bank";
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommandType = typeof (BankCommands);
-            AddParameter("target", "t", "Bank Owner nam",
-                    converter: ParametersConverter.CharacterConverter, isOptional: true);
+            ParentCommandType = typeof(BankCommands);
+            AddTargetParameter();
         }
-
-        public override void Execute(GameTrigger trigger)
+        
+        public override void Execute(TriggerBase trigger)
         {
-            if (trigger.IsArgumentDefined("target"))
-            {
-                var target = trigger.Get<Character>("target");
-                var source = trigger.Character.Client;
+            var target = GetTarget(trigger);
+            var source = (trigger as GameTrigger).Character;
 
-                InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
-                InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
+            if (target != source)
+            {
+                InventoryHandler.SendExchangeStartedMessage(source.Client, ExchangeTypeEnum.STORAGE);
+                InventoryHandler.SendStorageInventoryContentMessage(source.Client, target.Bank);
+
             }
             else
             {
-                trigger.ReplyError("Please define a target");
+                var dialog = new BankDialog(target);
+                dialog.Open();
             }
         }
     }

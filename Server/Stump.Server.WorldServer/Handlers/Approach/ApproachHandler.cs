@@ -122,6 +122,13 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             var clients = WorldServer.Instance.FindClients(x => x.Account != null && x.Account.Id == ticketAccount.Id).ToArray();
             clients.ForEach(x => x.Disconnect());
 
+            // not an expected situation
+            if (clients.Length > 0)
+            {
+                client.Disconnect();
+                return;
+            }
+
             /* Bind WorldAccount if exist */
             var account = AccountManager.Instance.FindById(ticketAccount.Id);
             if (account != null)
