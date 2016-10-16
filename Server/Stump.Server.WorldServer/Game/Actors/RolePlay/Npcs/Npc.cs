@@ -94,6 +94,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (dialoguer.Map != Position.Map || dialoguer.IsFighting() || dialoguer.IsInRequest() || dialoguer.IsGhost())
                 return false;
 
+            if (dialoguer.IsBusy())
+                dialoguer.Dialog.Close();
+
             return Actions.Count > 0 && Actions.Any(entry => entry.ActionType.Contains(action) && entry.CanExecute(this, dialoguer));
         }
 

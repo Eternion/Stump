@@ -197,9 +197,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             fight.StartPlacement();
 
-            if (AuthorizedAgressor != null)
-                fight.ChallengersTeam.ToggleOption(FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY);
-
             OnEnterFight(character);
             Fight.FightEnded += OnFightEnded;
 
