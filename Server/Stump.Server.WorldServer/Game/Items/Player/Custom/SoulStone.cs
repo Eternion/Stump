@@ -50,6 +50,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             var fightPvM = Owner.Fighter.Fight as FightPvM;
             if (fightPvM == obj && fightPvM != null && !fightPvM.IsPvMArenaFight && Owner.Fighter.HasWin() && Owner.Fighter.HasState((int) SpellStatesEnum.Soul_Seeker))
             {
+                if (Owner.Fighter.Team.Fighters.Any(x => x.Loot.Items.Any(y => y.Key == (int)ItemIdEnum.FullSoulStone)))
+                    return;
+
                 var highestLevel = Owner.Fighter.OpposedTeam.Fighters.Max(x => x.Level);
 
                 if (highestLevel <= Power)
