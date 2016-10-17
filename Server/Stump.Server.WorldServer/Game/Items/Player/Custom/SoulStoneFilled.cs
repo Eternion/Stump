@@ -65,5 +65,17 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             return Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_SoulStoneSummon).
                 Select(effect => MonsterManager.Instance.GetMonsterGrade(effect.Value, effect.DiceNum));
         }
+
+        protected override ObjectItem BuildObjectItem()
+        {
+            return new ObjectItem(
+                (byte)Position,
+                (short)Template.Id,
+                0, // todo : power rate
+                false, // todo : over max
+                Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
+                Guid,
+                (int)(Stack));
+        }
     }
 }
