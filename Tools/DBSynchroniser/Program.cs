@@ -525,12 +525,12 @@ namespace DBSynchroniser
                 var lang = m_stringToLang[langStr];
                 foreach (var record in langsUi)
                 {
-                    d2i.SetText(record.Name, record.GetText(lang));
+                    d2i.SetText(record.Name, record.GetText(lang) ?? "{null}");
                 }
 
                 foreach (var record in langs)
                 {
-                    d2i.SetText((int)record.Id, record.GetText(lang));
+                    d2i.SetText((int)record.Id, record.GetText(lang) ?? "{null}");
                 }
 
                 d2i.Save();
