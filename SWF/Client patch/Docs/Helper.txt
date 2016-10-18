@@ -10,8 +10,8 @@ AFTER:
 (com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame::AllModulesLoadedMessage)
 AFTER:
 	this._gmaf = null;
-    Kernel.getWorker().addFrame(new WorldFrame());
-    Kernel.getWorker().addFrame(new AlignmentFrame());
+    MapRenderer.PROTO_169_BACKGROUND = true;
+    Kernel.getWorker().addFrame(new Proto169Frame());
 			   
 ================================
 ================================
@@ -23,14 +23,14 @@ private function cipherRsa(param1:String, param2:String, param3:TrustCertificate
 	return new Vector.<int>();
 }
 pCode:
-trait method Qname(PrivateNamespace("*","1037"),"cipherRsa") dispid 0
+trait method Qname(PrivateNamespace("*","1126"),"cipherRsa") dispid 0
 method
 name null
 flag NEED_ACTIVATION
-param Qname(PackageNamespace("","180"),"String")
-param Qname(PackageNamespace("","180"),"String")
+param Qname(PackageNamespace("","249"),"String")
+param Qname(PackageNamespace("","249"),"String")
 param Qname(PackageNamespace("com.ankamagames.dofus.network.types.secure"),"TrustCertificate")
-returns TypeName(Qname(PackageNamespace("__AS3__.vec"),"Vector")<Qname(PackageNamespace("","180"),"int")>)
+returns TypeName(Qname(PackageNamespace("__AS3__.vec"),"Vector")<Qname(PackageNamespace("","249"),"int")>)
 
 body
 maxstack 9
@@ -83,94 +83,5 @@ setproperty Qname(PackageNamespace("","180"),"gameServerTicket")
 AFTER:
       private function verifyV1Signature(param1:IDataInput, param2:ByteArray) : Boolean
       {
-         var _loc5_:uint = 0;
-         var _loc4_:* = param1;
-         var _loc3_:* = param2;
-         var _loc6_:uint = _loc4_.readShort();
-         var _loc7_:ByteArray = new ByteArray();
-         try
-         {
-            _loc5_ = _loc4_.readInt();
-            _loc4_.readBytes(_loc7_,0,_loc5_);
-         }
-         catch(e:Error)
-         {
-            throw new SignatureError("Invalid signature format, not enough data.",2);
-         }
-         _loc4_.readBytes(_loc3_);
-         _loc3_.position = 0;
          return true;
       }
-pCode:
-trait method Qname(PrivateNamespace("*","1153"),"verifyV1Signature") dispid 0
-method
-name null
-flag NEED_ACTIVATION
-param Qname(PackageNamespace("flash.utils"),"IDataInput")
-param Qname(PackageNamespace("flash.utils"),"ByteArray")
-returns Qname(PackageNamespace("","180"),"Boolean")
-
-body
-maxstack 4
-localcount 10
-initscopedepth 0
-maxscopedepth 3
-try from ofs001d to ofs0030 target ofs0034 type Qname(PackageNamespace("","249"),"Error") name Qname(PackageNamespace("","249"),"e")
-
-
-code
-getlocal_0
-pushscope
-pushbyte 0
-convert_u
-setlocal 5
-getlocal_1
-setlocal 4
-getlocal_2
-setlocal_3
-getlocal 4
-callproperty Qname(Namespace("flash.utils:IDataInput"),"readShort") 0
-convert_u
-setlocal 6
-findpropstrict Qname(PackageNamespace("flash.utils"),"ByteArray")
-constructprop Qname(PackageNamespace("flash.utils"),"ByteArray") 0
-coerce Qname(PackageNamespace("flash.utils"),"ByteArray")
-setlocal 7
-ofs001d:getlocal 4
-callproperty Qname(Namespace("flash.utils:IDataInput"),"readInt") 0
-convert_u
-setlocal 5
-getlocal 4
-getlocal 7
-pushbyte 0
-getlocal 5
-callpropvoid Qname(Namespace("flash.utils:IDataInput"),"readBytes") 3
-ofs0030:jump ofs004a
-ofs0034:getlocal_0
-pushscope
-newcatch 0
-dup
-setlocal 9
-dup
-pushscope
-swap
-setslot 1
-findpropstrict Qname(PackageNamespace("com.ankamagames.jerakine.utils.errors"),"SignatureError")
-pushstring "Invalid signature format, not enough data."
-pushbyte 2
-constructprop Qname(PackageNamespace("com.ankamagames.jerakine.utils.errors"),"SignatureError") 2
-throw
-ofs004a:getlocal 4
-getlocal_3
-callpropvoid Qname(Namespace("flash.utils:IDataInput"),"readBytes") 1
-getlocal_3
-pushbyte 0
-setproperty Qname(PackageNamespace(""),"position")
-pushtrue
-returnvalue
-
-================================
-================================
-
-
-(jerakine.utils.crypto.Signature::verify):
