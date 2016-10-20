@@ -1,53 +1,3 @@
-(dofus.logic.connection.frames.AuthentificationFrame::LoginValidationAction)
-BEFORE:
-	if(BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)
-AFTER:
-	if(BuildInfos.BUILD_TYPE < BuildTypeEnum.RELEASE)
-	
-================================
-================================
-
-(com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame::AllModulesLoadedMessage)
-AFTER:
-	this._gmaf = null;
-    MapRenderer.PROTO_169_BACKGROUND = true;
-    Kernel.getWorker().addFrame(new Proto169Frame());
-			   
-================================
-================================
-
-(dofus.logic.connection.managers.AuthentificationManager::cipherRsa):
-AFTER:
-private function cipherRsa(param1:String, param2:String, param3:TrustCertificate) : Vector.<int>
-{
-	return new Vector.<int>();
-}
-pCode:
-trait method Qname(PrivateNamespace("*","1126"),"cipherRsa") dispid 0
-method
-name null
-flag NEED_ACTIVATION
-param Qname(PackageNamespace("","249"),"String")
-param Qname(PackageNamespace("","249"),"String")
-param Qname(PackageNamespace("com.ankamagames.dofus.network.types.secure"),"TrustCertificate")
-returns TypeName(Qname(PackageNamespace("__AS3__.vec"),"Vector")<Qname(PackageNamespace("","249"),"int")>)
-
-body
-maxstack 9
-localcount 8
-initscopedepth 5
-maxscopedepth 10
-
-code
-getlex Multiname("Vector",[PrivateNamespace("*","1126"),StaticProtectedNs("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("","249"),PackageNamespace("com.ankamagames.dofus.logic.connection.managers"),PrivateNamespace("*","3416"),PackageInternalNs("com.ankamagames.dofus.logic.connection.managers"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("__AS3__.vec")])
-getlex Qname(PackageNamespace("","249"),"int")
-applytype 1
-construct 0
-returnvalue
-
-================================
-================================
-
 (dofus.logic.common.frames.ServerControlFrame::RawDataMessage):
 AFTER:
 	case param1 is RawDataMessage:
@@ -65,6 +15,15 @@ pCode:
 ================================
 ================================
 
+(dofus.logic.connection.frames.AuthentificationFrame::LoginValidationAction)
+BEFORE:
+	if(BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)
+AFTER:
+	if(BuildInfos.BUILD_TYPE < BuildTypeEnum.RELEASE)
+	
+================================
+================================
+
 (dofus.logic.connection.frames.ServerSelectionFrame::SelectedServerDataMessage):
 AFTER:
 	AuthentificationManager.getInstance().gameServerTicket = _loc6_.ticket.toString();
@@ -76,6 +35,47 @@ getproperty Qname(PackageNamespace("","180"),"ticket")
 callproperty Qname(PackageNamespace("","180"),"toString") 0
 setproperty Qname(PackageNamespace("","180"),"gameServerTicket")
 
+================================
+================================
+
+(dofus.logic.connection.managers.AuthentificationManager::cipherRsa):
+AFTER:
+private function cipherRsa(param1:String, param2:String, param3:TrustCertificate) : Vector.<int>
+{
+	return new Vector.<int>();
+}
+pCode:
+trait method Qname(PrivateNamespace("*","1126"),"cipherRsa") dispid 0
+method
+name null
+flag NEED_ACTIVATION
+param Qname(PackageNamespace("","255"),"String")
+param Qname(PackageNamespace("","255"),"String")
+param Qname(PackageNamespace("com.ankamagames.dofus.network.types.secure"),"TrustCertificate")
+returns TypeName(Qname(PackageNamespace("__AS3__.vec"),"Vector")<Qname(PackageNamespace("","255"),"int")>)
+
+body
+maxstack 9
+localcount 8
+initscopedepth 5
+maxscopedepth 10
+
+code
+getlex Multiname("Vector",[PrivateNamespace("*","1126"),StaticProtectedNs("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("","255"),PackageNamespace("com.ankamagames.dofus.logic.connection.managers"),PrivateNamespace("*","3470"),PackageInternalNs("com.ankamagames.dofus.logic.connection.managers"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("__AS3__.vec")])
+getlex Qname(PackageNamespace("","255"),"int")
+applytype 1
+construct 0
+returnvalue
+
+================================
+================================
+
+(com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame::AllModulesLoadedMessage)
+AFTER:
+	this._gmaf = null;
+    MapRenderer.PROTO_169_BACKGROUND = true;
+    Kernel.getWorker().addFrame(new Proto169Frame());
+			   
 ================================
 ================================
 
