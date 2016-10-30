@@ -25,6 +25,9 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Database.World.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.BaseServer.Logging;
+using System.Globalization;
+using MongoDB.Bson;
 
 namespace Stump.Server.WorldServer.Game
 {
@@ -648,6 +651,16 @@ namespace Stump.Server.WorldServer.Game
 
                 if (WorldServer.SaveMessage)
                     SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 165);
+
+                var document = new BsonDocument
+                    {
+                        { "Id", WorldServer.ServerInformation.Id },
+                        { "Name", WorldServer.ServerInformation.Name },
+                        { "Players", WorldServer.Instance.ClientManager.Count },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+                MongoLogger.Instance.Insert("WorldStats", document);
 
                 logger.Info("World server saved ! ({0} ms)", sw.ElapsedMilliseconds);
             }

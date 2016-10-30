@@ -43,44 +43,56 @@ namespace DBSynchroniser.Maps.Transitions
             
             var pos = map.Position;
 
-            var top = FindMaps(map, pos.X, pos.Y - 1).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
-            if (top != null)
+            if (map.TopNeighbour == null)
             {
-                map.TopNeighbourId = top.Id;
-            }
-            else
-            {
-                map.TopNeighbourId = -1;
-            }
-
-            var bottom = FindMaps(map, pos.X, pos.Y + 1).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
-            if (bottom != null)
-            {
-                map.BottomNeighbourId = bottom.Id;
-            }
-            else
-            {
-                map.BottomNeighbourId = -1;
+                var top = FindMaps(map, pos.X, pos.Y - 1).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+                if (top != null)
+                {
+                    map.TopNeighbourId = top.Id;
+                }
+                else
+                {
+                    map.TopNeighbourId = -1;
+                }
             }
 
-            var right = FindMaps(map, pos.X + 1, pos.Y).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
-            if (right != null)
+            if (map.BottomNeighbour == null)
             {
-                map.RightNeighbourId = right.Id;
-            }
-            else
-            {
-                map.RightNeighbourId = -1;
+                var bottom = FindMaps(map, pos.X, pos.Y + 1).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+                if (bottom != null)
+                {
+                    map.BottomNeighbourId = bottom.Id;
+                }
+                else
+                {
+                    map.BottomNeighbourId = -1;
+                }
             }
 
-            var left = FindMaps(map, pos.X - 1, pos.Y).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
-            if (left != null)
+            if (map.RightNeighbour == null)
             {
-                map.LeftNeighbourId = left.Id;
+                var right = FindMaps(map, pos.X + 1, pos.Y).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+                if (right != null)
+                {
+                    map.RightNeighbourId = right.Id;
+                }
+                else
+                {
+                    map.RightNeighbourId = -1;
+                }
             }
-            else
+
+            if (map.LeftNeighbour == null)
             {
-                map.LeftNeighbourId = -1;
+                var left = FindMaps(map, pos.X - 1, pos.Y).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+                if (left != null)
+                {
+                    map.LeftNeighbourId = left.Id;
+                }
+                else
+                {
+                    map.LeftNeighbourId = -1;
+                }
             }
         }
 
