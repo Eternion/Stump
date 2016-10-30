@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:49:58
+// Generated on 10/30/2016 16:20:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,18 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public bool isAfk;
         
         public GameFightTurnFinishMessage()
         {
         }
         
+        public GameFightTurnFinishMessage(bool isAfk)
+        {
+            this.isAfk = isAfk;
+        }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteBoolean(isAfk);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            isAfk = reader.ReadBoolean();
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:24
+// Generated on 10/30/2016 16:20:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,16 +20,18 @@ namespace Stump.DofusProtocol.Types
         public int elementId;
         public short elementCellId;
         public int elementState;
+        public bool onCurrentMap;
         
         public StatedElement()
         {
         }
         
-        public StatedElement(int elementId, short elementCellId, int elementState)
+        public StatedElement(int elementId, short elementCellId, int elementState, bool onCurrentMap)
         {
             this.elementId = elementId;
             this.elementCellId = elementCellId;
             this.elementState = elementState;
+            this.onCurrentMap = onCurrentMap;
         }
         
         public virtual void Serialize(IDataWriter writer)
@@ -37,6 +39,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(elementId);
             writer.WriteVarShort(elementCellId);
             writer.WriteVarInt(elementState);
+            writer.WriteBoolean(onCurrentMap);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -50,6 +53,7 @@ namespace Stump.DofusProtocol.Types
             elementState = reader.ReadVarInt();
             if (elementState < 0)
                 throw new Exception("Forbidden value on elementState = " + elementState + ", it doesn't respect the following condition : elementState < 0");
+            onCurrentMap = reader.ReadBoolean();
         }
         
         

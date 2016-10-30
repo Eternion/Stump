@@ -405,6 +405,7 @@
     <Compile Include="Messages\game\context\display\DisplayNumericalValuePaddockMessage.cs" />
     <Compile Include="Messages\game\context\dungeon\DungeonKeyRingMessage.cs" />
     <Compile Include="Messages\game\context\dungeon\DungeonKeyRingUpdateMessage.cs" />
+    <Compile Include="Messages\game\context\fight\arena\ArenaFighterLeaveMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeInfoMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeResultMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeTargetsListMessage.cs" />
@@ -1005,6 +1006,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeTypesItemsExchangerDescriptionForUserMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeWaitingResultMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeWeightMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\FocusedExchangeReadyMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ItemNoMoreAvailableMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\JobBookSubscribeRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\RecycleResultMessage.cs" />
