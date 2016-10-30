@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:24
+// Generated on 10/30/2016 16:20:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public InteractiveElementWithAgeBonus(int elementId, int elementTypeId, IEnumerable<Types.InteractiveElementSkill> enabledSkills, IEnumerable<Types.InteractiveElementSkill> disabledSkills, short ageBonus)
-         : base(elementId, elementTypeId, enabledSkills, disabledSkills)
+        public InteractiveElementWithAgeBonus(int elementId, int elementTypeId, IEnumerable<Types.InteractiveElementSkill> enabledSkills, IEnumerable<Types.InteractiveElementSkill> disabledSkills, bool onCurrentMap, short ageBonus)
+         : base(elementId, elementTypeId, enabledSkills, disabledSkills, onCurrentMap)
         {
             this.ageBonus = ageBonus;
         }

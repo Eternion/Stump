@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:23
+// Generated on 10/30/2016 16:20:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,17 +21,19 @@ namespace Stump.DofusProtocol.Types
         public int elementTypeId;
         public IEnumerable<Types.InteractiveElementSkill> enabledSkills;
         public IEnumerable<Types.InteractiveElementSkill> disabledSkills;
+        public bool onCurrentMap;
         
         public InteractiveElement()
         {
         }
         
-        public InteractiveElement(int elementId, int elementTypeId, IEnumerable<Types.InteractiveElementSkill> enabledSkills, IEnumerable<Types.InteractiveElementSkill> disabledSkills)
+        public InteractiveElement(int elementId, int elementTypeId, IEnumerable<Types.InteractiveElementSkill> enabledSkills, IEnumerable<Types.InteractiveElementSkill> disabledSkills, bool onCurrentMap)
         {
             this.elementId = elementId;
             this.elementTypeId = elementTypeId;
             this.enabledSkills = enabledSkills;
             this.disabledSkills = disabledSkills;
+            this.onCurrentMap = onCurrentMap;
         }
         
         public virtual void Serialize(IDataWriter writer)
@@ -66,6 +68,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort((ushort)disabledSkills_count);
             writer.Seek((int)disabledSkills_after);
 
+            writer.WriteBoolean(onCurrentMap);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -90,6 +93,7 @@ namespace Stump.DofusProtocol.Types
                  disabledSkills_[i].Deserialize(reader);
             }
             disabledSkills = disabledSkills_;
+            onCurrentMap = reader.ReadBoolean();
         }
         
         
