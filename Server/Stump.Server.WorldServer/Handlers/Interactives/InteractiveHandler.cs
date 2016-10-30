@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
 
         public static void SendStatedElementUpdatedMessage(IPacketReceiver client, int elementId, short elementCellId, int state)
         {
-            client.Send(new StatedElementUpdatedMessage(new StatedElement(elementId, elementCellId, state)));
+            client.Send(new StatedElementUpdatedMessage(new StatedElement(elementId, elementCellId, state, true)));
         }
 
         public static void SendMapObstacleUpdatedMessage(IPacketReceiver client, IEnumerable<MapObstacle> obstacles)
