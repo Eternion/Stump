@@ -9,8 +9,33 @@ AFTER:
 		return true;
 
 pCode:
-	getlocal_2
-	getproperty Qname(PackageNamespace(""),"content")
+getlocal_1
+getlex Qname(PackageNamespace("com.ankamagames.dofus.network.messages.security"),"RawDataMessage")
+astypelate
+coerce Qname(PackageNamespace("com.ankamagames.dofus.network.messages.security"),"RawDataMessage")
+setlocal_2
+findpropstrict Qname(PackageNamespace("flash.display"),"Loader")
+constructprop Qname(PackageNamespace("flash.display"),"Loader") 0
+coerce Qname(PackageNamespace("flash.display"),"Loader")
+setlocal 8
+findpropstrict Qname(PackageNamespace("flash.system"),"LoaderContext")
+pushfalse
+findpropstrict Qname(PackageNamespace("flash.system"),"ApplicationDomain")
+getlex Qname(PackageNamespace("flash.system"),"ApplicationDomain")
+getproperty Qname(PackageNamespace("","255"),"currentDomain")
+constructprop Qname(PackageNamespace("flash.system"),"ApplicationDomain") 1
+constructprop Qname(PackageNamespace("flash.system"),"LoaderContext") 2
+coerce Qname(PackageNamespace("flash.system"),"LoaderContext")
+setlocal 9
+getlex Qname(PackageNamespace("com.ankamagames.jerakine.utils.system"),"AirScanner")
+getlocal 9
+pushtrue
+callpropvoid Qname(PackageNamespace("","255"),"allowByteCodeExecution") 2
+getlocal 8
+getlocal_2
+getproperty Qname(PackageNamespace(""),"content")
+getlocal 9
+callpropvoid Qname(PackageNamespace("","255"),"loadBytes") 2
 	
 ================================
 ================================
@@ -83,5 +108,53 @@ AFTER:
 AFTER:
       private function verifyV1Signature(param1:IDataInput, param2:ByteArray) : Boolean
       {
+         var _loc5_:* = 0;
+         var _loc4_:* = param1;
+         var _loc3_:* = param2;
+         var _loc6_:* = _loc4_.readShort();
+         var _loc7_:ByteArray = new ByteArray();
+         _loc5_ = _loc4_.readInt();
+         _loc4_.readBytes(_loc7_,0,_loc5_);
+         _loc4_.readBytes(_loc3_);
+         _loc3_.position = 0;
          return true;
       }
+
+pCode:
+
+body
+maxstack 8
+localcount 8
+initscopedepth 5
+maxscopedepth 12
+
+code
+pushbyte 0
+setlocal 5
+getlocal_1
+setlocal 4
+getlocal_2
+setlocal_3
+getlocal 4
+callproperty Qname(Namespace("flash.utils:IDataInput"),"readShort") 0
+setlocal 6
+findpropstrict Qname(PackageNamespace("flash.utils"),"ByteArray")
+constructprop Qname(PackageNamespace("flash.utils"),"ByteArray") 0
+coerce Qname(PackageNamespace("flash.utils"),"ByteArray")
+setlocal 7
+getlocal 4
+callproperty Qname(Namespace("flash.utils:IDataInput"),"readInt") 0
+setlocal 5
+getlocal 4
+getlocal 7
+pushbyte 0
+getlocal 5
+callpropvoid Qname(Namespace("flash.utils:IDataInput"),"readBytes") 3
+getlocal 4
+getlocal_3
+callpropvoid Qname(Namespace("flash.utils:IDataInput"),"readBytes") 1
+getlocal_3
+pushbyte 0
+setproperty Qname(PackageNamespace(""),"position")
+pushtrue
+returnvalue
