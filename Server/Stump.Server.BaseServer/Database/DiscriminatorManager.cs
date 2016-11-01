@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using NLog;
 using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Database
@@ -29,6 +30,8 @@ namespace Stump.Server.BaseServer.Database
 
     public class DiscriminatorManager<TValue,TKey> : Singleton<DiscriminatorManager<TValue,TKey>>
     {
+
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private bool m_initialized;
         private readonly Dictionary<TKey, Delegate> m_constructors = new Dictionary<TKey, Delegate>();
         // todo  : manage assemblies correctly
@@ -38,31 +41,44 @@ namespace Stump.Server.BaseServer.Database
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
-            foreach (var type in assembly.GetTypes())
+            try
             {
-                foreach (var attribute in type.GetCustomAttributes<DiscriminatorAttribute>())
+                foreach (var type in assembly.GetTypes())
                 {
-                    if (attribute == null)
-                        continue;
+                    foreach (var attribute in type.GetCustomAttributes<DiscriminatorAttribute>())
+                    {
+                        if (attribute == null)
+                            continue;
 
-                    var targetType = attribute.BaseType;
+                        var targetType = attribute.BaseType;
 
-                    if (targetType != typeof (TValue))
-                        continue;
+                        if (targetType != typeof(TValue))
+                            continue;
 
-                    if (!(attribute.Discriminator is TKey))
-                        continue;
+                        if (!(attribute.Discriminator is TKey))
+                            continue;
 
-                    var del = type.GetConstructor(attribute.CtorParameters).CreateDelegate();
-                    m_constructors.Add((TKey) attribute.Discriminator, del);
-                    /*var parameters = new List<Type>();
-                parameters.AddRange(attribute.CtorParameters);
-                parameters.Add(type);
-                m_constructors.Add(attribute.Discriminator, Delegate.CreateDelegate(Expression.GetFuncType(parameters.ToArray()), del.Target, del.Method));*/
+                        var ctor = type.GetConstructor(attribute.CtorParameters);
+
+                        if (ctor == null)
+                        {
+                            logger.Error($"No constructor for type {type}");
+                            continue;
+                        }
+
+                        var del = ctor.CreateDelegate();
+                        m_constructors.Add((TKey)attribute.Discriminator, del);
+                        /*var parameters = new List<Type>();
+                    parameters.AddRange(attribute.CtorParameters);
+                    parameters.Add(type);
+                    m_constructors.Add(attribute.Discriminator, Delegate.CreateDelegate(Expression.GetFuncType(parameters.ToArray()), del.Target, del.Method));*/
+                    }
                 }
             }
-
-            m_initialized = true;
+            finally
+            {
+                m_initialized = true;
+            }
         }
 
         private void CheckBeforeGenerate(TKey discriminator, Assembly assembly)
