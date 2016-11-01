@@ -10,15 +10,15 @@ DELETE FROM interactives_spawns_skills WHERE InteractiveSpawnId NOT IN (SELECT I
 DELETE FROM interactives_skills WHERE Id NOT IN (SELECT SkillId FROM interactives_spawns_skills) AND Type = 'Teleport';
 
 -- RESET maps
-UPDATE stump_data.maps SET TopNeighbourId = -1 WHERE TopNeighbourId = 0;
-UPDATE stump_data.maps SET BottomNeighbourId = -1 WHERE BottomNeighbourId = 0;
-UPDATE stump_data.maps SET LeftNeighbourId = -1 WHERE LeftNeighbourId = 0;
-UPDATE stump_data.maps SET RightNeighbourId = -1 WHERE RightNeighbourId = 0;
+UPDATE stump_world.world_maps SET TopNeighbourId = NULL WHERE TopNeighbourId = -1;
+UPDATE stump_world.world_maps SET BottomNeighbourId = NULL WHERE BottomNeighbourId = -1;
+UPDATE stump_world.world_maps SET LeftNeighbourId = NULL WHERE LeftNeighbourId = -1;
+UPDATE stump_world.world_maps SET RightNeighbourId = NULL WHERE RightNeighbourId = -1;
 
-UPDATE stump_data.maps SET TopNeighbourCellId = -1 WHERE TopNeighbourCellId = 0;
-UPDATE stump_data.maps SET BottomNeighbourCellId = -1 WHERE BottomNeighbourCellId = 0;
-UPDATE stump_data.maps SET LeftNeighbourCellId = -1 WHERE LeftNeighbourCellId = 0;
-UPDATE stump_data.maps SET RightNeighbourCellId = -1 WHERE RightNeighbourCellId = 0;
+UPDATE stump_world.world_maps SET TopNeighbourCellId = NULL WHERE TopNeighbourCellId = -1;
+UPDATE stump_world.world_maps SET BottomNeighbourCellId = NULL WHERE BottomNeighbourCellId = -1;
+UPDATE stump_world.world_maps SET LeftNeighbourCellId = NULL WHERE LeftNeighbourCellId = -1;
+UPDATE stump_world.world_maps SET RightNeighbourCellId = NULL WHERE RightNeighbourCellId = -1;
 
 -- UPDATE maps
 UPDATE stump_data.maps maps1 JOIN stump_data.maps_old maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourId = maps2.TopNeighbourId;

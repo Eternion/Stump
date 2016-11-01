@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells
 {
@@ -300,6 +301,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                     error += dx;
                 }
             }
+        }
+
+        public bool IsOnMapBorder()
+        {
+            return
+                new LineSet(new MapPoint(27), new MapPoint(559)).BelongToSet(this) ||
+                new LineSet(new MapPoint(546), new MapPoint(559)).BelongToSet(this) ||
+                new LineSet(new MapPoint(0), new MapPoint(13)).BelongToSet(this) ||
+                new LineSet(new MapPoint(0), new MapPoint(532)).BelongToSet(this);
         }
 
         public static IEnumerable<MapPoint> GetBorderCells(MapNeighbour mapNeighbour)
