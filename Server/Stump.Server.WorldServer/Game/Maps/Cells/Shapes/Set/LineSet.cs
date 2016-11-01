@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         {
             if (Start == null)
             {
-                return SquareDistancePointLine(point) < 1;
+                return SquareDistancePointLine(point) < 0.1;
             }
             if (Equals(point, Start))
                 return true;

@@ -280,6 +280,7 @@
     <Compile Include="Collections\PriorityQueueB.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="Extensions\ProjectionEqualityComparer.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\FileSizeFormatProvider.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />

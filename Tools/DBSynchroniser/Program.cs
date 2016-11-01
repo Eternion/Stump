@@ -33,6 +33,7 @@ using System.Net.Http;
 using System.Threading;
 using DBSynchroniser.Http;
 using DBSynchroniser.Maps.Transitions;
+using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Effects;
@@ -41,6 +42,7 @@ using Stump.Server.WorldServer.Database.Items.Pets;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using LangText = DBSynchroniser.Records.Langs.LangText;
 using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
 
@@ -807,6 +809,8 @@ namespace DBSynchroniser
             var i = 0;
             var ids = new List<int>();
             var failures = new List<int>();
+            var spawns = new Dictionary<int, InteractiveSpawn>();
+            var elementsGlobal = new Dictionary<int, DlmGraphicalElement>();
             int fails = 0;
             InitializeCounter();
             foreach (var mapBytes in entries.Values)
@@ -823,12 +827,23 @@ namespace DBSynchroniser
                     fails++;
                     continue;
                 }
-                
-                var elements = map.Layers.SelectMany(
-                   x => x.Cells.SelectMany(
-                           y => y.Elements.OfType<DlmGraphicalElement>()
-                                .Where(z => z.Identifier != 0)));
 
+                var elements = (from layer in map.Layers
+                               from cell in layer.Cells
+                               from element in cell.Elements.OfType<DlmGraphicalElement>()
+                               where element.Identifier != 0
+                               let point = new MapPoint(cell.Id)
+                               where Math.Abs(element.PixelOffset.X) + Math.Abs(element.PixelOffset.Y) < 50
+                               select element).Distinct(ProjectionEqualityComparer<DlmGraphicalElement>.Create(x => x.Identifier));
+
+                var elements2 = (from layer in map.Layers
+                                from cell in layer.Cells
+                                from element in cell.Elements.OfType<DlmGraphicalElement>()
+                                where element.Identifier != 0
+                                select element).ToArray();
+
+                var diff = elements2.Where(x => !elements.Contains(x)).ToArray();
+                
                 foreach (var element in elements)
                 {
                     var eleElement = eleInstance.GraphicalDatas[(int)element.ElementId];
@@ -851,6 +866,8 @@ namespace DBSynchroniser
 
                     ids.Add(spawn.Id);
                     worldDatabase.Database.Insert("interactives_spawns", "Id", false, spawn);
+                    spawns.Add(spawn.Id, spawn);
+                    elementsGlobal.Add(spawn.Id, element);
 
                 }
 
@@ -860,6 +877,8 @@ namespace DBSynchroniser
 
             if (fails > 0)
                 Console.WriteLine($"{fails} failes !");
+
+            ExecutePatch("./Patchs/interactives_spawns_patch.sql", worldDatabase.Database);
         }
 
         public static void GenerateMonstersSpawnsAndDrops()
