@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         protected override bool InternalApply()
         {
-            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter)Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
+            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SummonedFighter ? ((SummonedFighter)Caster).Controller : Caster)).Where(bomb => bomb.IsAlive()))
             {
                 if (Dice.Duration != 0 || Dice.Delay != 0)
                     AddTriggerBuff(bomb, BuffTrigger);

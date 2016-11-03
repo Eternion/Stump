@@ -340,22 +340,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsSlaveTurn()
         {
-            var slave = Fight.TimeLine.Current as SlaveFighter;
+            var summon = (Fight.TimeLine.Current as SummonedFighter);
 
-            if (slave == null)
+            if (summon == null)
                 return false;
 
-            return slave.Summoner == this;
+            return summon.Controller == this;
         }
 
-        public SlaveFighter GetSlave()
+        public SummonedFighter GetSlave()
         {
-            var slave = Fight.TimeLine.Current as SlaveFighter;
+            var summon = (Fight.TimeLine.Current as SummonedFighter);
 
-            if (slave == null)
+            if (summon == null)
                 return null;
 
-            return slave.Summoner == this ? slave : null;
+            return summon.Controller == this ? summon : null;
         }
 
         public override void ResetFightProperties()

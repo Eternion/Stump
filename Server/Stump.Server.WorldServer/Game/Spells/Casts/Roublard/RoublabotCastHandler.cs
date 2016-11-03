@@ -16,9 +16,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
         {
             base.Execute();
 
-            var slave = Fight.GetOneFighter<SlaveFighter>(TargetedCell);
+            var slave = Fight.GetOneFighter<SummonedFighter>(x => x.Cell == TargetedCell && x.Controller == Caster);
 
-            if (slave == null || slave.Summoner != Caster)
+            if (slave == null)
                 return;
 
             slave.CastSpell(new Spell((int)SpellIdEnum.INITIALISATION, 1), TargetedCell, true, true, true);

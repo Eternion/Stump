@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
+    [EffectHandler(EffectsEnum.Effect_SummonSlave)]
     [EffectHandler(EffectsEnum.Effect_Summon)]
     public class Summon : SpellEffectHandler
     {
@@ -41,6 +42,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 summon = new LivingChest(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) { SummoningEffect = this };             
             else
                 summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell) {SummoningEffect = this};
+
+            if (Effect.Id == (short)EffectsEnum.Effect_SummonSlave && Caster is CharacterFighter)
+                summon.SetController(Caster as CharacterFighter);
 
             ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 

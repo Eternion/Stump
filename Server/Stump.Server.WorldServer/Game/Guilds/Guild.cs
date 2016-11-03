@@ -129,10 +129,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             private set { Record.Id = value; }
         }
 
-        public GuildMember Boss
-        {
-            get { return Members.FirstOrDefault(x => x.RankId == 1); }
-        }
+        public GuildMember Boss => Members.FirstOrDefault(x => x.RankId == 1);
 
         public long Experience
         {

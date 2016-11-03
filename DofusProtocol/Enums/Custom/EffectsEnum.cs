@@ -2295,6 +2295,14 @@
         /// </summary>
         Effect_2026 = 2026,
         /// <summary>
+        /// 
+        /// </summary>
+        Effect_TakeControl = 2027,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_TransmitCharacteristic = 2028,
+        /// <summary>
         /// #1
         /// </summary>
         Effect_CastSpell_2160 = 2160,
