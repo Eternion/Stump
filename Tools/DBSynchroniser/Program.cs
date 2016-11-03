@@ -853,7 +853,7 @@ namespace DBSynchroniser
                         Id = (int) element.Identifier,
                         MapId = map.Id,
                         CellId = element.Cell.Id,
-                        Animated = eleElement is AnimatedGraphicalElementData || eleElement is EntityGraphicalElementData,
+                        Animated = eleElement.Type == EleGraphicalElementTypes.ANIMATED,
                         ElementId = (int) element.ElementId,
                     };
 

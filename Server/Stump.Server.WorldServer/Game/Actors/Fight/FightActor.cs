@@ -1618,9 +1618,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var bomb in Bombs.ToArray())
                 bomb.DecrementAllCastedBuffsDuration();
-
-            foreach (var slave in Slaves.ToArray())
-                slave.DecrementAllCastedBuffsDuration();
         }
 
         public void BuffSpell(Spell spell, short boost)
@@ -1689,17 +1686,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region Summons
 
         readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
-        readonly List<SlaveFighter> m_slaves = new List<SlaveFighter>();
         readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public int SummonedCount
-            => m_summons.Count(x => x is SummonedMonster && (x as SummonedMonster).Monster.Template.UseSummonSlot) + m_slaves.Count(x => x.MonsterGrade.Template.UseSummonSlot);
+            => m_summons.Count(x => x is SummonedMonster && (x as SummonedMonster).Monster.Template.UseSummonSlot);
 
         public int BombsCount => m_bombs.Count(x => x.MonsterBombTemplate.Template.UseBombSlot);
 
         public ReadOnlyCollection<SummonedFighter> Summons => m_summons.AsReadOnly();
-
-        public ReadOnlyCollection<SlaveFighter> Slaves => m_slaves.AsReadOnly();
 
         public ReadOnlyCollection<SummonedBomb> Bombs => m_bombs.AsReadOnly();
 
@@ -1731,16 +1725,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_summons.Remove(summon);
         }
 
-        public void AddSlave(SlaveFighter slave)
-        {
-            m_slaves.Add(slave);
-        }
-
-        public void RemoveSlave(SlaveFighter slave)
-        {
-            m_slaves.Remove(slave);
-        }
-
         public void AddBomb(SummonedBomb bomb)
         {
             m_bombs.Add(bomb);
@@ -1755,7 +1739,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_summons.Clear();
             m_bombs.Clear();
-            m_slaves.Clear();
         }
 
         public void KillAllSummons()
@@ -1768,11 +1751,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var bomb in m_bombs.ToArray())
             {
                 bomb.Die();
-            }
-
-            foreach (var slave in m_slaves.ToArray())
-            {
-                slave.Die();
             }
         }
 

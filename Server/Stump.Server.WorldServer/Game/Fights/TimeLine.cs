@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
     public class TimeLine
     {
-        private List<FightActor> m_passedActors = new List<FightActor>();  
+        private readonly List<FightActor> m_passedActors = new List<FightActor>();  
 
         public TimeLine(IFight fight)
         {
@@ -26,16 +25,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public IFight Fight
         {
             get;
-            private set;
         }
 
-        public FightActor Current
-        {
-            get
-            {
-                return Index == -1 || Index >= Fighters.Count ? null : Fighters[Index];
-            }
-        }
+        public FightActor Current => Index == -1 || Index >= Fighters.Count ? null : Fighters[Index];
+
+        public FightActor Next => Index >= Fighters.Count(x => x.IsAlive()) ? Fighters.FirstOrDefault(x => x.IsAlive()) : Fighters.Skip(Index + 1).FirstOrDefault(x => x.IsAlive());
 
         public int Index
         {
@@ -43,10 +37,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public int Count
-        {
-            get { return Fighters.Count; }
-        }
+        public int Count => Fighters.Count;
 
         public short RoundNumber
         {

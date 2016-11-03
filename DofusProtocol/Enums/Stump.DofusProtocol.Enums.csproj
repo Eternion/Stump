@@ -288,12 +288,14 @@
     <Compile Include="Export\PvpArenaStepEnum.cs" />
     <Compile Include="Export\PvpArenaTypeEnum.cs" />
     <Compile Include="Export\SequenceTypeEnum.cs" />
+    <Compile Include="Export\ServerCompletionEnum.cs" />
     <Compile Include="Export\ServerConnectionErrorEnum.cs" />
     <Compile Include="Export\ServerStatusEnum.cs" />
     <Compile Include="Export\ShortcutBarEnum.cs" />
     <Compile Include="Export\SocialContactCategoryEnum.cs" />
     <Compile Include="Export\SocialGroupCreationResultEnum.cs" />
     <Compile Include="Export\SocialGroupInvitationStateEnum.cs" />
+    <Compile Include="Export\SocialNoticeErrorEnum.cs" />
     <Compile Include="Export\StatisticTypeEnum.cs" />
     <Compile Include="Export\StatsUpgradeResultEnum.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />

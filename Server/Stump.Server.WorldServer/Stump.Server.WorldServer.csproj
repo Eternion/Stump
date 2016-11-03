@@ -334,7 +334,6 @@
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\Customs\LivingChest.cs" />
-    <Compile Include="Game\Actors\Fight\SlaveFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\SummonedImage.cs" />
@@ -427,8 +426,10 @@
     <Compile Include="Game\Effects\Handlers\Items\TitleEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\TransmitCharacteristic.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\HealReceivedDamages.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\TakeControl.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
@@ -450,7 +451,6 @@
     <Compile Include="Game\Effects\Handlers\Spells\Others\CastSpell.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerGlyphs.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\CarriedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\LifeCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\MonsterCriterion.cs" />
@@ -571,6 +571,7 @@
     <Compile Include="Game\Fights\Buffs\Customs\RescaleSkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\TakeControlBuff.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BarbaricChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BlitzkriegChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\CleanHandsChallenge.cs" />
