@@ -1,4 +1,5 @@
-<project outputDir="Confused" baseDir="bin\x86\Debug-uptodate" xmlns="http://confuser.codeplex.com">
+<project outputDir="Confused" baseDir="bin\Debug" xmlns="http://confuser.codeplex.com">
+  <packer id="compressor" />
   <module path="Microsoft.Owin.dll" />
   <module path="Microsoft.Owin.Hosting.dll" />
   <module path="MongoDB.Bson.dll" />
@@ -26,7 +27,9 @@
     <rule pattern="true" preset="maximum" inherit="false" />
   </module>
   <module path="Stump.ORM.dll">
-    <rule pattern="true" preset="maximum" inherit="false" />
+    <rule pattern="true" preset="maximum" inherit="false">
+      <protection id="rename" action="remove" />
+    </rule>
   </module>
   <module path="Stump.Server.BaseServer.dll">
     <rule pattern="true" preset="maximum" inherit="false" />
@@ -35,7 +38,9 @@
     <rule pattern="true" preset="maximum" inherit="false" />
   </module>
   <module path="Stump.Tools.SpellsExplorer.exe">
-    <rule pattern="true" preset="maximum" inherit="false" />
+    <rule pattern="true" preset="maximum" inherit="false">
+      <protection id="rename" action="remove" />
+    </rule>
   </module>
   <module path="SwfLib.dll" />
   <module path="System.Net.Http.Formatting.dll" />

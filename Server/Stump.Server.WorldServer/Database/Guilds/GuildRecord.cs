@@ -153,5 +153,24 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get;
             set;
         }
+
+        [NullString]
+        public string BulletinContent
+        {
+            get;
+            set;
+        }
+
+        public DateTime BulletinDate
+        {
+            get;
+            set;
+        }
+
+        public int BulletinMemberId
+        {
+            get;
+            set;
+        }
     }
 }

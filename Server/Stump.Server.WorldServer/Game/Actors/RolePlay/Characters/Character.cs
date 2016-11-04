@@ -114,6 +114,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 if (Guild.MotdContent != null)
                     GuildHandler.SendGuildMotdMessage(Client, Guild);
+
+                if (Guild.BulletinContent != null)
+                    GuildHandler.SendGuildBulletinMessage(Client, Guild);
             }
             else
                 RemoveEmote(EmotesEnum.EMOTE_GUILD);
