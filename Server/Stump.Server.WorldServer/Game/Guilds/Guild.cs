@@ -260,6 +260,33 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
+        public string BulletinContent
+        {
+            get { return Record.BulletinContent; }
+            protected set
+            {
+                Record.BulletinContent = value;
+            }
+        }
+
+        public DateTime BulletinDate
+        {
+            get { return Record.BulletinDate; }
+            protected set
+            {
+                Record.BulletinDate = value;
+            }
+        }
+
+        public GuildMember BulletinMember
+        {
+            get { return TryGetMember(Record.BulletinMemberId); }
+            protected set
+            {
+                Record.BulletinMemberId = value.Id;
+            }
+        }
+
         public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly(); 
 
         public bool IsDirty
@@ -281,6 +308,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             MotdDate = DateTime.Now;
 
             GuildHandler.SendGuildMotdMessage(m_clients, this);
+        }
+
+        public void UpdateBulletin(GuildMember member, string content, bool notify)
+        {
+            BulletinContent = content;
+            BulletinMember = member;
+            BulletinDate = DateTime.Now;
+
+            GuildHandler.SendGuildBulletinMessage(m_clients, this);
         }
 
         public void AddTaxCollector(TaxCollectorNpc taxCollector)
@@ -723,6 +759,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 GuildHandler.SendGuildJoinedMessage(member.Character.Client, member);
                 GuildHandler.SendGuildInformationsMembersMessage(member.Character.Client, this);
                 GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client, this);
+
+                if (BulletinContent != null)
+                    GuildHandler.SendGuildBulletinMessage(member.Character.Client, this);
+
+                if (MotdContent != null)
+                    GuildHandler.SendGuildMotdMessage(member.Character.Client, this);
+
                 member.Character.RefreshActor();
 
                 member.Character.AddEmote(EmotesEnum.EMOTE_GUILD);

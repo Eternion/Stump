@@ -267,6 +267,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new UnusableCriterion();
 
                 case UnknownCriterion.Identifier:
+                case UnknownCriterion.Identifier2:
                     return new UnknownCriterion();
 
                 case WeightCriterion.Identifier:
