@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Misc
             m_lastId = announce.Id;
         }
 
-        private void SendAnnounce(AutoAnnounceMessage announce)
+        private static void SendAnnounce(AutoAnnounceMessage announce)
         {
             var color = announce.Color != null ? (Color?)Color.FromArgb(announce.Color.Value) : null;
 
