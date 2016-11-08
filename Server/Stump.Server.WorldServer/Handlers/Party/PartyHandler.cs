@@ -292,8 +292,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 (sbyte)party.Type,
                 party.Leader.Id,
                 (sbyte)party.MembersLimit,
-                party.Members.Select(party.GetPartyMemberInformations),
-                party.Guests.Select(party.GetPartyGuestInformations),
+                party.Members.Select(party.GetPartyMemberInformations).ToArray(),
+                party.Guests.Select(party.GetPartyGuestInformations).ToArray(),
                 party.Restricted,
                 "(no name)"));
         }
