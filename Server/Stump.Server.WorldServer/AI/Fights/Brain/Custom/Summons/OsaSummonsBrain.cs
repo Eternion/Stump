@@ -5,10 +5,15 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 {
-    [BrainIdentifier((int)MonsterIdEnum.LAPINO_39)]
-    public class LapinoBrain : Brain
+    [BrainIdentifier((int)MonsterIdEnum.TOFU_NOIR_4561)]
+    [BrainIdentifier((int)MonsterIdEnum.TOFU_DODU_4562)]
+    [BrainIdentifier((int)MonsterIdEnum.BOUFTOU_4563)]
+    [BrainIdentifier((int)MonsterIdEnum.BOUFTOU_NOIR_4564)]
+    [BrainIdentifier((int)MonsterIdEnum.DRAGONNET_ROUGE_4565)]
+    [BrainIdentifier((int)MonsterIdEnum.DRAGONNET_NOIR_4566)]
+    public class OsaSummonsBrain : Brain
     {
-        public LapinoBrain(AIFighter fighter)
+        public OsaSummonsBrain(AIFighter fighter)
             : base(fighter)
         {
             fighter.Team.FighterAdded += OnFighterAdded;
@@ -19,7 +24,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             if (Fighter != fighter)
                 return;
 
-            Fighter.CastSpell(new Spell((int)SpellIdEnum.MOT_STIMULANT_126, 1), Fighter.Summoner.Cell, true, true);
+            Fighter.CastSpell(new Spell((int)SpellIdEnum.LIEN_ANIMAL, 1), Fighter.Cell, true, true);
             fighter.Team.FighterAdded -= OnFighterAdded;
         }
     }

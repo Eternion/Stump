@@ -1540,6 +1540,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var buff in m_buffList.Where(x => x.Spell.Id == spellId).ToArray())
             {
                 RemoveBuff(buff);
+                ActionsHandler.SendGameActionFightDispellSpellMessage(Fight.Clients, this, this, spellId);
             }
         }
 
@@ -1805,8 +1806,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    || spell.Template.Id == (int)SpellIdEnum.GLYPHE_RALENTISSANT
                    || spell.Template.Id == (int) SpellIdEnum.PULSE
                    || spell.Template.Id == (int) SpellIdEnum.CONTRE_94
-                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_ÉPINE
-                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.MOT_TOURNOYANT
+                   || spell.Template.Id == (int) SpellIdEnum.MOT_TOURNOYANT_DU_DOPEUL
                    || spell.Template.Id == (int) SpellIdEnum.MUR_DE_FEU
                    || spell.Template.Id == (int) SpellIdEnum.MUR_D_AIR
                    || spell.Template.Id == (int) SpellIdEnum.MUR_D_EAU

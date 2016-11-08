@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    [Discriminator((int)SkillTemplateEnum.BASE_ZAAP_USE_114, typeof(Skill), typeof(int), typeof(InteractiveSkillTemplate), typeof(InteractiveObject))]
+    [Discriminator((int)SkillTemplateEnum.BASE_114, typeof(Skill), typeof(int), typeof(InteractiveSkillTemplate), typeof(InteractiveObject))]
     [Discriminator("ZaapTeleport", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
     public class SkillZaapTeleport : Skill
     {

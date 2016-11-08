@@ -1495,8 +1495,384 @@ namespace Stump.DofusProtocol.Enums
         /// </summary>
         STIMULE_387 = 387,
         /// <summary>
-        /// (not found)
+        /// Cauchemar
         /// </summary>
-        STATE_388 = 388,
+        CAUCHEMAR_388 = 388,
+        /// <summary>
+        /// Halluciné
+        /// </summary>
+        HALLUCINE_389 = 389,
+        /// <summary>
+        /// Premier Grokillage
+        /// </summary>
+        PREMIER_GROKILLAGE_390 = 390,
+        /// <summary>
+        /// Second Grokillage
+        /// </summary>
+        SECOND_GROKILLAGE_391 = 391,
+        /// <summary>
+        /// Troisième Grokillage
+        /// </summary>
+        TROISIEME_GROKILLAGE_392 = 392,
+        /// <summary>
+        /// Quatrième Grokillage
+        /// </summary>
+        QUATRIEME_GROKILLAGE_393 = 393,
+        /// <summary>
+        /// Cinquième Grokillage
+        /// </summary>
+        CINQUIEME_GROKILLAGE_394 = 394,
+        /// <summary>
+        /// Sixième Grokillage
+        /// </summary>
+        SIXIEME_GROKILLAGE_395 = 395,
+        /// <summary>
+        /// Septième Grokillage
+        /// </summary>
+        SEPTIEME_GROKILLAGE_396 = 396,
+        /// <summary>
+        /// Huitième Grokillage
+        /// </summary>
+        HUITIEME_GROKILLAGE_397 = 397,
+        /// <summary>
+        /// Marché Conclus
+        /// </summary>
+        MARCHE_CONCLUS_398 = 398,
+        /// <summary>
+        /// Invulnérable
+        /// </summary>
+        INVULNERABLE_399 = 399,
+        /// <summary>
+        /// Folie 1
+        /// </summary>
+        FOLIE_1_400 = 400,
+        /// <summary>
+        /// Folie 2
+        /// </summary>
+        FOLIE_2_401 = 401,
+        /// <summary>
+        /// Folie 3
+        /// </summary>
+        FOLIE_3_402 = 402,
+        /// <summary>
+        /// Folie 4
+        /// </summary>
+        FOLIE_4_403 = 403,
+        /// <summary>
+        /// Folie 5
+        /// </summary>
+        FOLIE_5_404 = 404,
+        /// <summary>
+        /// Folie 6
+        /// </summary>
+        FOLIE_6_405 = 405,
+        /// <summary>
+        /// Folie 7
+        /// </summary>
+        FOLIE_7_406 = 406,
+        /// <summary>
+        /// Folie 8
+        /// </summary>
+        FOLIE_8_407 = 407,
+        /// <summary>
+        /// Folie 9
+        /// </summary>
+        FOLIE_9_408 = 408,
+        /// <summary>
+        /// Lié
+        /// </summary>
+        LIE_409 = 409,
+        /// <summary>
+        /// Conducteur
+        /// </summary>
+        CONDUCTEUR_410 = 410,
+        /// <summary>
+        /// Mutation I
+        /// </summary>
+        MUTATION_I_411 = 411,
+        /// <summary>
+        /// Mutation II
+        /// </summary>
+        MUTATION_II_412 = 412,
+        /// <summary>
+        /// Mutation III
+        /// </summary>
+        MUTATION_III_413 = 413,
+        /// <summary>
+        /// Apprivoisable
+        /// </summary>
+        APPRIVOISABLE_414 = 414,
+        /// <summary>
+        /// Muldo Pourpre
+        /// </summary>
+        MULDO_POURPRE_415 = 415,
+        /// <summary>
+        /// Ansôhterie
+        /// </summary>
+        ANSOHTERIE_416 = 416,
+        /// <summary>
+        /// Takomako
+        /// </summary>
+        TAKOMAKO_417 = 417,
+        /// <summary>
+        /// Céphalogre
+        /// </summary>
+        CEPHALOGRE_418 = 418,
+        /// <summary>
+        /// Mal d'Invocation
+        /// </summary>
+        MAL_DINVOCATION_419 = 419,
+        /// <summary>
+        /// Solo
+        /// </summary>
+        SOLO_420 = 420,
+        /// <summary>
+        /// Duo
+        /// </summary>
+        DUO_421 = 421,
+        /// <summary>
+        /// Draché
+        /// </summary>
+        DRACHE_422 = 422,
+        /// <summary>
+        /// Trio
+        /// </summary>
+        TRIO_423 = 423,
+        /// <summary>
+        /// Terpané
+        /// </summary>
+        TERPANE_424 = 424,
+        /// <summary>
+        /// Dofus Abyssal
+        /// </summary>
+        DOFUS_ABYSSAL_425 = 425,
+        /// <summary>
+        /// Panne
+        /// </summary>
+        PANNE_426 = 426,
+        /// <summary>
+        /// Apprivoisement Cheat
+        /// </summary>
+        APPRIVOISEMENT_CHEAT_427 = 427,
+        /// <summary>
+        /// Rancunier
+        /// </summary>
+        RANCUNIER_428 = 428,
+        /// <summary>
+        /// Surnombre
+        /// </summary>
+        SURNOMBRE_429 = 429,
+        /// <summary>
+        /// Outils
+        /// </summary>
+        OUTILS_430 = 430,
+        /// <summary>
+        /// Homard Medali
+        /// </summary>
+        HOMARD_MEDALI_431 = 431,
+        /// <summary>
+        /// Transformation Tofu
+        /// </summary>
+        TRANSFORMATION_TOFU_432 = 432,
+        /// <summary>
+        /// Transformation Bouftou
+        /// </summary>
+        TRANSFORMATION_BOUFTOU_433 = 433,
+        /// <summary>
+        /// Transformation Dragonnet
+        /// </summary>
+        TRANSFORMATION_DRAGONNET_434 = 434,
+        /// <summary>
+        /// Tranche Air
+        /// </summary>
+        TRANCHE_AIR_435 = 435,
+        /// <summary>
+        /// Dragosoin
+        /// </summary>
+        DRAGOSOIN_436 = 436,
+        /// <summary>
+        /// Rancune
+        /// </summary>
+        RANCUNE_437 = 437,
+        /// <summary>
+        /// Liberté
+        /// </summary>
+        LIBERTE_438 = 438,
+        /// <summary>
+        /// Symbiose
+        /// </summary>
+        SYMBIOSE_439 = 439,
+        /// <summary>
+        /// Ciblé
+        /// </summary>
+        CIBLE_440 = 440,
+        /// <summary>
+        /// Tactique A
+        /// </summary>
+        TACTIQUE_A_441 = 441,
+        /// <summary>
+        /// Tactique B
+        /// </summary>
+        TACTIQUE_B_442 = 442,
+        /// <summary>
+        /// Tactique C
+        /// </summary>
+        TACTIQUE_C_443 = 443,
+        /// <summary>
+        /// Tactique D
+        /// </summary>
+        TACTIQUE_D_444 = 444,
+        /// <summary>
+        /// Fixé
+        /// </summary>
+        FIXE_445 = 445,
+        /// <summary>
+        /// Transposition
+        /// </summary>
+        TRANSPOSITION_446 = 446,
+        /// <summary>
+        /// Lien animal
+        /// </summary>
+        LIEN_ANIMAL_447 = 447,
+        /// <summary>
+        /// Sursis
+        /// </summary>
+        SURSIS_448 = 448,
+        /// <summary>
+        /// Vulnérable
+        /// </summary>
+        VULNERABLE_449 = 449,
+        /// <summary>
+        /// Cacterrorisé
+        /// </summary>
+        CACTERRORISE_450 = 450,
+        /// <summary>
+        /// Tofu invoqué
+        /// </summary>
+        TOFU_INVOQUE_451 = 451,
+        /// <summary>
+        /// Bouftou invoqué
+        /// </summary>
+        BOUFTOU_INVOQUE_452 = 452,
+        /// <summary>
+        /// Dragonnet invoqué
+        /// </summary>
+        DRAGONNET_INVOQUE_453 = 453,
+        /// <summary>
+        /// Eteint
+        /// </summary>
+        ETEINT_454 = 454,
+        /// <summary>
+        /// Tour 1
+        /// </summary>
+        TOUR_1_455 = 455,
+        /// <summary>
+        /// Tour 2
+        /// </summary>
+        TOUR_2_456 = 456,
+        /// <summary>
+        /// Tour 3
+        /// </summary>
+        TOUR_3_457 = 457,
+        /// <summary>
+        /// Tour 4
+        /// </summary>
+        TOUR_4_458 = 458,
+        /// <summary>
+        /// Tour 5
+        /// </summary>
+        TOUR_5_459 = 459,
+        /// <summary>
+        /// Tour 6
+        /// </summary>
+        TOUR_6_460 = 460,
+        /// <summary>
+        /// Tour 7
+        /// </summary>
+        TOUR_7_461 = 461,
+        /// <summary>
+        /// Tour 8
+        /// </summary>
+        TOUR_8_462 = 462,
+        /// <summary>
+        /// Cellule 1
+        /// </summary>
+        CELLULE_1_463 = 463,
+        /// <summary>
+        /// Cellule 1
+        /// </summary>
+        CELLULE_1_464 = 464,
+        /// <summary>
+        /// Cellule 1
+        /// </summary>
+        CELLULE_1_465 = 465,
+        /// <summary>
+        /// Cellule 1
+        /// </summary>
+        CELLULE_1_466 = 466,
+        /// <summary>
+        /// Cellule 2
+        /// </summary>
+        CELLULE_2_467 = 467,
+        /// <summary>
+        /// Cellule 2
+        /// </summary>
+        CELLULE_2_468 = 468,
+        /// <summary>
+        /// Cellule 2
+        /// </summary>
+        CELLULE_2_469 = 469,
+        /// <summary>
+        /// Cellule 2
+        /// </summary>
+        CELLULE_2_470 = 470,
+        /// <summary>
+        /// Cellule 3
+        /// </summary>
+        CELLULE_3_471 = 471,
+        /// <summary>
+        /// Cellule 3
+        /// </summary>
+        CELLULE_3_472 = 472,
+        /// <summary>
+        /// Cellule 3
+        /// </summary>
+        CELLULE_3_473 = 473,
+        /// <summary>
+        /// Cellule 3
+        /// </summary>
+        CELLULE_3_474 = 474,
+        /// <summary>
+        /// Cellule 4
+        /// </summary>
+        CELLULE_4_475 = 475,
+        /// <summary>
+        /// Cellule 4
+        /// </summary>
+        CELLULE_4_476 = 476,
+        /// <summary>
+        /// Cellule 4
+        /// </summary>
+        CELLULE_4_477 = 477,
+        /// <summary>
+        /// Cellule 4
+        /// </summary>
+        CELLULE_4_478 = 478,
+        /// <summary>
+        /// Feu
+        /// </summary>
+        FEU_479 = 479,
+        /// <summary>
+        /// Eau
+        /// </summary>
+        EAU_480 = 480,
+        /// <summary>
+        /// Air
+        /// </summary>
+        AIR_481 = 481,
+        /// <summary>
+        /// Terre
+        /// </summary>
+        TERRE_482 = 482,
     }
 }

@@ -41,7 +41,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             var values = Effect.GetValues();
 
             if (Delay == 0)
-                return new AbstractFightDispellableEffect();
+                return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)Dispellable,
+                    (short)Spell.Id, Effect.Id, 0, 0);
 
             return new FightTriggeredEffect(Id, Target.Id, Delay,
                 (sbyte)Dispellable,

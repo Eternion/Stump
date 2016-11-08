@@ -47,7 +47,10 @@ namespace Stump.Server.WorldServer.Game.Misc
 
         public void PromptNextAnnounce()
         {
-            AutoAnnounceMessage announce = null;
+            if (!m_announces.Any())
+                return;
+
+            AutoAnnounceMessage announce;
 
             if (m_lastId >= m_announces.Keys.Max())
                 announce = m_announces.Values.OrderBy(x => x.Id).FirstOrDefault();
