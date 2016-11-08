@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             (short) SpellIdEnum.FLAMME,
             (short) SpellIdEnum.DÉSTABILISATION,
             (short) SpellIdEnum.DÉSENVOUTEMENT,
-            (short) SpellIdEnum.MOT_SOIGNANT_459,
+            (short) SpellIdEnum.MOT_SOIGNANT,
             (short) SpellIdEnum.ARMURE_AQUEUSE,
             (short) SpellIdEnum.ARMURE_TERRESTRE,
             (short) SpellIdEnum.ARMURE_VENTEUSE,

@@ -58,9 +58,17 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region SADIDA
 
             // Fix 5667 'Arbre' subVitality All -> new tree only
-            FixEffectOnAllLevels((int) SpellIdEnum.ARBRE, EffectsEnum.Effect_SubVitalityPercent, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P);
+            FixEffectOnAllLevels((int) SpellIdEnum.ARBRE_5667, EffectsEnum.Effect_SubVitalityPercent, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P);
 
             #endregion
+
+            #region OSAMODAS
+
+            RemoveEffectOnAllLevels((int)SpellIdEnum.LIEN_ANIMAL_26, EffectsEnum.Effect_AddDodge);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.LIEN_ANIMAL_26, EffectsEnum.Effect_AddLock);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.LIEN_ANIMAL_26, EffectsEnum.Effect_AddHealBonus);
+
+            #endregion OSAMODAS
         }
 
         #region Methods

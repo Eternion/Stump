@@ -260,12 +260,6 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
             }
 
-            if (client.Character.GuildMember.RankId > 2)
-            {
-                SendGuildMotdSetErrorMessage(client, GuildMotdErrorEnum.GUILD_MOTD_INVALID_RIGHTS);
-                return;
-            }
-
             client.Character.Guild.UpdateMotd(client.Character.GuildMember, message.content);
         }
 

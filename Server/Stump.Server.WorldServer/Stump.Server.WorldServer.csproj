@@ -181,6 +181,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Summons\LivingBagBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SacrifiedBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SynchroBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Summons\OsaSummonsBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\TreeBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="Database\Jobs\JobTemplate.cs" />
     <Compile Include="Database\Jobs\RecipeRecord.cs" />
     <Compile Include="Database\Jobs\SecretRecipeRecord.cs" />
+    <Compile Include="Database\Misc\AutoAnnounceMessage.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
     <Compile Include="Database\Monsters\MonsterDungeonSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
@@ -716,6 +718,7 @@
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\Mount.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\MountManager.cs" />
+    <Compile Include="Game\Misc\AutoAnnounceManager.cs" />
     <Compile Include="Game\Quests\Objectives\BringItemsToObjective.cs" />
     <Compile Include="Game\Quests\Objectives\DefeatMonstersObjective.cs" />
     <Compile Include="Game\Quests\Quest.cs" />

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -20,19 +19,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Jobs
         public Character Character
         {
             get;
-            private set;
         }
 
         public JobTemplate[] Jobs
         {
             get;
-            private set;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         public void Open()
         {

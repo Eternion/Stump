@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 SpellIdEnum.POISSE,
                 SpellIdEnum.RAULEBAQUE,
                 SpellIdEnum.FÉLINTION,
-                SpellIdEnum.MOT_LOTOF,
+                SpellIdEnum.MOT_DÉCISIF,
                 SpellIdEnum.BROKLE,
                 SpellIdEnum.FLÈCHE_DE_DISPERSION,
                 SpellIdEnum.ARBRE_DE_VIE,
