@@ -136,6 +136,8 @@
     <Compile Include="D2OTable.cs" />
     <Compile Include="Http\PetsExplorer.cs" />
     <Compile Include="Http\PetWebInfo.cs" />
+    <Compile Include="Interactives\IdentifiableElement.cs" />
+    <Compile Include="Interactives\InteractiveSpawnLoader.cs" />
     <Compile Include="Maps\Placements\PlacementComplexityCalculator.cs" />
     <Compile Include="Maps\Placements\PlacementPattern.cs" />
     <Compile Include="Maps\Placements\PlacementsFix.cs" />
