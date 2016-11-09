@@ -7,15 +7,15 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
-    public class DisableStateBuff : Buff
+    public class TakeControlBuff : Buff
     {
-        public DisableStateBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, FightDispellableEnum dispelable, StateBuff stateBuff)
+        public TakeControlBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, FightDispellableEnum dispelable, SummonedMonster summon)
             : base(id, target, caster, effect, spell, false, dispelable)
         {
-            StateBuff = stateBuff;
+            Summon = summon;
         }
 
-        public StateBuff StateBuff
+        public SummonedMonster Summon
         {
             get;
         }
@@ -24,22 +24,25 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
             base.Apply();
 
-            StateBuff.IsDisabled = true;
+            if (!(Caster is CharacterFighter))
+                return;
+
+            Summon.SetController(Caster as CharacterFighter);
         }
 
         public override void Dispell()
         {
             base.Dispell();
-
-            StateBuff.IsDisabled = false;
+            Summon.SetController(null);
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            if (Delay == 0)
-                return new FightTemporaryBoostStateEffect(Id, Target.Id, Duration, (sbyte)Dispellable, (short)Spell.Id, Effect.Id, 0, -100, (short)StateBuff.State.Id);
-
             var values = Effect.GetValues();
+
+            if (Delay == 0)
+                return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)Dispellable,
+                    (short)Spell.Id, Effect.Id, 0, 0);
 
             return new FightTriggeredEffect(Id, Target.Id, Delay,
                 (sbyte)Dispellable,

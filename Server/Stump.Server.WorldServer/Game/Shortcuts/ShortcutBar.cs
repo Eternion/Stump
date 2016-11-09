@@ -167,11 +167,11 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
 
         private void AddInternal(Shortcut shortcut)
         {
-            if (shortcut is SpellShortcut)
+            if (shortcut is SpellShortcut && !m_spellShortcuts.ContainsKey(shortcut.Slot))
                 m_spellShortcuts.Add(shortcut.Slot, (SpellShortcut)shortcut);
-            else if (shortcut is ItemShortcut)
+            else if (shortcut is ItemShortcut && !m_itemShortcuts.ContainsKey(shortcut.Slot))
                 m_itemShortcuts.Add(shortcut.Slot, (ItemShortcut)shortcut);
-            else if (shortcut is PresetShortcut)
+            else if (shortcut is PresetShortcut && !m_presetShortcuts.ContainsKey(shortcut.Slot))
                 m_presetShortcuts.Add(shortcut.Slot, (PresetShortcut)shortcut);
         }
 

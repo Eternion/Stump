@@ -114,12 +114,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     EmblemBackgroundColor = Color.White.ToArgb(),
                     EmblemBackgroundShape = 1,
                     EmblemForegroundColor = Color.Black.ToArgb(),
-                    EmblemForegroundShape = 1
+                    EmblemForegroundShape = 1,
+                    Spells = new int[0],
                 };
 
                 var guild = new Guild(record, new GuildMember[0]);
-
-
                 m_guilds.Add(guild.Id, guild);
 
                 return guild;

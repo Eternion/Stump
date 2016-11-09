@@ -30,24 +30,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
                 actor.InflictDirectDamage(actor.LifePoints, Caster);
 
-                FightActor summon;
-                if (Effect.EffectId == EffectsEnum.Effect_KillAndSummon_2796)
-                {
-                    var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, actor.Cell) { SummoningEffect = this };
-                    ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, slave);
-                    Caster.AddSlave(slave);
-                    summon = slave;
-                }
-                else
-                {
-                    var summonMonster = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, actor.Cell) {SummoningEffect = this};
-                    ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summonMonster);
-                    Caster.AddSummon(summonMonster);
-                    summon = summonMonster;
-                }
+                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, actor.Cell) { SummoningEffect = this };
+                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+                Caster.AddSummon(summon);
+
+                if (Effect.EffectId == EffectsEnum.Effect_KillAndSummon_2796 && Caster is CharacterFighter)
+                    summon.SetController(Caster as CharacterFighter);
 
                 Caster.Team.AddFighter(summon);
-
                 Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
             }
 

@@ -41,6 +41,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public void AddMerchantSpawn(MerchantSpawn spawn, bool lazySave = true)
         {
+            if (m_merchantSpawns.ContainsKey(spawn.CharacterId))
+                return;
+
             if (lazySave)
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(spawn));
             else

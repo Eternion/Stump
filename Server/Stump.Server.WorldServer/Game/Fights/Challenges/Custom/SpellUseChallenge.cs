@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             switch ((ChallengeEnum)Id)
             {
                 case ChallengeEnum.JARDINIER:
-                    m_spell = (int)SpellIdEnum.CAWOTTE;
+                    m_spell = (int)SpellIdEnum.CAWOTTE_367;
                     break;
                 case ChallengeEnum.FOSSOYEUR:
                     m_spell = (int)SpellIdEnum.INVOCATION_DE_CHAFERFU;

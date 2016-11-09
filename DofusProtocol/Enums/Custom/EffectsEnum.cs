@@ -2257,6 +2257,14 @@
         /// <summary>
         /// #1
         /// </summary>
+        Effect_1187 = 1187,
+        /// <summary>
+        /// Crée un double du lanceur de sort
+        /// </summary>
+        Effect_1189 = 1189,
+        /// <summary>
+        /// #1
+        /// </summary>
         Effect_2017 = 2017,
         /// <summary>
         /// 
@@ -2294,6 +2302,22 @@
         /// 
         /// </summary>
         Effect_2026 = 2026,
+        /// <summary>
+        /// Prend le contrôle de l'entité ciblée
+        /// </summary>
+        Effect_TakeControl = 2027,
+        /// <summary>
+        /// Transmet une partie de ses caractéristiques
+        /// </summary>
+        Effect_TransmitCharacteristic = 2028,
+        /// <summary>
+        /// Lance un coup fatal
+        /// </summary>
+        Effect_2029 = 2029,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2030 = 2030,
         /// <summary>
         /// #1
         /// </summary>

@@ -36,6 +36,11 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                 action = summon is SummonedImage ? (short)EffectsEnum.Effect_Illusions : (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE;
             }
 
+            if (summon.IsControlled())
+            {
+                action = (short)ActionsEnum.ACTION_SUMMON_SLAVE;
+            }
+
             client.Send(new GameActionFightSummonMessage(action, summon.Summoner.Id, new[] { fighterInfos }));
         }
 
@@ -47,11 +52,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedBomb summon)
         {
             client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_BOMB, summon.Summoner.Id, new[] { summon.GetGameFightFighterInformations() }));
-        }
-
-        public static void SendGameActionFightSummonMessage(IPacketReceiver client, SlaveFighter slave)
-        {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_SLAVE, slave.Summoner.Id, new[] { slave.GetGameFightFighterInformations() }));
         }
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)

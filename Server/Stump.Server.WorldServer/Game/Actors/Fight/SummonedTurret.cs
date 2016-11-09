@@ -1,14 +1,16 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
-using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -32,8 +34,57 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             AdjustStats();
 
+            Fight.TurnStarted += OnTurnStarted;
+
             if (Monster.Template.Id == (int)MonsterIdEnum.TACTIRELLE_3289)
                 Team.FighterAdded += OnFighterAdded;
+        }
+
+        private void OnTurnStarted(IFight fight, FightActor fighter)
+        {
+            if (fighter != this)
+                return;
+
+            Spell spellToCast = null;
+            SpellStatesEnum state = SpellStatesEnum.LONGUE_VUE_132;
+
+            switch ((MonsterIdEnum)Monster.Template.Id)
+            {
+                case MonsterIdEnum.TACTIRELLE_3289:
+                    {
+                        spellToCast = new Spell((int)SpellIdEnum.TRANSKO_3240, 1);
+                        state = SpellStatesEnum.LONGUE_VUE_132;
+                        break;
+                    }
+                case MonsterIdEnum.GARDIENNE_3288:
+                    {
+                        spellToCast = new Spell((int)SpellIdEnum.SAUVETAGE, 1);
+                        state = SpellStatesEnum.SECOURISME_131;
+                        break;
+                    }
+                case MonsterIdEnum.HARPONNEUSE_3287:
+                    {
+                        if (HasState((int)SpellStatesEnum.TELLURIQUE_127))
+                            spellToCast = new Spell((int)SpellIdEnum.BOUMBOUMT, 1);
+                        else if (HasState((int)SpellStatesEnum.AQUATIQUE_128))
+                            spellToCast = new Spell((int)SpellIdEnum.BOUMBOUME, 1);
+                        else if (HasState((int)SpellStatesEnum.ARDENT_129))
+                            spellToCast = new Spell((int)SpellIdEnum.BOUMBOUMF, 1);
+
+                        state = SpellStatesEnum.EMBUSCADE_130;
+                        break;
+                    }
+            }
+
+            if (spellToCast == null)
+                return;
+
+            var target = Fight.Fighters.FirstOrDefault(x => x.HasState((int)state));
+
+            if (target == null)
+                return;
+
+            CastSpell(spellToCast, target.Cell, true);
         }
 
         void OnFighterAdded(FightTeam team, FightActor actor)
