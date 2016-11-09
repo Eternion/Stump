@@ -32,6 +32,7 @@ using HtmlAgilityPack;
 using System.Net.Http;
 using System.Threading;
 using DBSynchroniser.Http;
+using DBSynchroniser.Interactives;
 using DBSynchroniser.Maps.Transitions;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
@@ -197,7 +198,7 @@ namespace DBSynchroniser
             }
         }
 
-        private static string FindDofusPath()
+        public static string FindDofusPath()
         {
             if (!string.IsNullOrEmpty(DofusCustomPath))
                 return DofusCustomPath;
@@ -787,7 +788,7 @@ namespace DBSynchroniser
             if (Console.ReadLine() != "y")
                 return;
 
-            GenerateInteractiveSpawns();
+            InteractiveSpawnLoader.LoadSpawns();
         }
 
         public static void GenerateInteractiveSpawns()
@@ -1087,7 +1088,7 @@ namespace DBSynchroniser
             EndCounter();
         }
 
-        static void ExecutePatch(string file, Database database)
+        public static void ExecutePatch(string file, Database database)
         {
             Console.WriteLine("Execute patch '{0}'", Path.GetFileName(file));
             var lineIndex = 0;
