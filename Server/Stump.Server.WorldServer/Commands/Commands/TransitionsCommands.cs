@@ -59,19 +59,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 case MapNeighbour.Top:
                     from.TopNeighbour = map;
-                    from.Record.TopNeighbourCellId = (short)(cell == null ? -1 : cell.Id);
+                    from.Record.TopNeighbourCellId = cell?.Id;
                     break;
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = map;
-                    from.Record.BottomNeighbourCellId = (short)(cell == null ? -1 : cell.Id);
+                    from.Record.BottomNeighbourCellId = cell?.Id;
                     break;
                 case MapNeighbour.Right:
                     from.RightNeighbour = map;
-                    from.Record.RightNeighbourCellId = (short)(cell == null ? -1 : cell.Id);
+                    from.Record.RightNeighbourCellId = cell?.Id;
                     break;
                 case MapNeighbour.Left:
                     from.LeftNeighbour = map;
-                    from.Record.LeftNeighbourCellId = (short)(cell == null ? -1 : cell.Id);
+                    from.Record.LeftNeighbourCellId = cell?.Id;
                     break;
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);
@@ -121,19 +121,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 case MapNeighbour.Top:
                     from.TopNeighbour = null;
-                    from.Record.TopNeighbourCellId = -1;
+                    from.Record.TopNeighbourCellId = null;
                     break;
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = null;
-                    from.Record.BottomNeighbourCellId = -1;
+                    from.Record.BottomNeighbourCellId = null;
                     break;
                 case MapNeighbour.Right:
                     from.RightNeighbour = null;
-                    from.Record.RightNeighbourCellId = -1;
+                    from.Record.RightNeighbourCellId = null;
                     break;
                 case MapNeighbour.Left:
                     from.LeftNeighbour = null;
-                    from.Record.LeftNeighbourCellId = -1;
+                    from.Record.LeftNeighbourCellId = null;
                     break;
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);

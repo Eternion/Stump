@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
                 case (int)SpellIdEnum.GLYPHE_AGRESSIF_17:
                     return Color.FromArgb(53, 200, 120);
                 case (int)SpellIdEnum.DAIPIPAY:
-                case (int)SpellIdEnum.CAWOTTE:
+                case (int)SpellIdEnum.CAWOTTE_367:
                     return Color.White;
                 default:
                     return Color.Red;

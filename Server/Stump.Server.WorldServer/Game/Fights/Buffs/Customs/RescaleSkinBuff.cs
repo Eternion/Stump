@@ -18,7 +18,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public double RescaleFactor
         {
             get;
-            private set;
         }
 
         public override void Apply()

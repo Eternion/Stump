@@ -1261,12 +1261,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
-            if (actor is SlaveFighter)
-            {
-                OnSlaveAdded(actor as SlaveFighter);
-                return;
-            }
-
             TimeLine.Fighters.Add(actor);
 
             BindFighterEvents(actor);
@@ -1291,14 +1285,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             TimeLine.InsertFighter(fighter, TimeLine.Fighters.IndexOf(fighter.Summoner) + 1);
             BindFighterEvents(fighter);
-
-            ContextHandler.SendGameFightTurnListMessage(Clients, this);
-        }
-
-        protected virtual void OnSlaveAdded(SlaveFighter slave)
-        {
-            TimeLine.InsertFighter(slave, TimeLine.Fighters.IndexOf(slave.Summoner) + 1);
-            BindFighterEvents(slave);
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
@@ -1570,12 +1556,9 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameFightTurnStartPlayingMessage(characterFighter.Character.Client);
                 ContextHandler.SendFighterStatsListMessage(characterFighter.Character.Client, characterFighter.Character);
             }
-            else if (FighterPlaying is SlaveFighter)
+            else if (FighterPlaying is SummonedFighter && (FighterPlaying as SummonedFighter).IsControlled())
             {
-                var slaveFighter = FighterPlaying as SlaveFighter;
-                var characterFighter = slaveFighter.Summoner as CharacterFighter;
-
-                ContextHandler.SendGameFightTurnStartPlayingMessage(characterFighter.Character.Client);
+                ContextHandler.SendGameFightTurnStartPlayingMessage((FighterPlaying as SummonedFighter).Controller.Character.Client);
             }
 
             FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();

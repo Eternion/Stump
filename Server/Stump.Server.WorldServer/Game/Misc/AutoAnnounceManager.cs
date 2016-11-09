@@ -47,7 +47,10 @@ namespace Stump.Server.WorldServer.Game.Misc
 
         public void PromptNextAnnounce()
         {
-            AutoAnnounceMessage announce = null;
+            if (!m_announces.Any())
+                return;
+
+            AutoAnnounceMessage announce;
 
             if (m_lastId >= m_announces.Keys.Max())
                 announce = m_announces.Values.OrderBy(x => x.Id).FirstOrDefault();
@@ -62,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Misc
             m_lastId = announce.Id;
         }
 
-        private void SendAnnounce(AutoAnnounceMessage announce)
+        private static void SendAnnounce(AutoAnnounceMessage announce)
         {
             var color = announce.Color != null ? (Color?)Color.FromArgb(announce.Color.Value) : null;
 

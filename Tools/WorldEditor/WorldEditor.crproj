@@ -1,4 +1,4 @@
-<project outputDir="C:\Users\Orochi\Documents\Stump-Uptodate\Tools\WorldEditor\bin\x86\Debug-uptodate\Confused" baseDir="C:\Users\Orochi\Documents\Stump-Uptodate\Tools\WorldEditor\bin\x86\Debug-uptodate" xmlns="http://confuser.codeplex.com">
+<project outputDir="Confused" baseDir="bin\Debug" xmlns="http://confuser.codeplex.com">
   <module path="AvalonDock.dll" />
   <module path="DBSynchroniser.exe">
     <rule pattern="true" preset="maximum" inherit="false">

@@ -164,6 +164,10 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
                 return;
 
             var category = GetBidHouseCategory(item);
+
+            if (category == null)
+                return;
+
             var categoryDeleted = false;
 
             category.Items.Remove(item);

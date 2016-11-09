@@ -469,7 +469,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                Cell cell, FightSpellCastCriticalEnum critical, bool silentCast,
                                                                Spell spell)
         {
-            client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, silentCast, false, target == null ? 0 : target.Id, silentCast ? (short)-1 : cell.Id, (sbyte)(critical),
+            client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, silentCast, true, target == null ? 0 : target.Id, silentCast ? (short)-1 : cell.Id, (sbyte)(critical),
                                                             (short)spell.Id, (sbyte)spell.CurrentLevel, new short[0]));
         }
 
@@ -532,16 +532,18 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightTurnReadyRequestMessage(current.Id));
         }
 
-        public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
+        public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SummonedFighter actor)
         {
             sbyte slotIndex = 0;
-            client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()),
-                actor.GetSlaveCharacteristicsInformations(), actor.Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id))));
+            client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.Value.GetSpellItem()),
+                actor.GetSlaveCharacteristicsInformations(), actor.Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Value.Template.Id))));
         }
 
         public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
         {
-            if (fighter.Slaves.Any())
+            var slaves = fighter.Summons.Where(x => x.IsControlled());
+
+            if (slaves.Any())
             {
                 client.Send(new GameFightResumeWithSlavesMessage(
                     fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
@@ -552,7 +554,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                     fighter.SpellHistory.GetCooldowns(),
                     (sbyte)fighter.SummonedCount,
                     (sbyte)fighter.BombsCount,
-                    fighter.Slaves.Select(x => new GameFightResumeSlaveInfo(x.Id, x.SpellHistory.GetCooldowns(), (sbyte)x.SummonedCount, (sbyte)x.BombsCount))));
+                    slaves.Select(x => new GameFightResumeSlaveInfo(x.Id, x.SpellHistory.GetCooldowns(), (sbyte)x.SummonedCount, (sbyte)x.BombsCount))));
             }
             else
             {

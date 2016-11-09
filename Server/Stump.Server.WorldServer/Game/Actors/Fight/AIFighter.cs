@@ -41,31 +41,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public Dictionary<int, Spell> Spells
         {
             get;
-            private set;
         }
 
-        public override Spell GetSpell(int id)
-        {
-            return Spells.ContainsKey(id) ? Spells[id] : null;
-        }
+        public override Spell GetSpell(int id) => Spells.ContainsKey(id) ? Spells[id] : null;
 
-        public override bool HasSpell(int id)
-        {
-            return Spells.ContainsKey(id);
-        }
+        public override bool HasSpell(int id) => Spells.ContainsKey(id);
 
         public abstract string Name
         {
             get;
         }
 
-        public override bool IsReady
-        {
-            get { return true; }
-            protected set { }
-        }
+        public override bool IsReady => true;
 
-        private void OnTurnStarted(IFight fight, FightActor currentfighter)
+        protected virtual void OnTurnStarted(IFight fight, FightActor currentfighter)
         {
             if (!IsFighterTurn())
                 return;

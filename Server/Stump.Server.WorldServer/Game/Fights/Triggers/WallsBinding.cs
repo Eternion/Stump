@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
             }
 
-            foreach (var wall in m_walls)
+            foreach (var wall in m_walls.ToArray())
             {
                 var fighter = Bomb1.Fight.GetOneFighter(wall.CenterCell);
                 if (fighter != null)

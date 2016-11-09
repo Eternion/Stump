@@ -181,6 +181,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Summons\LivingBagBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SacrifiedBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SynchroBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Summons\OsaSummonsBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\TreeBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="Database\Jobs\JobTemplate.cs" />
     <Compile Include="Database\Jobs\RecipeRecord.cs" />
     <Compile Include="Database\Jobs\SecretRecipeRecord.cs" />
+    <Compile Include="Database\Misc\AutoAnnounceMessage.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
     <Compile Include="Database\Monsters\MonsterDungeonSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
@@ -334,7 +336,6 @@
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\Customs\LivingChest.cs" />
-    <Compile Include="Game\Actors\Fight\SlaveFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\SummonedImage.cs" />
@@ -427,8 +428,10 @@
     <Compile Include="Game\Effects\Handlers\Items\TitleEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\TransmitCharacteristic.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\HealReceivedDamages.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\TakeControl.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
@@ -450,7 +453,6 @@
     <Compile Include="Game\Effects\Handlers\Spells\Others\CastSpell.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerGlyphs.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\CarriedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\LifeCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\MonsterCriterion.cs" />
@@ -571,6 +573,7 @@
     <Compile Include="Game\Fights\Buffs\Customs\RescaleSkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\TakeControlBuff.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BarbaricChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BlitzkriegChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\CleanHandsChallenge.cs" />
@@ -715,6 +718,7 @@
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\Mount.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\MountManager.cs" />
+    <Compile Include="Game\Misc\AutoAnnounceManager.cs" />
     <Compile Include="Game\Quests\Objectives\BringItemsToObjective.cs" />
     <Compile Include="Game\Quests\Objectives\DefeatMonstersObjective.cs" />
     <Compile Include="Game\Quests\Quest.cs" />

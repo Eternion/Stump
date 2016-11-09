@@ -68,7 +68,7 @@
         GRAINE_DE_TOURNESOL_SAUVAGE_288 = 288,
         // Item [Level : 1] 
         BLE_289 = 289,
-        // Item [Level : 15] 
+        // Item [Level : 66] 
         CHAMPIGNON_290 = 290,
         // Item [Level : 96] 
         POILS_DU_MULOU_291 = 291,
@@ -254,7 +254,7 @@
         GRAINE_DE_LIN_422 = 422,
         // Item [Level : 80] 
         LIN_423 = 423,
-        // Item [Level : 46] 
+        // Item [Level : 66] 
         FIBRE_DE_LIN_424 = 424,
         // Item [Level : 140] 
         CHANVRE_425 = 425,
@@ -342,14 +342,14 @@
         SANG_DE_DRAGON_COCHON_477 = 477,
         // Item [Level : 33] 
         IVOIRE_479 = 479,
-        // Item [Level : 24] 
+        // Item [Level : 56] 
         MINERAI_ETRANGE_480 = 480,
         // Item [Level : 100] 
         CRANE_DU_DRAGON_COCHON_481 = 481,
         // Item [Level : 44] 
         SLIP_EN_CUIR_DU_CHAFER_LANCIER_485 = 485,
-        // Item [Level : 24] 
-        CUIR_DE_SANGLIER_486 = 486,
+        // Item [Level : 36] 
+        CUIR_DE_GARGROUILLE_486 = 486,
         // Item [Level : 100] 
         CUIR_DU_DRAGON_COCHON_487 = 487,
         // Item [Level : 30] 
@@ -448,12 +448,12 @@
         FIL_DE_SOIE_643 = 643,
         // Item [Level : 46] 
         POILS_DE_BLACK_TIWABBIT_646 = 646,
-        // Item [Level : 48] 
-        POILS_DE_WABBIT_648 = 648,
+        // Item [Level : 56] 
+        AILE_DE_BOURDARD_648 = 648,
         // Item [Level : 56] 
         POILS_DE_WO_WABBIT_649 = 649,
         // Item [Level : 56] 
-        POILS_DE_GRAND_PA_WABBIT_650 = 650,
+        DUVET_DE_BOURDARD_650 = 650,
         // Item [Level : 96] 
         ETOFFE_DU_MULOU_651 = 651,
         // Item [Level : 24] 
@@ -730,8 +730,8 @@
         LAINE_DE_BOUFTON_BLANC_881 = 881,
         // Item [Level : 29] 
         LAINE_DU_CHEF_DE_GUERRE_BOUFTOU_882 = 882,
-        // Item [Level : 13] 
-        CUIR_DE_BOUFTON_BLANC_883 = 883,
+        // Item [Level : 36] 
+        CUIR_DE_BOOSTACHE_PREPUBERE_883 = 883,
         // Item [Level : 13] 
         CUIR_DE_BOUFTON_NOIR_884 = 884,
         // Item [Level : 13] 
@@ -812,7 +812,7 @@
         CAPE_RICE_956 = 956,
         // Item [Level : 23] 
         LA_BOUFTEUSE_957 = 957,
-        // Item [Level : 6] 
+        // Item [Level : 200] 
         DOFUSTEUSE_958 = 958,
         // Item [Level : 1] 
         POTION_WABBIT_960 = 960,
@@ -1242,8 +1242,8 @@
         CEINTURE_DU_DODU_TREMBLEUR_1668 = 1668,
         // Item [Level : 84] 
         CEINTURE_DES_VENTS_1669 = 1669,
-        // Item [Level : 44] 
-        PLUME_POINTUE_DE_KWAK_DU_VENT_1670 = 1670,
+        // Item [Level : 106] 
+        PLUME_POINTUE_DE_RENARBO_1670 = 1670,
         // Item [Level : 20] 
         AVOINE_MAGIQUE_1671 = 1671,
         // Item [Level : 26] 
@@ -1254,7 +1254,7 @@
         CHAMPIGNON_LUIDEGIT_1674 = 1674,
         // Item [Level : 35] 
         OS_SURPRISE_DU_CHAFER_FANTASSIN_1675 = 1675,
-        // Item [Level : 69] 
+        // Item [Level : 86] 
         OSIER_ENCHANTE_1676 = 1676,
         // Item [Level : 50] 
         POTION_DANTEGOULESQUE_1677 = 1677,
@@ -1291,7 +1291,7 @@
         // Item [Level : 54] 
         CAPE_DE_JULES_YANOS_1693 = 1693,
         // Item [Level : 115] 
-        LAINE_DU_TROOL_FURIEUX_1694 = 1694,
+        LAINE_DU_TROOLL_FURIEUX_1694 = 1694,
         // Item [Level : 80] 
         CAPE_DELYA_WOOD_1695 = 1695,
         // Item [Level : 100] 
@@ -1622,16 +1622,16 @@
         COLLIER_REPARE_1883 = 1883,
         // Item [Level : 30] 
         PLUME_DE_CORBAC_1889 = 1889,
-        // Item [Level : 70] 
-        POIL_DE_KANIGROU_1890 = 1890,
-        // Item [Level : 41] 
+        // Item [Level : 66] 
+        POIL_DE_VETAURAN_1890 = 1890,
+        // Item [Level : 56] 
         PEAU_DE_SERPENTIN_1891 = 1891,
         // Item [Level : 110] 
         PLUME_DU_MAITRE_CORBAC_1892 = 1892,
         // Item [Level : 36] 
         QUEUE_DE_SCORBUTE_1893 = 1893,
-        // Item [Level : 44] 
-        POIL_DE_SANGLIER_DES_PLAINES_1894 = 1894,
+        // Item [Level : 146] 
+        POIL_DE_GLIGLITCH_1894 = 1894,
         // Item [Level : 1] 
         BIERE_DU_FEUBUK_1895 = 1895,
         // Item [Level : 40] 
@@ -1924,9 +1924,9 @@
         OEIL_DE_CORBAC_2056 = 2056,
         // Item [Level : 30] 
         CUR_DE_BRANDON_2058 = 2058,
-        // Item [Level : 30] 
+        // Item [Level : 106] 
         CORBAC_MORT_2059 = 2059,
-        // Item [Level : 30] 
+        // Item [Level : 106] 
         PATTE_DE_CORBAC_2060 = 2060,
         // Item [Level : 45] 
         CAPE_DU_CORBAC_2061 = 2061,
@@ -2268,15 +2268,15 @@
         OEIL_DE_LARVE_BLEUE_2269 = 2269,
         // Item [Level : 13] 
         GRAPPE_DOEUFS_DE_LARVE_2270 = 2270,
-        // Item [Level : 43] 
-        CUIR_VIOLET_DE_BWORK_2271 = 2271,
+        // Item [Level : 86] 
+        CUIR_VIOLET_DE_MEGABWORK_2271 = 2271,
         // Item [Level : 1] 
         LARVE_DOREE_2272 = 2272,
-        // Item [Level : 45] 
+        // Item [Level : 86] 
         TISSU_POURPRE_2273 = 2273,
         // Item [Level : 24] 
         BOUGIE_DU_MINEUR_SOMBRE_2274 = 2274,
-        // Item [Level : 29] 
+        // Item [Level : 46] 
         CUIR_DE_PORKASS_2275 = 2275,
         // Item [Level : 65] 
         LINCEUL_2277 = 2277,
@@ -2580,14 +2580,14 @@
         OEIL_DE_BOUFTON_2460 = 2460,
         // Item [Level : 29] 
         CERVELLE_DE_CHEF_DE_GUERRE_BOUFTOU_2462 = 2462,
-        // Item [Level : 29] 
-        DENT_DE_CHEF_DE_GUERRE_BOUFTOU_2463 = 2463,
-        // Item [Level : 29] 
-        QUEUE_DE_CHEF_DE_GUERRE_BOUFTOU_2464 = 2464,
+        // Item [Level : 36] 
+        DENT_DE_KWOAN_2463 = 2463,
+        // Item [Level : 36] 
+        QUEUE_DE_BOOSTACHE_PREPUBERE_2464 = 2464,
         // Item [Level : 29] 
         CORNE_DE_CHEF_DE_GUERRE_BOUFTOU_2465 = 2465,
-        // Item [Level : 29] 
-        LANGUE_DE_CHEF_DE_GUERRE_BOUFTOU_2466 = 2466,
+        // Item [Level : 36] 
+        LANGUE_DE_GARGROUILLE_2466 = 2466,
         // Item [Level : 29] 
         SABOT_DE_CHEF_DE_GUERRE_BOUFTOU_2467 = 2467,
         // Item [Level : 29] 
@@ -2612,22 +2612,22 @@
         CEINTURE_DE_LAVENTURIER_2477 = 2477,
         // Item [Level : 7] 
         AMULETTE_DE_LAVENTURIER_2478 = 2478,
-        // Item [Level : 29] 
-        CRETE_DE_PORKASS_2479 = 2479,
-        // Item [Level : 29] 
+        // Item [Level : 56] 
+        FLEAU_DE_ROBOT_FLEAU_2479 = 2479,
+        // Item [Level : 46] 
         SLIP_EN_CUIR_DE_PORKASS_2480 = 2480,
-        // Item [Level : 29] 
-        GROIN_DE_PORKASS_2481 = 2481,
-        // Item [Level : 29] 
-        SOULIER_DE_PORKASS_2482 = 2482,
-        // Item [Level : 29] 
-        DENTIER_DE_PORKASS_2483 = 2483,
-        // Item [Level : 29] 
+        // Item [Level : 56] 
+        CHAINE_DE_ROBOT_FLEAU_2481 = 2481,
+        // Item [Level : 56] 
+        CHARNIERE_CASSEE_2482 = 2482,
+        // Item [Level : 56] 
+        DENTIER_DE_MALLE_OUTILLEE_2483 = 2483,
+        // Item [Level : 46] 
         TRIDENT_CASSE_2484 = 2484,
         // Item [Level : 40] 
         VEGACOIFFE_2485 = 2485,
-        // Item [Level : 29] 
-        OREILLE_DE_PORKASS_2486 = 2486,
+        // Item [Level : 56] 
+        COQUE_ENDOMMAGEE_2486 = 2486,
         // Item [Level : 36] 
         CARAPACE_DE_SCORBUTE_2487 = 2487,
         // Item [Level : 36] 
@@ -2640,12 +2640,12 @@
         IL_DOUGINAK_2491 = 2491,
         // Item [Level : 51] 
         CHAINE_DE_LOUGINAK_2492 = 2492,
-        // Item [Level : 51] 
-        CUR_DOUGINAK_2493 = 2493,
+        // Item [Level : 106] 
+        CUR_DE_BUVEUR_2493 = 2493,
         // Item [Level : 51] 
         POMMEAU_DEPEE_2494 = 2494,
-        // Item [Level : 29] 
-        OEIL_DE_KOLERAT_2495 = 2495,
+        // Item [Level : 66] 
+        IL_DE_CRAQUELOPE_2495 = 2495,
         // Item [Level : 29] 
         QUEUE_DE_KOLERAT_2496 = 2496,
         // Item [Level : 29] 
@@ -2662,32 +2662,32 @@
         PAPATTE_DE_CROC_GLAND_2502 = 2502,
         // Item [Level : 29] 
         ETOFFE_DE_CROC_GLAND_2503 = 2503,
-        // Item [Level : 39] 
-        LANGUE_DE_CROC_GLAND_2504 = 2504,
+        // Item [Level : 66] 
+        LANGUE_DE_CRAQUELOPE_2504 = 2504,
         // Item [Level : 39] 
         CROQUETTE_2505 = 2505,
-        // Item [Level : 41] 
+        // Item [Level : 56] 
         GRELOT_2506 = 2506,
-        // Item [Level : 41] 
-        LANGUE_FOURCHUE_2507 = 2507,
-        // Item [Level : 41] 
+        // Item [Level : 56] 
+        PEAU_DE_LARVE_CHAMPETRE_2507 = 2507,
+        // Item [Level : 56] 
         VENIN_DE_SERPENTIN_2508 = 2508,
-        // Item [Level : 41] 
-        DENT_DE_SERPENTIN_2509 = 2509,
-        // Item [Level : 44] 
-        ESTOMAC_DE_SANGLIER_DES_PLAINES_2510 = 2510,
-        // Item [Level : 44] 
-        CUIR_DE_SANGLIER_DES_PLAINES_2511 = 2511,
+        // Item [Level : 56] 
+        DENT_DE_LARVE_CHAMPETRE_2509 = 2509,
+        // Item [Level : 146] 
+        ESTOMAC_DE_GLIGLIDOUDUR_2510 = 2510,
+        // Item [Level : 146] 
+        CUIR_DE_GLIGLIBIDO_2511 = 2511,
         // Item [Level : 44] 
         QUEUE_DE_SANGLIER_DES_PLAINES_2512 = 2512,
-        // Item [Level : 44] 
-        ETOFFE_DE_SANGLIER_DES_PLAINES_2513 = 2513,
-        // Item [Level : 44] 
-        SABOT_DE_SANGLIER_DES_PLAINES_2514 = 2514,
+        // Item [Level : 146] 
+        ETOFFE_DE_GLIGLIDOUDUR_2513 = 2513,
+        // Item [Level : 146] 
+        SABOT_DE_GLIGLICERIN_2514 = 2514,
         // Item [Level : 44] 
         GROIN_DE_SANGLIER_DES_PLAINES_2515 = 2515,
-        // Item [Level : 44] 
-        DEFENSE_DE_SANGLIER_DES_PLAINES_2516 = 2516,
+        // Item [Level : 146] 
+        DEFENSE_DE_GLIGLICERIN_2516 = 2516,
         // Item [Level : 45] 
         MEGACAPE_2517 = 2517,
         // Item [Level : 45] 
@@ -2744,42 +2744,42 @@
         CORBACOIFFE_2546 = 2546,
         // Item [Level : 127] 
         CORBACAPE_MASTRALIS_2547 = 2547,
-        // Item [Level : 70] 
-        BOITE_DE_KANIGROU_2549 = 2549,
-        // Item [Level : 70] 
-        ETOFFE_DE_KANIGROU_2550 = 2550,
-        // Item [Level : 70] 
-        OREILLE_DE_KANIGROU_2551 = 2551,
+        // Item [Level : 66] 
+        BOITE_DE_VETAURAN_2549 = 2549,
+        // Item [Level : 66] 
+        ETOFFE_DE_FOUFAYTEUR_2550 = 2550,
+        // Item [Level : 66] 
+        OREILLE_DE_FOUFAYTEUR_2551 = 2551,
         // Item [Level : 70] 
         IL_DE_KANIGROU_2552 = 2552,
         // Item [Level : 40] 
         GROS_BOULET_2553 = 2553,
-        // Item [Level : 29] 
+        // Item [Level : 46] 
         COTES_DE_PORKASS_2554 = 2554,
-        // Item [Level : 40] 
-        SELLE_EN_CUIR_2555 = 2555,
-        // Item [Level : 44] 
-        POLLEN_DE_BLOP_2556 = 2556,
-        // Item [Level : 44] 
-        PETALE_DE_BLOP_2557 = 2557,
+        // Item [Level : 56] 
+        COURROIE_EN_CUIR_2555 = 2555,
+        // Item [Level : 56] 
+        POLLEN_DE_BLOPIGNON_2556 = 2556,
+        // Item [Level : 56] 
+        PETALE_DE_GLOUTOBLOP_2557 = 2557,
         // Item [Level : 44] 
         BLOP_MORT_2558 = 2558,
         // Item [Level : 115] 
-        CRINIERE_DE_TROOL_2559 = 2559,
+        CRINIERE_DE_TROOLLARAJ_2559 = 2559,
         // Item [Level : 115] 
-        EPAULETTE_DE_TROOL_2560 = 2560,
+        EPAULETTE_DE_TROOLLIGARK_2560 = 2560,
         // Item [Level : 115] 
-        BRACELET_DE_FORCE_DE_TROOL_2561 = 2561,
+        BRACELET_DE_FORCE_DE_TROOLL_2561 = 2561,
         // Item [Level : 115] 
-        SLIP_DE_TROOL_2562 = 2562,
+        SLIP_DE_TROOLLARAJ_2562 = 2562,
         // Item [Level : 39] 
         CALE_EN_BOIS_DE_TRONKNYDE_2563 = 2563,
         // Item [Level : 39] 
         SOURCILS_DE_TRONKNYDE_2564 = 2564,
         // Item [Level : 39] 
         TRANCHE_DE_TRONKNYDE_2565 = 2565,
-        // Item [Level : 39] 
-        TRANCHE_MAGIQUE_DE_TRONKNYDE_2566 = 2566,
+        // Item [Level : 86] 
+        TRANCHE_MAGIQUE_DE_KRAMBWORK_2566 = 2566,
         // Item [Level : 1] 
         ANTICIPATION_2567 = 2567,
         // Item [Level : 1] 
@@ -2890,8 +2890,8 @@
         GROIN_DE_DRAGON_COCHON_2645 = 2645,
         // Item [Level : 20] 
         SLIP_EN_CUIR_DE_COCHON_DE_LAIT_2646 = 2646,
-        // Item [Level : 33] 
-        OREILLE_DE_COCHON_DE_LAIT_2647 = 2647,
+        // Item [Level : 86] 
+        OREILLE_DE_MEDIBWORK_2647 = 2647,
         // Item [Level : 44] 
         GRIFFES_DE_KWAK_2648 = 2648,
         // Item [Level : 44] 
@@ -2980,8 +2980,8 @@
         CASQUE_CASSE_DE_BWORK_3000 = 3000,
         // Item [Level : 50] 
         EPAULETTE_DE_BWORK_3001 = 3001,
-        // Item [Level : 50] 
-        BOTTE_TROUEE_DE_BWORK_3002 = 3002,
+        // Item [Level : 86] 
+        BOTTE_TROUEE_DE_MEGABWORK_3002 = 3002,
         // Item [Level : 51] 
         ANNEAU_TRIBAL_3203 = 3203,
         // Item [Level : 53] 
@@ -2994,8 +2994,8 @@
         BOTTES_DE_SATISFACTION_3207 = 3207,
         // Item [Level : 43] 
         SLIP_DE_BWORK_ARCHER_3208 = 3208,
-        // Item [Level : 45] 
-        SCALP_DE_BWORK_MAGE_3209 = 3209,
+        // Item [Level : 86] 
+        SCALP_DE_BIZARBWORK_3209 = 3209,
         // Item [Level : 82] 
         AMULETTE_ARGIE_4381 = 4381,
         // Item [Level : 52] 
@@ -3050,8 +3050,8 @@
         DRAGOCOIFFE_NOIRE_6474 = 6474,
         // Item [Level : 40] 
         CASQUE_CASSE_DU_CHAFER_6475 = 6475,
-        // Item [Level : 40] 
-        BOUGIE_MAGIQUE_DU_MINEUR_SOMBRE_6476 = 6476,
+        // Item [Level : 56] 
+        GRIFFE_DE_ROBIONICLE_6476 = 6476,
         // Item [Level : 103] 
         CHAPEAU_DU_MINEUR_SOMBRE_6477 = 6477,
         // Item [Level : 65] 
@@ -3816,8 +3816,8 @@
         AGATHE_7028 = 7028,
         // Item [Level : 86] 
         CEINTURE_DE_SANGROKU_7029 = 7029,
-        // Item [Level : 70] 
-        PEAU_DE_KANIGROU_7030 = 7030,
+        // Item [Level : 86] 
+        PEAU_DE_KRAMBWORK_7030 = 7030,
         // Item [Level : 46] 
         PENDULE_DU_GUDULE_7031 = 7031,
         // Item [Level : 100] 
@@ -4623,7 +4623,7 @@
         // Item [Level : 1] 
         DRAGOFESSE_CLASSIQUE_7634 = 7634,
         // Item [Level : 1] 
-        DRAGOFESSE_EN_CUIR_DE_BOUFTON_BLANC_7635 = 7635,
+        DRAGOFESSE_EN_CUIR_DE_BOOSTACHE_PREPUBERE_7635 = 7635,
         // Item [Level : 1] 
         DRAGOFESSE_EN_CUIR_DE_BOUFTON_NOIR_7636 = 7636,
         // Item [Level : 1] 
@@ -4711,7 +4711,7 @@
         // Item [Level : 1] 
         DRAGOFESSE_EN_CUIR_DE_BOUFTOU_ROYAL_7692 = 7692,
         // Item [Level : 1] 
-        DRAGOFESSE_EN_CUIR_DE_SANGLIER_7693 = 7693,
+        DRAGOFESSE_EN_CUIR_DE_GARGROUILLE_7693 = 7693,
         // Item [Level : 1] 
         DRAGOFESSE_EN_CUIR_DE_DRAGON_COCHON_7694 = 7694,
         // Item [Level : 1] 
@@ -5123,7 +5123,7 @@
         // Item [Level : 110] 
         CLEF_DE_LA_BIBLIOTHEQUE_DU_MAITRE_CORBAC_7926 = 7926,
         // Item [Level : 70] 
-        CLEF_DU_DONJON_DES_CRAQUELEURS_7927 = 7927,
+        CLEF_DES_PITONS_ROCHEUX_DES_CRAQUELEURS_7927 = 7927,
         // Item [Level : 1] 
         MANUEL_DU_DEBUTANT_7929 = 7929,
         // Item [Level : 1] 
@@ -5716,14 +5716,14 @@
         BOULOUTE_BIEN_LELEVER_8319 = 8319,
         // Item [Level : 100] 
         CLEF_DE_LANTRE_DU_DRAGON_COCHON_8320 = 8320,
-        // Item [Level : 114] 
-        POIL_DE_DEMINOBOULE_8321 = 8321,
-        // Item [Level : 114] 
-        POIL_DE_MOMINOTOR_8322 = 8322,
+        // Item [Level : 110] 
+        POIL_DE_CAPSAALOOCKE_8321 = 8321,
+        // Item [Level : 116] 
+        POIL_DE_TROOLLEOLE_8322 = 8322,
         // Item [Level : 114] 
         CUIR_DE_DEMINOBOULE_8323 = 8323,
-        // Item [Level : 114] 
-        CUIR_DE_MOMINOTOR_8324 = 8324,
+        // Item [Level : 110] 
+        CUIR_DE_CAPSAALOOCKE_8324 = 8324,
         // Item [Level : 114] 
         BANDELETTE_DU_MOMINOTOR_8326 = 8326,
         // Item [Level : 114] 
@@ -5782,8 +5782,8 @@
         ECAILLE_DE_DRAGOSS_DORE_8355 = 8355,
         // Item [Level : 110] 
         PEAU_DE_DRAGUEUSE_8356 = 8356,
-        // Item [Level : 110] 
-        CORNE_DE_DRAGUEUSE_8357 = 8357,
+        // Item [Level : 146] 
+        CORNE_DE_GLIGLIBIDO_8357 = 8357,
         // Item [Level : 110] 
         PROTECTION_DE_LA_DRAGUEUSE_8358 = 8358,
         // Item [Level : 110] 
@@ -5796,8 +5796,8 @@
         PEAU_DE_DRAGOEUF_GUERRIER_8362 = 8362,
         // Item [Level : 110] 
         CORNE_DE_DRAGOEUF_GUERRIER_8363 = 8363,
-        // Item [Level : 110] 
-        LANIERE_EN_CUIR_DU_DRAGOEUF_GUERRIER_8364 = 8364,
+        // Item [Level : 146] 
+        LANIERE_EN_CUIR_DE_GLIGLITCH_8364 = 8364,
         // Item [Level : 120] 
         CORNE_BRISEE_DE_CROCABULIA_8365 = 8365,
         // Item [Level : 171] 
@@ -6041,9 +6041,9 @@
         // Item [Level : 30] 
         MOUMOULES_FRITES_8518 = 8518,
         // Item [Level : 5] 
-        GATROOL_8519 = 8519,
+        GATROOL_INDUSTRIEL_8519 = 8519,
         // Item [Level : 1] 
-        GRATROOLL_8520 = 8520,
+        GRATROOLL_INDUSTRIEL_8520 = 8520,
         // Item [Level : 11] 
         LA_CAPE_ROUGE_8521 = 8521,
         // Item [Level : 1] 
@@ -7179,7 +7179,7 @@
         // Item [Level : 180] 
         CLEF_DU_DONJON_FUNGUS_9247 = 9247,
         // Item [Level : 60] 
-        CLEF_DU_DONJON_DES_BLOPS_9248 = 9248,
+        CLEF_DU_CLOS_DES_BLOPS_9248 = 9248,
         // Item [Level : 80] 
         MORCEAU_DE_CLEF_GRIOTTE_9249 = 9249,
         // Item [Level : 80] 
@@ -8547,7 +8547,7 @@
         // Item [Level : 1] 
         GEMME_SPIRITUELLE_DE_SKEUNK_10258 = 10258,
         // Item [Level : 1] 
-        GEMME_SPIRITUELLE_DE_ABRAKNYDE_ANCESTRAL_10259 = 10259,
+        GEMME_SPIRITUELLE_DABRAKNYDE_ANCESTRAL_10259 = 10259,
         // Item [Level : 1] 
         GEMME_SPIRITUELLE_DE_MAITRE_PANDORE_10260 = 10260,
         // Item [Level : 1] 
@@ -10130,7 +10130,7 @@
         RECETTE_DE_LA_PLAQUE_DACIER_11284 = 11284,
         // Item [Level : 1] 
         RECETTE_DU_MASQUE_DE_PROTECTION_11285 = 11285,
-        // Item [Level : 1] 
+        // Item [Level : 100] 
         RECETTE_DES_GANTS_DE_PROTECTION_11286 = 11286,
         // Item [Level : 1] 
         ZOBIE_LA_MOUSSE_11287 = 11287,
@@ -11409,13 +11409,13 @@
         // Item [Level : 60] 
         COIFFE_DE_POPOL_LE_POULPE_11993 = 11993,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DE_CHENE_JETABLE_11994 = 11994,
+        PAIRE_DE_SKIS_RUSTIQUES_JETABLES_11994 = 11994,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DE_TREMBLE_JETABLE_11995 = 11995,
+        PAIRE_DE_SKIS_GLISSANTS_JETABLES_11995 = 11995,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DORME_JETABLE_11996 = 11996,
+        PAIRE_DE_SKIS_SOMBRES_JETABLES_11996 = 11996,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DE_BAMBOU_JETABLE_11997 = 11997,
+        PAIRE_DE_SKIS_SOUPLES_JETABLES_11997 = 11997,
         // Item [Level : 100] 
         COGNONSNOUS_DANS_LES_BOIS_11998 = 11998,
         // Item [Level : 1] 
@@ -11425,13 +11425,13 @@
         // Item [Level : 190] 
         LARME_DE_GIVREFOUX_12001 = 12001,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DE_CHENE_12003 = 12003,
+        PAIRE_DE_SKIS_RUSTIQUES_12003 = 12003,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DORME_12004 = 12004,
+        PAIRE_DE_SKIS_SOMBRES_12004 = 12004,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DE_TREMBLE_12005 = 12005,
+        PAIRE_DE_SKIS_GLISSANTS_12005 = 12005,
         // Item [Level : 1] 
-        PAIRE_DE_SKIS_DE_BAMBOU_12006 = 12006,
+        PAIRE_DE_SKIS_SOUPLES_12006 = 12006,
         // Item [Level : 10] 
         POTION_DE_CROQUETTE_MINEURE_12007 = 12007,
         // Item [Level : 10] 
@@ -20717,9 +20717,9 @@
         // Item [Level : 80] 
         TERRINE_BONTARIENNE_FORTIFIANTE_17182 = 17182,
         // Item [Level : 90] 
-        POTAUFEU_GOUTU_17183 = 17183,
+        POTAUFEU_GOUTEUX_17183 = 17183,
         // Item [Level : 90] 
-        POTAUFEU_GOUTU_FORTIFIANT_17184 = 17184,
+        POTAUFEU_GOUTEUX_FORTIFIANT_17184 = 17184,
         // Item [Level : 100] 
         POELEE_PAYSANNE_17185 = 17185,
         // Item [Level : 100] 
@@ -21042,6 +21042,10 @@
         SOULIERS_PINEUX_17456 = 17456,
         // Item [Level : 59] 
         ANNEAU_WELLE_17457 = 17457,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_BRAKMARIEN_17458 = 17458,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_BONTARIEN_17459 = 17459,
         // Item [Level : 179] 
         CAISSE_DE_LA_DISTILLERIE_17465 = 17465,
         // Item [Level : 1] 
@@ -21168,6 +21172,8 @@
         EMOTICONES_JORIS_17532 = 17532,
         // Item [Level : 150] 
         POTION_DAMELIORATION_DE_MINIMINO_17533 = 17533,
+        // Item [Level : 100] 
+        BONBON_SNIK_17534 = 17534,
         // Item [Level : 1] 
         DEPLOYER_LES_AILES_BONTARIENNES_17535 = 17535,
         // Item [Level : 1] 
@@ -21490,7 +21496,7 @@
         IL_PETRIFIE_17699 = 17699,
         // Item [Level : 1] 
         CHAPERLIPOPETTE_17700 = 17700,
-        // Item [Level : 1] 
+        // Item [Level : 10] 
         FANTOME_DE_CHAPERLIPOPETTE_17701 = 17701,
         // Item [Level : 1] 
         CERTIFICAT_DE_MISE_EN_CHANIL_CHAPERLIPOPETTE_17702 = 17702,
@@ -21546,6 +21552,8 @@
         ECAFLIPUCES_PARASITES_17728 = 17728,
         // Item [Level : 1] 
         CARTE_DU_DESTIN_17729 = 17729,
+        // Item [Level : 1] 
+        SANGUINOLENTE_17730 = 17730,
         // Item [Level : 40] 
         COIFFE_DRAGOCOURSE_17731 = 17731,
         // Item [Level : 40] 
@@ -21680,6 +21688,8 @@
         SKEUNKLIER_17800 = 17800,
         // Item [Level : 1] 
         BOUCLIER_DE_MERKATOR_17801 = 17801,
+        // Item [Level : 1] 
+        BOUCLIER_DU_KIMBO_17802 = 17802,
         // Item [Level : 190] 
         TALISMAN_DE_GRASSIMORE_INCOMPLET_17803 = 17803,
         // Item [Level : 190] 
@@ -21699,6 +21709,16 @@
         // Item [Level : 189] 
         RUBIS_MAGIQUE_IMPREGNE_17812 = 17812,
         // Item [Level : 1] 
+        GLUB_17813 = 17813,
+        // Item [Level : 10] 
+        FANTOME_DE_GLUB_17814 = 17814,
+        // Item [Level : 1] 
+        CERTIFICAT_DE_MISE_EN_CHANIL_GLUB_17815 = 17815,
+        // Item [Level : 1] 
+        HORMONE_DE_GLUB_17816 = 17816,
+        // Item [Level : 90] 
+        POTION_DAMELIORATION_DE_GLUB_17817 = 17817,
+        // Item [Level : 1] 
         TITCHAM_17833 = 17833,
         // Item [Level : 1] 
         FANTOME_DE_TITCHAM_17834 = 17834,
@@ -21708,6 +21728,18 @@
         HORMONE_DE_TITCHAM_17836 = 17836,
         // Item [Level : 110] 
         POTION_DAMELIORATION_DE_TITCHAM_17837 = 17837,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_PILOTE_17838 = 17838,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_ABRAKNYDE_17839 = 17839,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_ROYAL_17840 = 17840,
+        // Item [Level : 38] 
+        CABALNEAIRE_17847 = 17847,
+        // Item [Level : 39] 
+        COIFFLEUR_DE_LETE_17848 = 17848,
+        // Item [Level : 40] 
+        SANDALNEAIRES_17849 = 17849,
         // Item [Level : 60] 
         JUS_DE_POISSON_ABOMINABLE_17850 = 17850,
         // Item [Level : 130] 
@@ -21728,6 +21760,1128 @@
         RECETTE_DE_LA_CLEF_DU_TEMPLE_MAUDIT_17858 = 17858,
         // Item [Level : 1] 
         BIENFAISANT_17859 = 17859,
+        // Item [Level : 1] 
+        VIEUX_LUTH_17860 = 17860,
+        // Item [Level : 1] 
+        FEE_DARTIFICE_SUFOKIENNE_17861 = 17861,
+        // Item [Level : 1] 
+        CRYSTAL_MAUVE_17862 = 17862,
+        // Item [Level : 1] 
+        PERLE_DES_PROFONDEURS_17863 = 17863,
+        // Item [Level : 200] 
+        AMBRE_GRIS_17864 = 17864,
+        // Item [Level : 200] 
+        MARQUE_DES_GRANDS_FONDS_17865 = 17865,
+        // Item [Level : 200] 
+        STEAMOPOMPE_17866 = 17866,
+        // Item [Level : 200] 
+        HELICE_EN_LAITON_17867 = 17867,
+        // Item [Level : 200] 
+        PLOMBS_DE_PLONGEE_17868 = 17868,
+        // Item [Level : 200] 
+        FILTRE_A_FROUSSE_17869 = 17869,
+        // Item [Level : 200] 
+        SOCLE_EN_COQUILLAGE_17870 = 17870,
+        // Item [Level : 1] 
+        TOPO_17871 = 17871,
+        // Item [Level : 1] 
+        COUP_DE_JUS_17872 = 17872,
+        // Item [Level : 1] 
+        FOUDROYE_17873 = 17873,
+        // Item [Level : 60] 
+        MULDO_EBENE_ET_INDIGO_17874 = 17874,
+        // Item [Level : 60] 
+        MULDO_ORCHIDEE_17875 = 17875,
+        // Item [Level : 60] 
+        MULDO_EBENE_17876 = 17876,
+        // Item [Level : 60] 
+        MULDO_INDIGO_17877 = 17877,
+        // Item [Level : 60] 
+        MULDO_POURPRE_17878 = 17878,
+        // Item [Level : 60] 
+        MULDO_DORE_17879 = 17879,
+        // Item [Level : 60] 
+        MULDO_ROUX_17880 = 17880,
+        // Item [Level : 60] 
+        MULDO_AMANDE_17881 = 17881,
+        // Item [Level : 60] 
+        MULDO_IVOIRE_17882 = 17882,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_17883 = 17883,
+        // Item [Level : 60] 
+        MULDO_PRUNE_17884 = 17884,
+        // Item [Level : 60] 
+        MULDO_EMERAUDE_17885 = 17885,
+        // Item [Level : 60] 
+        MULDO_DORE_ET_POURPRE_17886 = 17886,
+        // Item [Level : 60] 
+        MULDO_INDIGO_ET_POURPRE_17887 = 17887,
+        // Item [Level : 60] 
+        MULDO_EBENE_ET_POURPRE_17888 = 17888,
+        // Item [Level : 60] 
+        MULDO_ORCHIDEE_ET_POURPRE_17889 = 17889,
+        // Item [Level : 60] 
+        MULDO_DORE_ET_EBENE_17890 = 17890,
+        // Item [Level : 60] 
+        MULDO_INDIGO_ET_ORCHIDEE_17891 = 17891,
+        // Item [Level : 60] 
+        MULDO_EBENE_ET_ORCHIDEE_17892 = 17892,
+        // Item [Level : 60] 
+        MULDO_DORE_ET_ORCHIDEE_17893 = 17893,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_POURPRE_17894 = 17894,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_ORCHIDEE_17895 = 17895,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_INDIGO_17896 = 17896,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_EBENE_17897 = 17897,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_DORE_17898 = 17898,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_AMANDE_17899 = 17899,
+        // Item [Level : 60] 
+        MULDO_POURPRE_ET_AMANDE_17900 = 17900,
+        // Item [Level : 60] 
+        MULDO_ORCHIDEE_ET_AMANDE_17901 = 17901,
+        // Item [Level : 60] 
+        MULDO_INDIGO_ET_AMANDE_17902 = 17902,
+        // Item [Level : 60] 
+        MULDO_EBENE_ET_AMANDE_17903 = 17903,
+        // Item [Level : 60] 
+        MULDO_DORE_ET_AMANDE_17904 = 17904,
+        // Item [Level : 60] 
+        MULDO_POURPRE_ET_IVOIRE_17905 = 17905,
+        // Item [Level : 60] 
+        MULDO_ORCHIDEE_ET_IVOIRE_17906 = 17906,
+        // Item [Level : 60] 
+        MULDO_INDIGO_ET_IVOIRE_17907 = 17907,
+        // Item [Level : 60] 
+        MULDO_EBENE_ET_IVOIRE_17908 = 17908,
+        // Item [Level : 60] 
+        MULDO_DORE_ET_IVOIRE_17909 = 17909,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_IVOIRE_17910 = 17910,
+        // Item [Level : 60] 
+        MULDO_AMANDE_ET_IVOIRE_17911 = 17911,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_IVOIRE_17912 = 17912,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_POURPRE_17913 = 17913,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_ORCHIDEE_17914 = 17914,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_INDIGO_17915 = 17915,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_EBENE_17916 = 17916,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_ROUX_17917 = 17917,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_AMANDE_17918 = 17918,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_DORE_17919 = 17919,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_POURPRE_17920 = 17920,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_ORCHIDEE_17921 = 17921,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_INDIGO_17922 = 17922,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_EBENE_17923 = 17923,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_DORE_17924 = 17924,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_ROUX_17925 = 17925,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_AMANDE_17926 = 17926,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_IVOIRE_17927 = 17927,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_TURQUOISE_17928 = 17928,
+        // Item [Level : 60] 
+        MULDO_PRUNE_ET_EMERAUDE_17929 = 17929,
+        // Item [Level : 60] 
+        MULDO_POURPRE_ET_EMERAUDE_17930 = 17930,
+        // Item [Level : 60] 
+        MULDO_ORCHIDEE_ET_EMERAUDE_17931 = 17931,
+        // Item [Level : 60] 
+        MULDO_INDIGO_ET_EMERAUDE_17932 = 17932,
+        // Item [Level : 60] 
+        MULDO_EBENE_ET_EMERAUDE_17933 = 17933,
+        // Item [Level : 60] 
+        MULDO_DORE_ET_EMERAUDE_17934 = 17934,
+        // Item [Level : 60] 
+        MULDO_ROUX_ET_EMERAUDE_17935 = 17935,
+        // Item [Level : 60] 
+        MULDO_AMANDE_ET_EMERAUDE_17936 = 17936,
+        // Item [Level : 60] 
+        MULDO_IVOIRE_ET_EMERAUDE_17937 = 17937,
+        // Item [Level : 60] 
+        MULDO_TURQUOISE_ET_EMERAUDE_17938 = 17938,
+        // Item [Level : 60] 
+        MULDO_DORE_ET_INDIGO_17939 = 17939,
+        // Item [Level : 1] 
+        PARTITION_POUR_ORGUE_17940 = 17940,
+        // Item [Level : 200] 
+        RECONNAISSANCE_DE_DETTES_17941 = 17941,
+        // Item [Level : 200] 
+        BIJOUX_DE_LA_RANCON_17942 = 17942,
+        // Item [Level : 200] 
+        CAISSE_DE_PERLES_DES_PROFONDEURS_17943 = 17943,
+        // Item [Level : 200] 
+        ECHANTILLON_DALGUES_17944 = 17944,
+        // Item [Level : 200] 
+        MERCURE_AQUATIQUE_17945 = 17945,
+        // Item [Level : 200] 
+        ECHANTILLON_DALGUES_17946 = 17946,
+        // Item [Level : 200] 
+        ECHANTILLON_DALGUES_17947 = 17947,
+        // Item [Level : 200] 
+        ECHANTILLON_DALGUES_17948 = 17948,
+        // Item [Level : 200] 
+        ECHANTILLON_DALGUES_17949 = 17949,
+        // Item [Level : 200] 
+        FOIE_TOXIQUE_17950 = 17950,
+        // Item [Level : 1] 
+        SCEAU_ELIOTROPE_17951 = 17951,
+        // Item [Level : 1] 
+        SABLE_DE_WAKFU_17952 = 17952,
+        // Item [Level : 1] 
+        CORAIL_OPALIN_17954 = 17954,
+        // Item [Level : 1] 
+        CLEF_DU_SANCTUAIRE_DE_LEANOR_17955 = 17955,
+        // Item [Level : 60] 
+        MULDO_EBENE_SAUVAGE_17956 = 17956,
+        // Item [Level : 60] 
+        MULDO_INDIGO_SAUVAGE_17957 = 17957,
+        // Item [Level : 60] 
+        MULDO_ORCHIDEE_SAUVAGE_17958 = 17958,
+        // Item [Level : 60] 
+        MULDO_POURPRE_SAUVAGE_17959 = 17959,
+        // Item [Level : 60] 
+        MULDO_DORE_SAUVAGE_17960 = 17960,
+        // Item [Level : 1] 
+        CASQUE_ISOLANT_17961 = 17961,
+        // Item [Level : 200] 
+        SCEAU_DES_FONDATEURS_17963 = 17963,
+        // Item [Level : 200] 
+        VOLANT_HYDRAULIQUE_17964 = 17964,
+        // Item [Level : 200] 
+        ACCELERATEUR_DE_PROPULSION_17965 = 17965,
+        // Item [Level : 200] 
+        LEST_ANTITOURBILLON_17966 = 17966,
+        // Item [Level : 200] 
+        ATTRAPEPEUR_17967 = 17967,
+        // Item [Level : 200] 
+        STATUETTE_DE_SNEDON_17968 = 17968,
+        // Item [Level : 1] 
+        LIVRE_DETREMPE_17969 = 17969,
+        // Item [Level : 200] 
+        BAVE_DE_MOL_USK_17970 = 17970,
+        // Item [Level : 200] 
+        PINCE_DE_CRABE_YOLONISTE_17971 = 17971,
+        // Item [Level : 200] 
+        ECAILLE_DE_GAMBAF_17972 = 17972,
+        // Item [Level : 200] 
+        QUEUE_DE_MANTAZE_17973 = 17973,
+        // Item [Level : 200] 
+        PARASITE_AQUATIQUE_17974 = 17974,
+        // Item [Level : 200] 
+        LANTERNE_DE_TOURTHON_17975 = 17975,
+        // Item [Level : 200] 
+        POIL_DE_MENO_17976 = 17976,
+        // Item [Level : 200] 
+        ENCRE_DE_POULPEE_17977 = 17977,
+        // Item [Level : 200] 
+        TRIDENT_DE_TRYDE_17978 = 17978,
+        // Item [Level : 200] 
+        MOUSTACHE_DE_RILUR_17979 = 17979,
+        // Item [Level : 200] 
+        EPINE_DE_DIONDIN_17980 = 17980,
+        // Item [Level : 200] 
+        PEAU_DE_TRITHON_17981 = 17981,
+        // Item [Level : 200] 
+        DENTIER_DE_DANTINEA_17982 = 17982,
+        // Item [Level : 200] 
+        TENTACULE_DE_GROFOND_17983 = 17983,
+        // Item [Level : 200] 
+        TENTACULE_DE_NYALG_17984 = 17984,
+        // Item [Level : 200] 
+        PATTE_DE_LIFO_17985 = 17985,
+        // Item [Level : 200] 
+        IL_DE_SHOKKOTH_17986 = 17986,
+        // Item [Level : 200] 
+        FLUTE_DE_KLUTISTE_17987 = 17987,
+        // Item [Level : 200] 
+        PIERRE_ANGULAIRE_17988 = 17988,
+        // Item [Level : 200] 
+        AILE_DE_LARVE_DE_KOUTOULOU_17989 = 17989,
+        // Item [Level : 200] 
+        DENT_DE_TILAMPROIE_17990 = 17990,
+        // Item [Level : 200] 
+        BOIS_DAQUAJOU_17991 = 17991,
+        // Item [Level : 200] 
+        SALIKRONE_17992 = 17992,
+        // Item [Level : 200] 
+        QUISNOA_17993 = 17993,
+        // Item [Level : 200] 
+        PATELLE_17994 = 17994,
+        // Item [Level : 200] 
+        ECUME_DE_MER_17995 = 17995,
+        // Item [Level : 1] 
+        ROSSIGNOL_DE_ROUKEROL_17996 = 17996,
+        // Item [Level : 200] 
+        COLLIER_DE_TOURTHON_17997 = 17997,
+        // Item [Level : 200] 
+        ANNEAU_CRUSTIQUE_17998 = 17998,
+        // Item [Level : 1] 
+        PSYCHOTIQUE_17999 = 17999,
+        // Item [Level : 200] 
+        MASQUE_DE_KOUTOULOU_18000 = 18000,
+        // Item [Level : 200] 
+        PENDENTIF_AFFAME_18001 = 18001,
+        // Item [Level : 200] 
+        CAPE_DE_DIONDIN_18002 = 18002,
+        // Item [Level : 200] 
+        BOTTES_INNOMMABLES_18003 = 18003,
+        // Item [Level : 200] 
+        AMULETTE_DE_SHOKKOTH_18004 = 18004,
+        // Item [Level : 200] 
+        CAPE_DE_MANTAZE_18005 = 18005,
+        // Item [Level : 200] 
+        POULPAGNE_18006 = 18006,
+        // Item [Level : 200] 
+        PALMES_TRITHONS_18007 = 18007,
+        // Item [Level : 200] 
+        CAPE_INDESCRIPTIBLE_18008 = 18008,
+        // Item [Level : 200] 
+        MENOTURE_18009 = 18009,
+        // Item [Level : 1] 
+        RECU_DE_PINKE_TADA_18016 = 18016,
+        // Item [Level : 200] 
+        CEINTOUSE_18019 = 18019,
+        // Item [Level : 200] 
+        TENTASSONS_18020 = 18020,
+        // Item [Level : 200] 
+        CHAPOULPE_18021 = 18021,
+        // Item [Level : 200] 
+        BOTTES_DE_MENO_18022 = 18022,
+        // Item [Level : 200] 
+        CASQUETTE_DE_MENO_18023 = 18023,
+        // Item [Level : 200] 
+        CAPE_DE_MENO_18024 = 18024,
+        // Item [Level : 200] 
+        AMULETTE_DE_LINDICIBLE_18025 = 18025,
+        // Item [Level : 200] 
+        CEINTURE_DE_LINDICIBLE_18026 = 18026,
+        // Item [Level : 1] 
+        STATUETTE_ABOMINABLE_18027 = 18027,
+        // Item [Level : 200] 
+        BOTTES_DE_LINDICIBLE_18028 = 18028,
+        // Item [Level : 200] 
+        BAGUE_TRITHON_18029 = 18029,
+        // Item [Level : 200] 
+        BOTTES_TRITHON_18030 = 18030,
+        // Item [Level : 200] 
+        MASQUE_TRITHON_18031 = 18031,
+        // Item [Level : 200] 
+        AMULETTE_LUMINESCENTE_18032 = 18032,
+        // Item [Level : 200] 
+        CEINTURE_LUMINESCENTE_18033 = 18033,
+        // Item [Level : 200] 
+        CAPE_LUMINESCENTE_18034 = 18034,
+        // Item [Level : 200] 
+        PENDENTIF_MIGNON_DE_KOUTOULOU_18035 = 18035,
+        // Item [Level : 200] 
+        CASQUE_CYCLOPEEN_18036 = 18036,
+        // Item [Level : 200] 
+        ANNEAU_RIFIQUE_18037 = 18037,
+        // Item [Level : 1] 
+        OBJET_INDICIBLE_18038 = 18038,
+        // Item [Level : 1] 
+        BOCAL_DU_PROFESSEUR_NOMIS_18039 = 18039,
+        // Item [Level : 1] 
+        ETOILE_DE_MER_VENERABLE_18040 = 18040,
+        // Item [Level : 1] 
+        SIGNE_DES_TRES_VIEUX_ANCIENS_18041 = 18041,
+        // Item [Level : 1] 
+        COQUILLE_ABYSSALE_18042 = 18042,
+        // Item [Level : 6] 
+        DOFUS_ABYSSAL_18043 = 18043,
+        // Item [Level : 1] 
+        RESTES_DE_RYKKE_ZANE_18044 = 18044,
+        // Item [Level : 1] 
+        POLLIE_PERKINE_18045 = 18045,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18046 = 18046,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18047 = 18047,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18048 = 18048,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18049 = 18049,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18050 = 18050,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18051 = 18051,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18052 = 18052,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18053 = 18053,
+        // Item [Level : 200] 
+        HERBE_AQUATIQUE_18054 = 18054,
+        // Item [Level : 200] 
+        PENDENTIF_DU_CHAPELAIN_18055 = 18055,
+        // Item [Level : 1] 
+        IL_DE_SHOKKOTH_FOURBASSE_18057 = 18057,
+        // Item [Level : 1] 
+        SAC_DAQUAJOU_18058 = 18058,
+        // Item [Level : 1] 
+        SAC_DE_SALIKRONE_18059 = 18059,
+        // Item [Level : 1] 
+        SAC_DE_QUISNOA_18060 = 18060,
+        // Item [Level : 1] 
+        SAC_DE_PATELLE_18061 = 18061,
+        // Item [Level : 1] 
+        SAC_DECUME_DE_MER_18062 = 18062,
+        // Item [Level : 200] 
+        CONTRAT_DES_MERCEMERS_18063 = 18063,
+        // Item [Level : 1] 
+        ARDOISE_TECHNOMAGIQUE_18064 = 18064,
+        // Item [Level : 1] 
+        DEPHASE_18065 = 18065,
+        // Item [Level : 200] 
+        CLEF_DU_VAISSEAU_DU_CAPITAINE_MENO_18066 = 18066,
+        // Item [Level : 200] 
+        CLEF_DU_PALAIS_DE_DANTINEA_18067 = 18067,
+        // Item [Level : 200] 
+        CLEF_DU_TEMPLE_DE_KOUTOULOU_18068 = 18068,
+        // Item [Level : 200] 
+        OBJET_ENIGMATIQUE_18069 = 18069,
+        // Item [Level : 200] 
+        MINERAI_DE_TOKLIUM_18070 = 18070,
+        // Item [Level : 200] 
+        CERVEAU_DE_TRITHON_18071 = 18071,
+        // Item [Level : 200] 
+        CNIDOCYSTE_DE_BUBA_18072 = 18072,
+        // Item [Level : 200] 
+        METAL_CUIVRE_18073 = 18073,
+        // Item [Level : 200] 
+        CUISSE_DE_TRITHON_18074 = 18074,
+        // Item [Level : 200] 
+        PAGE_INDECHIFFRABLE_18075 = 18075,
+        // Item [Level : 200] 
+        CHAIR_AQUATIQUE_18076 = 18076,
+        // Item [Level : 1] 
+        DAME_ASKINA_18077 = 18077,
+        // Item [Level : 1] 
+        NAROUTO_HICSIXIKSE_18078 = 18078,
+        // Item [Level : 1] 
+        MARKARIS_18079 = 18079,
+        // Item [Level : 200] 
+        CLEF_DARGENT_18080 = 18080,
+        // Item [Level : 200] 
+        ANNEAU_DE_PIERRES_18081 = 18081,
+        // Item [Level : 200] 
+        GLOBES_IRIDESCENTS_18082 = 18082,
+        // Item [Level : 200] 
+        CHAIR_PROTOPLASMIQUE_18083 = 18083,
+        // Item [Level : 200] 
+        TENTACULE_AGITE_18084 = 18084,
+        // Item [Level : 1] 
+        BANDELETTES_HUMIDES_18085 = 18085,
+        // Item [Level : 1] 
+        POILS_DE_MAGE_VISIONNAIRE_18086 = 18086,
+        // Item [Level : 1] 
+        COQUILLAGE_DE_RLYUGLUGLU_18087 = 18087,
+        // Item [Level : 60] 
+        KOUGNARD_18088 = 18088,
+        // Item [Level : 10] 
+        FANTOME_DE_KOUGNARD_18089 = 18089,
+        // Item [Level : 1] 
+        CERTIFICAT_DE_MISE_EN_CHANIL_KOUGNARD_18090 = 18090,
+        // Item [Level : 1] 
+        HORMONE_DE_KOUGNARD_18091 = 18091,
+        // Item [Level : 110] 
+        POTION_DAMELIORATION_DE_KOUGNARD_18092 = 18092,
+        // Item [Level : 1] 
+        BOUCLIER_DE_DRAMAK_18093 = 18093,
+        // Item [Level : 1] 
+        BOUCLIER_DU_BLOP_MULTICOLORE_ROYAL_18094 = 18094,
+        // Item [Level : 1] 
+        FRAKTAKLIER_18095 = 18095,
+        // Item [Level : 1] 
+        BOUCLIER_DU_KORRIANDRE_18096 = 18096,
+        // Item [Level : 200] 
+        IL_DANSOH_18097 = 18097,
+        // Item [Level : 200] 
+        TRIDENT_FISSURE_18098 = 18098,
+        // Item [Level : 200] 
+        TRIDENT_FISSURE_18099 = 18099,
+        // Item [Level : 200] 
+        TRIDENT_DU_CHEF_TRYDE_18100 = 18100,
+        // Item [Level : 1] 
+        BULDALAZRED_18101 = 18101,
+        // Item [Level : 1] 
+        TAKOMAKO_18102 = 18102,
+        // Item [Level : 200] 
+        COMBINAISON_DE_LASTRE_NOIR_18104 = 18104,
+        // Item [Level : 200] 
+        DOCUMENTS_DE_VICTOR_SCHUBERT_18105 = 18105,
+        // Item [Level : 200] 
+        COFFRE_DE_TABLETTES_18106 = 18106,
+        // Item [Level : 1] 
+        GREUVETTE_CENTENAIRE_18107 = 18107,
+        // Item [Level : 1] 
+        PKOUTOULOU_CHTON_18108 = 18108,
+        // Item [Level : 1] 
+        PKOUTOULOU_ZOTHOTH_18109 = 18109,
+        // Item [Level : 1] 
+        PKOUTOULOU_GLAAKIPH_18110 = 18110,
+        // Item [Level : 1] 
+        DIPLOME_DE_PLONGEE_18111 = 18111,
+        // Item [Level : 1] 
+        PLONGEUSE_DE_LASTRE_NOIR_18112 = 18112,
+        // Item [Level : 200] 
+        MIXTURE_INDICIBLE_18113 = 18113,
+        // Item [Level : 200] 
+        MITE_DE_KOUTOULOU_18114 = 18114,
+        // Item [Level : 200] 
+        PLUME_HUMIDE_DE_GOBVIOUS_18115 = 18115,
+        // Item [Level : 1] 
+        DIPLOME_DE_RLYUGLUGLU_18116 = 18116,
+        // Item [Level : 1] 
+        DIPLOME_DES_TRITHONS_18117 = 18117,
+        // Item [Level : 1] 
+        ASSISTANT_DE_DEKS_18118 = 18118,
+        // Item [Level : 200] 
+        BON_AU_PORTEUR_18119 = 18119,
+        // Item [Level : 200] 
+        CAISSE_DE_PIECES_DE_RECHANGE_18120 = 18120,
+        // Item [Level : 200] 
+        MORCEAU_DE_TOLE_18121 = 18121,
+        // Item [Level : 200] 
+        PEAU_CRAQUELEE_DE_TRITHON_18122 = 18122,
+        // Item [Level : 1] 
+        BOURSE_DALITONS_PLATE_18123 = 18123,
+        // Item [Level : 1] 
+        BOURSE_DALITONS_MOLLE_18124 = 18124,
+        // Item [Level : 1] 
+        BOURSE_DALITONS_SECHE_18125 = 18125,
+        // Item [Level : 1] 
+        BOURSE_DALITONS_GARNIE_18126 = 18126,
+        // Item [Level : 1] 
+        BOURSE_DALITONS_PLEINE_18127 = 18127,
+        // Item [Level : 60] 
+        CAUTION_PRIMAIRE_18128 = 18128,
+        // Item [Level : 100] 
+        CAUTION_SECONDAIRE_18129 = 18129,
+        // Item [Level : 140] 
+        CAUTION_TERTIAIRE_18130 = 18130,
+        // Item [Level : 180] 
+        CAUTION_QUATERNAIRE_18131 = 18131,
+        // Item [Level : 200] 
+        CAUTION_QUINAIRE_18132 = 18132,
+        // Item [Level : 60] 
+        CAUTION_SAUVAGE_18133 = 18133,
+        // Item [Level : 60] 
+        CAUTION_INSIGNIFIANTE_18134 = 18134,
+        // Item [Level : 100] 
+        CAUTION_DERISOIRE_18135 = 18135,
+        // Item [Level : 100] 
+        CAUTION_INFIME_18136 = 18136,
+        // Item [Level : 140] 
+        CAUTION_MODESTE_18137 = 18137,
+        // Item [Level : 140] 
+        CAUTION_MINEURE_18138 = 18138,
+        // Item [Level : 180] 
+        CAUTION_MOYENNE_18139 = 18139,
+        // Item [Level : 180] 
+        CAUTION_SUBSTANTIELLE_18140 = 18140,
+        // Item [Level : 180] 
+        CAUTION_CONSEQUENTE_18141 = 18141,
+        // Item [Level : 200] 
+        CAUTION_CONSIDERABLE_18142 = 18142,
+        // Item [Level : 200] 
+        CAUTION_MAJEURE_18143 = 18143,
+        // Item [Level : 200] 
+        CAUTION_MAGISTRALE_18144 = 18144,
+        // Item [Level : 1] 
+        CHAPEAU_TRANSPARENT_18145 = 18145,
+        // Item [Level : 1] 
+        CAPE_TRANSPARENTE_18146 = 18146,
+        // Item [Level : 1] 
+        BOUCLIER_DU_CHAMPION_646_18147 = 18147,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_MULDO_BRAKMARIEN_18148 = 18148,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_MULDO_BONTARIEN_18149 = 18149,
+        // Item [Level : 180] 
+        HARNACHEMENT_DE_MULDO_STEAMER_18150 = 18150,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_MULDO_SUFOKIEN_18151 = 18151,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_MULDO_EN_COQUILLAGE_18152 = 18152,
+        // Item [Level : 1] 
+        HOMARD_MEDALI_18153 = 18153,
+        // Item [Level : 1] 
+        CHAPEAU_SHUSHIVAN_18154 = 18154,
+        // Item [Level : 1] 
+        CAPE_SHUSHIVAN_18155 = 18155,
+        // Item [Level : 1] 
+        BIERE_DE_LA_FOIRE_18156 = 18156,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_BARBARE_18157 = 18157,
+        // Item [Level : 140] 
+        CARCASSE_DE_GLIGLITCH_INTACTE_18158 = 18158,
+        // Item [Level : 140] 
+        PARTITION_INCONNUE_18159 = 18159,
+        // Item [Level : 140] 
+        BOULIER_ROUILLE_18160 = 18160,
+        // Item [Level : 140] 
+        CHAINE_DE_MAUVAIS_GOUT_18161 = 18161,
+        // Item [Level : 140] 
+        BOULE_EN_METAL_DEFORMEE_18162 = 18162,
+        // Item [Level : 140] 
+        MUSC_DE_GLIGLITCH_18163 = 18163,
+        // Item [Level : 140] 
+        GRAINE_DE_CANIA_INTEMPORELLE_18164 = 18164,
+        // Item [Level : 140] 
+        CHEVEU_DE_FRANCIS_LALANDE_18165 = 18165,
+        // Item [Level : 140] 
+        AMULETTE_PASSAGERE_18166 = 18166,
+        // Item [Level : 1] 
+        BOUDERIE_GOBELINE_18167 = 18167,
+        // Item [Level : 1] 
+        PARCHEMIN_CRASSEUX_18168 = 18168,
+        // Item [Level : 1] 
+        QUESTIONNAIRE_ASTROLOGIQUE_18169 = 18169,
+        // Item [Level : 1] 
+        QUESTIONNAIRE_ASTROLOGIQUE_REMPLI_18170 = 18170,
+        // Item [Level : 1] 
+        HOROSCOPE_CERTIFIE_PAR_YOVA_ETNA_18171 = 18171,
+        // Item [Level : 1] 
+        MOMENT_DE_REFLEXION_18172 = 18172,
+        // Item [Level : 1] 
+        DES_PIPES_18173 = 18173,
+        // Item [Level : 1] 
+        VIEUX_CHOUINEGOMME_18174 = 18174,
+        // Item [Level : 1] 
+        VIEUX_CHOUINEGOMME_18175 = 18175,
+        // Item [Level : 1] 
+        VIEUX_CHOUINEGOMME_18176 = 18176,
+        // Item [Level : 1] 
+        VIEUX_CHOUINEGOMME_18177 = 18177,
+        // Item [Level : 1] 
+        PEAU_DE_GOBELIN_BELLIQUEUX_18181 = 18181,
+        // Item [Level : 1] 
+        CAILLOU_CRAQUELE_DE_CANIA_18184 = 18184,
+        // Item [Level : 60] 
+        CAPE_CHAMPETRE_COQUETTE_18186 = 18186,
+        // Item [Level : 60] 
+        GRANDE_PEAU_DE_LARVE_CHAMPETRE_18187 = 18187,
+        // Item [Level : 60] 
+        COQUILLAGE_DES_MURMURES_18188 = 18188,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_LIKRONE_18196 = 18196,
+        // Item [Level : 60] 
+        CORDON_BILL_KALL_18197 = 18197,
+        // Item [Level : 116] 
+        GATROOL_18198 = 18198,
+        // Item [Level : 110] 
+        SAC_DE_NATACHA_MANKA_18199 = 18199,
+        // Item [Level : 110] 
+        BOIS_DE_CORBAC_18200 = 18200,
+        // Item [Level : 110] 
+        BOIS_DE_CORBAC_18201 = 18201,
+        // Item [Level : 110] 
+        BOIS_DE_CORBAC_18202 = 18202,
+        // Item [Level : 110] 
+        RONDIN_ENCHANTE_18203 = 18203,
+        // Item [Level : 110] 
+        LETTRE_DE_NATACHA_MANKA_18204 = 18204,
+        // Item [Level : 110] 
+        LETTRE_DE_YOVA_ETNA_18205 = 18205,
+        // Item [Level : 110] 
+        GUIDE_DU_MAITRE_CORBAC_18206 = 18206,
+        // Item [Level : 120] 
+        BOURSE_SUSPECTE_GEANTE_18207 = 18207,
+        // Item [Level : 120] 
+        GATROOL_KROSMIQUE_18208 = 18208,
+        // Item [Level : 116] 
+        GRATROOLL_18209 = 18209,
+        // Item [Level : 120] 
+        EPAULETTE_DE_MAELSTROOLL_18210 = 18210,
+        // Item [Level : 1] 
+        BONNE_ACTION_18211 = 18211,
+        // Item [Level : 60] 
+        DEBRIS_DAUTOMATE_EXPERIMENTAL_18212 = 18212,
+        // Item [Level : 60] 
+        BOULON_EN_BON_ETAT_18213 = 18213,
+        // Item [Level : 60] 
+        MODULE_DE_COMMUNICATION_SYNTHETIQUE_18214 = 18214,
+        // Item [Level : 130] 
+        POTION_DE_RESURRECTION_18215 = 18215,
+        // Item [Level : 1] 
+        POTION_DE_MEMOIRE_18216 = 18216,
+        // Item [Level : 1] 
+        SERUM_DU_PAXIFIK_18217 = 18217,
+        // Item [Level : 10] 
+        CASQUE_DU_BATAILLEUR_18218 = 18218,
+        // Item [Level : 1] 
+        CUISSE_DE_TRUCHE_18219 = 18219,
+        // Item [Level : 1] 
+        DOCUMENTS_DE_CONTREBANDE_18220 = 18220,
+        // Item [Level : 1] 
+        TANUKLIER_18221 = 18221,
+        // Item [Level : 60] 
+        CERTIFICAT_DE_CONTROLE_TECHNIQUE_18222 = 18222,
+        // Item [Level : 1] 
+        ANIMAL_18224 = 18224,
+        // Item [Level : 70] 
+        PARCHEMIN_BRAKMARIEN_18226 = 18226,
+        // Item [Level : 50] 
+        CAPRONCE_18227 = 18227,
+        // Item [Level : 50] 
+        COURONCE_18228 = 18228,
+        // Item [Level : 50] 
+        CEINTURONCE_18229 = 18229,
+        // Item [Level : 50] 
+        AMURONCE_18230 = 18230,
+        // Item [Level : 1] 
+        EPAULETTE_DE_TOROG_18231 = 18231,
+        // Item [Level : 1] 
+        BOTTE_TROUEE_DE_BWORK_18232 = 18232,
+        // Item [Level : 1] 
+        TOURNADE_18233 = 18233,
+        // Item [Level : 1] 
+        ARTEFACT_ELEMENTAL_DAIR_18234 = 18234,
+        // Item [Level : 1] 
+        ARTEFACT_ELEMENTAL_DEAU_18235 = 18235,
+        // Item [Level : 1] 
+        ARTEFACT_ELEMENTAL_DU_FEU_18236 = 18236,
+        // Item [Level : 1] 
+        ARTEFACT_ELEMENTAL_DE_TERRE_18237 = 18237,
+        // Item [Level : 1] 
+        ARTEFACT_ELEMENTAL_PRISMATIQUE_18238 = 18238,
+        // Item [Level : 1] 
+        JETON_PRISMATIQUE_DU_BWORKER_18239 = 18239,
+        // Item [Level : 1] 
+        GRAND_FRAGMENT_DE_PIERRE_POLIE_18240 = 18240,
+        // Item [Level : 1] 
+        INDESTRUCTIBLE_18242 = 18242,
+        // Item [Level : 1] 
+        CHAMPIGNON_PSYCHOTROPE_18243 = 18243,
+        // Item [Level : 1] 
+        BOOMERANG_DE_BIVOAK_18244 = 18244,
+        // Item [Level : 1] 
+        RACINE_MARECAGEUSE_18245 = 18245,
+        // Item [Level : 1] 
+        FLEUR_DE_KALIPTUS_SECULAIRE_18246 = 18246,
+        // Item [Level : 1] 
+        SOUPE_AUX_RACINES_18247 = 18247,
+        // Item [Level : 1] 
+        ENCENS_ANCESTRAL_18248 = 18248,
+        // Item [Level : 1] 
+        ORBE_ELEMENTAIRE_NEUTRE_18249 = 18249,
+        // Item [Level : 1] 
+        ORBE_ELEMENTAIRE_DAIR_18250 = 18250,
+        // Item [Level : 1] 
+        ORBE_ELEMENTAIRE_DE_FEU_18251 = 18251,
+        // Item [Level : 1] 
+        ORBE_ELEMENTAIRE_DE_TERRE_18252 = 18252,
+        // Item [Level : 1] 
+        ORBE_ELEMENTAIRE_DEAU_18253 = 18253,
+        // Item [Level : 1] 
+        ESSENCE_PRISMATIQUE_18254 = 18254,
+        // Item [Level : 1] 
+        CAPTURE_ELEMENTALE_18255 = 18255,
+        // Item [Level : 1] 
+        NABRISA_18256 = 18256,
+        // Item [Level : 1] 
+        REGARD_AVEUGLE_18257 = 18257,
+        // Item [Level : 1] 
+        AME_DOMBRE_18258 = 18258,
+        // Item [Level : 1] 
+        FOULARD_ROUGE_18259 = 18259,
+        // Item [Level : 1] 
+        TAURGNOL_18260 = 18260,
+        // Item [Level : 1] 
+        GATEAU_AUX_CAWOTTES_18261 = 18261,
+        // Item [Level : 1] 
+        GOUTTE_DE_ROSEE_DU_MATIN_18262 = 18262,
+        // Item [Level : 1] 
+        SANG_DAGUABRIAL_18263 = 18263,
+        // Item [Level : 1] 
+        SANG_DAERAFAL_18264 = 18264,
+        // Item [Level : 1] 
+        SANG_DIGNEMIKHAL_18265 = 18265,
+        // Item [Level : 1] 
+        SANG_DE_TERRAKOURIAL_18266 = 18266,
+        // Item [Level : 1] 
+        NECTAR_CELESTE_18267 = 18267,
+        // Item [Level : 1] 
+        PEPIN_DE_POMME_DOR_18268 = 18268,
+        // Item [Level : 1] 
+        APPEAU_A_SANGLIER_18269 = 18269,
+        // Item [Level : 1] 
+        RAZARBOK_18270 = 18270,
+        // Item [Level : 1] 
+        PEIGNE_EN_ECUME_DE_MER_18271 = 18271,
+        // Item [Level : 1] 
+        OS_DESSECHE_PAR_LE_SOLEIL_18272 = 18272,
+        // Item [Level : 1] 
+        JUS_DE_VIEUX_CACTERRE_18273 = 18273,
+        // Item [Level : 1] 
+        ROSE_DES_SABLES_DE_SAHARACH_18274 = 18274,
+        // Item [Level : 1] 
+        VIEILLES_MOUSTACHES_DE_CACTERRE_18275 = 18275,
+        // Item [Level : 1] 
+        VIEUX_STRING_DE_CACTERRE_18276 = 18276,
+        // Item [Level : 1] 
+        VIEUX_PARCHEMIN_DE_CACTERRE_18277 = 18277,
+        // Item [Level : 1] 
+        VIEILLE_FLEUR_DE_CACTERRE_18278 = 18278,
+        // Item [Level : 1] 
+        EAU_QUI_NEXISTE_PAS_18280 = 18280,
+        // Item [Level : 1] 
+        ECAILLE_EMERAUDE_18281 = 18281,
+        // Item [Level : 1] 
+        ECAILLE_POURPRE_18282 = 18282,
+        // Item [Level : 1] 
+        CLEF_NUAGEUSE_18283 = 18283,
+        // Item [Level : 1] 
+        CLEF_BRUMEUSE_18284 = 18284,
+        // Item [Level : 1] 
+        CAGE_A_FOUDRE_VIDE_18285 = 18285,
+        // Item [Level : 1] 
+        FEUILLE_DE_ROZBERK_18286 = 18286,
+        // Item [Level : 1] 
+        FER_DE_LANCE_ANTIQUE_18287 = 18287,
+        // Item [Level : 1] 
+        GROSSE_PATATE_18288 = 18288,
+        // Item [Level : 1] 
+        HAMPE_EN_BOIS_IGNIFUGE_18289 = 18289,
+        // Item [Level : 1] 
+        CAGE_A_FOUDRE_ELECTRISEE_18291 = 18291,
+        // Item [Level : 1] 
+        CLEF_CARBONISEE_18292 = 18292,
+        // Item [Level : 1] 
+        CLEF_INCANDESCENTE_18293 = 18293,
+        // Item [Level : 1] 
+        SYMBOLE_DU_CORNU_MOLLU_18294 = 18294,
+        // Item [Level : 1] 
+        SYMBOLE_DU_CORNU_MOLLU_18295 = 18295,
+        // Item [Level : 1] 
+        SYMBOLE_DU_CORNU_MOLLU_18296 = 18296,
+        // Item [Level : 1] 
+        SYMBOLE_DU_CORNU_MOLLU_18297 = 18297,
+        // Item [Level : 1] 
+        SYMBOLE_DU_CORNU_MOLLU_18298 = 18298,
+        // Item [Level : 1] 
+        SYMBOLE_DU_CORNU_MOLLU_18299 = 18299,
+        // Item [Level : 1] 
+        SYMBOLE_DU_CORNU_MOLLU_18300 = 18300,
+        // Item [Level : 1] 
+        TOUNGOUSA_18301 = 18301,
+        // Item [Level : 1] 
+        PARFUM_PRINTANIER_18302 = 18302,
+        // Item [Level : 1] 
+        PARFUM_CAPITEUX_18303 = 18303,
+        // Item [Level : 1] 
+        PARFUM_BOISE_18304 = 18304,
+        // Item [Level : 1] 
+        PARFUM_PIQUANT_18305 = 18305,
+        // Item [Level : 1] 
+        DOFUS_ALCHIMIQUE_18306 = 18306,
+        // Item [Level : 1] 
+        CLEF_BOUEUSE_18307 = 18307,
+        // Item [Level : 1] 
+        CLEF_LUXURIANTE_18308 = 18308,
+        // Item [Level : 1] 
+        RACINE_VERDOYANTE_18309 = 18309,
+        // Item [Level : 1] 
+        ENGRAIS_DE_ROSAL_18310 = 18310,
+        // Item [Level : 1] 
+        GRIFFE_DE_MISS_18311 = 18311,
+        // Item [Level : 1] 
+        PLUME_DE_CORBAC_PORTEBONHEUR_18312 = 18312,
+        // Item [Level : 1] 
+        PLUME_DE_CORBAC_GAZOUILLEUR_18313 = 18313,
+        // Item [Level : 1] 
+        PLUME_DE_CORBAC_THANATOPHOBE_18314 = 18314,
+        // Item [Level : 1] 
+        BOUCLIER_DU_CHASSEUR_DE_TROOLL_18315 = 18315,
+        // Item [Level : 1] 
+        TRANSFORMATION_EN_CORBAC_18316 = 18316,
+        // Item [Level : 1] 
+        KALISTHE_18317 = 18317,
+        // Item [Level : 200] 
+        SOIE_CHATOYANTE_18318 = 18318,
+        // Item [Level : 1] 
+        TOTEM_BWORK_18319 = 18319,
+        // Item [Level : 80] 
+        TAS_DE_FEUILLES_18320 = 18320,
+        // Item [Level : 80] 
+        PREMIER_INDICE_18321 = 18321,
+        // Item [Level : 80] 
+        DEUXIEME_INDICE_18322 = 18322,
+        // Item [Level : 80] 
+        POISSON_POISSEUX_18323 = 18323,
+        // Item [Level : 1] 
+        RACINE_MARECAGEUSE_18325 = 18325,
+        // Item [Level : 1] 
+        RACINE_MARECAGEUSE_18326 = 18326,
+        // Item [Level : 1] 
+        RACINE_MARECAGEUSE_18327 = 18327,
+        // Item [Level : 80] 
+        SUKETTE_VOLEE_18328 = 18328,
+        // Item [Level : 80] 
+        PELLE_VOLEE_18329 = 18329,
+        // Item [Level : 80] 
+        RENYFLEUR_18330 = 18330,
+        // Item [Level : 80] 
+        EPICE_MODIFIEE_18331 = 18331,
+        // Item [Level : 80] 
+        CAISSE_DE_POMMES_18332 = 18332,
+        // Item [Level : 80] 
+        OS_PORTEBONHEUR_18333 = 18333,
+        // Item [Level : 80] 
+        BOUTEILLE_DALCOOL_FORT_18336 = 18336,
+        // Item [Level : 1] 
+        TRANSFORMATION_EN_CROCODAILLE_18337 = 18337,
+        // Item [Level : 1] 
+        COUP_FATAL_IOP_18338 = 18338,
+        // Item [Level : 1] 
+        IL_DECLAIREUR_18339 = 18339,
+        // Item [Level : 1] 
+        MAX_LE_FOU_18342 = 18342,
+        // Item [Level : 130] 
+        CLE_DE_DECHIFFREMENT_STEAMER_18343 = 18343,
+        // Item [Level : 80] 
+        BADGE_DE_SARAKECH_18344 = 18344,
+        // Item [Level : 80] 
+        IL_VITREUX_DE_LEOLHYENE_18345 = 18345,
+        // Item [Level : 1] 
+        BENTO_MOLOGY_18346 = 18346,
+        // Item [Level : 80] 
+        OS_DE_MASTODONTE_18347 = 18347,
+        // Item [Level : 80] 
+        FLUTE_DE_MASTODONTE_18348 = 18348,
+        // Item [Level : 80] 
+        DIRECTIVES_DE_BENEDICTE_GESSER_18349 = 18349,
+        // Item [Level : 80] 
+        PRELEVEMENT_DU_MANTISCORE_18351 = 18351,
+        // Item [Level : 1] 
+        ROI_CAMOLE_18352 = 18352,
+        // Item [Level : 130] 
+        FAUX_DOCUMENTS_DE_LA_CORPORATION_18353 = 18353,
+        // Item [Level : 130] 
+        CALECON_DE_BILLY_LONGLET_18354 = 18354,
+        // Item [Level : 130] 
+        CALECON_DE_WINDSOR_TOLERO_18355 = 18355,
+        // Item [Level : 80] 
+        PREPARATION_POISSEUSE_18356 = 18356,
+        // Item [Level : 130] 
+        JUS_DE_CACTERRE_18357 = 18357,
+        // Item [Level : 130] 
+        MARACA_DE_LEVITO_18358 = 18358,
+        // Item [Level : 130] 
+        PARCHEMIN_DE_CACTANA_18359 = 18359,
+        // Item [Level : 1] 
+        CHEVEUX_EN_BATAILLE_DE_SIRENE_18360 = 18360,
+        // Item [Level : 130] 
+        FLEUR_DE_CACTIFLORE_18361 = 18361,
+        // Item [Level : 130] 
+        MOUSTACHES_DE_CACTOBLONGO_18362 = 18362,
+        // Item [Level : 130] 
+        STRING_DE_PAMPACTUS_18363 = 18363,
+        // Item [Level : 130] 
+        ETOILE_DOR_DEL_PIKO_18364 = 18364,
+        // Item [Level : 1] 
+        IL_GLAUQUE_18365 = 18365,
+        // Item [Level : 80] 
+        SABLE_FIN_18366 = 18366,
+        // Item [Level : 80] 
+        BOULE_DE_BOULEPIQUE_18367 = 18367,
+        // Item [Level : 80] 
+        ECAILLES_DOUROBOULOS_18368 = 18368,
+        // Item [Level : 80] 
+        QUEUE_DE_SCORDION_BLEU_18369 = 18369,
+        // Item [Level : 80] 
+        QUEUE_DE_FENNEX_18370 = 18370,
+        // Item [Level : 80] 
+        CARAPACE_DU_MANTISCORE_18371 = 18371,
+        // Item [Level : 1] 
+        PAIRE_DE_LUNETTES_18372 = 18372,
+        // Item [Level : 1] 
+        QUINTESSENCE_DUN_AMOUR_SINCERE_18373 = 18373,
+        // Item [Level : 1] 
+        PUISSANT_FOUET_18374 = 18374,
+        // Item [Level : 1] 
+        OSMANE_ITTOU_18376 = 18376,
+        // Item [Level : 130] 
+        LETTRE_DE_DAGMAR_SHALL_18377 = 18377,
+        // Item [Level : 130] 
+        SAC_DORDURES_18378 = 18378,
+        // Item [Level : 1] 
+        PETITE_PAUSE_18379 = 18379,
+        // Item [Level : 1] 
+        NOTES_DOBSERVATIONS_DUN_CACTOBLONGO_18380 = 18380,
+        // Item [Level : 1] 
+        NOTES_DOBSERVATIONS_DUN_CACTANA_18381 = 18381,
+        // Item [Level : 1] 
+        NOTES_DOBSERVATIONS_DUN_PAMPACTUS_18382 = 18382,
+        // Item [Level : 130] 
+        PICOT_DEL_PIKO_18383 = 18383,
+        // Item [Level : 1] 
+        POMME_CROQUEE_18384 = 18384,
+        // Item [Level : 80] 
+        CUR_DU_MANTISCORE_18385 = 18385,
+        // Item [Level : 130] 
+        ROCHE_ABOMINABLE_18386 = 18386,
+        // Item [Level : 1] 
+        ROSE_DES_SABLES_DE_SAHARACH_18387 = 18387,
+        // Item [Level : 1] 
+        ROSE_DES_SABLES_DE_SAHARACH_18388 = 18388,
+        // Item [Level : 1] 
+        ROSE_DES_SABLES_DE_SAHARACH_18389 = 18389,
+        // Item [Level : 1] 
+        ROSE_DES_SABLES_DE_SAHARACH_18390 = 18390,
+        // Item [Level : 1] 
+        SHIRLO_ET_DINEY_18391 = 18391,
+        // Item [Level : 80] 
+        GROS_BLOC_DE_PIERRE_18392 = 18392,
+        // Item [Level : 1] 
+        CONTRAT_18393 = 18393,
+        // Item [Level : 1] 
+        ECHANTILLON_DEAU_ETRANGE_18394 = 18394,
+        // Item [Level : 1] 
+        RACINE_VERDOYANTE_18395 = 18395,
+        // Item [Level : 1] 
+        RACINE_VERDOYANTE_18396 = 18396,
+        // Item [Level : 80] 
+        OUTIL_DE_PRELEVEMENT_OSSEUX_18397 = 18397,
+        // Item [Level : 80] 
+        PRELEVEMENT_DE_COTE_OSSEUSE_18398 = 18398,
+        // Item [Level : 80] 
+        PRELEVEMENT_DE_FEMUR_OSSEUX_18399 = 18399,
+        // Item [Level : 80] 
+        PRELEVEMENT_DE_COLONNE_OSSEUSE_18400 = 18400,
+        // Item [Level : 80] 
+        ECHANTILLON_DE_VERTEBRE_OSSEUX_18401 = 18401,
+        // Item [Level : 80] 
+        ECHANTILLON_DE_DEFENSE_OSSEUSE_18402 = 18402,
+        // Item [Level : 80] 
+        ECHANTILLON_DE_ROTULE_OSSEUSE_18403 = 18403,
+        // Item [Level : 80] 
+        SUBSTANCE_ETRANGE_18404 = 18404,
+        // Item [Level : 80] 
+        BOISSON_ALCOOLISEE_CACTERRE_18405 = 18405,
+        // Item [Level : 130] 
+        CROQUETTES_A_LEPICE_18406 = 18406,
+        // Item [Level : 130] 
+        RECUEIL_INCOMPLET_DE_POKERHOYLE_18407 = 18407,
+        // Item [Level : 80] 
+        DENT_CASSEE_18408 = 18408,
+        // Item [Level : 130] 
+        CARTE_DE_BUCK_STER_18409 = 18409,
+        // Item [Level : 1] 
+        CONTRAT_SIGNE_18410 = 18410,
+        // Item [Level : 80] 
+        IL_DE_LEOLHYENE_18411 = 18411,
+        // Item [Level : 1] 
+        BOUTEILLE_POUSSIEREUSE_18412 = 18412,
+        // Item [Level : 1] 
+        BOUTEILLE_TERREUSE_18413 = 18413,
+        // Item [Level : 80] 
+        DAGUES_USEES_18414 = 18414,
+        // Item [Level : 1] 
+        OS_DE_WABBIT_SQUELETTE_AFFAME_18415 = 18415,
+        // Item [Level : 130] 
+        STRING_DE_CACTERREUR_18416 = 18416,
+        // Item [Level : 1] 
+        SOIF_DE_SANG_DE_CACTOBLONGO_18417 = 18417,
+        // Item [Level : 1] 
+        SOIF_DE_SANG_DE_CACTANA_18418 = 18418,
+        // Item [Level : 1] 
+        SOIF_DE_SANG_DE_PAMPACTUS_18419 = 18419,
+        // Item [Level : 1] 
+        ZOMBIE_18420 = 18420,
+        // Item [Level : 80] 
+        CLEF_DU_CIMETIERE_DES_MASTODONTES_18421 = 18421,
+        // Item [Level : 130] 
+        CLEF_DE_LA_CAVERNE_DEL_PIKO_18422 = 18422,
+        // Item [Level : 78] 
+        CAPE_OUROBOULOS_18423 = 18423,
+        // Item [Level : 80] 
+        ANNEAU_OUROBOULOS_18424 = 18424,
+        // Item [Level : 83] 
+        BOTTES_OUROBOULOS_18425 = 18425,
+        // Item [Level : 79] 
+        CAPE_DU_DESERT_18426 = 18426,
+        // Item [Level : 82] 
+        COIFFENNEX_18427 = 18427,
+        // Item [Level : 80] 
+        STRING_LEOLHYENE_18428 = 18428,
+        // Item [Level : 129] 
+        CAPTERRE_18431 = 18431,
+        // Item [Level : 131] 
+        CASCTERRE_18432 = 18432,
+        // Item [Level : 133] 
+        CACTURE_18433 = 18433,
+        // Item [Level : 128] 
+        SOMBRERO_DEL_PIKO_18434 = 18434,
+        // Item [Level : 130] 
+        ANNEAU_DEL_PIKO_18435 = 18435,
+        // Item [Level : 132] 
+        AMULETTE_DEL_PIKO_18436 = 18436,
+        // Item [Level : 200] 
+        LE_DORADO_18439 = 18439,
+        // Item [Level : 130] 
+        COFFRE_DE_ROMAIN_SALOR_18440 = 18440,
+        // Item [Level : 200] 
+        COCKTAIL_CACTERRE_18441 = 18441,
+        // Item [Level : 130] 
+        CAISSE_POUR_SPICE_DIKOUNE_18442 = 18442,
+        // Item [Level : 130] 
+        BATON_DE_MARCHE_DE_PAPI_CINE_18443 = 18443,
+        // Item [Level : 130] 
+        ECLAT_DE_ROCHE_SPECTRALE_18444 = 18444,
+        // Item [Level : 130] 
+        ORANGE_DE_PIKMAMA_18445 = 18445,
+        // Item [Level : 130] 
+        PLAT_DE_PIMENT_SAHARACH_18446 = 18446,
+        // Item [Level : 80] 
+        GRAINS_DE_SABLE_18447 = 18447,
+        // Item [Level : 80] 
+        GRAINS_DE_SABLE_18448 = 18448,
+        // Item [Level : 80] 
+        GRAINS_DE_SABLE_18449 = 18449,
+        // Item [Level : 80] 
+        BIERE_FRELATEE_DE_SAHARACH_18450 = 18450,
+        // Item [Level : 1] 
+        TRANSFORMATION_EN_CACTOBLONGO_18451 = 18451,
+        // Item [Level : 60] 
+        HARNACHEMENT_DE_DRAGODINDE_STEAMER_18453 = 18453,
+        // Item [Level : 1] 
+        COLONIE_18454 = 18454,
+        // Item [Level : 1] 
+        GONFLER_UN_BALLON_18478 = 18478,
+        // Item [Level : 1] 
+        EXPERIMENTER_18479 = 18479,
+        // Item [Level : 1] 
+        COUCOU_18480 = 18480,
+        // Item [Level : 1] 
+        SE_BOUCHER_LES_OREILLES_18481 = 18481,
+        // Item [Level : 1] 
+        BOUCLIER_JUSTICE_18482 = 18482,
+        // Item [Level : 1] 
+        BOUCLIER_DE_KATAR_18483 = 18483,
+        // Item [Level : 1] 
+        BOUCLIER_DU_ROI_SADIDA_18484 = 18484,
+        // Item [Level : 1] 
+        BOUCLIER_DE_QILBY_18485 = 18485,
         // Item [Level : 7] 
         EPEE_DE_BOISAILLE_44 = 44,
         // Item [Level : 15] 
@@ -21903,7 +23057,7 @@
         // Item [Level : 36] 
         CORDE_DIVAN_NOWE_592 = 592,
         // Item [Level : 60] 
-        FILET_DE_CAPTURE_597 = 597,
+        FILET_DE_CAPTURE_DE_DRAGODINDE_597 = 597,
         // Item [Level : 85] 
         BATON_DU_MAITRE_DES_BOUFTOUS_619 = 619,
         // Item [Level : 61] 
@@ -30470,5 +31624,43 @@
         HACHE_DU_CHALIL_17683 = 17683,
         // Item [Level : 100] 
         MARTEAU_DEREZIAH_17809 = 17809,
+        // Item [Level : 37] 
+        BALNETON_17846 = 17846,
+        // Item [Level : 180] 
+        FILET_DE_CAPTURE_DE_MULDO_17953 = 17953,
+        // Item [Level : 200] 
+        BATHON_18010 = 18010,
+        // Item [Level : 200] 
+        BAGUETTE_RANGE_18011 = 18011,
+        // Item [Level : 200] 
+        ARC_DE_KOUTOULOU_18012 = 18012,
+        // Item [Level : 200] 
+        HARPELLE_18013 = 18013,
+        // Item [Level : 200] 
+        MANTHACHE_18014 = 18014,
+        // Item [Level : 200] 
+        EPOUVANTE_18015 = 18015,
+        // Item [Level : 200] 
+        DAGOULINANTES_18017 = 18017,
+        // Item [Level : 200] 
+        MARTEAU_RTURE_18018 = 18018,
+        // Item [Level : 1] 
+        PIERRE_DAME_ELEMENTALE_18241 = 18241,
+        // Item [Level : 170] 
+        BAGUETTE_DE_SOURCIER_BENIE_18279 = 18279,
+        // Item [Level : 170] 
+        PATATONNERRE_18290 = 18290,
+        // Item [Level : 60] 
+        GANTS_GRENNE_18350 = 18350,
+        // Item [Level : 170] 
+        BAGUETTE_DE_SOURCIER_18375 = 18375,
+        // Item [Level : 80] 
+        HACHE_DU_MANTISCORE_18429 = 18429,
+        // Item [Level : 80] 
+        MASSE_BOULEPIQUE_18430 = 18430,
+        // Item [Level : 130] 
+        DAGUES_CACTERRE_18437 = 18437,
+        // Item [Level : 130] 
+        MARACASSABRE_18438 = 18438,
     }
 }
