@@ -40,7 +40,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
+            MerchantManager.Instance.RemoveMerchantSpawn(target.Record);
             MerchantManager.Instance.UnActiveMerchant(target);
+
             trigger.Reply("Target Merchant kicked");
         }
     }

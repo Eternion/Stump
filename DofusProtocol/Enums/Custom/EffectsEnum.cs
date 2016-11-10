@@ -2285,11 +2285,11 @@
         /// <summary>
         /// Pose une rune de rang #2
         /// </summary>
-        Effect_2022 = 2022,
+        Effect_Rune = 2022,
         /// <summary>
         /// Déclenche les runes
         /// </summary>
-        Effect_2023 = 2023,
+        Effect_TriggerRunes = 2023,
         /// <summary>
         /// 
         /// </summary>

@@ -430,6 +430,8 @@
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\TransmitCharacteristic.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\HealReceivedDamages.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Marks\RuneSpawn.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerRunes.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\TakeControl.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
@@ -638,6 +640,7 @@
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
     <Compile Include="Game\Fights\Triggers\GlyphAura.cs" />
+    <Compile Include="Game\Fights\Triggers\Rune.cs" />
     <Compile Include="Game\Fights\Triggers\Wall.cs" />
     <Compile Include="Game\Fights\Triggers\WallsBinding.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />

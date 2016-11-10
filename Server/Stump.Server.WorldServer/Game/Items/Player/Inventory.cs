@@ -856,7 +856,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
-            if (!CanUseItem(item))
+            if ((target != null && !target.Inventory.CanUseItem(item)) || !CanUseItem(item))
                 return;
 
             if (amount > item.Stack)
