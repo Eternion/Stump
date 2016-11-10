@@ -36,7 +36,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public Spell TrapSpell
         {
             get;
-            private set;
         }
 
         public GameActionFightInvisibilityStateEnum VisibleState
@@ -47,25 +46,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override bool StopMovement => !WillBeTriggered;
 
-        public override GameActionMarkTypeEnum Type
-        {
-            get { return GameActionMarkTypeEnum.TRAP; }
-        }
+        public override GameActionMarkTypeEnum Type => GameActionMarkTypeEnum.TRAP;
 
-        public override TriggerType TriggerType
-        {
-            get { return TriggerType.MOVE; }
-        }
+        public override TriggerType TriggerType => TriggerType.MOVE;
 
-        public override bool DoesSeeTrigger(FightActor fighter)
-        {
-            return VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE || fighter.IsFriendlyWith(Caster);
-        }
+        public override bool DoesSeeTrigger(FightActor fighter) => VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE || fighter.IsFriendlyWith(Caster);
 
-        public override bool DecrementDuration()
-        {
-            return false;
-        }
+        public override bool DecrementDuration() => false;
 
         public override void Trigger(FightActor trigger, Cell triggerCell)
         {
@@ -92,22 +79,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             Remove();
         }
 
-        public override GameActionMark GetHiddenGameActionMark()
-        {
-            return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, -1,
+        public override GameActionMark GetHiddenGameActionMark() => new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, -1,
                                       new GameActionMarkedCell[0], true);
-        }
 
-        public override GameActionMark GetGameActionMark()
-        {
-            return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, CenterCell.Id,
+        public override GameActionMark GetGameActionMark() => new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, CenterCell.Id,
                                       Shape.GetGameActionMarkedCells(), true);
-        }
 
-        public override bool CanTrigger(FightActor actor)
-        {
-            return !HasBeenTriggered && !WillBeTriggered;
-        }
+        public override bool CanTrigger(FightActor actor) => !HasBeenTriggered && !WillBeTriggered;
 
         private static Color GetTrapColorBySpell(Spell spell)
         {

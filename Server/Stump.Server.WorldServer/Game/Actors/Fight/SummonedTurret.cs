@@ -46,20 +46,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
 
             Spell spellToCast = null;
-            SpellStatesEnum state = SpellStatesEnum.LONGUE_VUE_132;
+            FightActor target = null;
 
             switch ((MonsterIdEnum)Monster.Template.Id)
             {
                 case MonsterIdEnum.TACTIRELLE_3289:
                     {
                         spellToCast = new Spell((int)SpellIdEnum.TRANSKO_3240, 1);
-                        state = SpellStatesEnum.LONGUE_VUE_132;
+                        target = Fight.Fighters.FirstOrDefault(x => this != x && x.HasState((int)SpellStatesEnum.LONGUE_VUE_132)
+                                    && !x.HasState((int)SpellStatesEnum.ENRACINE_6) && !x.HasState((int)SpellStatesEnum.INDEPLACABLE_97));
                         break;
                     }
                 case MonsterIdEnum.GARDIENNE_3288:
                     {
                         spellToCast = new Spell((int)SpellIdEnum.SAUVETAGE, 1);
-                        state = SpellStatesEnum.SECOURISME_131;
+                        target = fighter.Team.Fighters.FirstOrDefault(x => x.HasState((int)SpellStatesEnum.SECOURISME_131));
                         break;
                     }
                 case MonsterIdEnum.HARPONNEUSE_3287:
@@ -71,17 +72,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         else if (HasState((int)SpellStatesEnum.ARDENT_129))
                             spellToCast = new Spell((int)SpellIdEnum.BOUMBOUMF, 1);
 
-                        state = SpellStatesEnum.EMBUSCADE_130;
+                        target = fighter.OpposedTeam.Fighters.FirstOrDefault(x => x.HasState((int)SpellStatesEnum.EMBUSCADE_130));
                         break;
                     }
             }
 
-            if (spellToCast == null)
-                return;
-
-            var target = Fight.Fighters.FirstOrDefault(x => x.HasState((int)state));
-
-            if (target == null)
+            if (spellToCast == null || target == null)
                 return;
 
             CastSpell(spellToCast, target.Cell, true);

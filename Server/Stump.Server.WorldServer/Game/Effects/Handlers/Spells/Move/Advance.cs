@@ -13,6 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         public Advance(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            Pull = true;
         }
 
         protected override bool InternalApply()

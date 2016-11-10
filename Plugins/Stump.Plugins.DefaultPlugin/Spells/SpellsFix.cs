@@ -68,6 +68,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels((int)SpellIdEnum.LIEN_ANIMAL_26, EffectsEnum.Effect_AddLock);
             RemoveEffectOnAllLevels((int)SpellIdEnum.LIEN_ANIMAL_26, EffectsEnum.Effect_AddHealBonus);
 
+            FixEffectOnAllLevels((int)SpellIdEnum.DRAGONIQUE_21, EffectsEnum.Effect_GiveHpPercentWhenAttack, (level, effect, critical) => effect.Priority = int.MaxValue);
+
             #endregion OSAMODAS
         }
 
