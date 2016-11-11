@@ -1537,7 +1537,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void RemoveSpellBuffs(int spellId)
         {
-            foreach (var buff in m_buffList.Where(x => x.Spell.Id == spellId).ToArray())
+            foreach (var buff in m_buffList.Where(x => x.Spell.Id == spellId || (x as TriggerBuff)?.ParentSpell.Id == spellId).ToArray())
             {
                 RemoveBuff(buff);
                 ActionsHandler.SendGameActionFightDispellSpellMessage(Fight.Clients, this, this, spellId);

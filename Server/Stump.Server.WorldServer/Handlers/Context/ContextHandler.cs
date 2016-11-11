@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             if (!client.Character.CanMove())
             {
-                SendGameMapNoMovementMessage(client);
+                SendGameMapNoMovementMessage(client, (short)client.Character.Position.Point.X, (short)client.Character.Position.Point.Y);
                 return;
             }
 
@@ -81,11 +81,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 client.Character.Fighter.ShowCell(client.Character.Map.Cells[message.cellId]);
             else if (client.Character.IsSpectator())
                 client.Character.Spectator.ShowCell(client.Character.Map.Cells[message.cellId]);
-        }
-
-        public static void SendGameMapNoMovementMessage(IPacketReceiver client)
-        {
-            client.Send(new GameMapNoMovementMessage());
         }
 
         public static void SendGameMapNoMovementMessage(IPacketReceiver client, short cellX, short cellY)

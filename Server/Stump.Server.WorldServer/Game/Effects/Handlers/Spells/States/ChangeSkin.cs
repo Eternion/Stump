@@ -65,14 +65,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     case 1234: //Osamodas - Fusion Dragonnet
                         bonesId = 3716;
                         scale = 150;
+                        driverLook = null;
                         break;
                     case 1235: //Osamodas - Fusion Tofu
                         bonesId = 3669;
                         scale = 130;
+                        driverLook = null;
                         break;
                     case 1236: //Osamodas - Fusion Bouftou
                         bonesId = 3670;
                         scale = 60;
+                        driverLook = null;
                         break;
                     default:
                         return false;
