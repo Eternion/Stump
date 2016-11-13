@@ -20,7 +20,7 @@ namespace FakeClient.Handlers
             writer.WriteUTF(client.AccountPassword);
 
             client.Send(new IdentificationMessage(false, false, false, new Version(2, 10, 0, 65664, 0, (sbyte)BuildTypeEnum.RELEASE).ToVersionExtended(0, 0), "fr",
-                writer.Data.Select(x => (sbyte)x), (short)WorldServer.ServerInformation.Id));
+                writer.Data.Select(x => (sbyte)x), (short)WorldServer.ServerInformation.Id, 0, new short [0]));
         }
 
         [FakeHandler(IdentificationFailedMessage.Id)]
@@ -33,7 +33,7 @@ namespace FakeClient.Handlers
         public static void HandleSelectedServerDataMessage(FakeClient client, SelectedServerDataMessage message)
         {
             client.Disconnect(true);
-            client.Ticket = message.ticket;
+            client.Ticket = new string(message.ticket.Select(x => (char) x).ToArray());
             client.WorldIp = message.address;
             client.WorldPort = message.port;
             //client.Connect(message.address, message.port);
