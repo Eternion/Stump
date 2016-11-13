@@ -77,7 +77,8 @@ namespace DBSynchroniser.Interactives
             foreach (var keyPair in identifiableElements)
             {
                 var likelyElement = keyPair.Value.Where(x => !x.Ignore)
-                    .OrderBy(x => !new MapPoint(x.Element.Cell.Id).IsOnMapBorder() ? 0 : Math.Abs(x.Element.PixelOffset.X) + Math.Abs(x.Element.PixelOffset.Y)).First();
+                    .OrderBy(x => new MapPoint(x.Element.Cell.Id).IsOnMapBorder() ? 1 : 0)
+                    .ThenBy(x => Math.Abs(x.Element.PixelOffset.X) + Math.Abs(x.Element.PixelOffset.Y)).First();
 
 
                 var eleElement = eleInstance.GraphicalDatas[(int) likelyElement.Element.ElementId];
