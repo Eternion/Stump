@@ -166,6 +166,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommandType = typeof(DungeonCommands);
             AddParameter("monster", "m", "Monster template", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("grade", "g", "Grade of the monster (usually between 1-5)", 1, true);
+            AddParameter<int>("minmembers", "min", "Minimum party members to fight this monster", isOptional: true);
             AddParameter("map", "map", "Given map", isOptional: true, converter: ParametersConverter.MapConverter);
         }
 
@@ -200,6 +201,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 map.AddSpawningPool(pool);
             }
 
+            var minPartyMembers = trigger.Get<int>("minmembers");
+
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
@@ -207,29 +210,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 if (group == null)
                 {
-                    group = new MonsterDungeonSpawn
-                    {
-                        Map = map,
-                        GroupMonsters = new List<MonsterGrade> { grade },
-                    };
+                    group = new MonsterDungeonSpawn() {Map = map};
                     WorldServer.Instance.DBAccessor.Database.Insert(group);
                 }
-                else
-                {
-                    if (group.GroupMonsters == null)
-                        group.GroupMonsters = new List<MonsterGrade>();
 
-                    group.GroupMonsters.Add(grade);
-                }
-
-                var record = new MonsterDungeonSpawnEntity
-                {
-                    DungeonSpawnId = group.Id,
-                    MonsterGradeId = grade.Id,
-                };
+                var record = new MonsterDungeonSpawnEntity(group, grade, minPartyMembers);
 
                 WorldServer.Instance.DBAccessor.Database.Insert(record);
 
+                group.GroupMonsters.Add(record);
                 if (group.GroupMonsters.Count == 1)
                     pool.AddSpawn(group);
                 map.Area.ExecuteInContext(pool.StartAutoSpawn);
@@ -269,7 +258,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 foreach (var spawn in pool.Spawns)
                 {
-                    var monsters = spawn.GroupMonsters.Where(y => y.MonsterId == monsterTemplate.Id).ToArray();
+                    var monsters = spawn.GroupMonsters.Where(y => y.MonsterGrade.MonsterId == monsterTemplate.Id).ToArray();
 
                     foreach (var monster in monsters)
                     {

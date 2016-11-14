@@ -17,7 +17,7 @@ using Stump.Core.Extensions;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
-    public sealed class MonsterGroup : RolePlayActor, IContextDependant, IAutoMovedEntity
+    public class MonsterGroup : RolePlayActor, IContextDependant, IAutoMovedEntity
     {
         [Variable(true)]
         public static int StarsBonusRate = 1800;
@@ -38,6 +38,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             Position = position;
             CreationDate = DateTime.Now;
             SpawningPool = spawningPool;
+        }
+
+        public sealed override ObjectPosition Position
+        {
+            get { return base.Position; }
+            protected set { base.Position = value; }
         }
 
         public IFight Fight
@@ -199,9 +205,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             if (handler != null) handler(this, fight);
         }
 
-        public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team) => m_monsters.Select(monster => monster.CreateFighter(team));
+        public virtual IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team) => m_monsters.Select(monster => monster.CreateFighter(team));
 
-        public void AddMonster(Monster monster)
+        public virtual void AddMonster(Monster monster)
         {
             monster.SetMonsterGroup(this);
             m_monsters.Add(monster);
@@ -212,7 +218,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             Map.Refresh(this);
         }
 
-        public void RemoveMonster(Monster monster)
+        public virtual void RemoveMonster(Monster monster)
         {
             m_monsters.Remove(monster);
 
@@ -222,17 +228,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             Map.Refresh(this);
         }
 
-        public IEnumerable<Monster> GetMonsters()
+        public virtual IEnumerable<Monster> GetMonsters()
         {
             return m_monsters;
         }
 
         public IEnumerable<Monster> GetMonstersWithoutLeader()
         {
-            return m_monsters.Where(entry => entry != Leader);
+            return GetMonsters().Where(entry => entry != Leader);
         }
 
-        public int Count() => m_monsters.Count;
+        public virtual int Count() => m_monsters.Count;
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)
                                                         => new GameRolePlayGroupMonsterInformations(Id,
@@ -241,13 +247,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                                                             false,
                                                             false,
                                                             false,
-                                                            GetGroupMonsterStaticInformations(),
+                                                            GetGroupMonsterStaticInformations(character),
                                                             (CreationDate.GetUnixTimeStampLong() + (TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds * 1000)),
                                                             (StarsBonusRate * 1000),
                                                             0,
                                                             0);
 
-        public GroupMonsterStaticInformations GetGroupMonsterStaticInformations()
+        public virtual GroupMonsterStaticInformations GetGroupMonsterStaticInformations(Character character)
             => new GroupMonsterStaticInformations(Leader.GetMonsterInGroupLightInformations(),
                 GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()));
 
