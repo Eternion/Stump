@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         {
             if (Start == null)
             {
-                return SquareDistancePointLine(point) < 0.1;
+                return SquareDistanceToLine(point) < 0.1;
             }
             if (Equals(point, Start))
                 return true;
@@ -100,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         }
 
         // return the square euclidean distance of a point to the line AB
-        private double SquareDistancePointLine(MapPoint point)
+        public double SquareDistanceToLine(MapPoint point)
         {
             double dx = B.X - A.X;
             double dy = B.Y - A.Y;
