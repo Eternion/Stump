@@ -352,6 +352,7 @@
     <Compile Include="Game\Actors\Interfaces\IInteractNpc.cs" />
     <Compile Include="Game\Actors\RolePlay\Characters\PrestigeManager.cs" />
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
+    <Compile Include="Game\Actors\RolePlay\Monsters\MonsterGroupWithAlternatives.cs" />
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
     <Compile Include="Game\Arena\ArenaFight.cs" />
