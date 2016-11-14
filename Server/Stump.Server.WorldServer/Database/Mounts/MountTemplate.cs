@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
 {
     public class MountTemplateRelator : OneToManyRelator<MountTemplate, MountBonus>
     {
-        public static string FetchQuery = "SELECT * FROM mounts_templates INNER JOIN mounts_bonus ON mounts_templates.Id = mounts_bonus.MountTemplateId";
+        public static string FetchQuery = "SELECT * FROM mounts_templates LEFT JOIN mounts_bonus ON mounts_templates.Id = mounts_bonus.MountTemplateId";
     }
 
     [TableName("mounts_templates")]
