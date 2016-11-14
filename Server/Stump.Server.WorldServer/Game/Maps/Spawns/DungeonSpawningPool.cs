@@ -87,10 +87,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
                 var cell = spawn.CellId == null ? Map.GetRandomFreeCell() : Map.Cells[(int)spawn.CellId];
 
-                var group = new MonsterGroup(Map.GetNextContextualId(), new ObjectPosition(Map, cell, Map.GetRandomDirection()), this);
-                foreach (var monsterGrade in spawn.GroupMonsters)
+                var group = new MonsterGroupWithAlternatives(Map.GetNextContextualId(), new ObjectPosition(Map, cell, Map.GetRandomDirection()), this);
+                foreach (var entity in spawn.GroupMonsters)
                 {
-                    group.AddMonster(new Monster(monsterGrade, group));
+                    if (entity.MinPartyMembers != null)
+                        group.AddMonster(new Monster(entity.MonsterGrade, group), entity.MinPartyMembers.Value);
+                    else
+                        group.AddMonster(new Monster(entity.MonsterGrade, group));
                 }
 
                 m_groupsSpawn.Add(group, spawn);
