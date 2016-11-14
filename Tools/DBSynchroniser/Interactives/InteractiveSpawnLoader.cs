@@ -10,6 +10,7 @@ using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
 using Stump.ORM.SubSonic.Linq.Structure;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 
 namespace DBSynchroniser.Interactives
 {
@@ -17,6 +18,8 @@ namespace DBSynchroniser.Interactives
     {
         public static void LoadSpawns()
         {
+            // Since 2.36 version there is the same interactive on different maps because of the 16/9 mode, we have to find the correct one
+
             Console.WriteLine("Generating interactive spawns");
             var worldDatabase = Program.ConnectToWorld();
             if (worldDatabase == null)
@@ -77,7 +80,7 @@ namespace DBSynchroniser.Interactives
             foreach (var keyPair in identifiableElements)
             {
                 var likelyElement = keyPair.Value.Where(x => !x.Ignore)
-                    .OrderBy(x => new MapPoint(x.Element.Cell.Id).IsOnMapBorder() ? 1 : 0)
+                    .OrderByDescending(x => DistanceFromBorder(new MapPoint(x.Element.Cell.Id)))
                     .ThenBy(x => Math.Abs(x.Element.PixelOffset.X) + Math.Abs(x.Element.PixelOffset.Y)).First();
 
 
@@ -114,6 +117,19 @@ namespace DBSynchroniser.Interactives
                 Console.WriteLine($"{fails} failes !");
 
             Program.ExecutePatch("./Patchs/interactives_spawns_patch.sql", worldDatabase.Database);
+        }
+
+        private static double DistanceFromBorder(MapPoint point)
+        {
+            var borders = new[]
+            {
+                new LineSet(new MapPoint(27), new MapPoint(559)),
+                new LineSet(new MapPoint(546), new MapPoint(559)),
+                new LineSet(new MapPoint(0), new MapPoint(13)),
+                new LineSet(new MapPoint(0), new MapPoint(532)),
+            };
+
+            return borders.Min(x => x.SquareDistanceToLine(point));
         }
     }
 }
