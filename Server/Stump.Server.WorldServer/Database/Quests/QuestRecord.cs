@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Database.Quests
 {
     public class QuestRecordRelator : OneToManyRelator<QuestRecord, QuestObjectiveStatus>
     {
-        public static string FetchByOwner = "SELECT * FROM characters_quests INNER JOIN characters_quests_objectives ON " +
+        public static string FetchByOwner = "SELECT * FROM characters_quests LEFT JOIN characters_quests_objectives ON " +
                                           "characters_quests_objectives.QuestId = characters_quests.Id WHERE characters_quests.OwnerId = {0}";
     }
 
