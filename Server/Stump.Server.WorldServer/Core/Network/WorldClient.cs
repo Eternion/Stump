@@ -143,17 +143,12 @@ namespace Stump.Server.WorldServer.Core.Network
                     return;
 
                 WorldAccount.ConnectedCharacter = null;
-
-
                 WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
             });
 
             base.OnDisconnect();
         }
 
-        public override string ToString()
-        {
-            return base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
-        }
+        public override string ToString() => base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
     }
 }

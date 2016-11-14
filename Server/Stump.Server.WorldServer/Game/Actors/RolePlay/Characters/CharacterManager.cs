@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool DoesNameExist(string name)
         {
             WorldServer.Instance.IOTaskPool.EnsureContext();
-            return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0", name) != null;
+            return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0 AND DeletedDate IS NULL", name) != null;
         }
 
         public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             WorldServer.Instance.IOTaskPool.EnsureContext();
 
-            if (client.Characters.Count >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
+            if (client.Characters.Count(x => !x.IsDeleted) >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
             {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
                 return;

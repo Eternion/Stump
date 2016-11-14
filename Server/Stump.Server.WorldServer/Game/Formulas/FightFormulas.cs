@@ -87,13 +87,13 @@ namespace Stump.Server.WorldServer.Game.Formulas
             return InvokeWinXpModifier(fighter, xp);
         }
 
-        public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas)
+        public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas, bool kamasRate = true)
         {
             var challengeBonus = looter.Fight.GetChallengeBonus();
             var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
 
-            var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + looter.Fight.AgeBonus / 100d;
-            var kamas = (int)( baseKamas * (looterPP / teamPP) * multiplicator * Rates.KamasRate );
+            var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + (looter.Fight.AgeBonus / 5) / 100d;
+            var kamas = (int)( baseKamas * (looterPP / teamPP) * multiplicator * (kamasRate ? Rates.KamasRate : 1));
 
             return InvokeWinKamasModifier(looter, kamas);
         }

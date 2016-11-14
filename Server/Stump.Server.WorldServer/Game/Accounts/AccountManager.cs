@@ -82,6 +82,8 @@ namespace Stump.Server.WorldServer.Game.Accounts
             {
                 Id = client.Account.Id,
                 Nickname = client.Account.Nickname,
+                Tokens = 0,
+                NewTokens = 0
             };
             Database.Insert(worldAccount);
 

@@ -95,14 +95,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var amount = trigger.Get<short>("amount");
                 if (amount > 0 && amount <= byte.MaxValue)
                 {
-                    delta = (byte) (amount);
+                    delta = (byte)(amount);
                     target.LevelUp(delta);
                     trigger.Reply("Added " + trigger.Bold("{0}") + " levels to '{1}'.", delta, target.Name);
 
                 }
                 else if (amount < 0 && -amount <= byte.MaxValue)
                 {
-                    delta = (byte) (-amount);
+                    delta = (byte)(-amount);
                     target.LevelDown(delta);
                     trigger.Reply("Removed " + trigger.Bold("{0}") + " levels from '{1}'.", delta, target.Name);
 
@@ -115,14 +115,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class SetKamasCommand : TargetCommand
+    public class KamasCommand : TargetCommand
     {
-        public SetKamasCommand()
+        public KamasCommand()
         {
             Aliases = new[] { "kamas" };
             RequiredRole = RoleEnum.Administrator;
-            Description = "Set the amount kamas of target's inventory";
-            AddParameter<int>("amount", "amount", "Amount of kamas to set");
+            Description = "Add the amount kamas to target's inventory";
+            AddParameter<int>("amount", "amount", "Amount of kamas to add");
             AddTargetParameter(true);
         }
 
@@ -130,10 +130,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                var kamas = trigger.Get<int>("amount");
+                var amount = trigger.Get<int>("amount");
 
-                target.Inventory.SetKamas(kamas);
-                trigger.ReplyBold("{0} has now {1} kamas", target, kamas);
+                target.Inventory.AddKamas(amount);
+                trigger.ReplyBold($"{amount} Kamas was added to {target} and he now have {target.Kamas} kamas");
             }
         }
     }

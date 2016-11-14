@@ -385,16 +385,10 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
 
         [Ignore]
-        public string ShortName
-        {
-            get { return m_shortName ?? (m_shortName = TextManager.Instance.GetText(ShortNameId)); }
-        }
+        public string ShortName => m_shortName ?? (m_shortName = TextManager.Instance.GetText(ShortNameId));
 
         [Ignore]
-        public string LongName
-        {
-            get { return m_longName ?? (m_longName = TextManager.Instance.GetText(LongNameId)); }
-        }
+        public string LongName => m_longName ?? (m_longName = TextManager.Instance.GetText(LongNameId));
 
         [Ignore]
         public ActorLook MaleLook
@@ -650,9 +644,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
             return sex == SexTypeEnum.SEX_FEMALE ? FemaleLook : MaleLook;
         }
 
-        public uint[] GetColors(SexTypeEnum sex)
-        {
-            return sex == SexTypeEnum.SEX_FEMALE ? FemaleColors : MaleColors;
-        }
+        public uint[] GetColors(SexTypeEnum sex) => sex == SexTypeEnum.SEX_FEMALE ? FemaleColors : MaleColors;
     }
 }

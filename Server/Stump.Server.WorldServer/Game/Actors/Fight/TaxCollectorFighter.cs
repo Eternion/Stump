@@ -44,50 +44,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public TaxCollectorNpc TaxCollectorNpc
         {
             get;
-            private set;
         }
 
-        public override string Name
-        {
-            get { return TaxCollectorNpc.Name; }
-        }
+        public override string Name => TaxCollectorNpc.Name;
 
-        public override ObjectPosition MapPosition
-        {
-            get { return TaxCollectorNpc.Position; }
-        }
+        public override ObjectPosition MapPosition => TaxCollectorNpc.Position;
 
-        public override byte Level
-        {
-            get { return TaxCollectorNpc.Level; }
-        }
+        public override byte Level => TaxCollectorNpc.Level;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
         public List<int> Items
         {
             get;
-            private set;
         }
 
         public int Kamas
         {
             get;
-            private set;
         }
 
-        public override string GetMapRunningFighterName()
-        {
-            return TaxCollectorNpc.Name;
-        }
+        public override string GetMapRunningFighterName() => TaxCollectorNpc.Name;
 
-        public override IFightResult GetFightResult(FightOutcomeEnum outcome)
-        {
-            return new TaxCollectorFightResult(this, outcome, Loot);
-        }
+        public override IFightResult GetFightResult(FightOutcomeEnum outcome) => new TaxCollectorFightResult(this, outcome, Loot);
 
         public TaxCollectorFightersInformation GetTaxCollectorFightersInformation()
         {
@@ -99,9 +78,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 OpposedTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterMinimalPlusLookInformations()));
         }
 
-        public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
-        {
-            return new GameFightFighterTaxCollectorLightInformations(
+        public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null) => new GameFightFighterTaxCollectorLightInformations(
                 true,
                 IsAlive(),
                 Id,
@@ -110,18 +87,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (sbyte)BreedEnum.TAX_COLLECTOR,
                 TaxCollectorNpc.FirstNameId,
                 TaxCollectorNpc.LastNameId);
-        }
 
-        public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberTaxCollectorInformations(Id, TaxCollectorNpc.FirstNameId,
+        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberTaxCollectorInformations(Id, TaxCollectorNpc.FirstNameId,
                 TaxCollectorNpc.LastNameId, TaxCollectorNpc.Level, TaxCollectorNpc.Guild.Id,
                 TaxCollectorNpc.GlobalId);
-        }
 
-        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
-        {
-            return new GameFightTaxCollectorInformations(
+        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null) => new GameFightTaxCollectorInformations(
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
@@ -133,6 +104,5 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 TaxCollectorNpc.FirstNameId,
                 TaxCollectorNpc.LastNameId,
                 TaxCollectorNpc.Level);
-        }
     }
 }
