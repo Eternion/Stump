@@ -263,7 +263,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             foreach (var looter in looters)
             {
-                looter.Loot.Kamas = kamas > 0 ? FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas) : 0;
+                looter.Loot.Kamas = kamas > 0 ? FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas, false) : 0;
             }
 
             var i = 0;

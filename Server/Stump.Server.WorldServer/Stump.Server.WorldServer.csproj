@@ -352,7 +352,6 @@
     <Compile Include="Game\Actors\Interfaces\IInteractNpc.cs" />
     <Compile Include="Game\Actors\RolePlay\Characters\PrestigeManager.cs" />
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
-    <Compile Include="Game\Actors\RolePlay\Monsters\MonsterGroupWithAlternatives.cs" />
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
     <Compile Include="Game\Arena\ArenaFight.cs" />
@@ -858,8 +857,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
+    <Compile Include="WebAPI\Controllers\AccountController.cs" />
     <Compile Include="WebAPI\Controllers\BankController.cs" />
+    <Compile Include="WebAPI\Controllers\CharacterController.cs" />
     <Compile Include="WebAPI\Controllers\InventoryController.cs" />
+    <Compile Include="WebAPI\CustomAuthorize.cs" />
     <Compile Include="WebAPI\Startup.cs" />
     <Compile Include="WebAPI\WebServer.cs" />
     <Compile Include="WorldServer.cs" />

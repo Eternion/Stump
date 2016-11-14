@@ -26,6 +26,7 @@ using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Stump.Server.WorldServer.Handlers.Startup;
 using Stump.Server.WorldServer.Handlers.Actions;
+using Stump.Server.WorldServer.Database.Accounts;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -275,6 +276,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.WorldAccount.LastIp = client.IP;
             client.WorldAccount.ConnectedCharacter = character.Id;
 
+            WorldServer.Instance.DBAccessor.Database.Execute(string.Format(WorldAccountRelator.UpdateNewTokens, 0));
             WorldServer.Instance.DBAccessor.Database.Update(client.WorldAccount);
         }
 

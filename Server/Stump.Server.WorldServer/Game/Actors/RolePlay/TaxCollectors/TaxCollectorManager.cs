@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
+using Stump.Core.Collections;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
@@ -24,6 +25,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         private readonly List<TaxCollectorNpc> m_activeTaxCollectors = new List<TaxCollectorNpc>();
         private Dictionary<int, TaxCollectorNamesRecord> m_taxCollectorNames;
         private Dictionary<int, TaxCollectorFirstnamesRecord> m_taxCollectorFirstnames;
+        private readonly TimedStack<TaxCollectorSpawn> m_lastRemovedTaxCollectors = new TimedStack<TaxCollectorSpawn>(3600);
 
         [Initialization(InitializationPass.Eighth)]
         public override void Initialize()
@@ -93,6 +95,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return false;
             }
 
+            m_lastRemovedTaxCollectors.Clean();
+            if (m_lastRemovedTaxCollectors.FirstOrDefault(x => x.First.GuildId == character.Guild.Id && x.First.MapId == character.Map.Id) != null)
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_YET));
+                return false;
+            }
+
             if (!character.Position.Map.AllowCollector)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_HERE));
@@ -130,6 +139,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             m_taxCollectorSpawns.Remove(taxCollector.GlobalId);
             m_activeTaxCollectors.Remove(taxCollector);
+
+            m_lastRemovedTaxCollectors.Push(taxCollector.Record);
         }
 
         public void Save()

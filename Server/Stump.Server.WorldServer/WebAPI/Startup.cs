@@ -1,5 +1,5 @@
-﻿using System.Web.Http;
-using Owin;
+﻿using Owin;
+using System.Web.Http;
 
 namespace Stump.Server.WorldServer.WebAPI
 {
@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.WebAPI
         // parameter in the WebApp.Start method.
         public void Configuration(IAppBuilder appBuilder)
         {
-            // Configure Web API for self-host. 
+            // Configure Web API for self-host.
             var config = new HttpConfiguration();
 
             config.MapHttpAttributeRoutes();
