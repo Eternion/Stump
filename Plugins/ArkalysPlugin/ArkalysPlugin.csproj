@@ -136,6 +136,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnouncePopup\AnnouncePopup.cs" />
     <Compile Include="Commands\GiveCommand.cs" />
     <Compile Include="Commands\TeleportCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />

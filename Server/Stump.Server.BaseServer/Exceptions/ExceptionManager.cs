@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Stump.Core.Reflection;
+using SharpRaven.Data;
 
 namespace Stump.Server.BaseServer.Exceptions
 {
@@ -12,8 +12,12 @@ namespace Stump.Server.BaseServer.Exceptions
 
         public ReadOnlyCollection<Exception> Exceptions => m_exceptions.AsReadOnly();
 
-        public void RegisterException(Exception ex)
+        public static void RegisterException(Exception ex)
         {
+            if (ServerBase.IsExceptionLoggerEnabled)
+            {
+                ServerBase.InstanceAsBase.ExceptionLogger.Capture(new SentryEvent(ex));
+            }
             //m_exceptions.Add(ex);
         }
     }

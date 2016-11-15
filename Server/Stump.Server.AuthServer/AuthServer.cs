@@ -95,7 +95,7 @@ namespace Stump.Server.AuthServer
             {
                 base.Initialize();
                 ConsoleInterface = new AuthConsole();
-                ConsoleBase.SetTitle("#Stump Authentification Server");
+                ConsoleBase.SetTitle($"#Stump Authentification Server - {Version}");
 
                 logger.Info("Initializing Database...");
                 DBAccessor = new DatabaseAccessor(DatabaseConfiguration);

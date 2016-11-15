@@ -32,6 +32,9 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             foreach (var spell in database.Query<CharacterSpellRecord>(string.Format(CharacterSpellRelator.FetchByOwner, Owner.Id)).Select(record => new CharacterSpell(record)))
             {
+                if (m_spells.ContainsKey(spell.Id))
+                    continue;
+
                 m_spells.Add(spell.Id, spell);
             }
         }
