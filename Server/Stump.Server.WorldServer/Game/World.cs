@@ -361,7 +361,8 @@ namespace Stump.Server.WorldServer.Game
 
         public void SpawnTaxCollectors()
         {
-            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null
+            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns()
+                                         where spawn.Map != null
                                          select new TaxCollectorNpc(spawn, spawn.Map.GetNextContextualId()))
             {
                 taxcollector.Guild.AddTaxCollector(taxcollector);
@@ -590,24 +591,25 @@ namespace Stump.Server.WorldServer.Game
 
         public void SendAnnounce(string announce)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce)));
+            ForEachCharacter(character => character.SendServerMessage(announce));
         }
-        
+
         public void SendAnnounce(string announce, Color color)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce, color)));
+            ForEachCharacter(character => character.SendServerMessage(announce, color));
         }
 
         public void SendAnnounce(TextInformationTypeEnum type, short messageId, params object[] parameters)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendInformationMessage(type, messageId, parameters)));
+            ForEachCharacter(character => character.SendInformationMessage(type, messageId, parameters));
         }
 
         #endregion
 
         public void RegisterSaveableInstance(ISaveable instance)
         {
-            m_saveablesInstances.Add(instance);
+            if (!m_saveablesInstances.Contains(instance))
+                m_saveablesInstances.Add(instance);
         }
 
         public void Save()

@@ -54,7 +54,14 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 return;
             }
 
-            if(receiver.FriendsBook.IsIgnored(sender.Account.Id))
+            var badword = ChatManager.Instance.CanSendMessage(message.content);
+            if (badword != string.Empty)
+            {
+                client.Character.SendServerMessage($"Message non envoyé. Le terme <b>{badword}</b> est interdit sur le serveur !");
+                return;
+            }
+
+            if (receiver.FriendsBook.IsIgnored(sender.Account.Id))
             {
                 //Le joueur %1 était absent et n'a donc pas reçu votre message.
                 sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, receiver.Name);
@@ -128,6 +135,13 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (sender == receiver)
             {
                 SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
+                return;
+            }
+
+            var badword = ChatManager.Instance.CanSendMessage(message.content);
+            if (badword != string.Empty)
+            {
+                client.Character.SendServerMessage($"Message non envoyé. Le terme <b>{badword}</b> est interdit sur le serveur !");
                 return;
             }
 
