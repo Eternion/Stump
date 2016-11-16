@@ -903,15 +903,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                 if (Guild == null)
                                     break;
 
-                                playerLook.AddSkin((short)Guild.Emblem.Template.SkinId);
+                                var look = playerLook.GetRiderLook() ?? playerLook;
 
-                                if (playerLook.Colors.ContainsKey(7))
-                                    playerLook.RemoveColor(7);
-                                if (playerLook.Colors.ContainsKey(8))
-                                    playerLook.RemoveColor(8);
+                                look.AddSkin((short)Guild.Emblem.Template.SkinId);
 
-                                playerLook.AddColor(8, Guild.Emblem.SymbolColor);
-                                playerLook.AddColor(7, Guild.Emblem.BackgroundColor);
+                                if (look.Colors.ContainsKey(7))
+                                    look.RemoveColor(7);
+                                if (look.Colors.ContainsKey(8))
+                                    look.RemoveColor(8);
+
+                                look.AddColor(8, Guild.Emblem.SymbolColor);
+                                look.AddColor(7, Guild.Emblem.BackgroundColor);
                             }
                             break;
                     }
