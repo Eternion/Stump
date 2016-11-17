@@ -411,7 +411,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Stats
 
-        public abstract short Level
+        public abstract byte Level
         {
             get;
         }

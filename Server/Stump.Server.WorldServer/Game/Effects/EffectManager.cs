@@ -528,8 +528,8 @@ namespace Stump.Server.WorldServer.Game.Effects
 
                     EffectsEnum.Effect_HealHP_108,
 
-                    EffectsEnum.Effect_SoulStone
-                    EffectsEnum.Effect_HealHP_108,
+                    EffectsEnum.Effect_SoulStone,
+                    EffectsEnum.Effect_SoulStoneSummon,
 
                     EffectsEnum.Effect_CastSpell_1175,
 
