@@ -162,18 +162,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             }
 
             Map.Leave(this);
-
-            if (Map.GetBlueFightPlacement().Length < m_monsters.Count)
+            
+            if (Map.GetBlueFightPlacement().Length < CountInitialFighters())
             {
                 character.SendServerMessage("Cannot start fight : Not enough fight placements");
                 return;
             }
 
             var fight = FightManager.Instance.CreatePvMFight(Map);
+            
+            var monsterFighters = CreateFighters(fight.DefendersTeam).ToArray();
 
             fight.ChallengersTeam.AddFighter(character.CreateFighter(fight.ChallengersTeam));
 
-            foreach (var monster in CreateFighters(fight.DefendersTeam))
+            foreach (var monster in monsterFighters)
                 fight.DefendersTeam.AddFighter(monster);
 
             Fight = fight;
@@ -181,8 +183,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             fight.StartPlacement();
 
             OnEnterFight(character);
-
             Fight.FightEnded += OnFightEnded;
+
         }
 
         void OnFightEnded(IFight fight)
@@ -190,14 +192,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             OnExitFight(fight);
         }
 
-        void OnEnterFight(Character character)
+        protected virtual void OnEnterFight(Character character)
         {
             var handler = EnterFight;
             if (handler != null)
                 handler(this, character);
         }
 
-        void OnExitFight(IFight fight)
+        protected virtual void OnExitFight(IFight fight)
         {
             Fight = null;
 
@@ -239,6 +241,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         }
 
         public virtual int Count() => m_monsters.Count;
+
+        protected virtual int CountInitialFighters() => Count();
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)
                                                         => new GameRolePlayGroupMonsterInformations(Id,
