@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Monster.Group.Position; }
         }
 
-        public override short Level
+        public override byte Level
         {
             get
             {

@@ -167,11 +167,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 return;
             }
 
-            Map.Leave(this);
-
-            if (Map.GetBlueFightPlacement().Length < m_monsters.Count)
             var reason = character.CanAttack(this);
-            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)            {
+
+            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+            {
                 ContextHandler.SendChallengeFightJoinRefusedMessage(character.Client, character, reason);
                 return;
             }

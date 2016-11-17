@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
@@ -12,7 +13,7 @@ using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemType(ItemTypeEnum.FULL_SOUL_STONE)]
+    [ItemType(ItemTypeEnum.PIERRE_D_ÂME_PLEINE)]
     public class SoulStoneFilled : BasePlayerItem
     {
         public static int[] FIGHT_MAPS = {11796994, 4981250}; // Brakmar and bonta arenas
@@ -51,6 +52,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public void SetMonsterGroup(IEnumerable<Monster> group)
         {
+            Effects.Clear();
             foreach (var monster in group)
             {
                 Effects.Add(new EffectDice((short) EffectsEnum.Effect_SoulStoneSummon, (short) monster.Template.Id, (short) monster.Grade.GradeId, 0, new EffectBase()));
@@ -70,8 +72,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             return new ObjectItem(
                 (byte)Position,
                 (short)Template.Id,
-                0, // todo : power rate
-                false, // todo : over max
                 Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
                 Guid,
                 (int)(Stack));
