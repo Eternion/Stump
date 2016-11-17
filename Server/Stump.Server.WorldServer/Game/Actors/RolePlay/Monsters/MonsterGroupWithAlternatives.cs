@@ -69,8 +69,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public override GroupMonsterStaticInformations GetGroupMonsterStaticInformations(Character character)
         {
-            return new GroupMonsterStaticInformationsWithAlternatives(Leader.GetMonsterInGroupLightInformations(),
-                GetMonstersWithoutLeader().Select(x => x.GetMonsterInGroupInformations()),
+            var displayedGroup = m_monstersByMembersCount.OrderByDescending(x => x.Key).FirstOrDefault().Value;
+
+            return new GroupMonsterStaticInformationsWithAlternatives(displayedGroup.FirstOrDefault()?.GetMonsterInGroupLightInformations() ?? new MonsterInGroupLightInformations(),
+                displayedGroup.Skip(1).Select(x => x.GetMonsterInGroupInformations()),
                 m_monstersByMembersCount.Select(x => new AlternativeMonstersInGroupLightInformations(x.Key, x.Value.Select(y => y.GetMonsterInGroupLightInformations()))));
         }
     }
