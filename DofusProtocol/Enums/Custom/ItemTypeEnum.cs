@@ -1,5 +1,6 @@
 namespace Stump.DofusProtocol.Enums
 {
+
     public enum ItemTypeEnum
     {
         AMULETTE = 1,
@@ -97,7 +98,7 @@ namespace Stump.DofusProtocol.Enums
         OBJET_UTILISABLE = 94,
         PLANCHE = 95,
         ÉCORCE = 96,
-        CERTIFICAT_DE_MONTURE = 97,
+        CERTIFICAT_DE_DRAGODINDE = 97,
         RACINE = 98,
         FILET_DE_CAPTURE = 99,
         SAC_DE_RESSOURCES = 100,
@@ -181,5 +182,16 @@ namespace Stump.DofusProtocol.Enums
         SUBSTRAT = 183,
         CONTENEUR = 184,
         SÈVE = 185,
+        VIANDE_PÉRIMÉE = 186,
+        VIANDE_PRIMITIVE = 187,
+        PARCHEMIN_D_ÉMOTICÔNES = 188,
+        ORBE_DE_FORGEMAGIE = 189,
+        HARNACHEMENT = 190,
+        IDOLE_DÉFENSIVE = 191,
+        TEINTURE_DE_MONTURE = 192,
+        MATÉRIEL_D_EXPLORATION = 195,
+        CERTIFICAT_DE_MULDO = 196,
+        CAUTION = 197,
+        SAHARACH = 198,
     }
 }

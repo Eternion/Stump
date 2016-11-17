@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 case MonsterIdEnum.TACTIRELLE_3289:
                     {
                         spellToCast = new Spell((int)SpellIdEnum.TRANSKO_3240, 1);
-                        target = Fight.Fighters.FirstOrDefault(x => this != x && x.HasState((int)SpellStatesEnum.LONGUE_VUE_132)
+                        target = Fight.Fighters.FirstOrDefault(x => this != x && x.HasState((int)SpellStatesEnum.TRANSKO_364)
                                     && !x.HasState((int)SpellStatesEnum.ENRACINE_6) && !x.HasState((int)SpellStatesEnum.INDEPLACABLE_97));
                         break;
                     }

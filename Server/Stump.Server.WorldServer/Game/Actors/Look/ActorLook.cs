@@ -183,6 +183,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public ActorLook GetRiderLook() => m_subLooks.FirstOrDefault(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)?.Look;
 
         public void SetRiderLook(ActorLook look)
         {

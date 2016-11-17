@@ -338,9 +338,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             // we check all possible combinations each time because there are too many cases
             // since there is only 3 bombs, it's 6 iterations so still cheap
-            var bombs = Summoner.Bombs.ToArray();
-            foreach (var bomb1 in bombs)
-                foreach (var bomb2 in bombs)
+            foreach (var bomb1 in Summoner.Bombs.ToArray())
+            {
+                foreach (var bomb2 in Summoner.Bombs.ToArray())
                 {
                     if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !bomb1.IsBoundWith(bomb2))
                         continue;
@@ -350,6 +350,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     bomb1.AddWallsBinding(binding);
                     bomb2.AddWallsBinding(binding);
                 }
+            }
 
             return true;
         }

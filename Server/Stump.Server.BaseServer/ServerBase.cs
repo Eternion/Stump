@@ -24,6 +24,8 @@ using Stump.Server.BaseServer.Exceptions;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
+using SharpRaven;
+using SharpRaven.Data;
 
 namespace Stump.Server.BaseServer
 {
@@ -45,6 +47,18 @@ namespace Stump.Server.BaseServer
         public static int AutomaticShutdownTimer = 6*60;
 
         [Variable] public static string CommandsInfoFilePath = "./commands.xml";
+
+        [Variable(Priority = 10, DefinableRunning = true)]
+        public static bool IsExceptionLoggerEnabled = false;
+
+        [Variable(Priority = 10)]
+        public static string ExceptionLoggerDSN = "";
+
+        public RavenClient ExceptionLogger
+        {
+            get;
+            protected set;
+        }
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -177,10 +191,20 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public string Version
+        {
+            get;
+            protected set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
             Initializing = true;
+
+            Version = ((AssemblyInformationalVersionAttribute)System.Reflection.Assembly.GetExecutingAssembly()
+                         .GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault())
+                         .InformationalVersion;
 
             /* Initialize Logger */
             NLogHelper.DefineLogProfile(true, true);
@@ -252,6 +276,17 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
+
+            if (IsExceptionLoggerEnabled)
+            {
+                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
+                ExceptionLogger.Release = Version;
+#if DEBUG
+                ExceptionLogger.Environment = "DEBUG";
+#else
+                 ExceptionLogger.Environment = "RELEASE";
+#endif
+            }
         }
 
         public virtual void UpdateConfigFiles()
@@ -384,7 +419,7 @@ namespace Stump.Server.BaseServer
         {
             while (true)
             {
-                ExceptionManager.Instance.RegisterException(e);
+                ExceptionManager.RegisterException(e);
 
                 logger.Fatal(string.Format(" Crash Exception : {0}\r\n", e.Message) + string.Format(" Source: {0} -> {1}\r\n", e.Source, e.TargetSite) + string.Format(" Stack Trace:\r\n{0}", e.StackTrace));
 

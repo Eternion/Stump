@@ -29,7 +29,7 @@ namespace Stump.Server.BaseServer.Network
             {
                 logger.Error("[Handler : {0}] Force disconnection of client {1} : {2}", Parameter3, Parameter2, ex);
                 Parameter2.Disconnect();
-                ExceptionManager.Instance.RegisterException(ex);
+                ExceptionManager.RegisterException(ex);
             }
         }
 

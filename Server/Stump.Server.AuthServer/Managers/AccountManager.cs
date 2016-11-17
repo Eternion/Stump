@@ -183,7 +183,7 @@ namespace Stump.Server.AuthServer.Managers
             {
                 var alreadyCachedAccounts = m_accountsCache.Where(x => x.Value.Item2.Id == account.Id).ToArray();
 
-                foreach (var keyPair in alreadyCachedAccounts)
+                foreach (var keyPair in alreadyCachedAccounts.ToArray())
                 {
                     m_accountsCache.Remove(keyPair.Key);
                 }
