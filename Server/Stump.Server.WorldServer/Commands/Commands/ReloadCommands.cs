@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Social;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -34,7 +35,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {"breeds", BreedManager.Instance},
                 {"experiences", ExperienceManager.Instance},
                 {"langs", TextManager.Instance},
-                {"guilds", GuildManager.Instance}
+                {"guilds", GuildManager.Instance},
+                {"badwords", ChatManager.Instance}
             };
 
         public ReloadCommands()
@@ -70,7 +72,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            World.Instance.SendAnnounce("[RELOAD] Reloading " + name + " ... WORLD PAUSED", Color.DodgerBlue);
+            //World.Instance.SendAnnounce("[RELOAD] Reloading " + name + " ... WORLD PAUSED", Color.DodgerBlue);
             WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
                 {
                     try
@@ -81,7 +83,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     {
                     }
 
-                    World.Instance.SendAnnounce("[RELOAD] " + name + " reloaded ... WORLD RESUMED", Color.DodgerBlue);
+                    //World.Instance.SendAnnounce("[RELOAD] " + name + " reloaded ... WORLD RESUMED", Color.DodgerBlue);
                 });
         }
     }

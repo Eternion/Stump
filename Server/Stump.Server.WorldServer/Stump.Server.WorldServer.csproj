@@ -323,6 +323,7 @@
     <Compile Include="Database\Quests\QuestStepTemplate.cs" />
     <Compile Include="Database\Quests\QuestTemplate.cs" />
     <Compile Include="Database\Shortcuts\PresetShortcut.cs" />
+    <Compile Include="Database\Social\BadWordRecord.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
     <Compile Include="Database\Tinsel\TinselManager.cs" />
