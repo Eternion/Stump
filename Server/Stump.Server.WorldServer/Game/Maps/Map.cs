@@ -615,14 +615,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (interactiveObject.Template != null && interactiveObject.Template.Type == InteractiveTypeEnum.TYPE_ZAAP)
             {
                 if (Zaap != null)
-                    throw new Exception("Cannot add a second zaap on the map");
+                    logger.Error("Cannot add a second zaap on the map");
 
                 Zaap = interactiveObject;
             }
             else if (interactiveObject.Template != null && interactiveObject.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI)
             {
                 if (Zaapi != null)
-                    throw new Exception("Cannot add a second zaapi on the map");
+                    logger.Error("Cannot add a second zaapi on the map");
 
                 Zaapi = interactiveObject;
             }
@@ -645,9 +645,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveSpawned(InteractiveObject interactive)
         {
-            Action<Map, InteractiveObject> handler = InteractiveSpawned;
-            if (handler != null)
-                handler(this, interactive);
+            InteractiveSpawned?.Invoke(this, interactive);
         }
 
         public void UnSpawnInteractive(InteractiveObject interactive)
@@ -666,14 +664,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUnSpawned(InteractiveObject interactive)
         {
-            Action<Map, InteractiveObject> handler = InteractiveUnSpawned;
-            if (handler != null)
-                handler(this, interactive);
+            InteractiveUnSpawned?.Invoke(this, interactive);
         }
 
         public bool UseInteractiveObject(Character character, int interactiveId, int skillId)
         {
-            InteractiveObject interactiveObject = GetInteractiveObject(interactiveId);
+            var interactiveObject = GetInteractiveObject(interactiveId);
 
             if (interactiveObject == null)
             {
@@ -753,23 +749,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Monsters
 
-        public int MonsterSpawnsCount
-        {
-            get { return m_monsterSpawns.Count; }
-        }
+        public int MonsterSpawnsCount => m_monsterSpawns.Count;
 
-        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns
-        {
-            get
-            {
-                return m_monsterSpawns.AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns => m_monsterSpawns.AsReadOnly();
 
-        public bool CanSpawnMonsters()
-        {
-            return m_bluePlacement.Length > 0 && m_redPlacement.Length > 0;
-        }
+        public bool CanSpawnMonsters() => m_bluePlacement.Length > 0 && m_redPlacement.Length > 0;
 
         public void AddSpawningPool(SpawningPoolBase spawningPool)
         {
@@ -897,10 +881,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 pool.StopAutoSpawn();
         }
 
-        public MonsterGroup GenerateRandomMonsterGroup()
-        {
-            return GenerateRandomMonsterGroup(SubArea.RollMonsterLengthLimit());
-        }
+        public MonsterGroup GenerateRandomMonsterGroup() => GenerateRandomMonsterGroup(SubArea.RollMonsterLengthLimit());
 
         public MonsterGroup GenerateRandomMonsterGroup(int minLength, int maxLength)
         {
