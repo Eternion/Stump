@@ -527,18 +527,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private readonly Dictionary<int, PartyInvitation> m_partyInvitations
             = new Dictionary<int, PartyInvitation>();
 
+        private readonly List<PartyTypeEnum> m_partiesLoyalTo = new List<PartyTypeEnum>();
+
         private Character m_followedCharacter;
+        
+        private Party m_party;
+        private ArenaParty m_arenaParty;
 
         public Party Party
         {
-            get;
-            private set;
+            get { return m_party; }
+            private set
+            {
+                if (m_party != null && value != m_party) SetLoyalToParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL, false);
+                m_party = value;
+            }
         }
 
         public ArenaParty ArenaParty
         {
-            get;
-            private set;
+            get { return m_arenaParty; }
+            private set
+            {
+                if (m_arenaParty != null && value != m_arenaParty) SetLoyalToParty(PartyTypeEnum.PARTY_TYPE_ARENA , false);
+                m_arenaParty = value;
+            }
         }
 
         public bool IsInParty()
@@ -556,6 +569,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return (type == PartyTypeEnum.PARTY_TYPE_CLASSICAL && Party != null) || (type == PartyTypeEnum.PARTY_TYPE_ARENA && ArenaParty != null);
         }
 
+        public bool IsPartyLeader()
+        {
+            return IsInParty() && Party.Leader == this;
+        }
+
         public bool IsPartyLeader(int id)
         {
             return IsInParty(id) && GetParty(id).Leader == this;
@@ -570,6 +588,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return ArenaParty;
 
             return null;
+        }
+
+        public bool IsLoyalToParty(PartyTypeEnum type) => m_partiesLoyalTo.Contains(type);
+        public void SetLoyalToParty(PartyTypeEnum type, bool loyal)
+        {
+            if (loyal) m_partiesLoyalTo.Add(type); else m_partiesLoyalTo.Remove(type);
+
+            PartyHandler.SendPartyLoyaltyStatusMessage(Client, GetParty(type), loyal);
         }
 
         public Party GetParty(PartyTypeEnum type)
@@ -2940,6 +2966,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Fighter = new CharacterFighter(this, team);
 
             ContextHandler.SendGameFightStartingMessage(Client, team.Fight.FightType, 0, 0);
+
+            if (IsPartyLeader() && Party.RestrictFightToParty && team.Fighters.Count == 0 && !team.IsRestrictedToParty)
+                team.ToggleOption(FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY);
 
             OnCharacterContextChanged(true);
 

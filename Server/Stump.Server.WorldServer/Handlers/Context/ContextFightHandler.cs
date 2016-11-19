@@ -195,6 +195,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameFightOptionToggleMessage.Id)]
         public static void HandleGameFightOptionToggleMessage(WorldClient client, GameFightOptionToggleMessage message)
         {
+            if (message.option == (sbyte) FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY && client.Character.IsPartyLeader())
+                client.Character.Party.TogglePartyFightRestriction();
+
             if (!client.Character.IsFighting())
                 return;
 
