@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameFightTurnReadyRequestMessage(fighter.Character.Client, m_fight.TimeLine.Current);
             }
 
-            m_timer = m_fight.Map.Area.CallDelayed(CheckTimeout, TimedOut);
+            m_timer = m_fight.Map.Area.CallDelayed((int)((m_fight.LastSequenceEndTime - DateTime.Now).TotalMilliseconds) + CheckTimeout, TimedOut);
         }
 
         public void Cancel()

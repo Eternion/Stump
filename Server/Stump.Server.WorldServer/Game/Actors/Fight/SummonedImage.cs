@@ -48,16 +48,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Fight.TurnStarted -= OnTurnStarted;
             Summoner.DamageInflicted -= OnCasterDamageInflicted;
 
-            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+            using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
+            {
+                ActionsHandler.SendGameActionFightVanishMessage(Fight.Clients, Summoner, this);
 
-            ActionsHandler.SendGameActionFightVanishMessage(Fight.Clients, Summoner, this);
+                Summoner.RemoveSummon(this);
 
-            Summoner.RemoveSummon(this);
-
-            if (!Summoner.Summons.Any(x => x is SummonedImage))
-                Summoner.SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
-
-            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+                if (!Summoner.Summons.Any(x => x is SummonedImage))
+                    Summoner.SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
+            }
         }
 
         void OnCasterDamageInflicted(FightActor actor, Damage damage)

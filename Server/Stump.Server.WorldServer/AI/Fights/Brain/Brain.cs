@@ -124,7 +124,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             {
                 if (cast.MoveBefore != null)
                 {
-                    Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                     var success = Fighter.StartMove(cast.MoveBefore);
                     var lastPos = Fighter.Cell.Id;
 
@@ -138,13 +137,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
                         if (path == null || path.IsEmpty())
                         {
-                            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                             break;
                         }
 
                         if (path.MPCost > Fighter.MP)
                         {
-                            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                             break;
                         }
 
@@ -153,7 +150,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                         // the mob didn't move so we give up
                         if (Fighter.Cell.Id == lastPos)
                         {
-                            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                             break;
                         }
 
@@ -161,7 +157,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                         tries++; // avoid infinite loops
                     }
 
-                    Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                 }
 
                 var targets = Fighter.Fight.GetAllFighters(cast.Target.AffectedCells).ToArray();

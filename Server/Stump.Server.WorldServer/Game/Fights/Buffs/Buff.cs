@@ -136,17 +136,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                 {
                     var fight = Caster.Fight;
 
-                    fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
+                    using (fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED))
+                    {
+                        var buffTrigger = this as TriggerBuff;
+                        if (buffTrigger != null && buffTrigger.ShouldTrigger(BuffTriggerType.Instant))
+                            buffTrigger.Apply(Target, BuffTriggerType.Instant);
+                        else
+                            Apply();
 
-                    var buffTrigger = this as TriggerBuff;
-                    if (buffTrigger != null && buffTrigger.ShouldTrigger(BuffTriggerType.Instant))
-                        buffTrigger.Apply(Target, BuffTriggerType.Instant);
-                    else
-                        Apply();
-
-                    fight.UpdateBuff(this, false);
-
-                    fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
+                        fight.UpdateBuff(this, false);
+                    }
                 }
 
                 return false;
