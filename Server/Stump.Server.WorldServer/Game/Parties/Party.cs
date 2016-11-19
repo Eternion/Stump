@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -13,7 +14,6 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 
 namespace Stump.Server.WorldServer.Game.Parties
 {
-    // todo : update members when their stats change
     public class Party
     {
         /// <summary>
@@ -122,14 +122,14 @@ namespace Stump.Server.WorldServer.Game.Parties
         private readonly ConcurrentList<Character> m_guests = new ConcurrentList<Character>();
         private readonly object m_memberLocker = new object();
         private readonly ConcurrentList<Character> m_members = new ConcurrentList<Character>();
-        private bool m_restricted;
 
         private int m_prospectionSum;
 
         public Party(int id)
         {
             Id = id;
-            Restricted = true;
+            RestrictFightToParty = false;
+            Name = string.Empty;
         }
 
         public int Id
@@ -146,16 +146,6 @@ namespace Stump.Server.WorldServer.Game.Parties
         public virtual PartyTypeEnum Type
         {
             get { return PartyTypeEnum.PARTY_TYPE_CLASSICAL; }
-        }
-
-        public bool Restricted
-        {
-            get { return m_restricted; }
-            private set
-            {
-                m_restricted = value;
-                PartyHandler.SendPartyRestrictedMessage(Clients, this, m_restricted);
-            }
         }
 
         public virtual int MembersLimit
@@ -207,6 +197,18 @@ namespace Stump.Server.WorldServer.Game.Parties
         }
 
         public bool Disbanded
+        {
+            get;
+            private set;
+        }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
+        public bool RestrictFightToParty
         {
             get;
             private set;
@@ -364,6 +366,35 @@ namespace Stump.Server.WorldServer.Game.Parties
             Leader = leader;
 
             OnLeaderChanged(Leader);
+        }
+
+        public PartyNameErrorEnum? SetPartyName(string name)
+        {
+            const string PARTY_NAME_REGEX = @"^[A-z0-9\-\s]{2,24}$";
+
+            if (PartyManager.Instance.GetGroup(name) != null)
+                return PartyNameErrorEnum.PARTY_NAME_ALREADY_USED;
+
+            if (!Regex.IsMatch(name, PARTY_NAME_REGEX))
+                return PartyNameErrorEnum.PARTY_NAME_INVALID;
+
+            Name = name;
+
+            PartyHandler.SendPartyNameUpdateMessage(Clients, this);
+
+            return null;
+        }
+
+        public void TogglePartyFightRestriction()
+        {
+            TogglePartyFightRestriction(!RestrictFightToParty);
+        }
+
+        public void TogglePartyFightRestriction(bool toggle)
+        {
+            RestrictFightToParty = toggle;
+
+            PartyHandler.SendPartyRestrictedMessage(Clients, this);
         }
 
         public bool IsInGroup(Character character)
