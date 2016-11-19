@@ -25,13 +25,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 
             var handlers = spellHandler.GetEffectHandlers().ToArray();
 
-            Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+            using (Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
+            {
 
-            handlers[1].Apply(); //SubAP Summoner
-            handlers[2].Apply(); //BuffTrigger
-            handlers[3].Apply(); //SpellImmunity
-
-            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+                handlers[1].Apply(); //SubAP Summoner
+                handlers[2].Apply(); //BuffTrigger
+                handlers[3].Apply(); //SpellImmunity
+            }
         }
     }
 }

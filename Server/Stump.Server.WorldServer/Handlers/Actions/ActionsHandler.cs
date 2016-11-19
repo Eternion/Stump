@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             // valid == true anyway
             if (message.valid && client.Character.IsFighting() && client.Character.Fighter.IsFighterTurn())
             {
-                client.Character.Fighter.Fight.AcknowledgeAction();
+                client.Character.Fighter.Fight.AcknowledgeAction(client.Character.Fighter, message.actionId);
             }
         }
     }

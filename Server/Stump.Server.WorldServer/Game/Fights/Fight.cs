@@ -34,6 +34,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ServiceStack.Text;
+using Stump.Server.WorldServer.Game.Fights.Sequences;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 
 namespace Stump.Server.WorldServer.Game.Fights
@@ -174,17 +176,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        SequenceTypeEnum Sequence
+        FightSequence LastSequence
         {
             get;
         }
+
+        DateTime LastSequenceEndTime { get; }
 
         bool IsSequencing
-        {
-            get;
-        }
-
-        bool WaitAcknowledgment
         {
             get;
         }
@@ -298,14 +297,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         IEnumerable<Buff> GetBuffs();
 
         void UpdateBuff(Buff buff, bool updateAction = true);
+        
+        FightSequence StartMoveSequence(FightPath path);
 
-        bool StartSequence(SequenceTypeEnum sequenceType);
-
-        bool EndSequence(SequenceTypeEnum sequenceType, bool force = false);
+        FightSequence StartSequence(SequenceTypeEnum sequenceType);
 
         void EndAllSequences();
 
-        void AcknowledgeAction();
+        bool AcknowledgeAction(CharacterFighter fighter, int sequenceId);
 
         IEnumerable<MarkTrigger> GetTriggers();
 
@@ -1507,6 +1506,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTurnStarted()
         {
+            ResetSequences();
+
             if (TimeLine.NewRound)
             {
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
@@ -1514,25 +1515,24 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime / 100);
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
-
-            if (!FighterPlaying.IsSummoned())
+            using (StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START))
             {
-                FighterPlaying.DecrementAllCastedBuffsDuration();
-                FighterPlaying.DecrementSummonsCastedBuffsDuration();
+                if (!FighterPlaying.IsSummoned())
+                {
+                    FighterPlaying.DecrementAllCastedBuffsDuration();
+                    FighterPlaying.DecrementSummonsCastedBuffsDuration();
+                }
+
+                foreach (var passedFighter in TimeLine.PassedActors)
+                {
+                    passedFighter.DecrementAllCastedBuffsDuration();
+                    passedFighter.DecrementSummonsCastedBuffsDuration();
+                }
+
+                DecrementGlyphDuration(FighterPlaying);
+                FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
+                TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
             }
-
-            foreach (var passedFighter in TimeLine.PassedActors)
-            {
-                passedFighter.DecrementAllCastedBuffsDuration();
-                passedFighter.DecrementSummonsCastedBuffsDuration();
-            }
-
-            DecrementGlyphDuration(FighterPlaying);
-            FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
-            TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
-
-            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
             // can die with triggers
             if (CheckFightEnd())
@@ -1610,30 +1610,27 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (evnt != null)
                 evnt(this, FighterPlaying);
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
-
-            if (FighterPlaying.IsAlive())
+            using (StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END))
             {
-                FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnEnd);
-                FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
-                TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnEnd);
+
+                if (FighterPlaying.IsAlive())
+                {
+                    FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnEnd);
+                    FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
+                    TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnEnd);
+                }
+
+                var time = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
+                if (TimeLine.RoundNumber > 1)
+                    FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
             }
-
-            var time = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
-            if (TimeLine.RoundNumber > 1)
-                FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
-
-            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             // can die with triggers
             if (CheckFightEnd())
                 return;
 
             if (IsSequencing)
-                EndSequence(Sequence, true);
-
-            if (WaitAcknowledgment)
-                AcknowledgeAction();
+                EndAllSequences();
 
             evnt = TurnStopped;
             if (evnt != null)
@@ -1730,10 +1727,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnTurnPassed()
         {
             if (IsSequencing)
-                EndSequence(Sequence, true);
-
-            if (WaitAcknowledgment)
-                AcknowledgeAction();
+                EndAllSequences();
         }
 
         #endregion Turn Management
@@ -1839,15 +1833,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnDead(FightActor fighter, FightActor killedBy)
         {
-            StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
+            using (StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH))
+            {
+                ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
 
-            ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
-
-            fighter.KillAllSummons();
-            fighter.RemoveAndDispellAllBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
-            fighter.RemoveAllCastedBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
-
-            EndSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
+                fighter.KillAllSummons();
+                fighter.RemoveAndDispellAllBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
+                fighter.RemoveAllCastedBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
+            }
 
             foreach (var trigger in m_triggers.Where(trigger => trigger.Caster == fighter).ToArray())
             {
@@ -1872,40 +1865,40 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var fightPath = (FightPath)path;
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-
-            int index = 0;
-            foreach (var tackle in fightPath.Tackles)
+            using (StartMoveSequence(fightPath))
             {
-                if (tackle.PathIndex - index > 0)
+                int index = 0;
+                foreach (var tackle in fightPath.Tackles)
+                {
+                    if (tackle.PathIndex - index > 0)
+                    {
+                        ForEach(entry =>
+                        {
+                            if (entry.CanSee(fighter))
+                                ContextHandler.SendGameMapMovementMessage(entry.Client, fightPath.Cells.Skip(index).Take(tackle.PathIndex - index + 1).Select(x => x.Id), fighter);
+                        }, true);
+                    }
+                    OnTackled(fighter, tackle);
+                    index = tackle.PathIndex;
+                }
+
+                if (path.Cells.Length - index > 0)
                 {
                     ForEach(entry =>
                     {
                         if (entry.CanSee(fighter))
-                            ContextHandler.SendGameMapMovementMessage(entry.Client, fightPath.Cells.Skip(index).Take(tackle.PathIndex - index + 1).Select(x => x.Id), fighter);
+                            ContextHandler.SendGameMapMovementMessage(entry.Client, fightPath.Cells.Skip(index).Take(path.Cells.Length - index + 1).Select(x => x.Id), fighter);
                     }, true);
                 }
-                OnTackled(fighter, tackle);
-                index = tackle.PathIndex;
-            }
 
-            if (path.Cells.Length - index > 0)
-            {
-                ForEach(entry =>
+                if (fightPath.BlockedByObstacle)
                 {
-                    if (entry.CanSee(fighter))
-                        ContextHandler.SendGameMapMovementMessage(entry.Client, fightPath.Cells.Skip(index).Take(path.Cells.Length - index + 1).Select(x => x.Id), fighter);
-                }, true);
-            }
+                    // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
+                    character?.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 276);
+                }
 
-            if (fightPath.BlockedByObstacle)
-            {
-                // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
-                character?.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 276);
+                actor.StopMove();
             }
-
-            actor.StopMove();
-            EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
         }
 
         public event Action<FightActor, int, int> Tackled;
@@ -2071,8 +2064,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnSpellCasted(FightActor caster, SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
-
             CheckFightEnd();
         }
 
@@ -2112,91 +2103,72 @@ namespace Stump.Server.WorldServer.Game.Fights
         #endregion Buffs
 
         #region Sequences
+        
+        private int m_nextSequenceId = 1;
+        private readonly List<FightSequence> m_sequencesRoot = new List<FightSequence>();
 
-        private SequenceTypeEnum m_lastSequenceAction;
-        private int m_sequenceLevel;
-        private readonly Stack<SequenceTypeEnum> m_sequences = new Stack<SequenceTypeEnum>();
-
-        public SequenceTypeEnum Sequence
+        public FightSequence LastSequence
         {
             get;
             private set;
         }
 
-        public bool IsSequencing
+        public bool IsSequencing => LastSequence != null && !LastSequence.Ended;
+        
+        public DateTime LastSequenceEndTime => m_sequencesRoot.Count > 0 ? m_sequencesRoot.Max(x => x.EndTime) : DateTime.Now;
+
+        public FightSequence StartMoveSequence(FightPath path)
         {
-            get;
-            private set;
+            var id = m_nextSequenceId++;
+            var sequence = new FightMoveSequence(id, TimeLine.Current, path);
+            StartSequence(sequence);
+            return sequence;
         }
 
-        public bool WaitAcknowledgment
+        public FightSequence StartSequence(SequenceTypeEnum type)
         {
-            get;
-            private set;
+            var id = m_nextSequenceId++;
+            var sequence = new FightSequence(id, type, TimeLine.Current);
+            StartSequence(sequence);
+            return sequence;
         }
 
-        public bool StartSequence(SequenceTypeEnum sequenceType)
-        {
-            // even if a sequence is already running we just increase the level variable and notify the last action
-            m_lastSequenceAction = sequenceType;
-            m_sequenceLevel++;
-
-            if (IsSequencing)
-                return false;
-
-            IsSequencing = true;
-            Sequence = sequenceType;
-            m_sequences.Push(sequenceType);
-
-            ActionsHandler.SendSequenceStartMessage(Clients, TimeLine.Current, sequenceType);
-
-            return true;
-        }
-
-        public bool EndSequence(SequenceTypeEnum sequenceType, bool force = false)
+        private void StartSequence(FightSequence sequence)
         {
             if (!IsSequencing)
-                return false;
-
-            m_sequenceLevel--;
-
-            if (m_sequenceLevel > 0 && !force)
-                return false;
-
-            IsSequencing = false;
-            WaitAcknowledgment = true;
-
-            var poppedSequence = m_sequences.Pop();
-
-            if (poppedSequence != sequenceType)
             {
-                logger.Debug("Popped Sequence different ({0} != {1})", poppedSequence, sequenceType);
+                if (sequence.Parent != null)
+                {
+                    logger.Error($"Sequence {sequence.Type} is a root and cannot have a parent");
+                }
+
+                m_sequencesRoot.Add(sequence);
             }
+            else
+                LastSequence.AddChildren(sequence);
+            
 
-            ActionsHandler.SendSequenceEndMessage(Clients, TimeLine.Current, sequenceType, m_lastSequenceAction);
-
-            return true;
+            LastSequence = sequence;
+            ActionsHandler.SendSequenceStartMessage(Clients, sequence);
         }
+        
 
         public void EndAllSequences()
         {
-            m_sequenceLevel = 0;
-            IsSequencing = false;
-            WaitAcknowledgment = false;
-
-            while (m_sequences.Count > 0)
-            {
-                var poppedSequence = m_sequences.Pop();
-
-                ActionsHandler.SendSequenceEndMessage(Clients, TimeLine.Current, poppedSequence, m_lastSequenceAction);
-            }
+            foreach (var sequence in m_sequencesRoot)
+                sequence.EndSequence();
         }
 
-        public virtual void AcknowledgeAction()
+        public void ResetSequences()
         {
-            WaitAcknowledgment = false;
+            m_sequencesRoot.Clear();
+            LastSequence = null;
+            m_nextSequenceId = 1;
+        }
 
-            // todo : find the right usage
+        public virtual bool AcknowledgeAction(CharacterFighter fighter, int sequenceId)
+        {
+            return m_sequencesRoot.Any(x => x.Acknowledge(sequenceId, fighter));
         }
 
         #endregion Sequences
@@ -2417,9 +2389,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                     && (markTrigger is Wall || markTrigger is Glyph))
                     continue;
 
-                StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-                markTrigger.Trigger(trigger, cell);
-                EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+                using (StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP))
+                    markTrigger.Trigger(trigger, cell);
             }
         }
 
@@ -2431,12 +2402,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (triggersToRemove.Count == 0)
                 return;
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-            foreach (var trigger in triggersToRemove)
+            using (StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP))
             {
-                RemoveTrigger(trigger);
+                foreach (var trigger in triggersToRemove)
+                {
+                    RemoveTrigger(trigger);
+                }
             }
-            EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
         }
 
         public int PopNextTriggerId() => m_triggerIdProvider.Pop();

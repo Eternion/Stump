@@ -183,66 +183,63 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 OnSpellCastFailed(spell, cell);
                 return false;
-            }  
-
-            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
-
-            var random = new AsyncRandom();
-            var critical = RollCriticalDice(weaponTemplate);
-
-            switch (critical)
-            {
-                case FightSpellCastCriticalEnum.CRITICAL_FAIL:
-                    OnWeaponUsed(weaponTemplate, cell, critical, false);
-
-                    if (!apFree)
-                        UseAP((short) weaponTemplate.ApCost);
-                
-                    Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
-
-                    PassTurn();
-
-                    return false;
-                case FightSpellCastCriticalEnum.CRITICAL_HIT:
-                    m_criticalWeaponBonus = weaponTemplate.CriticalHitBonus;
-                    break;
             }
 
-            m_isUsingWeapon = true;
-            var effects =
-                weapon.Effects.Where(entry => EffectManager.Instance.IsUnRandomableWeaponEffect(entry.EffectId)).OfType<EffectDice>();
-            var handlers = new List<SpellEffectHandler>();
-            foreach (var effect in effects)
+            using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON))
             {
-                if (effect.Random > 0)
+                var random = new AsyncRandom();
+                var critical = RollCriticalDice(weaponTemplate);
+
+                switch (critical)
                 {
-                    if (random.NextDouble() > effect.Random/100d)
-                    {
-                        // effect ignored
-                        continue;
-                    }
+                    case FightSpellCastCriticalEnum.CRITICAL_FAIL:
+                        OnWeaponUsed(weaponTemplate, cell, critical, false);
+
+                        if (!apFree)
+                            UseAP((short)weaponTemplate.ApCost);
+
+                        PassTurn();
+
+                        return false;
+                    case FightSpellCastCriticalEnum.CRITICAL_HIT:
+                        m_criticalWeaponBonus = weaponTemplate.CriticalHitBonus;
+                        break;
                 }
 
-                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, new DefaultSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT), cell,
-                    critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
-                handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize, (byte) weaponTemplate.Type.ZoneMinSize,
-                    handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
-                handler.Targets = new TargetCriterion[]
-                    { new TargetTypeCriterion(SpellTargetType.ALLY_ALL_EXCEPT_SELF, false), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL, false) }; // everyone but caster
-                handlers.Add(handler);
+                m_isUsingWeapon = true;
+                var effects =
+                    weapon.Effects.Where(entry => EffectManager.Instance.IsUnRandomableWeaponEffect(entry.EffectId)).OfType<EffectDice>();
+                var handlers = new List<SpellEffectHandler>();
+                foreach (var effect in effects)
+                {
+                    if (effect.Random > 0)
+                    {
+                        if (random.NextDouble() > effect.Random / 100d)
+                        {
+                            // effect ignored
+                            continue;
+                        }
+                    }
+
+                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, new DefaultSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT), cell,
+                        critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+                    handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte)weaponTemplate.Type.ZoneSize, (byte)weaponTemplate.Type.ZoneMinSize,
+                        handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
+                    handler.Targets = new TargetCriterion[]
+                        { new TargetTypeCriterion(SpellTargetType.ALLY_ALL_EXCEPT_SELF, false), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL, false) }; // everyone but caster
+                    handlers.Add(handler);
+                }
+
+                var silentCast = handlers.Any(entry => entry.RequireSilentCast());
+
+                OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
+
+                if (!apFree)
+                    UseAP((short)weaponTemplate.ApCost);
+
+                foreach (var handler in handlers)
+                    handler.Apply();
             }
-
-            var silentCast = handlers.Any(entry => entry.RequireSilentCast());
-
-            OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
-
-            if (!apFree)
-                UseAP((short) weaponTemplate.ApCost);
-
-            foreach (var handler in handlers)
-                handler.Apply();
-
-            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
             m_isUsingWeapon = false;
             m_criticalWeaponBonus = 0;
