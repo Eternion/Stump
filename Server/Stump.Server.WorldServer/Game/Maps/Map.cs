@@ -735,10 +735,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void InteractiveUsedCallback(Character character, Skill skill)
         {
+            OnInteractiveUseEnded(character, skill.InteractiveObject, skill);
             skill.EndExecute(character);
             character.ResetCurrentSkill();
-
-            OnInteractiveUseEnded(character, skill.InteractiveObject, skill);
         }
 
         public void Refresh(InteractiveObject interactive)
