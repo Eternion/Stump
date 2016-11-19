@@ -758,48 +758,47 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
-
-            var critical =  RollCriticalDice(spellLevel);
-
-            if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+            using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
             {
-                OnSpellCasting(new DefaultSpellCastHandler(this, spell, cell, false), cell, critical, false);
+                var critical = RollCriticalDice(spellLevel);
 
+                if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+                {
+                    OnSpellCasting(new DefaultSpellCastHandler(this, spell, cell, false), cell, critical, false);
+
+                    if (!apFree)
+                        UseAP((short)spellLevel.ApCost);
+
+
+                    if (spellLevel.CriticalFailureEndsTurn)
+                        PassTurn();
+
+                    return false;
+                }
+
+                var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+                handler.CastedByEffect = castSpellEffect;
+
+                if (!handler.Initialize())
+                {
+                    OnSpellCastFailed(spell, handler.TargetedCell);
+
+                    return false;
+                }
+
+                OnSpellCasting(handler, handler.TargetedCell, critical, silent || handler.SilentCast);
                 if (!apFree)
-                    UseAP((short) spellLevel.ApCost);
+                    UseAP((short)spellLevel.ApCost);
 
-                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+                var fighter = handler.TargetedActor ?? Fight.GetOneFighter(handler.TargetedCell);
 
-                if (spellLevel.CriticalFailureEndsTurn)
-                    PassTurn();
+                handler.Execute();
 
-                return false;
+                if (fighter == null)
+                    OnSpellCasted(handler, handler.TargetedCell, critical, silent || handler.SilentCast, !force);
+                else
+                    OnSpellCasted(handler, fighter, critical, silent || handler.SilentCast, !force);
             }
-
-            var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
-            handler.CastedByEffect = castSpellEffect;
-
-            if (!handler.Initialize())
-            {
-                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
-                OnSpellCastFailed(spell, handler.TargetedCell);
-
-                return false;
-            }
-
-            OnSpellCasting(handler, handler.TargetedCell, critical, silent || handler.SilentCast);
-            if (!apFree)
-                UseAP((short)spellLevel.ApCost);
-
-            var fighter = handler.TargetedActor ?? Fight.GetOneFighter(handler.TargetedCell);
-
-            handler.Execute();
-
-            if (fighter == null)
-                OnSpellCasted(handler, handler.TargetedCell, critical, silent || handler.SilentCast, !force);
-            else
-                OnSpellCasted(handler, fighter, critical, silent || handler.SilentCast, !force);
 
             return true;
         }
@@ -1574,9 +1573,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var triggerBuff in m_buffList.OfType<TriggerBuff>().Where(buff => buff.ShouldTrigger(trigger, token)).OrderBy(x => x.Priority).ToArray())
             {
-                Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
-                triggerBuff.Apply(triggerer, trigger, token);
-                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
+                using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED))
+                    triggerBuff.Apply(triggerer, trigger, token);
             }
         }
 
@@ -1960,32 +1958,32 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.PORTEUR_3).FirstOrDefault();
             var targetState = m_carriedActor.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.PORTE_8).FirstOrDefault();
 
-            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-
-            if (drop)
-                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, m_carriedActor, cell);   
-            else
-                ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
-
-            if (actorState != null)
-                RemoveBuff(actorState);
-
-            if (targetState != null)
-                m_carriedActor.RemoveBuff(targetState);
-
-            var carriedActor = m_carriedActor;
-            m_carriedActor = null;
-
-            if (carriedActor.IsAlive())
+            using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE))
             {
-                carriedActor.Position.Cell = cell;
-                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, carriedActor));
+                if (drop)
+                    ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
+                else
+                    ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
+
+                if (actorState != null)
+                    RemoveBuff(actorState);
+
+                if (targetState != null)
+                    m_carriedActor.RemoveBuff(targetState);
+
+                var carriedActor = m_carriedActor;
+                m_carriedActor = null;
+
+                if (carriedActor.IsAlive())
+                {
+                    carriedActor.Position.Cell = cell;
+                    Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, carriedActor));
+                }
+                
+                carriedActor.Dead -= OnCarryingActorDead;
+                Dead -= OnCarryingActorDead;
             }
 
-            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-
-            carriedActor.Dead -= OnCarryingActorDead;
-            Dead -= OnCarryingActorDead;
         }
 
         public override bool StartMove(Path movementPath)

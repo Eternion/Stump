@@ -246,30 +246,30 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void Explode(int currentBonus)
         {
-            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
-
-            var handler = SpellManager.Instance.GetSpellCastHandler(this, ExplodSpell, Cell, false);
-
-            if (handler == null)
-                return;
-
-            //Avoid StackOverflow when using Poudre
-            //RemoveAndDispellAllBuffs();
-
-            handler.Initialize();
-
-            foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
+            using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
             {
-                effect.Efficiency = 1 + currentBonus / 100d;
+
+                var handler = SpellManager.Instance.GetSpellCastHandler(this, ExplodSpell, Cell, false);
+
+                if (handler == null)
+                    return;
+
+                //Avoid StackOverflow when using Poudre
+                //RemoveAndDispellAllBuffs();
+
+                handler.Initialize();
+
+                foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
+                {
+                    effect.Efficiency = 1 + currentBonus / 100d;
+                }
+
+                OnSpellCasting(handler, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
+
+                handler.Execute();
+
+                OnSpellCasted(handler, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
             }
-
-            OnSpellCasting(handler, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
-
-            handler.Execute();
-
-            OnSpellCasted(handler, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
-
-            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
             if (currentBonus <= 0)
                 return;
