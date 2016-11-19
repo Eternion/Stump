@@ -65,6 +65,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
+        [NumericPrecision(16,8)]
         public double DropRateForGrade1
         {
             get;
@@ -74,6 +75,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
+        [NumericPrecision(16,8)]
         public double DropRateForGrade2
         {
             get;
@@ -83,6 +85,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
+        [NumericPrecision(16,8)]
         public double DropRateForGrade3
         {
             get;
@@ -92,6 +95,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
+        [NumericPrecision(16,8)]
         public double DropRateForGrade4
         {
             get;
@@ -101,6 +105,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
+        [NumericPrecision(16,8)]
         public double DropRateForGrade5
         {
             get;
