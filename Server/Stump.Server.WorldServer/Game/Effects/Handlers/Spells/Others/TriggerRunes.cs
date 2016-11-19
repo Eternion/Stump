@@ -23,12 +23,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 if (target == null)
                     continue;
 
-                Fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-
-                trigger.Trigger(target);
-
-                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-
+                using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP))
+                    trigger.Trigger(target);
             }
 
             return true;

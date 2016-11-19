@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Arena;
@@ -50,6 +51,11 @@ namespace Stump.Server.WorldServer.Game.Parties
         public Party GetGroup(int id)
         {
             return GetEntityOrDefault(id);
+        }
+
+        public Party GetGroup(string name)
+        {
+            return Entities.Values.FirstOrDefault(x => string.Compare(name, x.Name, StringComparison.InvariantCultureIgnoreCase) == 0);
         }
     }
 }

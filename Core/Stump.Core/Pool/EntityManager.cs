@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Stump.Core.Reflection;
 
 namespace Stump.Core.Pool
@@ -26,6 +27,8 @@ namespace Stump.Core.Pool
         where T : class
     {
         private readonly ConcurrentDictionary<TC, T> m_entities = new ConcurrentDictionary<TC, T>();
+
+        protected IReadOnlyDictionary<TC, T> Entities => new ReadOnlyDictionary<TC, T>(m_entities); 
 
         public event Action<T> EntityAdded;
 

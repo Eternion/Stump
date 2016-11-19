@@ -39,9 +39,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 
             var beuverieHandler = SpellManager.Instance.GetSpellCastHandler(Fighter, spellBeuverie, barrel.Summoner.Cell, false);
 
-            Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
-            beuverieHandler.Execute();
-            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+            using (Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
+                beuverieHandler.Execute();
         }
     }
 }

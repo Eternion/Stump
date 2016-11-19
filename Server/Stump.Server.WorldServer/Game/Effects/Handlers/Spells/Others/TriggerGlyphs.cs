@@ -22,11 +22,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
             foreach (var trigger in triggers.OfType<Glyph>().Where(x => x.CanBeForced && x.Caster == Caster))
             {
-                fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-
-                trigger.TriggerAllCells(Caster);
-
-                fight.EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+                using (fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP))
+                    trigger.TriggerAllCells(Caster);
 
             }
 

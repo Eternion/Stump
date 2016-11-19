@@ -82,6 +82,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         }
 
         [DefaultSetting(1.0)]
+        [NumericPrecision(16, 8)]
         public double Frequency
         {
             get;

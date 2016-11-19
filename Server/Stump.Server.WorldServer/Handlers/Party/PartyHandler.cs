@@ -39,6 +39,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
                 return;
             }
+            if (target.IsLoyalToParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL))
+            {
+                SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_LOYAL);
+                return;
+            }
 
             client.Character.Invite(target, PartyTypeEnum.PARTY_TYPE_CLASSICAL);
         }
@@ -57,6 +62,12 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (!target.IsAvailable(client.Character, false))
             {
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
+                return;
+            }
+
+            if (target.IsLoyalToParty(PartyTypeEnum.PARTY_TYPE_ARENA))
+            {
+                SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_LOYAL);
                 return;
             }
 
@@ -179,8 +190,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         {
             if (!client.Character.IsInParty(message.partyId))
                 return;
+            var party = client.Character.GetParty(message.partyId);
 
-            var target = client.Character.Party.GetMember((int) message.playerId);
+
+            var target = party.GetMember((int) message.playerId);
 
             if (target == null)
                 return;
@@ -194,12 +207,15 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (!client.Character.IsPartyLeader(message.partyId))
                 return;
 
-            var target = client.Character.Party.GetMember((int) message.playerId);
+            
+            var party = client.Character.GetParty(message.partyId);
+
+            var target = party.GetMember((int) message.playerId);
 
             if (target == null)
                 return;
 
-            foreach(var member in target.Party.Members)
+            foreach(var member in party.Members)
             {
                 if (message.enabled)
                     member.FollowMember(target);
@@ -217,6 +233,35 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             client.Character.UnfollowMember();
         }
 
+        [WorldHandler(PartyNameSetRequestMessage.Id)]
+        public static void HandlePartyNameSetRequestMessage(WorldClient client, PartyNameSetRequestMessage message)
+        {
+            if (!client.Character.IsInParty(message.partyId))
+                return;
+
+            var party = client.Character.GetParty(message.partyId);
+
+            if (!client.Character.IsPartyLeader(message.partyId))
+            {
+                SendPartyNameSetErrorMessage(client, party, PartyNameErrorEnum.PARTY_NAME_UNALLOWED_RIGHTS);
+                return;
+            }
+            
+            var result = party.SetPartyName(message.partyName);
+
+            if (result != null)
+                SendPartyNameSetErrorMessage(client, party, result.Value);
+        }
+
+        [WorldHandler(PartyPledgeLoyaltyRequestMessage.Id)]
+        public static void HandlePartyPledgeLoyaltyRequestMessage(WorldClient client, PartyPledgeLoyaltyRequestMessage message)
+        {
+            if (!client.Character.IsInParty(message.partyId))
+                return;
+
+            client.Character.SetLoyalToParty(client.Character.GetParty(message.partyId).Type, message.loyal);
+        }
+
         public static void SendPartyFollowStatusUpdateMessage(WorldClient client, Game.Parties.Party party, bool success, int followedId)
         {
             client.Send(new PartyFollowStatusUpdateMessage(party.Id, success, followedId != 0, followedId));
@@ -232,9 +277,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             client.Send(new PartyLeaderUpdateMessage(party.Id, leader.Id));
         }
 
-        public static void SendPartyRestrictedMessage(IPacketReceiver client, Game.Parties.Party party, bool restricted)
+        public static void SendPartyRestrictedMessage(IPacketReceiver client, Game.Parties.Party party)
         {
-            client.Send(new PartyRestrictedMessage(party.Id, restricted));
+            client.Send(new PartyRestrictedMessage(party.Id, party.RestrictFightToParty));
         }
 
         public static void SendPartyUpdateMessage(IPacketReceiver client, Game.Parties.Party party, Character member)
@@ -294,15 +339,15 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 (sbyte)party.MembersLimit,
                 party.Members.Select(party.GetPartyMemberInformations).ToArray(),
                 party.Guests.Select(party.GetPartyGuestInformations).ToArray(),
-                party.Restricted,
-                "(no name)"));
+                party.RestrictFightToParty,
+                party.Name));
         }
 
         public static void SendPartyInvitationMessage(WorldClient client, Game.Parties.Party party, Character from)
         {
             client.Send(new PartyInvitationMessage(party.Id,
                 (sbyte)party.Type,
-                "(no name)",
+                party.Name,
                 (sbyte)party.MembersLimit,
                 from.Id,
                 from.Name,
@@ -315,7 +360,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             client.Send(new PartyInvitationDetailsMessage(
                 invitation.Party.Id,
                 (sbyte)invitation.Party.Type,
-                "(no name)",
+                invitation.Party.Name,
                 invitation.Source.Id,
                 invitation.Source.Name,
                 invitation.Party.Leader.Id,
@@ -332,6 +377,21 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         public static void SendPartyCannotJoinErrorMessage(IPacketReceiver client, PartyJoinErrorEnum reason)
         {
             client.Send(new PartyCannotJoinErrorMessage(0, (sbyte)reason));
+        }
+
+        public static void SendPartyNameUpdateMessage(IPacketReceiver client, Game.Parties.Party party)
+        {
+            client.Send(new PartyNameUpdateMessage(party.Id, party.Name));
+        }
+
+        public static void SendPartyNameSetErrorMessage(IPacketReceiver client, Game.Parties.Party party, PartyNameErrorEnum reason)
+        {
+            client.Send(new PartyNameSetErrorMessage(party.Id, (sbyte)reason));
+        }
+
+        public static void SendPartyLoyaltyStatusMessage(IPacketReceiver client, Game.Parties.Party party, bool loyal)
+        {
+            client.Send(new PartyLoyaltyStatusMessage(party.Id, loyal));
         }
     }
 }

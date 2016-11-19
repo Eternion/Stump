@@ -1,0 +1,135 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Handlers.Actions;
+
+namespace Stump.Server.WorldServer.Game.Fights.Sequences
+{
+    public class FightSequence : IDisposable
+    {
+        private readonly List<CharacterFighter> m_acknowledgedBy = new List<CharacterFighter>();
+        private readonly List<FightSequence> m_children = new List<FightSequence>();
+
+        public FightSequence(int id, SequenceTypeEnum type, FightActor author)
+        {
+            Id = id;
+            Type = type;
+            Author = author;
+            StartTime = DateTime.Now;
+        }
+
+        public int Id
+        {
+            get;
+        }
+
+        public SequenceTypeEnum Type
+        {
+            get;
+        }
+
+        public FightActor Author
+        {
+            get;
+        }
+
+        public IFight Fight => Author.Fight;
+
+        public FightSequence Parent
+        {
+            get;
+            private set;
+        }
+
+        public bool Ended
+        {
+            get;
+            private set;
+        }
+
+        public IReadOnlyCollection<FightSequence> Children => m_children.AsReadOnly();
+
+        public DateTime StartTime
+        {
+            get;
+        }
+
+        public DateTime EndTime => StartTime + Duration;
+
+        public ReadOnlyCollection<CharacterFighter> AcknowledgedBy => m_acknowledgedBy.AsReadOnly();
+
+        public bool Acknowledge(int id, CharacterFighter fighter)
+        {
+            if (id == Id)
+            {
+                if (!m_acknowledgedBy.Contains(fighter))
+                    m_acknowledgedBy.Add(fighter);
+
+                return true;
+            }
+
+            return Children.Any(x => x.Acknowledge(id, fighter));
+        }
+
+        public void AddChildren(FightSequence sequence)
+        {
+            sequence.Parent = this;
+            m_children.Add(sequence);
+        }
+
+        public IEnumerable<FightSequence> EnumerateSequences()
+        {
+            yield return this;
+
+            foreach (var child in Children.SelectMany(x => x.EnumerateSequences()))
+            {
+                yield return child;
+            }
+        } 
+
+        public TimeSpan Duration => DurationWithoutChildren + Children.Aggregate(TimeSpan.Zero, (prev, x) => prev + x.Duration);
+
+        // just an approximation
+        protected virtual TimeSpan DurationWithoutChildren
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case SequenceTypeEnum.SEQUENCE_SPELL:
+                    case SequenceTypeEnum.SEQUENCE_MOVE:
+                    case SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH:
+                        return TimeSpan.FromSeconds(2);
+                    case SequenceTypeEnum.SEQUENCE_GLYPH_TRAP:
+                    case SequenceTypeEnum.SEQUENCE_TRIGGERED:
+                        return TimeSpan.FromSeconds(1);
+                    case SequenceTypeEnum.SEQUENCE_TURN_END:
+                    case SequenceTypeEnum.SEQUENCE_TURN_START:
+                        return TimeSpan.Zero;
+                    default:
+                        return TimeSpan.Zero;
+                }
+            }
+        }
+
+        public void EndSequence()
+        {
+            if (Ended)
+                return;
+
+            // check every children has been ended
+            foreach (var child in Children)
+                child.EndSequence();
+
+            ActionsHandler.SendSequenceEndMessage(Fight.Clients, this);
+        }
+
+        public void Dispose()
+        {
+            EndSequence();
+        }
+    }
+}
