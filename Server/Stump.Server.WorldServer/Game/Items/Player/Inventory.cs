@@ -1141,34 +1141,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         private void InitializeEvents()
         {
-            Owner.FightEnded += OnFightEnded;
         }
         private void TeardownEvents()
         {
-            Owner.FightEnded -= OnFightEnded;
-        }
-
-        private void OnFightEnded(Character character, CharacterFighter fighter)
-        {
-            // update boosts
-            foreach (var boost in GetItems(x => x.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD))
-            {
-                var effect = boost.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
-
-                if (effect == null)
-                    continue;
-
-                var newEffect = new EffectDice(effect);
-                newEffect.Value--;
-
-                boost.Effects.Remove(effect);
-                boost.Effects.Add(newEffect);
-
-                if (newEffect.Value <= 0)
-                    RemoveItem(boost);
-                else
-                    RefreshItem(boost);
-            }
         }
 
         #endregion
