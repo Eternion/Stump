@@ -920,7 +920,7 @@ namespace DBSynchroniser
                     var record = new MonsterSpawn
                     {
                         SubAreaId = (int?)subarea,
-                        Frequency = obj.IsMiniBoss ? 0.1 : (obj.FavoriteSubareaId == subarea ? 1.25 : 1),
+                        Frequency = obj.IsMiniBoss ? 0.01 : (obj.FavoriteSubareaId == subarea ? 1.25 : 1),
                         MonsterId = obj.Id,
                         MinGrade = (int)obj.Grades.First()?.Grade,
                         MaxGrade = (int)obj.Grades.Last()?.Grade,
