@@ -72,7 +72,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            //World.Instance.SendAnnounce("[RELOAD] Reloading " + name + " ... WORLD PAUSED", Color.DodgerBlue);
+            trigger.ReplyBold($"[RELOAD] Reloading {name} ... WORLD PAUSED");
+
             WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
                 {
                     try
@@ -83,7 +84,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     {
                     }
 
-                    //World.Instance.SendAnnounce("[RELOAD] " + name + " reloaded ... WORLD RESUMED", Color.DodgerBlue);
+                    trigger.ReplyBold($"[RELOAD] {name} reloaded ... WORLD RESUMED");
                 });
         }
     }
