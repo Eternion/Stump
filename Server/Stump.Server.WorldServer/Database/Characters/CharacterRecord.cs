@@ -593,6 +593,12 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public int SmileyMoodId
+        {
+            get;
+            set;
+        }
+
         public DateTime? DeletedDate
         {
             get;
