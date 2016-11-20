@@ -2088,19 +2088,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool HasResult => true;
 
-        public FightOutcomeEnum GetFighterOutcome()
-        {
-            var teamDead = Team.AreAllDead();
-            var opposedTeamDead = OpposedTeam.AreAllDead();
-
-            if (!teamDead && opposedTeamDead)
-                return FightOutcomeEnum.RESULT_VICTORY;
-
-            if (teamDead && !opposedTeamDead)
-                return FightOutcomeEnum.RESULT_LOST;
-
-            return FightOutcomeEnum.RESULT_VICTORY;
-        }
+        public FightOutcomeEnum GetFighterOutcome() => Team.GetOutcome();
 
         #endregion
 

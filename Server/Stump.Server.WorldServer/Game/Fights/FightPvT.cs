@@ -291,7 +291,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightSpectatorJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightSpectatorJoinMessage(spectator.Character.Client, false, false, IsStarted, 0, FightType);
+            ContextHandler.SendGameFightSpectatorJoinMessage(spectator.Character.Client, this);
         }
 
         protected override bool CanCancelFight() => false;

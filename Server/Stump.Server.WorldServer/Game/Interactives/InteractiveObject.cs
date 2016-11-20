@@ -96,6 +96,11 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         public InteractiveElement GetInteractiveElement(Character character)
         {
+            return new InteractiveElement(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character), true);
+        }
+
+        public InteractiveElement GetInteractiveElementWithBonus(Character character)
+        {
             if (m_skills.Values.Any(x => x is ISkillWithAgeBonus))
                 return new InteractiveElementWithAgeBonus(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character), true, m_skills.Values.OfType<ISkillWithAgeBonus>().Max(x => x.AgeBonus));
 

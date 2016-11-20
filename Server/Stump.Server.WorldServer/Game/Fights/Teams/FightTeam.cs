@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Parties;
 
 namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
@@ -348,10 +349,31 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             return m_deadFighters.LastOrDefault(x => x.IsDead());
         }
 
+        public Party GetTeamParty()
+        {
+            var party = Fighters.OfType<CharacterFighter>().FirstOrDefault()?.Character.Party;
+            return party != null && Fighters.OfType<CharacterFighter>().Count(x => x.Character.Party == party) == party.MembersCount ? party : null;
+        }
+
+        public FightOutcomeEnum GetOutcome()
+        {
+            var teamDead = AreAllDead();
+            var opposedTeamDead = OpposedTeam.AreAllDead();
+
+            if (!teamDead && opposedTeamDead)
+                return FightOutcomeEnum.RESULT_VICTORY;
+
+            if (teamDead && !opposedTeamDead)
+                return FightOutcomeEnum.RESULT_LOST;
+
+            return FightOutcomeEnum.RESULT_DRAW;
+        }
+
+
         public FightTeamInformations GetFightTeamInformations()
         {
             return new FightTeamInformations((sbyte)Id,
-                                             Leader != null ? Leader.Id : 0,
+                                             Leader?.Id ?? 0,
                                              (sbyte) AlignmentSide,
                                              (sbyte) TeamType,
                                              0,
@@ -365,10 +387,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 IsClosed,
                 IsAskingForHelp);
 
-        public FightTeamLightInformations GetFightTeamLightInformations()
-            => new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte)AlignmentSide,
-                                                  (sbyte)TeamType, 0, false, false, false, false, false,
+        public FightTeamLightInformations GetFightTeamLightInformations(Character character)
+            => new FightTeamLightInformations((sbyte)Id, Leader?.Id ?? 0, (sbyte)AlignmentSide,
+                                                  (sbyte)TeamType, 0, 
+                                                  m_fighters.OfType<CharacterFighter>().Any(x => character.FriendsBook.IsFriend(x.Character.Account.Id)),
+                                                  character.Guild != null && m_fighters.OfType<CharacterFighter>().Any(x => character.Guild == x.Character.Guild),
+                                                  false,
+                                                  character.Party != null && m_fighters.OfType<CharacterFighter>().Any(x => character.Parties.Any(y => x.Character.Parties.Contains(y))),
+                                                  false,
                                                   (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb)),
-                                                  200);
+                                                  (int)m_fighters.Average(x => x.Level));
+
     }
 }
