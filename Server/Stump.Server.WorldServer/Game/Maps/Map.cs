@@ -62,6 +62,9 @@ namespace Stump.Server.WorldServer.Game.Maps
         [Variable(true)]
         public static int AutoMoveActorMinInverval = 20;
 
+        [Variable(true)]
+        public static int InteractiveUseAdditionalDelay = 500;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         #region Events
@@ -720,7 +723,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (delay > 0)
             {
                 character.SetCurrentSkill(skill);
-                Area.CallDelayed(delay, () => InteractiveUsedCallback(character, skill));
+                Area.CallDelayed(delay + InteractiveUseAdditionalDelay, () => InteractiveUsedCallback(character, skill));
             }
             else if (delay == 0)
                 InteractiveUsedCallback(character, skill);
@@ -735,9 +738,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void InteractiveUsedCallback(Character character, Skill skill)
         {
-            OnInteractiveUseEnded(character, skill.InteractiveObject, skill);
             skill.EndExecute(character);
             character.ResetCurrentSkill();
+            OnInteractiveUseEnded(character, skill.InteractiveObject, skill);
         }
 
         public void Refresh(InteractiveObject interactive)
@@ -1786,7 +1789,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 Id,
                 new HouseInformations[0],
                 m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations(character) as GameRolePlayActorInformations),
-                m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
+                m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElementWithBonus(character)),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Where(x => x.Value.Animated).Select(entry => entry.Value.GetStatedElement()),
                 GetMapObstacles(),
                 m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),

@@ -278,7 +278,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public event Action<Character, Npc, NpcActionTypeEnum, NpcAction> InteractingWith;
-        
+
         public void OnInteractingWith(Npc npc, NpcActionTypeEnum actionType, NpcAction action)
         {
             InteractingWith?.Invoke(this, npc, actionType, action);
@@ -398,7 +398,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get;
             private set;
         }
-            
+
         public void SetCurrentSkill(Skill skill)
         {
             CurrentUsedSkill = skill;
@@ -530,7 +530,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private readonly List<PartyTypeEnum> m_partiesLoyalTo = new List<PartyTypeEnum>();
 
         private Character m_followedCharacter;
-        
+
         private Party m_party;
         private ArenaParty m_arenaParty;
 
@@ -549,10 +549,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_arenaParty; }
             private set
             {
-                if (m_arenaParty != null && value != m_arenaParty) SetLoyalToParty(PartyTypeEnum.PARTY_TYPE_ARENA , false);
+                if (m_arenaParty != null && value != m_arenaParty) SetLoyalToParty(PartyTypeEnum.PARTY_TYPE_ARENA, false);
                 m_arenaParty = value;
             }
         }
+
+        public Party[] Parties => new[] {Party, ArenaParty}.Where(x => x != null).ToArray();
 
         public bool IsInParty()
         {

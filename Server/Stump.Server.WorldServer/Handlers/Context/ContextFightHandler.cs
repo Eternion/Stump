@@ -335,12 +335,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight)
         {
-            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds, fight.AgeBonus, 0, new FightResultListEntry[0], new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds, fight.AgeBonus, 0, new FightResultListEntry[0], fight.GetPartiesNameWithOutcome()));
         }
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight, IEnumerable<FightResultListEntry> results)
         {
-            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds, fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds, fight.AgeBonus, 0, results, fight.GetPartiesNameWithOutcome()));
         }
 
         public static void SendGameFightJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
@@ -350,11 +350,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                  (short)timeMaxBeforeFightStart, (sbyte)fightTypeEnum));
         }
 
-        public static void SendGameFightSpectatorJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
-            bool isFightStarted, int timeMaxBeforeFightStart, FightTypeEnum fightTypeEnum)
+        public static void SendGameFightSpectatorJoinMessage(IPacketReceiver client, IFight fight)
         {
-            client.Send(new GameFightSpectatorJoinMessage(false, canBeCancelled, canSayReady, isFightStarted,
-                (short)timeMaxBeforeFightStart, (sbyte)fightTypeEnum, new NamedPartyTeam[0]));
+            client.Send(new GameFightSpectatorJoinMessage(false, false, false, fight.IsStarted,
+                fight.IsStarted ? (short)0 : (short)(fight.GetPlacementTimeLeft().TotalMilliseconds / 100), (sbyte)fight.FightType, fight.GetPartiesName()));
         }
 
         public static void SendGameFightSpectateMessage(IPacketReceiver client, IFight fight)
