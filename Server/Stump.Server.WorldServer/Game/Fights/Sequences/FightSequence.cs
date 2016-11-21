@@ -124,6 +124,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
             foreach (var child in Children)
                 child.EndSequence();
 
+            Ended = true;
             ActionsHandler.SendSequenceEndMessage(Fight.Clients, this);
         }
 
