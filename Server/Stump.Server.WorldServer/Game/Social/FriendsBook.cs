@@ -332,8 +332,8 @@ namespace Stump.Server.WorldServer.Game.Social
                 logger.Error("Sad, friend bound with character {0} is not found :(", character);
             else
             {
-                friend.SetOffline();
                 UnsubscribeEvents(friend);
+                friend.SetOffline();
             }
         }
 
@@ -344,9 +344,8 @@ namespace Stump.Server.WorldServer.Game.Social
                 logger.Error("Ignored {0} disconnect but not found", character);
             else
             {
-                ignored.SetOffline();
-
                 character.LoggedOut -= OnIgnoredLogout;
+                ignored.SetOffline();
             }
         }
 
