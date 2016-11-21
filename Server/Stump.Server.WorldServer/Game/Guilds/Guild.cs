@@ -81,6 +81,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Emblem = new GuildEmblem(Record);
 
+            BulletinDate = DateTime.Now;
+            LastNotifiedDate = DateTime.Now;
+
             if (m_members.Count == 0 && !record.IsNew)
             {
                 logger.Error("Guild {0} ({1}) is empty", Id, Name);
@@ -278,6 +281,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
+        public DateTime LastNotifiedDate
+        {
+            get { return Record.LastNotifiedDate; }
+            protected set
+            {
+                Record.LastNotifiedDate = value;
+            }
+        }
+
         public GuildMember BulletinMember
         {
             get { return TryGetMember(Record.BulletinMemberId); }
@@ -315,6 +327,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             BulletinContent = content;
             BulletinMember = member;
             BulletinDate = DateTime.Now;
+
+            if (notify)
+                LastNotifiedDate = DateTime.Now;
 
             GuildHandler.SendGuildBulletinMessage(m_clients, this);
         }
@@ -863,6 +878,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public GuildInformations GetGuildInformations() => new GuildInformations(Id, Name, Level, Emblem.GetNetworkGuildEmblem());
 
         public BasicGuildInformations GetBasicGuildInformations() => new BasicGuildInformations(Id, Name, Level);
+
+        public GuildFactSheetInformations GetGuildFactSheetInformations() => new GuildFactSheetInformations(Id, Name, Level, Emblem.GetNetworkGuildEmblem(), Boss.Id, (short)Members.Count);
     }
 }
 

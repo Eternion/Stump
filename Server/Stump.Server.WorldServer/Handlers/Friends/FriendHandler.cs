@@ -6,6 +6,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Social;
+using Stump.Server.WorldServer.Game.Guilds;
 
 namespace Stump.Server.WorldServer.Handlers.Friends
 {
@@ -14,6 +15,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         [WorldHandler(FriendsGetListMessage.Id)]
         public static void HandleFriendsGetListMessage(WorldClient client, FriendsGetListMessage message)
         {
+            client.Send(new GuildListMessage(GuildManager.Instance.GetGuilds().Select(x => x.GetGuildInformations())));
             SendFriendsListMessage(client, client.Character.FriendsBook.Friends);
         }
 

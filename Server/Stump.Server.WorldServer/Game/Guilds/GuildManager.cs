@@ -61,6 +61,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DoesEmblemExist(GuildEmblem emblem) => m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
 
+        public List<Guild> GetGuilds() => m_guilds.Select(x => x.Value).ToList();
+
         public Guild TryGetGuild(int id)
         {
             lock (m_lock)

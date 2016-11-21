@@ -281,6 +281,20 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Character.Guild.UpdateBulletin(client.Character.GuildMember, message.content, message.notifyMembers);
         }
 
+        [WorldHandler(GuildFactsRequestMessage.Id)]
+        public static void HandleGuildFactsRequestMessage(WorldClient client, GuildFactsRequestMessage message)
+        {
+            var guild = GuildManager.Instance.TryGetGuild(message.guildId);
+
+            if (guild == null)
+            {
+                SendGuildFactsErrorMessage(client, message.guildId);
+                return;
+            }
+
+            client.Send(new GuildFactsMessage(guild.GetGuildFactSheetInformations(), guild.CreationDate.GetUnixTimeStamp(), (short)guild.TaxCollectors.Count, true, guild.Members.Select(x => x.GetCharacterMinimalInformations())));
+        }
+
         public static void SendGuildMemberWarnOnConnectionStateMessage(IPacketReceiver client, bool state)
         {
             client.Send(new GuildMemberWarnOnConnectionStateMessage(state));
@@ -371,12 +385,12 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildMotdMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildMotdMessage(guild.MotdContent, guild.MotdDate.GetUnixTimeStamp(), guild.MotdMember != null ? guild.MotdMember.Id : 0, guild.MotdMember != null ? guild.MotdMember.Name : "Unknown"));
+            client.Send(new GuildMotdMessage(guild.MotdContent, guild.MotdDate.GetUnixTimeStamp(), guild.MotdMember?.Id ?? 0, guild.MotdMember?.Name ?? "Unknown"));
         }
 
         public static void SendGuildBulletinMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildBulletinMessage(guild.BulletinContent, guild.BulletinDate.GetUnixTimeStamp(), guild.BulletinMember != null ? guild.BulletinMember.Id : 0, guild.BulletinMember != null ? guild.BulletinMember.Name : "Unknown", DateTime.Now.GetUnixTimeStamp()));
+            client.Send(new GuildBulletinMessage(guild.BulletinContent, guild.BulletinDate.GetUnixTimeStamp(), guild.BulletinMember?.Id ?? 0, guild.BulletinMember?.Name ?? "Unknown", guild.LastNotifiedDate.GetUnixTimeStamp()));
         }
 
         public static void SendGuildMotdSetErrorMessage(IPacketReceiver client, GuildMotdErrorEnum error)
@@ -387,6 +401,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildBulletinSetErrorMessage(IPacketReceiver client, SocialNoticeErrorEnum error)
         {
             client.Send(new GuildBulletinSetErrorMessage((sbyte)error));
+        }
+
+        public static void SendGuildFactsErrorMessage(IPacketReceiver client, int guildId)
+        {
+            client.Send(new GuildFactsErrorMessage(guildId));
         }
     }
 }

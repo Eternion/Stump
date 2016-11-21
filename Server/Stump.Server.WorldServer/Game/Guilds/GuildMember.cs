@@ -129,6 +129,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
+        public CharacterMinimalInformations GetCharacterMinimalInformations() => new CharacterMinimalInformations(Id, Name, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank));
+
         public NetworkGuildMember GetNetworkGuildMember()
         {
             if (IsConnected)
