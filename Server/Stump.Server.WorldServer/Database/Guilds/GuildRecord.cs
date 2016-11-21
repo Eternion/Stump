@@ -167,6 +167,12 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
+        public DateTime LastNotifiedDate
+        {
+            get;
+            set;
+        }
+
         public int BulletinMemberId
         {
             get;

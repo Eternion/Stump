@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
@@ -119,24 +118,20 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
             base.Apply();
-            if (ApplyTrigger != null)
-                ApplyTrigger(this, fighterTrigger, trigger, token);
+            ApplyTrigger?.Invoke(this, fighterTrigger, trigger, token);
         }
-
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger)
         {
             base.Apply();
-            if (ApplyTrigger != null)
-                ApplyTrigger(this, fighterTrigger, trigger, Token);
+            ApplyTrigger?.Invoke(this, fighterTrigger, trigger, Token);
         }
         
 
         public override void Dispell()
         {
             base.Dispell();
-            if (RemoveTrigger != null)
-                RemoveTrigger(this);
+            RemoveTrigger?.Invoke(this);
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
@@ -147,7 +142,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
             return new FightTriggeredEffect(Id, Target.Id, turnDuration,
                 (sbyte)Dispellable,
-                (short)Spell.Id, Effect.Id, 0,
+                (short)ParentSpell.Id, Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
                 (values.Length > 1 ? Convert.ToInt32(values[1]) : 0),
                 (values.Length > 2 ? Convert.ToInt32(values[2]) : 0),
