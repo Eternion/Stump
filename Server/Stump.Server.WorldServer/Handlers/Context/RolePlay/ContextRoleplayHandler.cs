@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
@@ -62,9 +63,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void HandleMapRunningFightListRequestMessage(WorldClient client, MapRunningFightListRequestMessage message)
         {
             if (client.Character.Map.Id == ArenaManager.KolizeumMapId)
-                SendMapRunningFightListMessage(client, ArenaManager.Instance.Arenas.SelectMany(x => x.Value.Map.Fights));
+                SendMapRunningFightListMessage(client, ArenaManager.Instance.Arenas.SelectMany(x => x.Value.Map.Fights), client.Character);
             else
-                SendMapRunningFightListMessage(client, client.Character.Map.Fights);
+                SendMapRunningFightListMessage(client, client.Character.Map.Fights, client.Character);
         }
 
         [WorldHandler(MapRunningFightDetailsRequestMessage.Id)]
@@ -84,9 +85,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Character.FreeSoul();
         }
 
-        public static void SendMapRunningFightListMessage(IPacketReceiver client, IEnumerable<IFight> fights)
+        public static void SendMapRunningFightListMessage(IPacketReceiver client, IEnumerable<IFight> fights, Character character)
         {
-            client.Send(new MapRunningFightListMessage(fights.Select(entry => entry.GetFightExternalInformations())));
+            client.Send(new MapRunningFightListMessage(fights.Select(entry => entry.GetFightExternalInformations(character))));
         }
 
         public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, IFight fight)
@@ -94,10 +95,23 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var redFighters = fight.ChallengersTeam.GetAllFighters(x => !(x is SummonedFighter) && !(x is SummonedBomb)).ToArray();
             var blueFighters = fight.DefendersTeam.GetAllFighters(x => !(x is SummonedFighter) && !(x is SummonedBomb)).ToArray();
 
-            client.Send(new MapRunningFightDetailsMessage(
-                fight.Id,
-                redFighters.Select(entry => entry.GetGameFightFighterLightInformations()),
-                blueFighters.Select(entry => entry.GetGameFightFighterLightInformations())));
+            var partiesName = fight.GetPartiesName().ToArray();
+
+            if (partiesName.Length > 0)
+            {
+                client.Send(new MapRunningFightDetailsExtendedMessage(
+                    fight.Id,
+                    redFighters.Select(entry => entry.GetGameFightFighterLightInformations()),
+                    blueFighters.Select(entry => entry.GetGameFightFighterLightInformations()),
+                    partiesName));
+            }
+            else
+            {
+                client.Send(new MapRunningFightDetailsMessage(
+                    fight.Id,
+                    redFighters.Select(entry => entry.GetGameFightFighterLightInformations()),
+                    blueFighters.Select(entry => entry.GetGameFightFighterLightInformations())));
+            }
         }
 
         public static void SendCurrentMapMessage(IPacketReceiver client, int mapId)

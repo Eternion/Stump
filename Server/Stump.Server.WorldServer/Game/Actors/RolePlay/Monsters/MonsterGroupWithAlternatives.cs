@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             return new GroupMonsterStaticInformationsWithAlternatives(displayedGroup.FirstOrDefault()?.GetMonsterInGroupLightInformations() ?? new MonsterInGroupLightInformations(),
                 displayedGroup.Skip(1).Select(x => x.GetMonsterInGroupInformations()),
-                m_monstersByMembersCount.Select(x => new AlternativeMonstersInGroupLightInformations(x.Key, x.Value.Select(y => y.GetMonsterInGroupLightInformations()))));
+                m_monstersByMembersCount.OrderBy(x => x.Key).Select(x => new AlternativeMonstersInGroupLightInformations(x.Key, x.Value.Select(y => y.GetMonsterInGroupLightInformations()))));
         }
     }
 }

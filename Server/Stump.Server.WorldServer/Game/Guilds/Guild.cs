@@ -695,7 +695,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             });
         }
 
-        protected void UpdateMember(GuildMember member)
+        public void UpdateMember(GuildMember member)
         {
             GuildHandler.SendGuildInformationsMemberUpdateMessage(m_clients, member);
         }

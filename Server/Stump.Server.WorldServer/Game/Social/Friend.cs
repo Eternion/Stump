@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
                     Character.GuildMember == null ? new GuildInformations(0, "", 0, new GuildEmblem(0,0,0,0)) : Character.GuildMember.Guild.GetGuildInformations(),
-                    0,
+                    (short)Character.SmileyMoodId,
                     Character.Status);
             }
 

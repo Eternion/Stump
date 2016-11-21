@@ -135,7 +135,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 return new NetworkGuildMember(Id, Character.Name, Character.Level, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
                                               GivenExperience, (sbyte)GivenPercent, (int)Rights, Character.IsInFight() ? (sbyte)2 : (sbyte)1,
-                                              (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
+                                              (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, (short)Character.SmileyMoodId,
                                               Record.AccountId, 0, Character.Status);
             }
 

@@ -42,6 +42,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (target.IsLoyalToParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL))
             {
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_LOYAL);
+                // 310		%1 est déjà dans un groupe et refuse les invitations actuellement.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 310, target.Name);
                 return;
             }
 
