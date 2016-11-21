@@ -2138,7 +2138,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 fighter = character.Fighter;
 
             if (fighter == null || fighter.Fight != Fight)
-                return base.CanBeSee(obj) && VisibleState != VisibleStateEnum.INVISIBLE;
+                return (base.CanBeSee(obj) || character.IsSpectator()) && VisibleState != VisibleStateEnum.INVISIBLE;
 
             return GetVisibleStateFor(fighter) != VisibleStateEnum.INVISIBLE && IsAlive();
         }

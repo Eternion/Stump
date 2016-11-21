@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Core.Extensions;
 using Stump.Server.WorldServer.Game.Arena;
+using Stump.Server.WorldServer.Game;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -195,7 +196,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameFightOptionToggleMessage.Id)]
         public static void HandleGameFightOptionToggleMessage(WorldClient client, GameFightOptionToggleMessage message)
         {
-            if (message.option == (sbyte) FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY && client.Character.IsPartyLeader())
+            if (message.option == (sbyte)FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY && client.Character.IsPartyLeader())
                 client.Character.Party.TogglePartyFightRestriction();
 
             if (!client.Character.IsFighting())
@@ -217,12 +218,21 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (client.Character.IsFighting())
                 return;
 
-            var friend = client.Character.FriendsBook.Friends.FirstOrDefault(x => x.Character != null && x.Character.Id == message.playerId).Character;
+            var player = World.Instance.GetCharacter((int)message.playerId);
 
-            if (!friend.IsFighting())
+            if (player == null)
                 return;
 
-            var fight = FightManager.Instance.GetFight(friend.Fight.Id);
+            if (!client.Character.FriendsBook.IsFriend(player.Account.Id) && !client.Character.Guild.Members.Any(x => x.Character?.Id == player.Id))
+                return;
+
+            if (!player.IsFighting())
+            {
+                SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.TOO_LATE);
+                return;
+            }
+
+            var fight = FightManager.Instance.GetFight(player.Fight.Id);
 
             if (fight == null)
             {

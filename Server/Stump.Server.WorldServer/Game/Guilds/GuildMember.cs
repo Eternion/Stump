@@ -50,10 +50,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             private set;
         }
 
-        public bool IsConnected
-        {
-            get { return Character != null; }
-        }
+        public bool IsConnected => Character != null;
 
         public Guild Guild
         {
@@ -103,46 +100,19 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool IsBoss => RankId == 1;
 
-        public string Name
-        {
-            get
-            {
-                return Record.Name;
-            }
-        }
+        public string Name => Record.Name;
 
-        public long Experience
-        {
-            get
-            {
-                return Record.Experience;
-            }
-        }
+        public long Experience => Record.Experience;
 
-        public int PrestigeRank
-        {
-            get { return Record.PrestigeRank; }
-        }
+        public int PrestigeRank => Record.PrestigeRank;
 
-        public PlayableBreedEnum Breed
-        {
-            get { return Record.Breed; }
-        }
+        public PlayableBreedEnum Breed => Record.Breed;
 
-        public SexTypeEnum Sex
-        {
-            get { return Record.Sex; }
-        }
+        public SexTypeEnum Sex => Record.Sex;
 
-        public AlignmentSideEnum AlignementSide
-        {
-            get { return Record.AlignementSide; }
-        }
+        public AlignmentSideEnum AlignementSide => Record.AlignementSide;
 
-        public DateTime? LastConnection
-        {
-            get { return Record.LastConnection; }
-        }
+        public DateTime? LastConnection => Record.LastConnection;
 
         /// <summary>
         /// True if must be saved
@@ -164,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (IsConnected)
             {
                 return new NetworkGuildMember(Id, Character.Name, Character.Level, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                                              GivenExperience, (sbyte)GivenPercent, (int)Rights, 1,
+                                              GivenExperience, (sbyte)GivenPercent, (int)Rights, Character.IsInFight() ? (sbyte)2 : (sbyte)1,
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, (short)Character.SmileyMoodId,
                                               Record.AccountId, 0, Character.Status);
             }
