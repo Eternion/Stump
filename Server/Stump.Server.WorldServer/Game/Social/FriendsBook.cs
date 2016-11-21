@@ -5,6 +5,7 @@ using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -25,6 +26,8 @@ namespace Stump.Server.WorldServer.Game.Social
         readonly ConcurrentStack<AccountRelation> m_relationsToRemove = new ConcurrentStack<AccountRelation>();
         ConcurrentDictionary<int, AccountRelation> m_relations;
 
+
+
         public FriendsBook(Character owner)
         {
             Owner = owner;
@@ -35,7 +38,6 @@ namespace Stump.Server.WorldServer.Game.Social
             get;
             set;
         }
-
         public IEnumerable<Friend> Friends => m_friends.Values;
 
         public IEnumerable<Ignored> Ignoreds => m_ignoreds.Values;
@@ -257,16 +259,37 @@ namespace Stump.Server.WorldServer.Game.Social
             }
         }
 
-        void OnFriendOnline(Friend friend)
+        private void SubscribeEvents(Friend friend)
         {
             friend.Character.LoggedOut += OnFriendLogout;
             friend.Character.LevelChanged += OnLevelChanged;
             friend.Character.ContextChanged += OnContextChanged;
+            friend.Character.MoodChanged += OnMoodChanged;
+        }
+
+        private void UnsubscribeEvents(Friend friend)
+        {
+            friend.Character.LoggedOut -= OnFriendLogout;
+            friend.Character.LevelChanged -= OnLevelChanged;
+            friend.Character.ContextChanged -= OnContextChanged;
+            friend.Character.MoodChanged -= OnMoodChanged;
+        }
+
+        void OnFriendOnline(Friend friend)
+        {
+            SubscribeEvents(friend);
         }
 
         void OnIgnoredOnline(Ignored ignored)
         {
             ignored.Character.LoggedOut += OnIgnoredLogout;
+        }
+        
+        private void OnMoodChanged(Character character, int mood)
+        {
+            var friend = TryGetFriend(character);
+
+            FriendHandler.SendFriendUpdateMessage(Owner.Client, friend);
         }
 
         void OnContextChanged(Character character, bool infight)
@@ -310,10 +333,7 @@ namespace Stump.Server.WorldServer.Game.Social
             else
             {
                 friend.SetOffline();
-
-                character.LoggedOut -= OnFriendLogout;
-                character.LevelChanged -= OnLevelChanged;
-                character.ContextChanged -= OnContextChanged;
+                UnsubscribeEvents(friend);
             }
         }
 

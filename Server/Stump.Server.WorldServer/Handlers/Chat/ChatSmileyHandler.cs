@@ -16,6 +16,12 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             client.Character.DisplaySmiley(message.smileyId);
         }
 
+        [WorldHandler(MoodSmileyRequestMessage.Id)]
+        public static void HandleMoodSmileyRequestMessage(WorldClient client, MoodSmileyRequestMessage message)
+        {
+            client.Character.SetMood(message.smileyId);
+        }
+
         public static void SendChatSmileyMessage(IPacketReceiver client, Character character, short smileyId)
         {
             client.Send(new ChatSmileyMessage(
@@ -35,6 +41,11 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         public static void SendChatSmileyExtraPackListMessage(IPacketReceiver client, SmileyPacksEnum[] smileyPacks)
         {
             client.Send(new ChatSmileyExtraPackListMessage(smileyPacks.Select(x => (sbyte)x)));
+        }
+
+        public static void SendMoodSmileyResultMessage(IPacketReceiver client, sbyte result, short smileyId)
+        {
+            client.Send(new MoodSmileyResultMessage(result, smileyId));
         }
     }
 }

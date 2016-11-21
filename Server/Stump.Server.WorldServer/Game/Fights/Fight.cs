@@ -111,6 +111,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        FightTeam[] Teams
+        {
+            get;
+        }
+
         FightTeam Winners
         {
             get;
@@ -402,7 +407,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         FightCommonInformations GetFightCommonInformations();
 
-        FightExternalInformations GetFightExternalInformations();
+        FightExternalInformations GetFightExternalInformations(Character character);
+
+        IEnumerable<NamedPartyTeam> GetPartiesName(); 
+        IEnumerable<NamedPartyTeamWithOutcome> GetPartiesNameWithOutcome(); 
 
         bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false, WorldObject except = null);
 
@@ -588,6 +596,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
             private set;
         }
+
+        public FightTeam[] Teams => new FightTeam[] {ChallengersTeam, DefendersTeam};
 
         public FightTeam Winners
         {
@@ -2475,7 +2485,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void SendGameFightSpectatorJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightSpectatorJoinMessage(spectator.Character.Client, false, false, IsStarted, 0, FightType);
+            ContextHandler.SendGameFightSpectatorJoinMessage(spectator.Character.Client, this);
         }
 
         #endregion Send Methods
@@ -2730,10 +2740,29 @@ namespace Stump.Server.WorldServer.Game.Fights
                                                m_teams.Select(entry => entry.GetFightOptionsInformations()));
         }
 
-        public FightExternalInformations GetFightExternalInformations()
+        public FightExternalInformations GetFightExternalInformations(Character character)
         {
             return new FightExternalInformations(Id, (sbyte)FightType, !IsStarted ? 0 : StartTime.GetUnixTimeStamp(), SpectatorClosed,
-                m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+                m_teams.Select(entry => entry.GetFightTeamLightInformations(character)), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+        }
+
+        public IEnumerable<NamedPartyTeam> GetPartiesName()
+        {
+            var redParty = ChallengersTeam.GetTeamParty();
+            var blueParty = DefendersTeam.GetTeamParty();
+
+            var parties = new[] {redParty, blueParty};
+            return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).Select(x => new NamedPartyTeam((sbyte)x.Item1, x.Item2));
+        }
+
+        public IEnumerable<NamedPartyTeamWithOutcome> GetPartiesNameWithOutcome()
+        {
+            var redParty = ChallengersTeam.GetTeamParty();
+            var blueParty = ChallengersTeam.GetTeamParty();
+
+            var parties = new[] {redParty, blueParty};
+            return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).
+                Select(x => new NamedPartyTeamWithOutcome(new NamedPartyTeam((sbyte)x.Item1, x.Item2), (short)Teams[x.Item1].GetOutcome()));
         }
 
         #endregion Get Methods

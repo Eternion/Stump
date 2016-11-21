@@ -79,6 +79,7 @@ using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
+using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
@@ -278,7 +279,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public event Action<Character, Npc, NpcActionTypeEnum, NpcAction> InteractingWith;
-        
+
         public void OnInteractingWith(Npc npc, NpcActionTypeEnum actionType, NpcAction action)
         {
             InteractingWith?.Invoke(this, npc, actionType, action);
@@ -398,7 +399,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get;
             private set;
         }
-            
+
         public void SetCurrentSkill(Skill skill)
         {
             CurrentUsedSkill = skill;
@@ -530,7 +531,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private readonly List<PartyTypeEnum> m_partiesLoyalTo = new List<PartyTypeEnum>();
 
         private Character m_followedCharacter;
-        
+
         private Party m_party;
         private ArenaParty m_arenaParty;
 
@@ -549,10 +550,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_arenaParty; }
             private set
             {
-                if (m_arenaParty != null && value != m_arenaParty) SetLoyalToParty(PartyTypeEnum.PARTY_TYPE_ARENA , false);
+                if (m_arenaParty != null && value != m_arenaParty) SetLoyalToParty(PartyTypeEnum.PARTY_TYPE_ARENA, false);
                 m_arenaParty = value;
             }
         }
+
+        public Party[] Parties => new[] {Party, ArenaParty}.Where(x => x != null).ToArray();
 
         public bool IsInParty()
         {
@@ -1973,7 +1976,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Smiley
 
+        public event Action<Character, int> MoodChanged;
+        
+        private void OnMoodChanged()
+        {
+            Guild?.UpdateMember(Guild.TryGetMember(Id));
+            MoodChanged?.Invoke(this, SmileyMoodId);
+        }
+
         public ReadOnlyCollection<SmileyPacksEnum> SmileyPacks => Record.SmileyPacks.AsReadOnly();
+
+        public int SmileyMoodId
+        {
+            get { return Record.SmileyMoodId; }
+            set { Record.SmileyMoodId = value; }
+        }
+
+        public DateTime LastMoodChange
+        {
+            get;
+            private set;
+        }
 
         public bool HasSmileyPack(SmileyPacksEnum pack) => SmileyPacks.Contains(pack);
 
@@ -1998,7 +2021,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override void DisplaySmiley(short smileyId)
         {
-            CharacterContainer.ForEach(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
+            ChatHandler.SendChatSmileyMessage(CharacterContainer.Clients, this, smileyId);
+        }
+
+        public void SetMood(short smileyId)
+        {
+            if (DateTime.Now - LastMoodChange < TimeSpan.FromSeconds(5))
+                ChatHandler.SendMoodSmileyResultMessage(Client, 2, smileyId);
+            else
+            {
+                SmileyMoodId = smileyId;
+                LastMoodChange = DateTime.Now;
+
+                ChatHandler.SendMoodSmileyResultMessage(Client, 0, smileyId);
+                OnMoodChanged();
+            }
         }
 
         #endregion Smiley
@@ -4065,5 +4102,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public override string ToString() => string.Format("{0} ({1})", Name, Id);
+
     }
 }
