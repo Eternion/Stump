@@ -158,3 +158,9 @@ pushbyte 0
 setproperty Qname(PackageNamespace(""),"position")
 pushtrue
 returnvalue
+
+(com.ankamagames.dofus.logic.game.common.frames.SocialDataFrame)
+private static const ONLINE_URL:String = "";
+
+(com.ankamagames.dofus.logic.game.common.frames.DareFrame)
+private static const ONLINE_URL:String = "";
