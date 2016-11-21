@@ -2758,7 +2758,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public IEnumerable<NamedPartyTeamWithOutcome> GetPartiesNameWithOutcome()
         {
             var redParty = ChallengersTeam.GetTeamParty();
-            var blueParty = ChallengersTeam.GetTeamParty();
+            var blueParty = DefendersTeam.GetTeamParty();
 
             var parties = new[] {redParty, blueParty};
             return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).
