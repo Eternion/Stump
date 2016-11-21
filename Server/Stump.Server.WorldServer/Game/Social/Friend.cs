@@ -23,7 +23,6 @@ namespace Stump.Server.WorldServer.Game.Social
         public WorldAccount Account
         {
             get;
-            private set;
         }
 
         public Character Character
@@ -35,7 +34,6 @@ namespace Stump.Server.WorldServer.Game.Social
         public AccountRelation Relation
         {
             get;
-            private set;
         }
 
         public void SetOnline(Character character)
@@ -51,10 +49,7 @@ namespace Stump.Server.WorldServer.Game.Social
             Character = null;
         }
 
-        public bool IsOnline()
-        {
-            return Character != null;
-        }
+        public bool IsOnline() => Character != null;
 
         public FriendInformations GetFriendInformations(Character asker)
         {
@@ -62,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Social
             {
                 return new FriendOnlineInformations(Account.Id,
                     Account.Nickname,
-                    (sbyte)( Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY ),
+                    (sbyte)(Character.FriendsBook.IsFriend(asker.Account.Id) ? (Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY) : PlayerStateEnum.UNKNOWN_STATE ),
                     (short)Account.LastConnectionTimeStamp,
                     0, // todo achievement
                     Character.Id,
@@ -72,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
                     Character.GuildMember == null ? new GuildInformations(0, "", 0, new GuildEmblem(0,0,0,0)) : Character.GuildMember.Guild.GetGuildInformations(),
-                    -1,
+                    0,
                     Character.Status);
             }
 
