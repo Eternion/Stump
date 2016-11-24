@@ -2317,7 +2317,7 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_2030 = 2030,
+        Effect_LearnFatalBlow = 2030,
         /// <summary>
         /// #1
         /// </summary>

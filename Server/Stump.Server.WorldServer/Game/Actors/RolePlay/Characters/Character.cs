@@ -3279,6 +3279,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion Emotes
 
+        #region FatalBlows
+
+        public ReadOnlyCollection<SpellIdEnum> FatalBlows => Record.FatalBlows.AsReadOnly();
+
+        public bool HasFatalBlow(SpellIdEnum fatal) => FatalBlows.Contains(fatal);
+
+        public void AddFatalBlow(SpellIdEnum fatal)
+        {
+            if (HasFatalBlow(fatal))
+                return;
+
+            Record.FatalBlows.Add(fatal);
+        }
+
+        public bool RemoveFatalBlow(SpellIdEnum fatal) => Record.FatalBlows.Remove(fatal);
+
+        #endregion FatalBlows
+
         #region Friend & Ennemies
 
         public FriendsBook FriendsBook

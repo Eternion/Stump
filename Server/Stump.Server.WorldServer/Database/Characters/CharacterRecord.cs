@@ -74,6 +74,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
             Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
             SmileyPacks = new List<SmileyPacksEnum> { SmileyPacksEnum.BASIC_PACK };
+            FatalBlows = new List<SpellIdEnum> { SpellIdEnum.COUP_FATAL_BASE };
         }
 
         #region Record Properties
@@ -285,6 +286,34 @@ namespace Stump.Server.WorldServer.Database.Characters
             {
                 m_smileyPacksCSV = value;
                 m_smileyPacks = !string.IsNullOrEmpty(m_smileyPacksCSV) ? m_smileyPacksCSV.FromCSV<short>(",").Select(x => (SmileyPacksEnum)x).ToList() : new List<SmileyPacksEnum>();
+            }
+        }
+
+        [Ignore]
+        public List<SpellIdEnum> FatalBlows
+        {
+            get
+            {
+                return m_fatalBlows;
+            }
+            set
+            {
+                m_fatalBlows = value;
+                m_fatalBlowsCSV = m_fatalBlows.Select(x => (short)x).ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string FatalBlowsCSV
+        {
+            get
+            {
+                return m_fatalBlowsCSV;
+            }
+            set
+            {
+                m_fatalBlowsCSV = value;
+                m_fatalBlows = !string.IsNullOrEmpty(m_fatalBlowsCSV) ? m_fatalBlowsCSV.FromCSV<short>(",").Select(x => (SpellIdEnum)x).ToList() : new List<SpellIdEnum>();
             }
         }
 
@@ -648,6 +677,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         string m_emotesCSV;
         List<SmileyPacksEnum> m_smileyPacks = new List<SmileyPacksEnum>();
         string m_smileyPacksCSV;
+        List<SpellIdEnum> m_fatalBlows = new List<SpellIdEnum>();
+        string m_fatalBlowsCSV;
 
         [Ignore]
         public List<Map> KnownZaaps
@@ -740,6 +771,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_ornamentsCSV = m_ornaments.ToCSV(",");
             m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
             m_smileyPacksCSV = m_smileyPacks.Select(x => (short)x).ToCSV(",");
+            m_fatalBlowsCSV = m_fatalBlows.Select(x => (short)x).ToCSV(",");
         }
     }
 }

@@ -239,7 +239,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         void StartFighting();
 
-        bool CheckFightEnd();
+        bool CheckFightEnd(bool endFight = true);
 
         void CancelFight();
 
@@ -741,12 +741,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region EndFight
 
-        public bool CheckFightEnd()
+        public bool CheckFightEnd(bool endFight = true)
         {
             if (!ChallengersTeam.AreAllDead() && !DefendersTeam.AreAllDead())
                 return false;
 
-            EndFight();
+            if (endFight)
+                EndFight();
+
             return true;
         }
 
@@ -2068,9 +2070,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         private Cell GetInvisibleSpellCastCell(Cell casterCell, Cell targetedCell)
-        {
-            return Cells[((MapPoint)casterCell).GetCellInDirection(((MapPoint)casterCell).OrientationTo(targetedCell), 1).CellId];
-        }
+            => Cells[((MapPoint)casterCell).GetCellInDirection(((MapPoint)casterCell).OrientationTo(targetedCell), 1).CellId];
 
         protected virtual void OnSpellCasted(FightActor caster, SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
@@ -2758,7 +2758,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public IEnumerable<NamedPartyTeamWithOutcome> GetPartiesNameWithOutcome()
         {
             var redParty = ChallengersTeam.GetTeamParty();
-            var blueParty = DefendersTeam.GetTeamParty();
+            var blueParty = ChallengersTeam.GetTeamParty();
 
             var parties = new[] {redParty, blueParty};
             return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).

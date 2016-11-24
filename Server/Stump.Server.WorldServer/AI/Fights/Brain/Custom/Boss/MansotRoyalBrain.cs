@@ -5,10 +5,10 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier((int)MonsterIdEnum.ROYALMOUTH_2854)]
-    public class RoyalMouthBrain : Brain
+    [BrainIdentifier((int)MonsterIdEnum.MANSOT_ROYAL_2848)]
+    public class MansotRoyalBrain : Brain
     {
-        public RoyalMouthBrain(AIFighter fighter)
+        public MansotRoyalBrain(AIFighter fighter)
             : base(fighter)
         {
             fighter.Fight.FightStarted += OnFightStarted;
@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnFightStarted(IFight fight)
         {
-            Fighter.CastSpell(new Spell((int)SpellIdEnum.INIMOUTH, 1), Fighter.Cell, true, true);
+            Fighter.CastSpell(new Spell((int)SpellIdEnum.MANSOMURE, 1), Fighter.Cell, true, true);
 
             fight.FightStarted -= OnFightStarted;
         }

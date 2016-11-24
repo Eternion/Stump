@@ -95,6 +95,11 @@ namespace Stump.Server.WorldServer.Game
             SpawnSpaces();
         }
 
+        public void Reload()
+        {
+            SpawnSpaces();
+        }
+
         public void LoadSpaces()
         {
             if (m_spacesLoaded)
@@ -146,9 +151,6 @@ namespace Stump.Server.WorldServer.Game
 
             logger.Info("Spawn merchants ...");
             SpawnMerchants();
-
-            logger.Info("Spawn TaxCollectors ...");
-            //SpawnTaxCollectors();
         }
 
         private void SetLinks()
@@ -225,9 +227,7 @@ namespace Stump.Server.WorldServer.Game
         {
             foreach (var map in m_maps.Values)
             {
-                var interactives = map.GetInteractiveObjects().ToArray();
-
-                foreach (var interactive in interactives)
+                foreach (var interactive in map.GetInteractiveObjects().ToArray())
                 {
                     map.UnSpawnInteractive(interactive);
                 }
@@ -237,9 +237,7 @@ namespace Stump.Server.WorldServer.Game
                     map.RemoveSpawningPool(pool);
                 }
 
-                var triggers = map.GetTriggers().ToArray();
-
-                foreach (var trigger in triggers)
+                foreach (var trigger in map.GetTriggers().ToArray())
                 {
                     map.RemoveTrigger(trigger);
                 }
@@ -247,7 +245,7 @@ namespace Stump.Server.WorldServer.Game
 
             foreach (var subArea in m_subAreas)
             {
-                foreach (var monsterSpawn in subArea.Value.MonsterSpawns)
+                foreach (var monsterSpawn in subArea.Value.MonsterSpawns.ToArray())
                 {
                     subArea.Value.RemoveMonsterSpawn(monsterSpawn);
                 }
