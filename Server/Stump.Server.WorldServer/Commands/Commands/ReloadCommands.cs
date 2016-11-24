@@ -23,20 +23,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
 {
     public class ReloadCommands : CommandBase
     {
-        public Dictionary<string, object> m_entries = new Dictionary<string, object>()
+        public Dictionary<string, Action> m_entries = new Dictionary<string, Action>
             {
-                {"npcs", NpcManager.Instance},
-                {"monsters", MonsterManager.Instance},
-                {"items", ItemManager.Instance},
-                {"world", World.Instance},
-                {"spells", SpellManager.Instance},
-                {"effects", EffectManager.Instance},
-                {"interactives", InteractiveManager.Instance},
-                {"breeds", BreedManager.Instance},
-                {"experiences", ExperienceManager.Instance},
-                {"langs", TextManager.Instance},
-                {"guilds", GuildManager.Instance},
-                {"badwords", ChatManager.Instance}
+                {"npcs", NpcManager.Instance.Initialize},
+                {"monsters", MonsterManager.Instance.Initialize},
+                {"items", ItemManager.Instance.Initialize},
+                {"world", World.Instance.Reload},
+                {"spells", SpellManager.Instance.Initialize},
+                {"effects", EffectManager.Instance.Initialize},
+                {"interactives", InteractiveManager.Instance.Initialize},
+                {"breeds", BreedManager.Instance.Initialize},
+                {"experiences", ExperienceManager.Instance.Initialize},
+                {"langs", TextManager.Instance.Initialize},
+                {"badwords", ChatManager.Instance.Initialize}
             };
 
         public ReloadCommands()
@@ -56,7 +55,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
 
             var name = trigger.Get<string>("name").ToLower();
-            object entry;
+            Action entry;
 
             if (!m_entries.TryGetValue(name, out entry))
             {
@@ -64,11 +63,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.ReplyError("Entries : " + string.Join(", ", m_entries.Keys));
                 return;
             }
-            var method = entry.GetType().GetMethod("Initialize", new Type[0]);
+            var method = entry;
 
             if (method == null)
             {
-                trigger.ReplyError("Cannot reload {0} : method Initialize() not found", name);
+                trigger.ReplyError("Cannot reload {0} : method not found", name);
                 return;
             }
 
@@ -78,7 +77,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {
                     try
                     {
-                        method.Invoke(entry, new object[0]);
+                        method.Invoke();
                     }
                     finally
                     {

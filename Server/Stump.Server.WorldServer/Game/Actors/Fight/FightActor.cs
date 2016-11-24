@@ -42,6 +42,7 @@ using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilitySt
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Core.Extensions;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -262,9 +263,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             KillAllSummons();
             RemoveAndDispellAllBuffs();
 
-            var handler = Dead;
-            if (handler != null)
-                handler(this, killedBy);
+            if (Fight.CheckFightEnd(false) && killedBy is CharacterFighter && (killedBy as CharacterFighter).Character.FatalBlows.Any())
+            {
+                var durationChance = Fight.GetFightDuration().TotalMinutes * 10;
+                var rand = new AsyncRandom().Next(0, 100);
+
+                if (durationChance > rand)
+                {
+                    Fight.ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, (ActionsEnum)2029, killedBy,
+                        this, Cell, FightSpellCastCriticalEnum.NORMAL, false, new Spell((int)(killedBy as CharacterFighter).Character.FatalBlows.RandomElementOrDefault(), 1)));
+                }
+            }
+
+            Dead?.Invoke(this, killedBy);
         }
 
         public delegate void FightPointsVariationHandler(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta);
@@ -890,6 +901,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (!isCloseRangeAttack && HasState((int)SpellStatesEnum.INVULNERABILITE_A_DISTANCE_375)))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
+                TriggerDamageBuffs(damage);
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
                 TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
                 return 0;

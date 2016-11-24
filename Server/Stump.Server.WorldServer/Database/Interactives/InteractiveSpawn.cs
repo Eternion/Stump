@@ -91,11 +91,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
         }
 
         [Ignore]
-        public InteractiveTemplate Template
-        {
-            get { return TemplateId.HasValue ? (m_template ?? (m_template = InteractiveManager.Instance.GetTemplate(TemplateId.Value))) : null; }
-        }
-        
+        public InteractiveTemplate Template => TemplateId.HasValue ? (m_template ?? (m_template = InteractiveManager.Instance.GetTemplate(TemplateId.Value))) : null;
+
         public int MapId
         {
             get;
@@ -130,14 +127,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
-        public IEnumerable<ISkillRecord> GetSkills()
-        {
-            return CustomSkills.Count > 0 || Template == null ? CustomSkills : Template.GetSkills();
-        }
+        public IEnumerable<ISkillRecord> GetSkills() => CustomSkills.Count > 0 || Template == null ? CustomSkills : Template.GetSkills();
 
-        public Map GetMap()
-        {
-            return m_map ?? (m_map = Game.World.Instance.GetMap(MapId));
-        }
+        public Map GetMap() => m_map ?? (m_map = Game.World.Instance.GetMap(MapId));
     }
 }

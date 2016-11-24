@@ -34,10 +34,7 @@ namespace Stump.Core.Extensions
             return output.ToString();
         }
 
-        public static List<T> Clone<T>(this List<T> listToClone) where T : ICloneable
-        {
-            return listToClone.Select(item => (T)item.Clone()).ToList();
-        }
+        public static List<T> Clone<T>(this List<T> listToClone) where T : ICloneable => listToClone.Select(item => (T)item.Clone()).ToList();
 
         public static void Move<T>(this List<T> list, T item, int newIndex) where T : ICloneable
         {
@@ -126,7 +123,6 @@ namespace Stump.Core.Extensions
 
             return enumerable.OrderBy(x => rand.NextDouble());
         }
-    
 
         public static IEnumerable<T> ShuffleWithProbabilities<T>(this IEnumerable<T> enumerable,
                                                                  IEnumerable<int> probabilities)
@@ -140,7 +136,7 @@ namespace Stump.Core.Extensions
             if (elements.Count != indices.Count)
                 throw new Exception("Probabilities must have the same length that the enumerable");
 
-            int sum = indices.Sum();
+            var sum = indices.Sum();
 
             if (sum == 0)
                 return Shuffle(elements);
@@ -168,8 +164,6 @@ namespace Stump.Core.Extensions
             return result;
         }
 
-
-
         public static T RandomElementOrDefault<T>(this IEnumerable<T> enumerable)
         {
             var rand = new Random();
@@ -185,20 +179,14 @@ namespace Stump.Core.Extensions
         /// Returns the string representation of an IEnumerable (all elements, joined by comma)
         /// </summary>
         /// <param name="conj">The conjunction to be used between each elements of the collection</param>
-        public static string ToStringCol(this ICollection collection, string conj)
-        {
-            return collection != null ? string.Join(conj, ToStringArr(collection)) : "(null)";
-        }
+        public static string ToStringCol(this ICollection collection, string conj) => collection != null ? string.Join(conj, ToStringArr(collection)) : "(null)";
 
-        public static string ToString(this IEnumerable collection, string conj)
-        {
-            return collection != null ? string.Join(conj, ToStringArr(collection)) : "(null)";
-        }
+        public static string ToString(this IEnumerable collection, string conj) => collection != null ? string.Join(conj, ToStringArr(collection)) : "(null)";
 
         public static string[] ToStringArr(this IEnumerable collection)
         {
             var strs = new List<string>();
-            IEnumerator colEnum = collection.GetEnumerator();
+            var colEnum = collection.GetEnumerator();
             while (colEnum.MoveNext())
             {
                 var cur = colEnum.Current;
@@ -210,10 +198,7 @@ namespace Stump.Core.Extensions
             return strs.ToArray();
         }
 
-        public static T GetOrDefault<T>(this IList<T> list, int index)
-        {
-            return index >= list.Count ? default(T) : list[index];
-        }
+        public static T GetOrDefault<T>(this IList<T> list, int index) => index >= list.Count ? default(T) : list[index];
 
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
         {
