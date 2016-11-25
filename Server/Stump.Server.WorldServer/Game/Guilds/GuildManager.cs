@@ -13,6 +13,8 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
+using Stump.Core.Cache;
+using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
@@ -24,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         Dictionary<int, GuildMember> m_guildsMembers;
         readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
         readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
+        CacheObject<IEnumerable<GuildInformations>> m_cachedGuilds = new CacheObject<IEnumerable<GuildInformations>>(900);
 
         readonly object m_lock = new object();
 
@@ -201,6 +204,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return true;
             }
         }
+
+        public IEnumerable<GuildInformations> GetCachedGuilds() => m_cachedGuilds.Get(GetGuilds().Select(x => x.GetGuildInformations()));
 
         public void Save()
         {
