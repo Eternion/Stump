@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Core.Extensions;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -58,10 +59,33 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommandType = typeof(FightPlacementCommands);
             Description = "Clear current map placements";
             RequiredRole = RoleEnum.GameMaster;
+            AddParameter<string>("color", "c", "Blue/Red");
         }
 
         public override void Execute(GameTrigger trigger)
         {
+            var colorStr = trigger.Get<string>("color").ToLower();
+
+            if (colorStr != "red" && colorStr != "blue")
+            {
+                trigger.ReplyError("Define a correct color (blue/red)");
+                return;
+            }
+
+            var blue = colorStr == "blue";
+
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+            {
+                if (blue)
+                    trigger.Character.Map.Record.BlueFightCells = new short[0];
+                else
+                    trigger.Character.Map.Record.RedFightCells = new short[0];
+
+                trigger.Character.Map.UpdateFightPlacements();
+
+                WorldServer.Instance.DBAccessor.Database.Update(trigger.Character.Map.Record);
+            });
+
             trigger.Character.Client.Send(new DebugClearHighlightCellsMessage());
         }
     }
@@ -114,8 +138,54 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 trigger.Character.Map.UpdateFightPlacements();
 
+                trigger.Character.Client.Send(new DebugHighlightCellsMessage(Color.Blue.ToArgb(), trigger.Character.Map.Record.BlueFightCells));
+                trigger.Character.Client.Send(new DebugHighlightCellsMessage(Color.Red.ToArgb(), trigger.Character.Map.Record.RedFightCells));
+
                 WorldServer.Instance.DBAccessor.Database.Update(trigger.Character.Map.Record);
             });
+        }
+    }
+
+    public class FightPlacementAddCommand : InGameSubCommand
+    {
+        public FightPlacementAddCommand()
+        {
+            Aliases = new[] { "add" };
+            ParentCommandType = typeof(FightPlacementCommands);
+            Description = "Add current cell to map placements";
+            RequiredRole = RoleEnum.GameMaster;
+            AddParameter<string>("color", "c", "Blue/Red");
+        }
+
+        public override void Execute(GameTrigger trigger)
+        {
+            var colorStr = trigger.Get<string>("color").ToLower();
+
+            if (colorStr != "red" && colorStr != "blue")
+            {
+                trigger.ReplyError("Define a correct color (blue/red)");
+                return;
+            }
+
+            var blue = colorStr == "blue";
+
+            var cell = trigger.Character.Cell;
+
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+            {
+                if (blue)
+                    trigger.Character.Map.Record.BlueFightCells = trigger.Character.Map.Record.BlueFightCells.Add(cell.Id);
+                else
+                    trigger.Character.Map.Record.RedFightCells = trigger.Character.Map.Record.RedFightCells.Add(cell.Id);
+
+                trigger.Character.Map.UpdateFightPlacements();
+
+                trigger.Character.Client.Send(new DebugHighlightCellsMessage(Color.Blue.ToArgb(), trigger.Character.Map.Record.BlueFightCells));
+                trigger.Character.Client.Send(new DebugHighlightCellsMessage(Color.Red.ToArgb(), trigger.Character.Map.Record.RedFightCells));
+
+                WorldServer.Instance.DBAccessor.Database.Update(trigger.Character.Map.Record);
+            });
+
         }
     }
 }

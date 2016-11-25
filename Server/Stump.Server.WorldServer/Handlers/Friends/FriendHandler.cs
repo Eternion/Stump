@@ -15,8 +15,8 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         [WorldHandler(FriendsGetListMessage.Id)]
         public static void HandleFriendsGetListMessage(WorldClient client, FriendsGetListMessage message)
         {
-            client.Send(new GuildListMessage(GuildManager.Instance.GetGuilds().Select(x => x.GetGuildInformations())));
             SendFriendsListMessage(client, client.Character.FriendsBook.Friends);
+            SendGuildListMessage(client);
         }
 
         [WorldHandler(IgnoredGetListMessage.Id)]
@@ -182,6 +182,11 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         public static void SendIgnoredListMessage(IPacketReceiver client, IEnumerable<Ignored> ignoreds)
         {
             client.Send(new IgnoredListMessage(ignoreds.Where(x => !x.Session).Select(entry => entry.GetIgnoredInformations())));
+        }
+
+        public static void SendGuildListMessage(IPacketReceiver client)
+        {
+            client.Send(new GuildListMessage(GuildManager.Instance.GetCachedGuilds()));
         }
     }
 }

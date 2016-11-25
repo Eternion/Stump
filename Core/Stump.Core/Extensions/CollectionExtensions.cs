@@ -232,5 +232,10 @@ namespace Stump.Core.Extensions
 
             return x;
         }
+
+        public static T[] Add<T>(this T[] array, T item)
+        {
+            return array.Concat(new T[] { item });
+        }
     }
 }
