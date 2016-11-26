@@ -273,6 +273,9 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 case WeightCriterion.Identifier:
                     return new WeightCriterion();
 
+                case MountFamilyItemCriterion.Identifier:
+                    return new MountFamilyItemCriterion();
+
                 default:
                     throw new Exception(string.Format("Criterion {0} doesn't not exist or not handled", name));
             }

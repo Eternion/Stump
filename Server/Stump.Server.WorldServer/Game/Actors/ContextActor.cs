@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Social;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 
 namespace Stump.Server.WorldServer.Game.Actors
@@ -35,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Actors
             set;
         }
 
-        public virtual Pair<EmotesEnum, DateTime> LastEmoteUsed
+        public virtual Pair<Emote, DateTime> LastEmoteUsed
         {
             get;
             set;

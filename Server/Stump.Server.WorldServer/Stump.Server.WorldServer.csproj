@@ -291,6 +291,7 @@
     <Compile Include="Database\Monsters\MonsterStaticSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
+    <Compile Include="Database\Mounts\HarnessRecord.cs" />
     <Compile Include="Database\Mounts\MountBonus.cs" />
     <Compile Include="Database\Mounts\MountRecord.cs" />
     <Compile Include="Database\Mounts\MountTemplate.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Database\Quests\QuestTemplate.cs" />
     <Compile Include="Database\Shortcuts\PresetShortcut.cs" />
     <Compile Include="Database\Social\BadWordRecord.cs" />
+    <Compile Include="Database\Social\Emote.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
     <Compile Include="Database\Tinsel\TinselManager.cs" />
@@ -385,6 +387,7 @@
     <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\InteractiveStateCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\MapCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\MountFamilyItemCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestDoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestStartableCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\Criterion.cs" />
@@ -405,6 +408,7 @@
     <Compile Include="Game\Conditions\Criterions\QuestActiveCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\RankCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\RideCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\RideItemCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\ServerCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SexCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SkillCriterion.cs" />
@@ -677,13 +681,14 @@
     <Compile Include="Game\Items\Player\Bank.cs" />
     <Compile Include="Game\Items\Player\BankItem.cs" />
     <Compile Include="Database\Items\BankItemRecord.cs" />
-    <Compile Include="Game\Items\Player\Custom\BoostFood.cs" />
     <Compile Include="Game\Items\Player\Custom\DofusItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\GuildShieldItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Mounts\HarnessItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MimisymbicItem.cs" />
-    <Compile Include="Game\Items\Player\Custom\MountCertificate.cs" />
+    <Compile Include="Game\Items\Player\Custom\Mounts\MountCertificate.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\EniripsaPowder.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\PetManager.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />
@@ -698,8 +703,8 @@
     <Compile Include="Game\Items\Player\Custom\SoulStoneFilled.cs" />
     <Compile Include="Game\Items\Player\DefaultItem.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\BoundLivingObjectItem.cs" />
-    <Compile Include="Game\Items\Player\Custom\CandyItem.cs" />
-    <Compile Include="Game\Items\Player\Custom\FoodBoostItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Food\CandyItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\Food\FoodBoostItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemTypeAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\LivingObjectItem.cs" />
     <Compile Include="Game\Items\PersistantItem.cs" />

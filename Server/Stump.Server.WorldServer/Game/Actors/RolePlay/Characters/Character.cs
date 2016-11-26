@@ -75,6 +75,7 @@ using Stump.Server.WorldServer.Database.Quests;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Quests;
 using Stump.Server.WorldServer.Database.Mounts;
+using Stump.Server.WorldServer.Database.Social;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
@@ -827,130 +828,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set { m_record.CustomEntityLook = value; }
         }
 
-        public ActorLook RealLook
+        public ActorLook DefaultLook
         {
             get { return m_record.EntityLook; }
             set
             {
                 m_record.EntityLook = value;
-                base.Look = value;
+
+                UpdateLook();
             }
         }
 
         public override ActorLook Look
         {
-            get
-            {
-                var playerLook = CustomLookActivated && CustomLook != null ? CustomLook.Clone() : RealLook.Clone();
-
-                if (IsGhost())
-                {
-                    if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_PHANTOM)
-                    {
-                        playerLook.BonesID = 3; //Ghost Bones
-                        playerLook.AddSkin(Sex == SexTypeEnum.SEX_FEMALE ? (short)323 : (short)322);
-                        playerLook.AddSkin(Sex == SexTypeEnum.SEX_FEMALE ? Breed.FemaleGhostBonesId : Breed.MaleGhostBonesId);
-                    }
-                    else if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE)
-                        playerLook.BonesID = Breed.TombBonesId;
-
-                    return playerLook;
-                }
-
-                var equipedMount = GetEquippedMountSkin();
-                if (equipedMount != -1)
-                {
-                    var mountLook = new ActorLook { BonesID = (short)equipedMount };
-
-                    //KramKram
-                    if (equipedMount == 1792)
-                    {
-                        Color color1;
-                        Color color2;
-
-                        playerLook.Colors.TryGetValue(3, out color1);
-                        playerLook.Colors.TryGetValue(4, out color2);
-
-                        mountLook.AddColor(1, color1);
-                        mountLook.AddColor(2, color2);
-                    }
-
-                    playerLook.BonesID = 2;
-                    mountLook.SetRiderLook(playerLook);
-
-                    playerLook = mountLook;
-                }
-                else if (IsRiding)
-                {
-                    var mountLook = EquippedMount.Template.EntityLook.Clone();
-
-                    if (EquippedMount.Behaviors.Contains((int)MountBehaviorEnum.Caméléone))
-                    {
-                        Color color1;
-                        Color color2;
-                        Color color3;
-
-                        playerLook.Colors.TryGetValue(3, out color1);
-                        playerLook.Colors.TryGetValue(4, out color2);
-                        playerLook.Colors.TryGetValue(5, out color3);
-
-                        mountLook.SetColors(color1, color2, color3);
-                    }
-
-                    playerLook.BonesID = 2;
-                    mountLook.SetRiderLook(playerLook);
-
-                    playerLook = mountLook;
-                }
-
-                if (LastEmoteUsed != null)
-                {
-                    var auraLook = new ActorLook();
-
-                    switch (LastEmoteUsed.First)
-                    {
-                        case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
-                            auraLook.BonesID = Level == 200 ? (short)170 : (short)169;
-                            break;
-
-                        case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
-                            auraLook.BonesID = 171;
-                            break;
-
-                        case EmotesEnum.EMOTE_AURA_BLEUTÉE_DE_L_ORNITHORYNQUE_ANCESTRAL:
-                            auraLook.BonesID = 1465;
-                            break;
-
-                        case EmotesEnum.EMOTE_AURA_DE_NELWEEN:
-                            auraLook.BonesID = 1501;
-                            break;
-
-                        case EmotesEnum.EMOTE_GUILD:
-                            {
-                                if (Guild == null)
-                                    break;
-
-                                var look = playerLook.GetRiderLook() ?? playerLook;
-
-                                look.AddSkin((short)Guild.Emblem.Template.SkinId);
-
-                                if (look.Colors.ContainsKey(7))
-                                    look.RemoveColor(7);
-                                if (look.Colors.ContainsKey(8))
-                                    look.RemoveColor(8);
-
-                                look.AddColor(8, Guild.Emblem.SymbolColor);
-                                look.AddColor(7, Guild.Emblem.BackgroundColor);
-                            }
-                            break;
-                    }
-
-                    if (auraLook.BonesID != 0)
-                        playerLook.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, auraLook));
-                }
-
-                return playerLook;
-            }
+            get { return CustomLookActivated ? CustomLook : m_look; }
+            set { m_look = value; }
         }
 
         public override SexTypeEnum Sex
@@ -1032,39 +924,71 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void UpdateLook(bool send = true)
         {
-            RealLook.BonesID = 1; //Player Bones
+            var look = DefaultLook.Clone();
 
-            var skins = new List<short>(Breed.GetLook(Sex).Skins);
-            skins.AddRange(Head.Skins);
-            skins.AddRange(Inventory.GetItemsSkins());
+            look = Inventory.Aggregate(look, (current, item) => item.UpdateItemSkin(current));
 
-            if (skins.Contains(2990) && Guild != null)
+            switch (PlayerLifeStatus)
             {
-                skins.Remove(2990); //Old ApparenceId
-                skins.Add(1730); //New ApparenceId
-
-                skins.Add((short)Guild.Emblem.Template.SkinId); //Emblem Skin
-
-                if (RealLook.Colors.ContainsKey(7))
-                    RealLook.RemoveColor(7);
-                if (RealLook.Colors.ContainsKey(8))
-                    RealLook.RemoveColor(8);
-
-                RealLook.AddColor(8, Guild.Emblem.SymbolColor);
-                RealLook.AddColor(7, Guild.Emblem.BackgroundColor);
+                case PlayerLifeStatusEnum.STATUS_PHANTOM:
+                    look.BonesID = 3;
+                    look.AddSkin(Sex == SexTypeEnum.SEX_FEMALE ? (short)323 : (short)322);
+                    look.AddSkin(Sex == SexTypeEnum.SEX_FEMALE ? Breed.FemaleGhostBonesId : Breed.MaleGhostBonesId);
+                    break;
+                case PlayerLifeStatusEnum.STATUS_TOMBSTONE:
+                    look.BonesID = Breed.TombBonesId;
+                    break;
             }
 
-            RealLook.SetSkins(skins.ToArray());
+            if (IsRiding)
+            {
+                var mountLook = EquippedMount.Look.Clone();
+                look.BonesID = 2;
+                mountLook.SetRiderLook(look);
 
-            var petSkin = Inventory.GetPetSkin();
+                look = mountLook;
+            }
+             if (LastEmoteUsed != null && (LastEmoteUsed.First.Duration == 0 || DateTime.Now - LastEmoteUsed.Second < TimeSpan.FromMilliseconds(LastEmoteUsed.First.Duration)))
+             {
+                 look = LastEmoteUsed.First.ApplyEmoteLook(this, look);
+             }
 
-            if (petSkin != null && petSkin.Item1.HasValue && petSkin.Item2)
-                RealLook.SetPetSkin(petSkin.Item1.Value);
-            else
-                RealLook.RemovePets();
+            Look = look;
+            
+            if (send)
+                SendLookUpdated();
+        }
+        
+        public void UpdateLook(Emote emote, bool send = true)
+        {
+            Look = emote.ApplyEmoteLook(this, Look);
 
             if (send)
-                RefreshActor();
+                SendLookUpdated();
+        }
+
+        public void UpdateLook(BasePlayerItem item, bool send = true)
+        {
+            Look = item.UpdateItemSkin(Look);
+
+            if (send)
+                SendLookUpdated();
+        }
+
+
+        private void SendLookUpdated()
+        {
+            if (Fight != null)
+            {
+                Fighter.Look = Look.Clone();
+                Fighter.Look.RemoveAuras();
+
+                ContextHandler.SendGameContextRefreshEntityLookMessage(CharacterContainer.Clients, Fighter);
+            }
+            else
+            {
+                ContextHandler.SendGameContextRefreshEntityLookMessage(CharacterContainer.Clients, this);
+            }
         }
 
         public void RefreshActor()
@@ -1609,7 +1533,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             IsRiding = !IsRiding;
 
-            RefreshActor();
+            UpdateLook();
 
             MountHandler.SendMountRidingMessage(Client, IsRiding);
 
@@ -3240,8 +3164,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #endregion Zaaps
 
         #region Emotes
+        
+
+        private Stack<Pair<Emote, DateTime>> m_playedEmotes = new Stack<Pair<Emote, DateTime>>();
 
         public ReadOnlyCollection<EmotesEnum> Emotes => Record.Emotes.AsReadOnly();
+
+        public override Pair<Emote, DateTime> LastEmoteUsed => m_playedEmotes.Count > 0 ? m_playedEmotes.Peek() : null;
 
         public bool HasEmote(EmotesEnum emote) => Emotes.Contains(emote);
 
@@ -3264,15 +3193,30 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return result;
         }
 
-        public void PlayEmote(EmotesEnum emote)
+        public bool PlayEmote(EmotesEnum emoteId)
         {
-            if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second).TotalMilliseconds < 500)
-                return;
+            var emote = ChatManager.Instance.GetEmote((int) emoteId);
 
-            LastEmoteUsed = new Pair<EmotesEnum, DateTime>(emote, DateTime.Now);
-            RefreshActor();
+            if (emote == null)
+                return false;
 
-            ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
+            if (!HasEmote(emoteId))
+                return false;
+
+            var lastEmote = m_playedEmotes.FirstOrDefault(x => x.First.EmoteId == emoteId);
+
+            if (lastEmote != null && (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(lastEmote.First.Cooldown))
+                return false;
+
+            if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(LastEmoteUsed.First.Duration))
+                return false;
+            
+
+            m_playedEmotes.Push(new Pair<Emote, DateTime>(emote, DateTime.Now));
+            UpdateLook(emote);
+
+            ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, emoteId);
+            return true;
         }
 
         #endregion Emotes
@@ -3806,6 +3750,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
         private Mount m_equippedMount;
+        private ActorLook m_look;
 
         public List<KeyValuePair<string, Exception>> CommandsErrors => m_commandsError;
 
@@ -4091,7 +4036,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 options.Add(new HumanOptionOrnament(SelectedOrnament.Value));
 
             if (LastEmoteUsed != null)
-                options.Add(new HumanOptionEmote((byte)LastEmoteUsed.First, LastEmoteUsed.Second.GetUnixTimeStampLong()));
+                options.Add(new HumanOptionEmote((byte)LastEmoteUsed.First.Id, LastEmoteUsed.Second.GetUnixTimeStampLong()));
 
             if (LastSkillUsed != null)
                 options.Add(new HumanOptionSkillUse(LastSkillUsed.InteractiveObject.Id, (short)LastSkillUsed.SkillTemplate.Id, LastSkillUsed.SkillEndTime.GetUnixTimeStampLong()));
