@@ -119,7 +119,7 @@ namespace Stump.Tools.SpellsExplorer
                                             .Where(
                                                 x =>
                                                     SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => y.Triggers.Split('|').Any(z => z== trigger))))
+                                                                .Effects.Any(y => y.Triggers.Split('|').All(z => z!= trigger) && y.EffectId >= (EffectsEnum)96 && y.EffectId <= (EffectsEnum)100)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
 

@@ -105,7 +105,13 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
-        public Boolean UseParamCache
+        public bool UseParamCache
+        {
+            get;
+            set;
+        }
+
+        public bool VerboseCast
         {
             get;
             set;
@@ -127,6 +133,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             IconId = spell.iconId;
             SpellLevelsIds = spell.spellLevels.ToArray();
             UseParamCache = spell.useParamCache;
+            VerboseCast = spell.verbose_cast;
         }
 
         #endregion

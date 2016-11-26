@@ -1,0 +1,84 @@
+(dofus.logic.game.common.frames.SocialDataFrame::onGuildListRequest):
+BEFORE:
+      private function onGuildListRequest(param1:GuildListRequestAction) : Boolean
+      {
+	     var _loc2_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlGuildList,this.onAllianceIoError,this.staticDataLifetime);
+         if(_loc2_)
+         {
+            this._waitStaticGuildInfo = true;
+         }
+		 var _loc3_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlGuildVersatileList,this.onGuildVersatileIoError,this.versatileDataLifetime);
+         if(_loc3_)
+         {
+            this._waitVersatileGuildInfo = true;
+         }
+         if(!this._waitVersatileGuildInfo && !this._waitStaticGuildInfo)
+         {
+            this.dispatchGuildList();
+         }
+         return true;
+      }
+AFTER:
+      private function onGuildListRequest(param1:GuildListRequestAction) : Boolean
+      {
+         ConnectionsHandler.getConnection().send(new FriendsGetListMessage());
+         var _loc2_:Boolean = false;
+         if(_loc2_)
+         {
+            this._waitStaticGuildInfo = true;
+         }
+         var _loc3_:Boolean = false;
+         if(_loc3_)
+         {
+            this._waitVersatileGuildInfo = true;
+         }
+         if(!this._waitVersatileGuildInfo && !this._waitStaticGuildInfo)
+         {
+            this.dispatchGuildList();
+         }
+         return true;
+      }
+	 
+================================
+================================
+
+(dofus.logic.game.common.frames.SocialDataFrame::onAllianceListRequest):
+BEFORE:
+      private function onAllianceListRequest(param1:AllianceListRequestAction) : Boolean
+      {
+         var _loc2_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlAllianceList,this.onAllianceIoError,this.staticDataLifetime);
+         if(_loc2_)
+         {
+            this._waitStaticAllianceInfo = true;
+         }
+         var _loc3_:Boolean = ConnectionsHandler.getHttpConnection().request(this._urlAllianceVersatileList,this.onAllianceVersatileIoError,this.versatileDataLifetime);
+         if(_loc3_)
+         {
+            this._waitVersatileAllianceInfo = true;
+         }
+         if(!this._waitVersatileAllianceInfo && !this._waitStaticAllianceInfo)
+         {
+            this.dispatchAllianceList();
+         }
+         return true;
+      }
+AFTER:
+      private function onAllianceListRequest(param1:AllianceListRequestAction) : Boolean
+      {
+         ConnectionsHandler.getConnection().send(new FriendsGetListMessage());
+         var _loc2_:Boolean = false;
+         if(_loc2_)
+         {
+            this._waitStaticAllianceInfo = true;
+         }
+         var _loc3_:Boolean = false;
+         if(_loc3_)
+         {
+            this._waitVersatileAllianceInfo = true;
+         }
+         if(!this._waitVersatileAllianceInfo && !this._waitStaticAllianceInfo)
+         {
+            this.dispatchAllianceList();
+         }
+         return true;
+      }

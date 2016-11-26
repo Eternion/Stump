@@ -51,30 +51,19 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         #region Properties
 
-        public int Id
-        {
-            get
-            {
-                return m_id;
-            }
-        }
+        public int Id => m_id;
 
         public SpellTemplate Template
         {
             get;
-            private set;
         }
 
         public SpellType SpellType
         {
             get;
-            private set;
         }
 
-        public int MaxLevel
-        {
-            get { return (m_maxLevel ?? (m_maxLevel = ByLevel.Keys.Max())).Value; }
-        }
+        public int MaxLevel => (m_maxLevel ?? (m_maxLevel = ByLevel.Keys.Max())).Value;
 
         public byte CurrentLevel
         {
@@ -92,26 +81,13 @@ namespace Stump.Server.WorldServer.Game.Spells
             }
         }
 
-        public SpellLevelTemplate CurrentSpellLevel
-        {
-            get
-            {
-                return m_currentLevel ?? (m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[MaxLevel] : ByLevel[CurrentLevel]);
-            }
-        }
+        public SpellLevelTemplate CurrentSpellLevel => m_currentLevel ?? (m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[MaxLevel] : ByLevel[CurrentLevel]);
 
-        public byte Position
-        {
-            get
-            {
-                return 63; // always 63 ?
-            }
-        }
+        public byte Position => 63;
 
         public Dictionary<int, SpellLevelTemplate> ByLevel
         {
             get;
-            private set;
         }
 
         #endregion

@@ -107,6 +107,6 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public DirectionsEnum Direction => (DirectionsEnum)Record.GetParameter<int>(2, true);
 
-        public string ItemsParameter => Record.GetParameter<string>(3);
+        public string ItemsParameter => Record.GetParameter<string>(3, true);
     }
 }
