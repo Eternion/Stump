@@ -125,7 +125,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
                 child.EndSequence();
 
             Ended = true;
-            ActionsHandler.SendSequenceEndMessage(Fight.Clients, this);
+
+            if (Parent == null)
+                ActionsHandler.SendSequenceEndMessage(Fight.Clients, this);
         }
 
         public void Dispose()

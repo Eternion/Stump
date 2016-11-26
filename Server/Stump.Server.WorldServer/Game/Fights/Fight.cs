@@ -2159,7 +2159,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             
 
             LastSequence = sequence;
-            ActionsHandler.SendSequenceStartMessage(Clients, sequence);
+             
+            // just send the root sequence
+            if (sequence.Parent == null)
+                ActionsHandler.SendSequenceStartMessage(Clients, sequence);
         }
         
 

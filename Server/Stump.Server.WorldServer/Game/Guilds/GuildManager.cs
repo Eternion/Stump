@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         Dictionary<int, GuildMember> m_guildsMembers;
         readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
         readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
-        CacheObject<IEnumerable<GuildInformations>> m_cachedGuilds = new CacheObject<IEnumerable<GuildInformations>>(900);
+        ObjectValidator<GuildInformations[]> m_cachedGuilds;
 
         readonly object m_lock = new object();
 
@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             foreach (var guild in m_guilds.Where(x => x.Value.Members.Count == 0).ToList())
                 DeleteGuild(guild.Value);
-
+            m_cachedGuilds = new ObjectValidator<GuildInformations[]>(BuildCachedGuilds, TimeSpan.FromMinutes(10));
             World.Instance.RegisterSaveableInstance(this);
         }
 
@@ -205,7 +205,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public IEnumerable<GuildInformations> GetCachedGuilds() => m_cachedGuilds.Get(GetGuilds().Select(x => x.GetGuildInformations()));
+
+        private GuildInformations[] BuildCachedGuilds() => m_guilds.Values.Select(x => x.GetGuildInformations()).ToArray();
+
+        public GuildInformations[] GetCachedGuilds() => m_cachedGuilds;
 
         public void Save()
         {
