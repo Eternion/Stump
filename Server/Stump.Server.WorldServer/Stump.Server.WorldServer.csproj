@@ -780,6 +780,7 @@
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Guilds\GuildHandler.cs" />
+    <Compile Include="Handlers\Idols\IdolHandler.cs" />
     <Compile Include="Handlers\Interactives\InteractiveHandler.cs" />
     <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Mounts\MountHandler.cs" />

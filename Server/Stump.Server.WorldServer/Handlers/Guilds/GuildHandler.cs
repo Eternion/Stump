@@ -13,7 +13,6 @@ using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
-using System;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
 {
