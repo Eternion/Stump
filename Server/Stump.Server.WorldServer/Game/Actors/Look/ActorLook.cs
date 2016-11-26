@@ -25,7 +25,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         {
             m_entityLook = new ObjectValidator<EntityLook>(BuildEntityLook);
         }
-
+        public ActorLook(short bones)
+            :this()
+        {
+            m_bonesID = bones;
+        }
         public ActorLook(short bones, IEnumerable<short> skins, Dictionary<int, Color> indexedColors, IEnumerable<short> scales, 
             IEnumerable<SubActorLook> subLooks)
             : this()
@@ -76,6 +80,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public void AddSkins(IEnumerable<short> skins)
+        {
+            m_skins.AddRange(skins);
+            m_entityLook.Invalidate();
+        }
+        
+        public void RemoveSkin(short skin)
+        {
+            m_skins.Remove(skin);
+            m_entityLook.Invalidate();
+        }
+
+
         public void SetScales(params short[] scales)
         {
             m_scales = scales.ToList();
@@ -100,7 +117,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         public void AddColor(int index, Color color)
         {
-            m_colors.Add(index, color);
+            if (m_colors.ContainsKey(index))
+                m_colors[index] = color;
+            else
+                m_colors.Add(index, color);
             m_entityLook.Invalidate();
         }
 
@@ -108,6 +128,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         {
             m_colors.Remove(index);
         }
+
+        public void SetColors(IDictionary<int, Color> colors)
+        {
+            m_colors = new Dictionary<int, Color>(colors);
+            m_entityLook.Invalidate();
+        } 
 
         public void SetColors(params Color[] colors)
         {
@@ -164,11 +190,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
             if (skin == 3119 || skin == 3120)
             {
-                AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET_FOLLOWER, petLook = new ActorLook()));
+                SetSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET_FOLLOWER, petLook = new ActorLook()));
             }
             else
             {
-                AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, petLook = new ActorLook()));
+                SetSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, petLook = new ActorLook()));
                 petLook.SetScales(PET_SIZE);
             }
 

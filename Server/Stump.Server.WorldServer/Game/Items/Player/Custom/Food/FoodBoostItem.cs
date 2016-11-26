@@ -3,22 +3,35 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.NOURRITURE_BOOST)]
-    public class BoostFood : BasePlayerItem
+    public class FoodBoostItem : BasePlayerItem
     {
-        public BoostFood(Character owner, PlayerItemRecord record)
+        private bool m_removed;
+
+        public FoodBoostItem(Character owner, PlayerItemRecord record)
             : base(owner, record)
-        {
+       {
             Owner.FightEnded += OnFightEnded;
+            Owner.ContextChanged += OnContextChanged;
+        }
+
+        private void OnContextChanged(Character character, bool infight)
+        {
+            if (infight && character.Fight.IsPvP)
+            {
+                Owner.Inventory.ApplyItemEffects(this, force: ItemEffectHandler.HandlerOperation.UNAPPLY);
+            }
         }
 
         public override bool OnEquipItem(bool unequip)
         {
-            if (unequip)
+            if (unequip && !m_removed)
                 Owner.Inventory.RemoveItem(this);
             
             return base.OnEquipItem(unequip);
@@ -26,6 +39,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool OnRemoveItem()
         {
+            m_removed = true;
             Owner.FightEnded -= OnFightEnded;
 
             return base.OnRemoveItem();
@@ -37,6 +51,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             if (effect == null)
                 return;
+
+            if (fighter.Fight.IsPvP)
+            {
+                Owner.Inventory.ApplyItemEffects(this, force: ItemEffectHandler.HandlerOperation.APPLY);
+            }
 
             Invalidate();
 

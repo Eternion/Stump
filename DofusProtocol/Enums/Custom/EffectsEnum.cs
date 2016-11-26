@@ -2257,7 +2257,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_1187 = 1187,
+        Effect_HarnessGID = 1187,
         /// <summary>
         /// Crée un double du lanceur de sort
         /// </summary>
