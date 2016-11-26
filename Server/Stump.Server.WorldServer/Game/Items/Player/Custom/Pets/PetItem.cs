@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -11,6 +12,7 @@ using Stump.Server.WorldServer.Database.Items.Pets;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
@@ -372,6 +374,59 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 Owner.Dismount();
 
             return base.OnEquipItem(false);
+        }
+
+        public override ActorLook UpdateItemSkin(ActorLook characterLook)
+        {
+            if (AppearanceId <= 0)
+                return characterLook;
+
+            switch (Template.Type.ItemType)
+            {
+                case ItemTypeEnum.FAMILIER:
+                    if (IsEquiped())
+                        characterLook.SetPetSkin((short) AppearanceId);
+                    else
+                        characterLook.RemovePets();
+                    break;
+                case ItemTypeEnum.MONTILIER:
+                    if (IsEquiped())
+                    {
+                        var mountLook = new ActorLook((short) AppearanceId);
+
+                        //KramKram
+                        if (Template.Id == (int)ItemIdEnum.KRAMKRAM_13182)
+                        {
+                            Color color1;
+                            Color color2;
+
+                            if (characterLook.Colors.TryGetValue(3, out color1)&&
+                                characterLook.Colors.TryGetValue(4, out color2))
+                            {
+                                mountLook.AddColor(1, color1);
+                                mountLook.AddColor(2, color2);
+                            }
+                        }
+
+                        characterLook.BonesID = 2;
+                        mountLook.SetRiderLook(characterLook);
+
+                        return mountLook;
+                    }
+                    else
+                    {
+                        var look = characterLook.GetRiderLook();
+
+                        if (look != null)
+                        {
+                            characterLook = look;
+                            characterLook.BonesID = 1;
+                        }
+                        return characterLook;
+                    }
+            }
+            
+            return characterLook;
         }
 
         private void OnFightEnded(Character character, CharacterFighter fighter)

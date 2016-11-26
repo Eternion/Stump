@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
@@ -51,6 +52,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 TokenTemplate = ItemManager.Instance.TryGetTemplate(TokenTemplateId);
         }
 
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         #region Events
 
         #region Delegates
@@ -100,6 +103,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                       {CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_MALUS, new List<BasePlayerItem>()},
                       {CharacterInventoryPositionEnum.INVENTORY_POSITION_ROLEPLAY_BUFFER, new List<BasePlayerItem>()},
                       {CharacterInventoryPositionEnum.INVENTORY_POSITION_FOLLOWER, new List<BasePlayerItem>()},
+                      {CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS, new List<BasePlayerItem>()},
                       {CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, new List<BasePlayerItem>()},
                   };
 
@@ -136,6 +140,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 },
                 {ItemSuperTypeEnum.SUPERTYPE_SHIELD, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD}},
                 {ItemSuperTypeEnum.SUPERTYPE_BOOST, new[] {CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD}},
+                {ItemSuperTypeEnum.SUPERTYPE_MOUNTRELATED, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS } }, 
             };
 
         public Inventory(Character owner)
@@ -892,6 +897,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void ApplyItemEffects(BasePlayerItem item, bool send = true, ItemEffectHandler.HandlerOperation? force = null, double? efficiency = null)
         {
+            if (item.EffectApplied)
+            {
+                logger.Error($"Item {item} Effects already applied");
+                return;
+            }
+
+            var applied = false;
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
                 if (force != null)
@@ -900,7 +912,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 handler.Efficiency = efficiency ?? 1+item.CurrentSubAreaBonus/100d;
 
                 handler.Apply();
+
+                if (!applied)
+                    applied = handler.Applied;
             }
+
+            item.OnEffectApplied(applied);
 
             if (send)
                 Owner.RefreshStats();
@@ -1029,12 +1046,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (isEquiped || wasEquiped)
             {
                 CheckItemsCriterias();
-
-                if (item.AppearanceId != 0)
-                    Owner.UpdateLook();
             }
-
-            Owner.RefreshActor();
+            
+            Owner.UpdateLook(item);
             Owner.RefreshStats();
         }
 

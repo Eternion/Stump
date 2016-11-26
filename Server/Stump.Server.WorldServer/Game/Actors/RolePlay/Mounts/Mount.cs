@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Cache;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Mounts;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Handlers.Mounts;
 
@@ -414,8 +418,47 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             get { return 0; }
         }
 
-        #endregion
+        public bool UseHarnessColors
+        {
+            get;
+            set;
+        }
 
+        public HarnessItem Harness => Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS) as HarnessItem;
+
+        public ActorLook Look
+        {
+            get
+            {
+                var look = Template.EntityLook.Clone();
+                var harness = Harness;
+                if (harness != null)
+                {
+                    look.AddSkin((short) harness.HarnessTemplate.SkinId);
+                }
+
+                if (harness != null && UseHarnessColors)
+                {
+                    look.SetColors(harness.HarnessTemplate.Colors);
+                }
+                else if (Behaviors.Contains((int) MountBehaviorEnum.Caméléone))
+                {
+                    Color color1;
+                    Color color2;
+                    Color color3;
+
+                    if (Owner.DefaultLook.Colors.TryGetValue(3, out color1) &&
+                        Owner.DefaultLook.Colors.TryGetValue(4, out color2) &&
+                        Owner.DefaultLook.Colors.TryGetValue(5, out color3))
+                        look.SetColors(color1, color2, color3);
+                }
+
+                return look;
+            }
+        }
+
+        #endregion
+        
         #region Network
 
         public MountClientData GetMountClientData()
@@ -453,7 +496,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 boostMax = 1000,
                 reproductionCount = ReproductionCount,
                 reproductionCountMax = ReproductionCountMax,
-                effectList = Effects.Select(x => x.GetObjectEffect() as ObjectEffectInteger)
+                effectList = Effects.Select(x => x.GetObjectEffect() as ObjectEffectInteger),
+                harnessGID = (short)(Harness?.Template.Id ?? 0),
+                useHarnessColors = UseHarnessColors,
             };
         }
 

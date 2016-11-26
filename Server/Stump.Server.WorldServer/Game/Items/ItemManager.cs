@@ -238,7 +238,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
         {
-            var effects = template.Effects.Select(effect => EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId) ? effect : effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();
+            var effects = template.Effects.Select(effect => EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId) ? (EffectBase)effect.Clone() : effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();
 
             return effects.ToList();
         }

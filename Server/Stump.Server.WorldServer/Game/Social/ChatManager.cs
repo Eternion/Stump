@@ -85,6 +85,8 @@ namespace Stump.Server.WorldServer.Game.Social
         /// </summary>
         public readonly Dictionary<ChatActivableChannelsEnum, ChatParserDelegate> ChatHandlers = new Dictionary<ChatActivableChannelsEnum, ChatParserDelegate>();
 
+        private  Dictionary<int, Emote> m_emotes = new Dictionary<int, Emote>();
+
         [Initialization(InitializationPass.First)]
         public void Initialize()
         {
@@ -100,6 +102,7 @@ namespace Stump.Server.WorldServer.Game.Social
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_TEAM, SayTeam);
 
             BadWords = Database.Query<BadWordRecord>(BadWordRelator.FetchQuery).ToList();
+            m_emotes = Database.Query<Emote>(EmoteRelator.FetchQuery).ToDictionary(x => x.Id);
             World.Instance.RegisterSaveableInstance(this);
         }
 
@@ -156,6 +159,12 @@ namespace Stump.Server.WorldServer.Game.Social
                 default:
                     return false;
             }
+        }
+
+        public Emote GetEmote(int id)
+        {
+            Emote emote;
+            return m_emotes.TryGetValue(id, out emote) ? emote : null;
         }
 
         #region Handlers

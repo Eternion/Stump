@@ -268,7 +268,6 @@
   <ItemGroup>
     <Compile Include="Attributes\Cyclic.cs" />
     <Compile Include="Attributes\VariableAttribute.cs" />
-    <Compile Include="Cache\CacheObject.cs" />
     <Compile Include="Cache\ObjectValidator.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
     <Compile Include="Collections\LimitedOccurenceCounter.cs" />

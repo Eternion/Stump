@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         private Dictionary<int, MountTemplate> m_mountTemplates;
         private Dictionary<int, MountRecord> m_mounts;
+        private Dictionary<int, HarnessRecord> m_harness;
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
@@ -36,11 +37,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             m_mountTemplates = Database.Query<MountTemplate, MountBonus, MountTemplate>(new MountTemplateRelator().Map, MountTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             Database.Execute(string.Format(MountRecordRelator.DeleteStoredSince, (DateTime.Now - MountStorageValidity).ToString("yyyy-MM-dd HH:mm:ss.fff")));
             m_mounts = Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(x => x.Id);
+            m_harness = Database.Query<HarnessRecord>(HarnessRelator.FetchQuery).ToDictionary(x => x.ItemId);
         }
 
         public MountTemplate[] GetTemplates()
         {
             return m_mountTemplates.Values.ToArray();
+        }
+        
+        public HarnessRecord GetHarness(int id)
+        {
+            HarnessRecord record;
+            return !m_harness.TryGetValue(id, out record) ? null : record;
         }
 
         public MountTemplate GetTemplate(int id)

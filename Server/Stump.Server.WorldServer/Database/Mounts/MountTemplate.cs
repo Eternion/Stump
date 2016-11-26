@@ -145,6 +145,12 @@ namespace Stump.Server.WorldServer.Database.Mounts
 
         List<MountBonus> IOneToManyRecord1<MountBonus>.ManyProperty1 => Bonuses;
 
+        public int FamilyId
+        {
+            get;
+            set;
+        }
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)
@@ -153,6 +159,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
             Id = (int)mount.id;
             NameId = mount.nameId;
             LookAsString = mount.look;
+            FamilyId = (int)mount.FamilyId;
         }
 
         #endregion

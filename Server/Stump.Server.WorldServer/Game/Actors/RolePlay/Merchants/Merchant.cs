@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public Merchant(Character character)
         {
-            var look = character.RealLook.Clone();
+            var look = character.Look.Clone();
 
             look.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MERCHANT_BAG,
                                              new ActorLook

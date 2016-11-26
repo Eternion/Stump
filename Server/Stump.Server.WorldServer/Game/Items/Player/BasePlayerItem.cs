@@ -7,6 +7,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
@@ -204,6 +205,30 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Record.IsDirty = true;
         }
 
+        public void OnEffectApplied(bool apply)
+        {
+            EffectApplied = apply;
+        }
+
+        public bool EffectApplied
+        {
+            get;
+            private set;
+        }
+
+        public virtual ActorLook UpdateItemSkin(ActorLook characterLook)
+        {
+            if (AppearanceId > 0)
+            {
+                if (IsEquiped())
+                    characterLook.AddSkin((short)AppearanceId);
+                else
+                    characterLook.RemoveSkin((short)AppearanceId);
+            }
+
+            return characterLook;
+        }
+
         #region ObjectItem
 
         private readonly ObjectValidator<ObjectItem> m_objectItemValidator;
@@ -361,5 +386,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #endregion
 
+        public override string ToString()
+        {
+            return $"{Stack} x \"{Template.Name}\" ({Template.Id}) (Gid : {Guid})";
+        }
     }
 }
