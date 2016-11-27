@@ -251,6 +251,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             {
                 MountHandler.SendMountSetMessage(client, client.Character.EquippedMount.GetMountClientData());
                 MountHandler.SendMountXpRatioMessage(client, client.Character.EquippedMount.GivenExperience);
+
+                if (client.Character.IsRiding)
+                    MountHandler.SendMountRidingMessage(client, client.Character.IsRiding);
             }
 
             client.Character.SendConnectionMessages();

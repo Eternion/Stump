@@ -70,6 +70,15 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
             client.Character.EquippedMount.UseHarnessColors = message.useHarnessColors;
         }
 
+        [WorldHandler(MountHarnessDissociateRequestMessage.Id)]
+        public static void HandleMountHarnessDissociateRequestMessage(WorldClient client, MountHarnessDissociateRequestMessage message)
+        {
+            var harness = client.Character.EquippedMount?.Harness;
+
+            if (harness != null)
+                client.Character.Inventory.MoveItem(harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+        }
+
         public static void SendMountDataMessage(IPacketReceiver client, MountClientData mountClientData)
         {
             client.Send(new MountDataMessage(mountClientData));

@@ -11,12 +11,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
     [ItemType(ItemTypeEnum.HARNACHEMENT)]
     public class HarnessItem : BasePlayerItem
     {
-        private CharacterInventoryPositionEnum m_position;
-
         public HarnessItem(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
             HarnessTemplate = MountManager.Instance.GetHarness(Template.Id);
+
         }
 
         public HarnessRecord HarnessTemplate
@@ -27,13 +26,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override CharacterInventoryPositionEnum Position
         {
-            get { return m_position; }
+            get { return Record.Position; }
             set
             {
                 if (value == CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS)
                     value = CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS;
 
-                m_position = value;
+                Record.Position = value;
             }
         }
 
