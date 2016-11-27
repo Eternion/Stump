@@ -1398,7 +1398,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_publicPaddockedMounts = database.Query<MountRecord>(string.Format(MountRecordRelator.FindByOwnerPublicPaddocked, Id)).Select(x => new Mount(this, x)).ToList();
 
             if (Record.EquippedMount.HasValue)
+            {
                 EquippedMount = new Mount(this, database.Single<MountRecord>(string.Format(MountRecordRelator.FindById, Record.EquippedMount.Value)));
+
+                if (IsRiding)
+                    EquippedMount.ApplyMountEffects(false);
+            }
         }
 
         private void SaveMounts()
@@ -1446,12 +1451,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             mount.Owner = this;
         }
 
-        public int GetEquippedMountSkin()
-        {
-            var petSkin = Inventory.GetPetSkin();
-            return (petSkin?.Item1 != null && !petSkin.Item2) ? petSkin.Item1.Value : -1;
-        }
-
         public bool HasEquippedMount()
         {
             return EquippedMount != null;
@@ -1477,7 +1476,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 EquippedMount = null;
 
                 MountHandler.SendMountUnSetMessage(Client);
-                //MountHandler.SendMountReleaseMessage(Client, EquippedMount.Id);
 
             }
         }
@@ -1556,7 +1554,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
                     // Votre harnachement est déposé dans votre inventaire.
-                    BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 661);
+                    BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
                 }
                 
             }
