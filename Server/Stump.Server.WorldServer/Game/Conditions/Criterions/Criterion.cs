@@ -292,7 +292,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
                 case ComparaisonOperatorEnum.INEQUALS:
                     return !obj.Equals(comparand);
-
+                    
                 default:
                     throw new NotImplementedException(string.Format("Cannot use {0} comparator on objects {1} and {2}", Operator, obj, comparand));
             }

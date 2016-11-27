@@ -175,6 +175,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             }
         }
 
+        public void RefreshMount()
+        {
+            MountHandler.SendMountSetMessage(Owner.Client, GetMountClientData());
+        }
+
         #region Properties
 
         public MountRecord Record
@@ -420,8 +425,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public bool UseHarnessColors
         {
-            get;
-            set;
+            get { return Owner.Record.UseHarnessColor; }
+            set
+            {
+                Owner.Record.UseHarnessColor = value;
+                Owner.UpdateLook();
+                RefreshMount();
+            }
         }
 
         public HarnessItem Harness => Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS) as HarnessItem;
@@ -496,7 +506,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 boostMax = 1000,
                 reproductionCount = ReproductionCount,
                 reproductionCountMax = ReproductionCountMax,
-                effectList = Effects.Select(x => x.GetObjectEffect() as ObjectEffectInteger),
+                effectList = Effects.Select(x => x.GetObjectEffect() as ObjectEffectInteger).
+                    Concat(Harness != null ? new [] {new EffectInteger(EffectsEnum.Effect_HarnessGID, (short)Harness.Template.Id).GetObjectEffect() as ObjectEffectInteger} : new ObjectEffectInteger[0]),
                 harnessGID = (short)(Harness?.Template.Id ?? 0),
                 useHarnessColors = UseHarnessColors,
             };

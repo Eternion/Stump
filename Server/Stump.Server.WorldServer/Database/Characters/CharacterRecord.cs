@@ -610,6 +610,13 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        [DefaultSetting(true)]
+        public bool UseHarnessColor
+        {
+            get;
+            set;
+        }
+
         public bool IsRiding
         {
             get;

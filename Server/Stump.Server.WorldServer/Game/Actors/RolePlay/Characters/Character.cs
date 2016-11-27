@@ -1551,6 +1551,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
 
                 EquippedMount.UnApplyMountEffects();
+
+                if (EquippedMount.Harness != null)
+                {
+                    Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                    // Votre harnachement est déposé dans votre inventaire.
+                    BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 661);
+                }
+                
             }
 
             return true;

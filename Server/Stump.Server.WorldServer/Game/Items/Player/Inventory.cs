@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 },
                 {ItemSuperTypeEnum.SUPERTYPE_SHIELD, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD}},
                 {ItemSuperTypeEnum.SUPERTYPE_BOOST, new[] {CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD}},
-                {ItemSuperTypeEnum.SUPERTYPE_MOUNTRELATED, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS } }, 
+                {ItemSuperTypeEnum.SUPERTYPE_MOUNTRELATED, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS, CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS,  } }, 
             };
 
         public Inventory(Character owner)
