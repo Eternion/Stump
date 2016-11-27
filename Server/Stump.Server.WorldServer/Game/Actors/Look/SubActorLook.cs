@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         {
             m_bindingIndex = index;
             m_bindingCategory = category;
-            m_look = look;
+            Look = look;
             m_subEntity = new ObjectValidator<SubEntity>(BuildSubEntity);
         }
 

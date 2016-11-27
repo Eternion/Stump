@@ -76,6 +76,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         public void AddSkin(short skin)
         {
+            if (m_skins.Contains(skin))
+                return;
+
             m_skins.Add(skin);
             m_entityLook.Invalidate();
         }
