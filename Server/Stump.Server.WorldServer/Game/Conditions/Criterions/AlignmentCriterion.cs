@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             set;
         }
 
-        public override bool Eval(Character character) => Compare(character.AlignmentSide, Alignement);
+        public override bool Eval(Character character) => Compare((int)character.AlignmentSide, (int)Alignement);
 
         public override void Build()
         {

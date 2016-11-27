@@ -61,6 +61,15 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
             SendMountDataMessage(client, mount.GetMountClientData());
         }
 
+        [WorldHandler(MountHarnessColorsUpdateRequestMessage.Id)]
+        public static void HandleMountHarnessColorsUpdateRequestMessage(WorldClient client, MountHarnessColorsUpdateRequestMessage message)
+        {
+            if (!client.Character.HasEquippedMount())
+                return;
+
+            client.Character.EquippedMount.UseHarnessColors = message.useHarnessColors;
+        }
+
         public static void SendMountDataMessage(IPacketReceiver client, MountClientData mountClientData)
         {
             client.Send(new MountDataMessage(mountClientData));
