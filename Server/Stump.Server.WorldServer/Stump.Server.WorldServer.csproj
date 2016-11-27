@@ -205,6 +205,7 @@
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\BankCommand.cs" />
     <Compile Include="Commands\Commands\DungeonCommands.cs" />
+    <Compile Include="Commands\Commands\EmoteCommands.cs" />
     <Compile Include="Commands\Commands\FightCommands.cs" />
     <Compile Include="Commands\Commands\FightPlacementCommand.cs" />
     <Compile Include="Commands\Commands\GodCommand.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
@@ -86,6 +87,8 @@ namespace Stump.Server.WorldServer.Game.Social
         public readonly Dictionary<ChatActivableChannelsEnum, ChatParserDelegate> ChatHandlers = new Dictionary<ChatActivableChannelsEnum, ChatParserDelegate>();
 
         private  Dictionary<int, Emote> m_emotes = new Dictionary<int, Emote>();
+
+        public IReadOnlyDictionary<int, Emote> Emotes => new ReadOnlyDictionary<int, Emote>(m_emotes);
 
         [Initialization(InitializationPass.First)]
         public void Initialize()

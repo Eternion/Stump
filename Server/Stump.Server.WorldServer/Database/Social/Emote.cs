@@ -107,10 +107,12 @@ namespace Stump.Server.WorldServer.Database.Social
                     if (character.Guild == null)
                         break;
 
-                    look.AddSkin((short) character.Guild.Emblem.Template.SkinId);
+                    var playerLook = look.GetRiderLook() ?? look;
 
-                    look.AddColor(8, character.Guild.Emblem.SymbolColor);
-                    look.AddColor(7, character.Guild.Emblem.BackgroundColor);
+                    playerLook.AddSkin((short) character.Guild.Emblem.Template.SkinId);
+
+                    playerLook.AddColor(8, character.Guild.Emblem.SymbolColor);
+                    playerLook.AddColor(7, character.Guild.Emblem.BackgroundColor);
                 }
                     break;
             }

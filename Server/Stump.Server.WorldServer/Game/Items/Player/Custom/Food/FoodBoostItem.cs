@@ -58,11 +58,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             }
 
             Invalidate();
-
-            if (--effect.Value <= 0)
-                Owner.Inventory.RemoveItem(this);
-            else
-                Owner.Inventory.RefreshItem(this);
+            
+            if (!fighter.Fight.IsPvP)
+            {
+                if (--effect.Value <= 0)
+                    Owner.Inventory.RemoveItem(this);
+                else
+                    Owner.Inventory.RefreshItem(this);
+            }
         }
     }
 }

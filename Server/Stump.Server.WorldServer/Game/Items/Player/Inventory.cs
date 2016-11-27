@@ -897,17 +897,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void ApplyItemEffects(BasePlayerItem item, bool send = true, ItemEffectHandler.HandlerOperation? force = null, double? efficiency = null)
         {
-            if (item.EffectApplied)
-            {
-                logger.Error($"Item {item} Effects already applied");
-                return;
-            }
-
             var applied = false;
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
                 if (force != null)
                     handler.Operation = force.Value;
+
+                if ((item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.APPLY) ||
+                    (!item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.UNAPPLY))
+                {
+
+                    continue;
+                }
 
                 handler.Efficiency = efficiency ?? 1+item.CurrentSubAreaBonus/100d;
 
