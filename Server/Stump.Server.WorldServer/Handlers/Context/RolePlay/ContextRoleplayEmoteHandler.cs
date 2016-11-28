@@ -55,5 +55,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         {
             client.Send(new EmoteRemoveMessage(emote));
         }
+
+        public static void SendEmotePlayErrorMessage(IPacketReceiver client, byte emote)
+        {
+            client.Send(new EmotePlayErrorMessage(emote));
+        }
     }
 }

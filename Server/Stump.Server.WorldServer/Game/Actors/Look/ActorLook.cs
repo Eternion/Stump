@@ -161,6 +161,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public void RemoveSubLook(SubEntityBindingPointCategoryEnum category)
+        {
+            m_subLooks.RemoveAll(x => x.BindingCategory == category);
+            m_entityLook.Invalidate();
+        }
+
+        public void RemoveSubLook(int index)
+        {
+            m_subLooks.RemoveAll(x => x.BindingIndex == index);
+            m_entityLook.Invalidate();
+        }
+
         public void AddSubLook(SubActorLook subLook)
         {
             m_subLooks.Add(subLook);

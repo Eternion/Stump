@@ -425,16 +425,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public bool UseHarnessColors
         {
-            get { return Owner.Record.UseHarnessColor; }
+            get { return Owner?.Record.UseHarnessColor ?? false; }
             set
             {
-                Owner.Record.UseHarnessColor = value;
-                Owner.UpdateLook();
-                RefreshMount();
+                if (Owner != null)
+                {
+                    Owner.Record.UseHarnessColor = value;
+                    Owner.UpdateLook();
+                    RefreshMount();
+                }
             }
         }
 
-        public HarnessItem Harness => Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS) as HarnessItem;
+        public HarnessItem Harness => Owner?.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS) as HarnessItem;
 
         public ActorLook Look
         {
@@ -451,7 +454,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 {
                     look.SetColors(harness.HarnessTemplate.Colors);
                 }
-                else if (Behaviors.Contains((int) MountBehaviorEnum.Caméléone))
+                else if (Behaviors.Contains((int) MountBehaviorEnum.Caméléone) && Owner != null)
                 {
                     Color color1;
                     Color color2;

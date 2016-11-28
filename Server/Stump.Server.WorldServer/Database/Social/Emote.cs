@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Database.Social
     {
         private string m_name;
 
-        [PrimaryKey("Id")]
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;
@@ -80,8 +80,30 @@ namespace Stump.Server.WorldServer.Database.Social
             Duration = (int) emote.Duration;
         }
 
-        public ActorLook ApplyEmoteLook(Character character, ActorLook look)
+        public ActorLook UpdateEmoteLook(Character character, ActorLook look, bool apply)
         {
+            if (!apply)
+            {
+                if (EmoteId == EmotesEnum.EMOTE_AURA_DE_PUISSANCE ||
+                    EmoteId == EmotesEnum.EMOTE_AURA_VAMPYRIQUE||
+                    EmoteId == EmotesEnum.EMOTE_AURA_BLEUTÉE_DE_L_ORNITHORYNQUE_ANCESTRAL||
+                    EmoteId == EmotesEnum.EMOTE_AURA_DE_NELWEEN)
+                    look.RemoveSubLook(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
+
+                if (EmoteId == EmotesEnum.EMOTE_GUILD)
+                {
+                    
+                    var playerLook = look.GetRiderLook() ?? look;
+
+                    playerLook.RemoveSkin((short) character.Guild.Emblem.Template.SkinId);
+
+                    playerLook.RemoveColor(8);
+                    playerLook.RemoveColor(7);
+                }
+
+                return look;
+            }
+
             ActorLook auraLook = null;
 
             switch (EmoteId)

@@ -948,10 +948,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 look = mountLook;
             }
-             if (LastEmoteUsed != null && (LastEmoteUsed.First.Duration == 0 || DateTime.Now - LastEmoteUsed.Second < TimeSpan.FromMilliseconds(LastEmoteUsed.First.Duration)))
-             {
-                 look = LastEmoteUsed.First.ApplyEmoteLook(this, look);
-             }
+            var currentEmote = GetCurrentEmote();
+
+            if (currentEmote != null)
+            {
+                look = currentEmote.UpdateEmoteLook(this, look, true);
+            }
 
             Look = look;
             
@@ -959,9 +961,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 SendLookUpdated();
         }
         
-        public void UpdateLook(Emote emote, bool send = true)
+        public void UpdateLook(Emote emote, bool apply, bool send = true)
         {
-            Look = emote.ApplyEmoteLook(this, Look);
+            Look = emote.UpdateEmoteLook(this, Look, apply);
 
             if (send)
                 SendLookUpdated();
@@ -2422,11 +2424,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Inventory.IsFull())
                 movementPath.SetWalk();
 
-            if (IsFighting() || MustBeJailed() || !IsInJail())
-                return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
+            if (!IsFighting() && !MustBeJailed() && IsInJail())
+            {
+                Teleport(Breed.GetStartPosition());
+                return false;
+            }
 
-            Teleport(Breed.GetStartPosition());
-            return false;
+            if (IsFighting())
+                if (Fighter.IsSlaveTurn())
+                    return Fighter.GetSlave().StartMove(movementPath);
+                else return Fighter.StartMove(movementPath);
+
+            CancelEmote();
+
+            return base.StartMove(movementPath);
         }
 
         public override bool StopMove() => IsFighting() ? Fighter.StopMove() : base.StopMove();
@@ -3173,10 +3184,32 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         
 
         private Stack<Pair<Emote, DateTime>> m_playedEmotes = new Stack<Pair<Emote, DateTime>>();
+        private bool m_cancelEmote;
 
         public ReadOnlyCollection<EmotesEnum> Emotes => Record.Emotes.AsReadOnly();
 
-        public override Pair<Emote, DateTime> LastEmoteUsed => m_playedEmotes.Count > 0 ? m_playedEmotes.Peek() : null;
+        public override Pair<Emote, DateTime> LastEmoteUsed => !m_cancelEmote && m_playedEmotes.Count > 0 ? m_playedEmotes.Peek() : null;
+
+        private Pair<Emote, DateTime> GetCurrentEmotePair() => LastEmoteUsed != null && (LastEmoteUsed.First.Duration == 0 || LastEmoteUsed.First.Persistancy || (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(LastEmoteUsed.First.Duration))
+            ? LastEmoteUsed
+            : null;
+
+        public Emote GetCurrentEmote() => GetCurrentEmotePair()?.First;
+
+        public bool CancelEmote()
+        {
+            var emote = GetCurrentEmotePair();
+
+            if (emote == null)
+                return false;
+
+            m_cancelEmote = true;
+            UpdateLook(emote.First, false, false);
+            RefreshActor();
+            ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, 0);
+
+            return true;
+        }
 
         public bool HasEmote(EmotesEnum emote) => Emotes.Contains(emote);
 
@@ -3204,24 +3237,37 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var emote = ChatManager.Instance.GetEmote((int) emoteId);
 
             if (emote == null)
+            {
+                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte) emoteId);
                 return false;
+            }
 
             if (!HasEmote(emoteId))
+            {
+                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte) emoteId);
                 return false;
+            }
 
             var lastEmote = m_playedEmotes.FirstOrDefault(x => x.First.EmoteId == emoteId);
 
-            if (lastEmote != null && (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(lastEmote.First.Cooldown))
+            if (LastEmoteUsed != null && lastEmote != null && (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(lastEmote.First.Cooldown))
                 return false;
 
-            if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(LastEmoteUsed.First.Duration))
-                return false;
-            
+            var currentEmote = GetCurrentEmote();
 
+            if (currentEmote != null)
+            {
+                CancelEmote();
+            }
+
+            m_cancelEmote = false;
             m_playedEmotes.Push(new Pair<Emote, DateTime>(emote, DateTime.Now));
-            UpdateLook(emote);
+            UpdateLook(emote, true, false);
 
             ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, emoteId);
+
+            RefreshActor();
+
             return true;
         }
 
