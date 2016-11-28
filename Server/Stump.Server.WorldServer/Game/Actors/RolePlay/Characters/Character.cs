@@ -554,7 +554,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public Party[] Parties => new[] {Party, ArenaParty}.Where(x => x != null).ToArray();
+        public Party[] Parties => new[] { Party, ArenaParty }.Where(x => x != null).ToArray();
 
         public bool IsInParty()
         {
@@ -956,11 +956,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             Look = look;
-            
+
             if (send)
                 SendLookUpdated();
         }
-        
+
         public void UpdateLook(Emote emote, bool apply, bool send = true)
         {
             Look = emote.UpdateEmoteLook(this, Look, apply);
@@ -1360,12 +1360,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private List<Mount> m_stabledMounts = new List<Mount>();
         private List<Mount> m_publicPaddockedMounts = new List<Mount>();
-        private Queue<Mount> m_releaseMounts = new Queue<Mount>(); 
+        private Queue<Mount> m_releaseMounts = new Queue<Mount>();
 
         public Mount EquippedMount
         {
             get { return m_equippedMount; }
-            private set { m_equippedMount = value;
+            private set
+            {
+                m_equippedMount = value;
                 Record.EquippedMount = value?.Id;
 
                 if (value == null)
@@ -1457,7 +1459,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             return EquippedMount != null;
         }
-        
+
         public bool EquipMount(Mount mount)
         {
             if (mount.Owner != this)
@@ -1544,7 +1546,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     Inventory.MoveItem(pet, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
                 EquippedMount.ApplyMountEffects();
-            }            
+            }
             else
             {
                 //Vous descendez de votre monture.
@@ -1558,7 +1560,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     // Votre harnachement est déposé dans votre inventaire.
                     BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
                 }
-                
+
             }
 
             return true;
@@ -1907,7 +1909,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Smiley
 
         public event Action<Character, int> MoodChanged;
-        
+
         private void OnMoodChanged()
         {
             Guild?.UpdateMember(Guild.TryGetMember(Id));
@@ -2788,7 +2790,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 quest.ChangeQuestStep(questStep);
             }
         }
-         
+
         #endregion
 
         #region Fight
@@ -3181,9 +3183,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #endregion Zaaps
 
         #region Emotes
-        
 
-        private Stack<Pair<Emote, DateTime>> m_playedEmotes = new Stack<Pair<Emote, DateTime>>();
+
+        private LimitedStack<Pair<Emote, DateTime>> m_playedEmotes = new LimitedStack<Pair<Emote, DateTime>>(3);
         private bool m_cancelEmote;
 
         public ReadOnlyCollection<EmotesEnum> Emotes => Record.Emotes.AsReadOnly();
@@ -3198,15 +3200,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool CancelEmote()
         {
-            var emote = GetCurrentEmotePair();
+            var emote = GetCurrentEmote();
 
             if (emote == null)
                 return false;
 
             m_cancelEmote = true;
-            UpdateLook(emote.First, false, false);
+            UpdateLook(emote, false, false);
+
             RefreshActor();
-            ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, 0);
 
             return true;
         }
@@ -3232,32 +3234,41 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return result;
         }
 
-        public bool PlayEmote(EmotesEnum emoteId)
+        public void PlayEmote(EmotesEnum emoteId)
         {
-            var emote = ChatManager.Instance.GetEmote((int) emoteId);
+            var emote = ChatManager.Instance.GetEmote((int)emoteId);
 
             if (emote == null)
             {
-                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte) emoteId);
-                return false;
+                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte)emoteId);
+                return;
             }
 
             if (!HasEmote(emoteId))
             {
-                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte) emoteId);
-                return false;
+                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte)emoteId);
+                return;
             }
 
             var lastEmote = m_playedEmotes.FirstOrDefault(x => x.First.EmoteId == emoteId);
 
             if (LastEmoteUsed != null && lastEmote != null && (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(lastEmote.First.Cooldown))
-                return false;
+            {
+                CancelEmote();
+                return;
+            }
 
             var currentEmote = GetCurrentEmote();
 
             if (currentEmote != null)
             {
                 CancelEmote();
+
+                if (currentEmote == emote)
+                {
+                    ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, 0);
+                    return;
+                }
             }
 
             m_cancelEmote = false;
@@ -3267,8 +3278,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, emoteId);
 
             RefreshActor();
-
-            return true;
         }
 
         #endregion Emotes
@@ -3626,7 +3635,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                 Delete();
                             }
                         });
-                    
+
                 }
             }
         }
