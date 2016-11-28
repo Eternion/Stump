@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 {
@@ -27,6 +28,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             {
                 logger.Error("Cannot find rune spell id = {0}, level = {1}. Casted Spell = {2}", Dice.DiceNum, Dice.DiceFace, Spell.Id);
                 return false;
+            }
+
+            foreach (var trigger in Fight.GetTriggersByCell(TargetedCell).OfType<Rune>().Where(x => x.Caster.IsFriendlyWith(Caster)))
+            {
+                trigger.Remove();
             }
 
             var rune = new Rune((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, runeSpell, TargetedCell, EffectZone.ShapeType, (byte)Effect.ZoneMinSize, (byte)Effect.ZoneSize);
