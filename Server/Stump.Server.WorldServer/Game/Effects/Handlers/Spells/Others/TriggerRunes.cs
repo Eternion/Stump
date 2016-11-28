@@ -20,6 +20,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             {
                 var target = Fight.GetOneFighter(trigger.CenterCell);
 
+                if (Spell.Id == (int)SpellIdEnum.TRAITEMENT_RUNIQUE && target == null)
+                    target = Caster;
+
                 if (target == null)
                     continue;
 

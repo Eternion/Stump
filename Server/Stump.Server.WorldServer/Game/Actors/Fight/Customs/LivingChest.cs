@@ -4,7 +4,6 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Handlers.Characters;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight.Customs
 {
@@ -17,10 +16,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight.Customs
 
         public override bool HasResult => IsAlive();
 
-        public override IFightResult GetFightResult(FightOutcomeEnum outcome)
-        {
-            return new LivingChestFightResult(this, outcome, new FightLoot());
-        }
+        public override IFightResult GetFightResult(FightOutcomeEnum outcome) => new LivingChestFightResult(this, outcome, new FightLoot());
     }
 
     public class LivingChestFightResult : FightResult<LivingChest>
@@ -30,10 +26,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight.Customs
         {
         }
 
-        public override bool CanLoot(FightTeam team)
-        {
-            return Fighter.Team == team && Fighter.IsAlive();
-        }
+        public override bool CanLoot(FightTeam team) => Fighter.Team == team && Fighter.IsAlive();
 
         public override void Apply()
         {

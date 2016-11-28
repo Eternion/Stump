@@ -94,6 +94,18 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             client.Send(new ReloginTokenStatusMessage(false, Encoding.ASCII.GetBytes(client.Account.Ticket).Select(x => (sbyte)x)));
         }
 
+        /*[WorldHandler(HaapiApiKeyRequestMessage.Id)]
+        public static void HandleHaapiApiKeyRequestMessage(WorldClient client, HaapiApiKeyRequestMessage message)
+        {
+            client.Send(new HaapiApiKeyMessage(message.keyType, client.Account.Ticket));
+        }*/
+
+        [WorldHandler(KrosmasterAuthTokenRequestMessage.Id)]
+        public static void HandleKrosmasterAuthTokenRequestMessage(WorldClient client, KrosmasterAuthTokenRequestMessage message)
+        {
+            client.Send(new KrosmasterAuthTokenMessage(client.Account.Ticket));
+        }
+
         static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
         {
             Character dummy;

@@ -27,6 +27,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
         readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
         ObjectValidator<GuildInformations[]> m_cachedGuilds;
+        ObjectValidator<GuildVersatileInformations[]> m_cachedGuildsVersatile;
 
         readonly object m_lock = new object();
 
@@ -54,7 +55,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             foreach (var guild in m_guilds.Where(x => x.Value.Members.Count == 0).ToList())
                 DeleteGuild(guild.Value);
-            m_cachedGuilds = new ObjectValidator<GuildInformations[]>(BuildCachedGuilds, TimeSpan.FromMinutes(10));
+            m_cachedGuilds = new ObjectValidator<GuildInformations[]>(BuildCachedGuilds, TimeSpan.FromMinutes(15));
+            m_cachedGuildsVersatile = new ObjectValidator<GuildVersatileInformations[]>(BuildCachedGuildsVersatile, TimeSpan.FromMinutes(15));
             World.Instance.RegisterSaveableInstance(this);
         }
 
@@ -208,7 +210,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         private GuildInformations[] BuildCachedGuilds() => m_guilds.Values.Select(x => x.GetGuildInformations()).ToArray();
 
+        private GuildVersatileInformations[] BuildCachedGuildsVersatile() => m_guilds.Values.Select(x => x.GetGuildVersatileInformations()).ToArray();
+
         public GuildInformations[] GetCachedGuilds() => m_cachedGuilds;
+
+        public GuildVersatileInformations[] GetCachedGuildsVersatile() => m_cachedGuildsVersatile;
 
         public void Save()
         {

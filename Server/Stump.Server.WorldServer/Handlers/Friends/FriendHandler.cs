@@ -16,7 +16,9 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         public static void HandleFriendsGetListMessage(WorldClient client, FriendsGetListMessage message)
         {
             SendFriendsListMessage(client, client.Character.FriendsBook.Friends);
+
             SendGuildListMessage(client);
+            SendGuildVersatileInfoListMessage(client);
         }
 
         [WorldHandler(IgnoredGetListMessage.Id)]
@@ -187,6 +189,11 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         public static void SendGuildListMessage(IPacketReceiver client)
         {
             client.Send(new GuildListMessage(GuildManager.Instance.GetCachedGuilds()));
+        }
+
+        public static void SendGuildVersatileInfoListMessage(IPacketReceiver client)
+        {
+            client.Send(new GuildVersatileInfoListMessage(GuildManager.Instance.GetCachedGuildsVersatile()));
         }
     }
 }
