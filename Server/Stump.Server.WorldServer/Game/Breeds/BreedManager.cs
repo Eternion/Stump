@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -51,6 +52,8 @@ namespace Stump.Server.WorldServer.Game.Breeds
         private readonly Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
         private Dictionary<int, Head> m_heads = new Dictionary<int, Head>();
 
+        public IReadOnlyDictionary<int, Head> Heads => new ReadOnlyDictionary<int, Head>(m_heads);
+            
         [Initialization(InitializationPass.Third)]
         public override void Initialize()
         {

@@ -1352,6 +1352,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void SetBreed(PlayableBreedEnum breed)
         {
             BreedId = breed;
+            
+            
+            var look = Breed.GetLook(Sex, true);
+            look.SetColors(DefaultLook.Colors);
+            var head = BreedManager.Instance.Heads.Values.First(x => x.Breed == (uint) breed);
+
+            foreach (var skin in head.Skins)
+                look.AddSkin(skin);
+
+            DefaultLook = look;
         }
 
         #endregion Stats
