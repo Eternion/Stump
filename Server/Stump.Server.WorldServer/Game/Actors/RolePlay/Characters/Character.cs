@@ -922,6 +922,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool ToggleInvisibility() => ToggleInvisibility(!Invisible);
 
+        public void ResetDefaultLook()
+        {
+            var look = Breed.GetLook(Sex, true);
+            look.SetColors(DefaultLook.Colors);
+
+            foreach (var skin in Head.Skins)
+                look.AddSkin(skin);
+
+            DefaultLook = look;
+        }
+
         public void UpdateLook(bool send = true)
         {
             var look = DefaultLook.Clone();
@@ -1352,16 +1363,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void SetBreed(PlayableBreedEnum breed)
         {
             BreedId = breed;
-            
-            
-            var look = Breed.GetLook(Sex, true);
-            look.SetColors(DefaultLook.Colors);
-            var head = BreedManager.Instance.Heads.Values.First(x => x.Breed == (uint) breed);
-
-            foreach (var skin in head.Skins)
-                look.AddSkin(skin);
-
-            DefaultLook = look;
+            ResetDefaultLook();
         }
 
         #endregion Stats
@@ -1486,6 +1488,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (EquippedMount != null)
             {
+                if (EquippedMount.Harness != null)
+                {
+                    Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                    // Votre harnachement est déposé dans votre inventaire.
+                    BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
+                }
+
                 Dismount();
                 EquippedMount = null;
 
@@ -1563,14 +1572,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
 
                 EquippedMount.UnApplyMountEffects();
-
-                if (EquippedMount.Harness != null)
-                {
-                    Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-                    // Votre harnachement est déposé dans votre inventaire.
-                    BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
-                }
-
             }
 
             return true;
@@ -2447,7 +2448,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     return Fighter.GetSlave().StartMove(movementPath);
                 else return Fighter.StartMove(movementPath);
 
-            CancelEmote();
+            CancelEmote(false);
 
             return base.StartMove(movementPath);
         }
@@ -3195,7 +3196,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Emotes
 
 
-        private LimitedStack<Pair<Emote, DateTime>> m_playedEmotes = new LimitedStack<Pair<Emote, DateTime>>(3);
+        private LimitedStack<Pair<Emote, DateTime>> m_playedEmotes = new LimitedStack<Pair<Emote, DateTime>>(5);
         private bool m_cancelEmote;
 
         public ReadOnlyCollection<EmotesEnum> Emotes => Record.Emotes.AsReadOnly();
@@ -3208,7 +3209,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public Emote GetCurrentEmote() => GetCurrentEmotePair()?.First;
 
-        public bool CancelEmote()
+        public bool CancelEmote(bool send = true)
         {
             var emote = GetCurrentEmote();
 
@@ -3217,8 +3218,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             m_cancelEmote = true;
             UpdateLook(emote, false, false);
-
-            RefreshActor();
+            if (send)
+                ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, 0);
+            SendLookUpdated();
 
             return true;
         }
@@ -3276,7 +3278,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 if (currentEmote == emote)
                 {
-                    ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, 0);
                     return;
                 }
             }
@@ -3287,7 +3288,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, emoteId);
 
-            RefreshActor();
+            SendLookUpdated();
         }
 
         #endregion Emotes

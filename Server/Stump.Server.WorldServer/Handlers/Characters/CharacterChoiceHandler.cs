@@ -132,9 +132,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 }
 
                 character.Head = head.Id;
+                character.EntityLook = breed.GetLook(character.Sex);
+                character.EntityLook.AddSkins(head.Skins);
 
                 foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
                     character.EntityLook.SetScales(scale);
+
             }
 
             if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)

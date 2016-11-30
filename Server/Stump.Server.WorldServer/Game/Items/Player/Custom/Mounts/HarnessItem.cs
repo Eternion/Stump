@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Mounts;
@@ -38,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool CanEquip()
         {
-            if (!Owner.HasEquippedMount())
+            if (!Owner.HasEquippedMount() || !Owner.IsRiding)
             {
                 // Vous ne pouvez pas équiper un harnachement directement, essayez plutôt de l'associer sur une monture équipée.
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 491);
@@ -54,6 +55,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool OnEquipItem(bool unequip)
         {
+            if (!unequip)
+                foreach (var item in Owner.Inventory.Where(x => x.Position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS && x != this))
+                {
+                    Owner.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                }
+
             Owner.UpdateLook();
             Owner.EquippedMount?.RefreshMount();
 

@@ -93,6 +93,9 @@ namespace Stump.Server.WorldServer.Database.Social
                 if (EmoteId == EmotesEnum.EMOTE_GUILD)
                 {
                     
+                    if (character.Guild == null)
+                     return look;
+
                     var playerLook = look.GetRiderLook() ?? look;
 
                     playerLook.RemoveSkin((short) character.Guild.Emblem.Template.SkinId);
