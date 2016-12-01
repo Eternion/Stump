@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             if (fighter != Fighter)
                 return;
 
-            fighter.CastSpell(new Spell((int)SpellIdEnum.SAC_RIFICE, (byte)fighter.Level), fighter.Cell, true, true, true);
+            fighter.CastSpell(new Spell((int)SpellIdEnum.SAC_RIFICE, (byte)fighter.Level), fighter.Cell, true, true, true, ignored: new[] { SpellCastResult.OK });
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             if (Fighter != fighter)
                 return;
 
-            Fighter.CastSpell(new Spell((int)SpellIdEnum.LIEN_ANIMAL, 1), Fighter.Cell, true, true);
+            Fighter.CastSpell(new Spell((int)SpellIdEnum.LIEN_ANIMAL, 1), Fighter.Cell, true, true, ignored: new[] { SpellCastResult.OK });
             fighter.Team.FighterAdded -= OnFighterAdded;
         }
     }

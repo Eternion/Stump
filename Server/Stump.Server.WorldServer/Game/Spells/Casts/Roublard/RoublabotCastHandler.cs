@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
             if (slave == null)
                 return;
 
-            slave.CastSpell(new Spell((int)SpellIdEnum.INITIALISATION, 1), TargetedCell, true, true, true);
+            slave.CastSpell(new Spell((int)SpellIdEnum.INITIALISATION, 1), TargetedCell, true, true, true, ignored: new[] { SpellCastResult.OK });
         }
     }
 }

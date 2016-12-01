@@ -40,11 +40,37 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     var spell = new Spell(Dice.DiceNum, (byte)Dice.DiceFace);
 
                     if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160 || Effect.EffectId == EffectsEnum.Effect_CastSpell_2160)
-                        Caster.CastSpell(spell, affectedActor.Cell, true, true, true, this);
+                    {
+                        if (Spell.Id == (int)SpellIdEnum.DOFUS_ABYSSAL)
+                        {
+                            var ignored = new[]
+                                {
+                                    SpellCastResult.CANNOT_PLAY,
+                                    SpellCastResult.CELL_NOT_FREE,
+                                    SpellCastResult.HAS_NOT_SPELL,
+                                    SpellCastResult.HISTORY_ERROR,
+                                    SpellCastResult.NOT_ENOUGH_AP,
+                                    SpellCastResult.NOT_IN_ZONE,
+                                    SpellCastResult.STATE_FORBIDDEN,
+                                    SpellCastResult.STATE_REQUIRED,
+                                    SpellCastResult.UNWALKABLE_CELL
+                                };
+
+                            Caster.CastSpell(spell, affectedActor.Cell, true, true, true, this, ignored);
+                        }
+                        else
+                        {
+                            Caster.CastSpell(spell, affectedActor.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                        }
+                    }
                     else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
-                        affectedActor.CastSpell(spell, Caster.Cell, true, true, true, this);
+                    {
+                        affectedActor.CastSpell(spell, Caster.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                    }
                     else
-                        affectedActor.CastSpell(spell, affectedActor.Cell, true, true, true, this);
+                    {
+                        affectedActor.CastSpell(spell, affectedActor.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                    }
                 }
             }
 
@@ -59,13 +85,21 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 return;
 
             if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
-                buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this);
+            {
+                buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+            }
             else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
-                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this);
+            {
+                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+            }
             else if (buff.Spell.Id == (int)SpellIdEnum.FRIKT) // hot fix
-                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this);
+            {
+                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+            }
             else
-                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this);
+            {
+                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+            }
         }
     }
 }

@@ -607,60 +607,84 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.MP.Used = 0;
         }
 
-        public virtual SpellCastResult CanCastSpell(Spell spell, Cell cell) => CanCastSpell(spell, cell, Cell);
+        public virtual SpellCastResult CanCastSpell(Spell spell, Cell cell, SpellCastResult[] ignored = null) => CanCastSpell(spell, cell, Cell, ignored);
 
-        public virtual SpellCastResult CanCastSpell(Spell spell, Cell cell, Cell castCell)
+        public virtual SpellCastResult CanCastSpell(Spell spell, Cell cell, Cell castCell, SpellCastResult[] ignored = null)
         {
-            if (!IsFighterTurn() || IsDead())
+            if (ignored == null)
+                ignored = new SpellCastResult[0];
+
+            if (ignored.Contains(SpellCastResult.OK))
+            {
+                ignored = new[]
+                    {
+                        SpellCastResult.CANNOT_PLAY,
+                        SpellCastResult.CELL_NOT_FREE,
+                        SpellCastResult.HAS_NOT_SPELL,
+                        SpellCastResult.HISTORY_ERROR,
+                        SpellCastResult.NOT_ENOUGH_AP,
+                        SpellCastResult.NOT_IN_ZONE,
+                        SpellCastResult.NO_LOS,
+                        SpellCastResult.STATE_FORBIDDEN,
+                        SpellCastResult.STATE_REQUIRED,
+                        SpellCastResult.UNWALKABLE_CELL
+                    };
+            }
+
+            if (!ignored.Contains(SpellCastResult.CANNOT_PLAY) && (!IsFighterTurn() || IsDead()))
             {
                 return SpellCastResult.CANNOT_PLAY;
             }
 
-            if (!HasSpell(spell.Id))
+            if (!ignored.Contains(SpellCastResult.HAS_NOT_SPELL) && !HasSpell(spell.Id))
             {
                 return SpellCastResult.HAS_NOT_SPELL;
             }
 
             var spellLevel = spell.CurrentSpellLevel;
 
-            if (!cell.Walkable || cell.NonWalkableDuringFight)
+            if (!ignored.Contains(SpellCastResult.UNWALKABLE_CELL) && (!cell.Walkable || cell.NonWalkableDuringFight))
             {
                 return SpellCastResult.UNWALKABLE_CELL;
             }
 
-            if (AP < spellLevel.ApCost)
+            if (!ignored.Contains(SpellCastResult.NOT_ENOUGH_AP) && (AP < spellLevel.ApCost))
             {
                 return SpellCastResult.NOT_ENOUGH_AP;
             }
 
             var cellfree = Fight.IsCellFree(cell);
-            if ((spellLevel.NeedFreeCell && !cellfree) ||
-                (spellLevel.NeedTakenCell && cellfree))
+            if (!ignored.Contains(SpellCastResult.CELL_NOT_FREE) &&
+                ((spellLevel.NeedFreeCell && !cellfree) || (spellLevel.NeedTakenCell && cellfree)))
             {
                 return SpellCastResult.CELL_NOT_FREE;
             }
 
-            if (spellLevel.StatesForbidden.Any(HasState))
+            if (!ignored.Contains(SpellCastResult.STATE_FORBIDDEN) && spellLevel.StatesForbidden.Any(HasState))
             {
                 return SpellCastResult.STATE_FORBIDDEN;
             }
 
-            if (spellLevel.StatesRequired.Any(state => !HasState(state)))
+            if (!ignored.Contains(SpellCastResult.STATE_REQUIRED) &&
+                spellLevel.StatesRequired.Any(state => !HasState(state)))
             {
                 return SpellCastResult.STATE_REQUIRED;
             }
 
-            if (!IsInCastZone(spellLevel, castCell, cell))
+            if (!ignored.Contains(SpellCastResult.NOT_IN_ZONE) &&
+                !IsInCastZone(spellLevel, castCell, cell))
             {
                 return SpellCastResult.NOT_IN_ZONE;
             }
 
-            if (!SpellHistory.CanCastSpell(spellLevel, cell))
+            if (!ignored.Contains(SpellCastResult.HISTORY_ERROR) &&
+                !SpellHistory.CanCastSpell(spellLevel, cell))
             {
                 return SpellCastResult.HISTORY_ERROR;
             }
 
-            if (spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(castCell, cell))
+            if (!ignored.Contains(SpellCastResult.NO_LOS) &&
+                (spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(castCell, cell)))
             {
                 return SpellCastResult.NO_LOS;
             }
@@ -742,14 +766,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public int GetSpellRange(SpellLevelTemplate spell) => (int)(spell.Range + (spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0));
 
-        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, bool silent = false, CastSpell castSpellEffect = null)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, bool silent = false, CastSpell castSpellEffect = null, SpellCastResult[] ignored = null)
         {
             if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
 
             var spellLevel = spell.CurrentSpellLevel;
 
-            if (!force && CanCastSpell(spell, cell) != SpellCastResult.OK)
+            if (CanCastSpell(spell, cell, ignored) != SpellCastResult.OK)
             {
                 OnSpellCastFailed(spell, cell);
                 return false;

@@ -167,14 +167,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_weaponUses = 0;
         }
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, bool silent = false, CastSpell castSpellEffect = null)
+        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, bool silent = false, CastSpell castSpellEffect = null, SpellCastResult[] ignored = null)
         {
             if (!IsFighterTurn() && !force)
                 return false;
 
             // weapon attack
             if (spell.Id != 0 || Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force, apFree, silent, castSpellEffect);
+                return base.CastSpell(spell, cell, force, apFree, silent, castSpellEffect, ignored);
 
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
@@ -256,11 +256,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             base.OnWeaponUsed(weapon, cell, critical, silentCast);
         }
 
-        public override SpellCastResult CanCastSpell(Spell spell, Cell cell)
+        public override SpellCastResult CanCastSpell(Spell spell, Cell cell, SpellCastResult[] ignored = null)
         {
-             var result = base.CanCastSpell(spell, cell);
+             var result = base.CanCastSpell(spell, cell, ignored);
 
-            if (result == SpellCastResult.OK)
+            if (result == SpellCastResult.OK || ignored != null)
                 return result;
 
             switch (result)

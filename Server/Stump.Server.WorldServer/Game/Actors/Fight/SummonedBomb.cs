@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != this)
                 return;
 
-            CastSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell, true, true, true);
+            CastSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell, true, true, true, ignored: new[] { SpellCastResult.OK });
             CheckAndBuildWalls();
         }
 
