@@ -49,10 +49,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                if (Duration != 0)
+                if (Duration != 0 || Delay != 0)
                 {
                     AddTriggerBuff(actor, OnBuffTriggered);
-
                 }
                 else
                 {

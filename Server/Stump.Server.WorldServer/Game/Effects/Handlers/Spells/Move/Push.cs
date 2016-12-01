@@ -143,8 +143,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 actor.Position.Cell = Map.Cells[stopCell.CellId];
 
                 if (Effect.EffectId != EffectsEnum.Effect_PullForward)
-                    actor.TriggerBuffs(actor, BuffTriggerType.OnPushed);
-                actor.TriggerBuffs(actor, BuffTriggerType.OnMoved);
+                    actor.TriggerBuffs(Caster, BuffTriggerType.OnPushed);
+                actor.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
             }
 
             return true;

@@ -41,11 +41,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         break;
                     case 103: //Zobal - Pleutre
                         skinId = 1449;
-                        bonesId = 1576;
+                        bonesId = (short)(driverLook != null ? look.BonesID : 1576);
                         break;
                     case 102: //Zobal - Psychopathe
                         skinId = 1443;
-                        bonesId = 1575;
+                        bonesId = (short)(driverLook != null ? look.BonesID : 1575);
                         break;
                     case 1035: //Steamer - Scaphrandre
                         skinId = 1955;
