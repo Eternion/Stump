@@ -7,30 +7,24 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
     {
         public const string Identifier = "Pf";
 
-        public bool Mounted
+        public int MountId
         {
             get;
             set;
         }
 
-        public override bool Eval(Character character)
-        {
-            return true;
-        }
+        public override bool Eval(Character character) => character.HasEquippedMount() && Compare(character.EquippedMount.Template.Id, MountId);
 
         public override void Build()
         {
-            int mounted;
+            int mountId;
 
-            if (!int.TryParse(Literal, out mounted))
-                throw new Exception(string.Format("Cannot build RideCriterion, {0} is not a valid mount state", Literal));
+            if (!int.TryParse(Literal, out mountId))
+                throw new Exception(string.Format("Cannot build RideCriterion, {0} is not a valid mount id", Literal));
 
-            Mounted = mounted != 0;
+            MountId = mountId;
         }
 
-        public override string ToString()
-        {
-            return FormatToString(Identifier);
-        }
+        public override string ToString() => FormatToString(Identifier);
     }
 }

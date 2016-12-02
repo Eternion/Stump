@@ -13,10 +13,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             private set;
         }
 
-        public override bool Eval(Character character)
-        {
-            return character.HasEquippedMount() && Compare(character.EquippedMount.Template.FamilyId, FamilyId);
-        }
+        public override bool Eval(Character character) => character.HasEquippedMount() && Compare(character.EquippedMount.Template.FamilyId, FamilyId);
 
         public override void Build()
         {
@@ -28,9 +25,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 FamilyId = familyId;
             }
 
-        public override string ToString()
-        {
-            return FormatToString(Literal);
-        }
+        public override string ToString() => FormatToString(Literal);
     }
 }
