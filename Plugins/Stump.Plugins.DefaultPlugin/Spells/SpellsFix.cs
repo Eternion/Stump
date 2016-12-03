@@ -71,6 +71,16 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels((int)SpellIdEnum.DRAGONIQUE_21, EffectsEnum.Effect_GiveHpPercentWhenAttack, (level, effect, critical) => effect.Priority = int.MaxValue);
 
             #endregion OSAMODAS
+
+            #region HUPPERMAGE
+
+            FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 0, (level, effect, critical) => effect.ZoneSize = 4);
+            FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 1, (level, effect, critical) => effect.ZoneSize = 4);
+            FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 2, (level, effect, critical) => effect.ZoneSize = 4);
+            FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 3, (level, effect, critical) => effect.ZoneSize = 4);
+            FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 4, (level, effect, critical) => effect.ZoneSize = 4);
+
+            #endregion HUPPERMAGE
         }
 
         #region Methods

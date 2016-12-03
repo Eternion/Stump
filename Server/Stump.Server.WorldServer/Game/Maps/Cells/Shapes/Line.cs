@@ -1,26 +1,22 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
+using Stump.DofusProtocol.Enums.Extensions;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
     public class Line : IShape
     {
-        public Line(byte radius)
+        public Line(byte radius, bool opposedDirection)
         {
             Radius = radius;
             Direction = DirectionsEnum.DIRECTION_SOUTH_EAST;
+            OpposedDirection = opposedDirection;
         }
 
         #region IShape Members
 
-        public uint Surface
-        {
-            get
-            {
-                return (uint)Radius + 1;
-            }
-        }
+        public uint Surface => (uint)Radius + 1;
 
         public byte MinRadius
         {
@@ -40,12 +36,21 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             set;
         }
 
+        public bool OpposedDirection
+        {
+            get;
+            set;
+        }
+
         public Cell[] GetCells(Cell centerCell, Map map)
         {
+            if (OpposedDirection)
+                Direction = Direction.GetOpposedDirection();
+
             var centerPoint = new MapPoint(centerCell);
             var result = new List<Cell>();
 
-            for (int i = (int) MinRadius; i <= Radius; i++)
+            for (int i = MinRadius; i <= Radius; i++)
             {
                 switch (Direction)
                 {

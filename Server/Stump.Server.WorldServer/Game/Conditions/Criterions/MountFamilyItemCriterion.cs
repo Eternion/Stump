@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             private set;
         }
 
-        public override bool Eval(Character character) => character.HasEquippedMount() && Compare(character.EquippedMount.Template.FamilyId, FamilyId);
+        public override bool Eval(Character character) => character.HasEquippedMount() && character.IsRiding && Compare(character.EquippedMount.Template.FamilyId, FamilyId);
 
         public override void Build()
         {

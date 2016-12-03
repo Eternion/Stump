@@ -4,11 +4,7 @@
     {
         public static DirectionsEnum GetOpposedDirection(this DirectionsEnum direction) => (DirectionsEnum)(((int)direction + 4) % 8);
 
-
-        public static bool IsDiagonal(this DirectionsEnum direction)
-        {
-            return ((int)direction) % 2 == 0;
-        }
+        public static bool IsDiagonal(this DirectionsEnum direction) => ((int)direction) % 2 == 0;
 
         public static DirectionsEnum[] GetDiagonalDecomposition(this DirectionsEnum direction)
         {

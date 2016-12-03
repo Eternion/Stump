@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool CanEquip()
         {
-            if (!Owner.HasEquippedMount())
+            if (!Owner.HasEquippedMount() || !Owner.IsRiding)
             {
                 // Vous ne pouvez pas équiper un harnachement directement, essayez plutôt de l'associer sur une monture équipée.
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 491);
