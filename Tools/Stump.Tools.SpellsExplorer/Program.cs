@@ -68,17 +68,7 @@ namespace Stump.Tools.SpellsExplorer
             SpellManager.Instance.Initialize();
 
             ItemManager.Instance.Initialize();
-            var results = ItemManager.Instance.GetTemplates().Where(x => x.Effects.Any(y => TextManager.Instance.GetText(y.Template.DescriptionId) == ""));
 
-            var effects = ItemManager.Instance.GetTemplates().SelectMany(x => x.Effects.Select(y => y.Template)).Where(x => TextManager.Instance.GetText(x.DescriptionId) == "").Distinct();
-            var voidEffects = EffectManager.Instance.GetTemplates().Where(x => TextManager.Instance.GetText(x.DescriptionId) == "");
-
-            var diff = voidEffects.Except(effects);
-
-            foreach (var effect in diff)
-            {
-                Console.WriteLine(effect.Id);
-            }
 
             while (true)
             {

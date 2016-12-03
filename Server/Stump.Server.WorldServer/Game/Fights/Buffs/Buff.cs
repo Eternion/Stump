@@ -1,5 +1,6 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -12,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
        
         public const int CHARACTERISTIC_STATE = 71;
 
-        protected Buff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, int priority = 0, short? customActionId = null)
+        protected Buff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, bool triggered = false)
         {
             Id = id;
             Target = target;
@@ -21,13 +22,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Spell = spell;
             Critical = critical;
             Dispellable = dispelable;
-            CustomActionId = customActionId;
 
-            Duration = (short) (EffectHandler.Duration == -1 ? -1000 : Effect.Duration);
+            Duration = triggered && EffectFix?.TriggerBuffDuration != null ? (short)EffectFix.TriggerBuffDuration : (short) (EffectHandler.Duration == -1 ? -1000 : Effect.Duration);
             Delay = (short) EffectHandler.Delay;
+            CustomActionId = (short?) EffectFix?.ActionId;
+
+            BuffTriggered = triggered;
 
             Efficiency = 1.0d;
-            Priority = priority;
         }
 
         public SpellEffectHandler EffectHandler
@@ -71,11 +73,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             set;
         }
 
-        public int Priority
-        {
-            get;
-            set;
-        }
+        public int Priority => EffectFix?.Priority ?? (EffectHandler.Priority);
 
         public bool Critical
         {
@@ -90,6 +88,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public short? CustomActionId
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -106,6 +105,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
             private set;
         }
+
+        public bool BuffTriggered
+        {
+            get;
+            private set;
+        }
+
+        public SpellEffectFix EffectFix => Effect.EffectFix;
 
         public virtual BuffType Type
         {

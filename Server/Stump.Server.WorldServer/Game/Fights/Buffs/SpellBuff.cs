@@ -17,13 +17,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Boost = boost;
         }
 
-        public SpellBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, Spell boostedSpell, short boost, bool critical, FightDispellableEnum dispelable, int priority, short customActionId)
-            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
-        {
-            BoostedSpell = boostedSpell;
-            Boost = boost;
-        }
-
         public Spell BoostedSpell
         {
             get;

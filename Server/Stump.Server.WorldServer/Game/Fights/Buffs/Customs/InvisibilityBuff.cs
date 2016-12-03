@@ -15,11 +15,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
         }
 
-        public InvisibilityBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, int priority, FightDispellableEnum dispelable, short customActionId)
-            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
-        {
-        }
-
         public override void Apply()
         {
             Target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.INVISIBLE);

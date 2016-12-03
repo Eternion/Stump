@@ -18,13 +18,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
             Look = look;
         }
-
-        public SkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, ActorLook look, Spell spell, FightDispellableEnum dispelable, int priority, short customActionId)
-            : base(id, target, caster, effect, spell, false, dispelable, priority, customActionId)
-        {
-            Look = look;
-        }
-
+        
         public ActorLook Look
         {
             get;

@@ -14,14 +14,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
     public class DodgeBuff : Buff
     {
         public DodgeBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, int dodgePercent, int backCellsCount)
-            : this(id, target, caster, effect, spell, critical, dispelable, 0, null, dodgePercent, backCellsCount)
-        {
-            DodgePercent = dodgePercent;
-            BackCellsCount = backCellsCount;
-        }
-
-        public DodgeBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId, int dodgePercent, int backCellsCount)
-            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable)
         {
             DodgePercent = dodgePercent;
             BackCellsCount = backCellsCount;

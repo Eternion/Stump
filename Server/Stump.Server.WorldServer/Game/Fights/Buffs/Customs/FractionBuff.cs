@@ -13,12 +13,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
     public class FractionBuff : Buff
     {
         public FractionBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, FightActor[] fighters)
-            : this(id, target, caster, effect, spell, critical, dispelable, 0, null, fighters)
-        {
-        }
-
-        public FractionBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short? customActionId, FightActor[] fighters)
-            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Fighters = fighters;
         }

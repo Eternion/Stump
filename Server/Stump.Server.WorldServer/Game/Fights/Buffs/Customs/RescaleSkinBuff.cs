@@ -9,8 +9,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class RescaleSkinBuff : Buff
     {
-        public RescaleSkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, double rescaleFactor, int priority = 0, short? customActionId = null)
-            : base(id, target, caster, effectHandler, spell, critical, dispelable, priority, customActionId)
+        public RescaleSkinBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, double rescaleFactor)
+            : base(id, target, caster, effectHandler, spell, critical, dispelable)
         {
             RescaleFactor = rescaleFactor;
         }

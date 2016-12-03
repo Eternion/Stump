@@ -14,11 +14,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
         }
-
-        public SkipTurnBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, bool critical, FightDispellableEnum dispelable, int priority, short customActionId)
-            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
-        {
-        }
+        
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {

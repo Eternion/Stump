@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Database.Effects;
 using System.Collections.Generic;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 using System.Linq;
+using Stump.Server.WorldServer.Database.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -288,6 +289,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 m_zoneMaxEfficiency = value;
                 IsDirty = true;
             }
+        }
+
+        public SpellEffectFix EffectFix
+        {
+            get;
+            set;
         }
 
         public bool IsDirty

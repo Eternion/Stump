@@ -329,6 +329,7 @@
     <Compile Include="Database\Social\BadWordRecord.cs" />
     <Compile Include="Database\Social\Emote.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
+    <Compile Include="Database\Spells\SpellEffectFix.cs" />
     <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
     <Compile Include="Database\Tinsel\TinselManager.cs" />
     <Compile Include="Database\Tinsel\TitleRecord.cs" />

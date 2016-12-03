@@ -231,15 +231,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStatBuffDirectly(target, value, caracteritic, customActionId, triggerrer, true));
+                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStatBuffDirectly(target, value, caracteritic, customActionId, triggerrer, triggered:true));
             
             return AddStatBuffDirectly(target, value, caracteritic, customActionId);
         }
 
-        protected Buff AddStatBuffDirectly(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null, FightActor caster = null, bool noDelay = false)
+        protected Buff AddStatBuffDirectly(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null, FightActor caster = null, bool noDelay = false, bool triggered = false)
         {
             var id = target.PopNextBuffId();
-            var buff = new StatBuff(id, target, caster ?? Caster, this, Spell, value, caracteritic, Critical, DefaultDispellableStatus, Priority, customActionId);
+            var buff = new StatBuff(id, target, caster ?? Caster, this, Spell, value, caracteritic, Critical, DefaultDispellableStatus, triggered);
+            
+            if (customActionId != null)
+                buff.CustomActionId = customActionId;
 
             if (noDelay)
                 buff.Delay = 0;
