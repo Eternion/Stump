@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Actors.Look;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 {
@@ -31,10 +32,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             Initialize();
         }
 
-        public override bool CanFeed(BasePlayerItem item)
-        {
-            return false;
-        }
+        public override bool CanFeed(BasePlayerItem item) => false;
 
         public override bool Feed(BasePlayerItem food)
         {

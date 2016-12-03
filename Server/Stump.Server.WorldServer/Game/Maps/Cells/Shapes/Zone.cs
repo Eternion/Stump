@@ -110,10 +110,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             }
         }
 
-        public Cell[] GetCells(Cell centerCell, Map map)
-        {
-            return m_shape.GetCells(centerCell, map);
-        }
+        public Cell[] GetCells(Cell centerCell, Map map) => m_shape.GetCells(centerCell, map);
 
         #endregion
 
@@ -125,10 +122,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     m_shape = new Cross(MinRadius, Radius);
                     break;
                 case SpellShapeEnum.L:
-                    m_shape = new Line(Radius);
+                    m_shape = new Line(Radius, false);
                     break;
                 case SpellShapeEnum.l:
-                    m_shape = new Line(Radius);
+                    m_shape = new Line(Radius, true);
                     break;
                 case SpellShapeEnum.T:
                     m_shape = new Cross(0, Radius)
@@ -182,7 +179,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     };
                     break;
                 case SpellShapeEnum.slash:
-                    m_shape = new Line(Radius);
+                    m_shape = new Line(Radius, false);
                     break;
                 case SpellShapeEnum.U:
                     m_shape = new HalfLozenge(0, Radius);

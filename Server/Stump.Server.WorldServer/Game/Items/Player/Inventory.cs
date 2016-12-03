@@ -634,6 +634,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 return false;
             }
 
+            if (!item.AreConditionFilled(Owner))
+            {
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 19);
+
+                return false;
+            }
+
             var weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             if (item.Template.Type.ItemType == ItemTypeEnum.BOUCLIER && weapon != null && weapon.Template.TwoHanded)
             {

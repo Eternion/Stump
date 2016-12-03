@@ -937,7 +937,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             var look = DefaultLook.Clone();
 
-            look = Inventory.Aggregate(look, (current, item) => item.UpdateItemSkin(current));
+            look = Inventory.Where(x => x.IsEquiped()).Aggregate(look, (current, item) => item.UpdateItemSkin(current));
 
             switch (PlayerLifeStatus)
             {

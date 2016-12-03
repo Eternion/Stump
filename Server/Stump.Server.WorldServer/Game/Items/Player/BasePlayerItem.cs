@@ -180,25 +180,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        public virtual bool CanFeed(BasePlayerItem item)
-        {
-            return false;
-        }
+        public virtual bool CanFeed(BasePlayerItem item) => false;
 
-        public virtual bool Feed(BasePlayerItem food)
-        {
-            return false;
-        }
+        public virtual bool Feed(BasePlayerItem food) => false;
 
-        public virtual bool CanDrop(BasePlayerItem item)
-        {
-            return false;
-        }
+        public virtual bool CanDrop(BasePlayerItem item) => false;
 
-        public virtual bool Drop(BasePlayerItem dropOnItem)
-        {
-            return false;
-        }
+        public virtual bool Drop(BasePlayerItem dropOnItem) => false;
 
         public void OnObjectModified()
         {
@@ -220,10 +208,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             if (AppearanceId > 0)
             {
+                var look = characterLook.GetRiderLook() ?? characterLook;
+
                 if (IsEquiped())
-                    characterLook.AddSkin((short)AppearanceId);
+                    look.AddSkin((short)AppearanceId);
                 else
-                    characterLook.RemoveSkin((short)AppearanceId);
+                    look.RemoveSkin((short)AppearanceId);
             }
 
             return characterLook;
