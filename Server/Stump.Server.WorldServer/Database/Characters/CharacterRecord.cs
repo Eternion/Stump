@@ -673,7 +673,6 @@ namespace Stump.Server.WorldServer.Database.Characters
         #region Zaaps
 
         ActorLook m_customEntityLook;
-        string m_customLookAsString;
         List<Map> m_knownZaaps = new List<Map>();
         Map m_spawnMap;
         List<short> m_titles = new List<short>();

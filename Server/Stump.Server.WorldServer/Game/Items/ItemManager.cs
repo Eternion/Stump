@@ -464,9 +464,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (ignorecase)
                 pattern = pattern.Remove(0, 1);
 
-            int outvalue;
-            if (!ignorecase &&
-                int.TryParse(pattern, out outvalue)) // the pattern is an id
+            if (!ignorecase && int.TryParse(pattern, out int outvalue)) // the pattern is an id
             {
                 return list.Where(entry => entry.Id == outvalue);
             }
@@ -527,9 +525,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (ignorecase)
                 pattern = pattern.Remove(0, 1);
 
-            int outvalue;
-            if (!ignorecase &&
-                int.TryParse(pattern, out outvalue)) // the pattern is an id
+            if (!ignorecase && int.TryParse(pattern, out int outvalue)) // the pattern is an id
             {
                 return list.Where(entry => entry.Template.Id == outvalue);
             }
@@ -548,8 +544,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public LivingObjectRecord TryGetLivingObjectRecord(int id)
         {
-            LivingObjectRecord livingObjectRecord;
-            return !m_livingObjects.TryGetValue(id, out livingObjectRecord) ? null : livingObjectRecord;
+            return !m_livingObjects.TryGetValue(id, out var livingObjectRecord) ? null : livingObjectRecord;
         }
 
         #endregion

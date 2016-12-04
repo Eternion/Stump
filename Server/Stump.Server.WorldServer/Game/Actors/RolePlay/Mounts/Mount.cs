@@ -456,13 +456,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 }
                 else if (Behaviors.Contains((int) MountBehaviorEnum.Caméléone) && Owner != null)
                 {
-                    Color color1;
-                    Color color2;
-                    Color color3;
-
-                    if (Owner.DefaultLook.Colors.TryGetValue(3, out color1) &&
-                        Owner.DefaultLook.Colors.TryGetValue(4, out color2) &&
-                        Owner.DefaultLook.Colors.TryGetValue(5, out color3))
+                    if (Owner.DefaultLook.Colors.TryGetValue(3, out var color1) &&
+                        Owner.DefaultLook.Colors.TryGetValue(4, out var color2) &&
+                        Owner.DefaultLook.Colors.TryGetValue(5, out var color3))
                         look.SetColors(color1, color2, color3);
                 }
 

@@ -808,9 +808,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 fighter.MovementHistory.RegisterEntry(fighter.FightStartPosition.Cell);
             }
 
-            var handler = FightStarted;
-            if (handler != null)
-                handler(this);
+            FightStarted?.Invoke(this);
         }
 
         public event Action<IFight> FightEnded;
@@ -833,17 +831,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             Dispose();
 
-            var handler = FightEnded;
-            if (handler != null)
-                handler(this);
+            FightEnded?.Invoke(this);
         }
 
         public event FightWinnersDelegate WinnersDetermined;
 
         protected virtual void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
         {
-            var handler = WinnersDetermined;
-            if (handler != null) handler(this, winners, losers, draw);
+            WinnersDetermined?.Invoke(this, winners, losers, draw);
         }
 
         protected virtual void DeterminsWinners()
@@ -885,15 +880,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void GenerateResults()
         {
-            var handler = GeneratingResults;
-            if (handler != null)
-                handler(this);
+            GeneratingResults?.Invoke(this);
 
             var results = GetResults();
 
-            var handler2 = ResultsGenerated;
-            if (handler2 != null)
-                handler2(this, results);
+            ResultsGenerated?.Invoke(this, results);
 
             Results = results;
         }
@@ -1115,8 +1106,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State != FightState.Placement)
                 throw new Exception("State != Placement, cannot random placement position");
 
-            Cell cell;
-            if (!FindRandomFreeCell(fighter, out cell))
+            if (!FindRandomFreeCell(fighter, out var cell))
             {
                 if (fighter is CharacterFighter)
                     ((CharacterFighter)fighter).LeaveFight(); // no place more than we kick the actor to avoid bugs
@@ -1585,9 +1575,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 m_turnTimer = Map.Area.CallDelayed(FighterPlaying.TurnTime, StopTurn);
             }
 
-            var evnt = TurnStarted;
-            if (evnt != null)
-                evnt(this, FighterPlaying);
+            TurnStarted?.Invoke(this, FighterPlaying);
         }
 
         public void StopTurn()
@@ -1618,9 +1606,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTurnStopped()
         {
-            var evnt = BeforeTurnStopped;
-            if (evnt != null)
-                evnt(this, FighterPlaying);
+            BeforeTurnStopped?.Invoke(this, FighterPlaying);
 
             using (StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END))
             {
@@ -1644,9 +1630,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (IsSequencing)
                 EndAllSequences();
 
-            evnt = TurnStopped;
-            if (evnt != null)
-                evnt(this, FighterPlaying);
+            TurnStopped?.Invoke(this, FighterPlaying);
 
             ContextHandler.SendGameFightTurnEndMessage(Clients, FighterPlaying);
         }
@@ -1705,8 +1689,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     if (CheckFightEnd())
                         return;
 
-                    IFightResult leaverResult;
-                    var results = GenerateLeaverResults(leaver, out leaverResult);
+                    var results = GenerateLeaverResults(leaver, out var leaverResult);
 
                     leaverResult.Apply();
 
@@ -1932,9 +1915,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (var tackler in tackle.Tacklers)
                 tackler.TriggerBuffs(tackler, BuffTriggerType.OnTackle);
 
-            var handler = Tackled;
-            if (handler != null)
-                handler(actor, tackle.TackledAP, tackle.TackledMP);
+            Tackled?.Invoke(actor, tackle.TackledAP, tackle.TackledMP);
         }
 
         protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)
@@ -2249,9 +2230,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             fighter.PersonalReadyChecker = null;
             var isfighterTurn = fighter.IsFighterTurn();
-
-            IFightResult leaverResult;
-            var results = GenerateLeaverResults(fighter, out leaverResult);
+            var results = GenerateLeaverResults(fighter, out var leaverResult);
 
             leaverResult.Apply();
 

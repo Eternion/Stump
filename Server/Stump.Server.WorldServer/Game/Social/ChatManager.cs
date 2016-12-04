@@ -166,8 +166,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public Emote GetEmote(int id)
         {
-            Emote emote;
-            return m_emotes.TryGetValue(id, out emote) ? emote : null;
+            return m_emotes.TryGetValue(id, out var emote) ? emote : null;
         }
 
         #region Handlers

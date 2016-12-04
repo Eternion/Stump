@@ -17,9 +17,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override void Build()
         {
-                int familyId;
-
-                if (!int.TryParse(Literal, out familyId))
+                if (!int.TryParse(Literal, out var familyId))
                     throw new Exception(string.Format("Cannot build MountFamilyItemCriterion, {0} is not a valid family id", Literal));
 
                 FamilyId = familyId;

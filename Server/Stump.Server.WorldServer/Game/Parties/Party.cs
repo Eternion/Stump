@@ -34,9 +34,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             PartyHandler.SendPartyLeaderUpdateMessage(Clients, this, leader);
 
-            var handler = LeaderChanged;
-            if (handler != null)
-                handler(this, leader);
+            LeaderChanged?.Invoke(this, leader);
         }
 
         public event MemberAddedHandler GuestAdded;
@@ -45,9 +43,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             PartyHandler.SendPartyNewGuestMessage(Clients, this, groupGuest);
 
-            var handler = GuestAdded;
-            if (handler != null)
-                handler(this, groupGuest);
+            GuestAdded?.Invoke(this, groupGuest);
         }
 
         public event MemberRemovedHandler GuestRemoved;
@@ -55,9 +51,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         protected virtual void OnGuestRemoved(Character groupGuest, bool kicked)
         {
             m_clients.Remove(groupGuest.Client);
-            var handler = GuestRemoved;
-            if (handler != null)
-                handler(this, groupGuest, kicked);
+            GuestRemoved?.Invoke(this, groupGuest, kicked);
         }
 
         public event Action<Party, Character> GuestPromoted;
@@ -74,9 +68,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
             BindEvents(groupMember);
 
-            var handler = GuestPromoted;
-            if (handler != null)
-                handler(this, groupMember);
+            GuestPromoted?.Invoke(this, groupMember);
         }
 
         public event MemberRemovedHandler MemberRemoved;
@@ -98,8 +90,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
             UnBindEvents(groupMember);
 
-            if (handler != null)
-                handler(this, groupMember, kicked);
+            handler?.Invoke(this, groupMember, kicked);
         }
 
         public event Action<Party> PartyDeleted;
@@ -110,9 +101,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
             UnBindEvents();
 
-            var handler = PartyDeleted;
-            if (handler != null)
-                handler(this);
+            PartyDeleted?.Invoke(this);
         }
 
         #endregion
@@ -123,8 +112,6 @@ namespace Stump.Server.WorldServer.Game.Parties
         private readonly ConcurrentList<Character> m_guests = new ConcurrentList<Character>();
         private readonly object m_memberLocker = new object();
         private readonly ConcurrentList<Character> m_members = new ConcurrentList<Character>();
-
-        private int m_prospectionSum;
 
         public Party(int id)
         {
@@ -217,8 +204,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public bool CanInvite(Character character)
         {
-            PartyJoinErrorEnum dummy;
-            return CanInvite(character, out dummy);
+            return CanInvite(character, out var dummy);
         }
 
         public virtual bool CanInvite(Character character, out PartyJoinErrorEnum error, Character inviter = null, bool send = true)
@@ -246,8 +232,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public bool AddGuest(Character character)
         {
-            PartyJoinErrorEnum error;
-            if (!CanInvite(character, out error))
+            if (!CanInvite(character, out var error))
             {
                 PartyHandler.SendPartyCannotJoinErrorMessage(character.Client, this, error);
                 return false;

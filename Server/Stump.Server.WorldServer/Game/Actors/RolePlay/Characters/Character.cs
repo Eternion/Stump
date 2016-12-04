@@ -89,8 +89,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         [Variable]
         public static ushort HonorLimit = 20000;
 
-        readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         readonly CharacterRecord m_record;
         bool m_recordLoaded;
 
@@ -178,9 +176,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             MongoLogger.Instance.Insert("characters_connections", document);
 
-            var handler = LoggedIn;
-            if (handler != null)
-                handler(this);
+            LoggedIn?.Invoke(this);
         }
 
         public event Action<Character> LoggedOut;
@@ -228,9 +224,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Record.LastUsage = DateTime.Now;
 
-            var handler = LoggedOut;
-            if (handler != null)
-                handler(this);
+            LoggedOut?.Invoke(this);
         }
 
         public event Action<Character> Saved;
@@ -240,41 +234,35 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             IsAuthSynced = true;
             UnBlockAccount();
 
-            var handler = Saved;
-            if (handler != null)
-                handler(this);
+            Saved?.Invoke(this);
         }
 
         public event Action<Character, int> LifeRegened;
 
         private void OnLifeRegened(int regenedLife)
         {
-            var handler = LifeRegened;
-            if (handler != null) handler(this, regenedLife);
+            LifeRegened?.Invoke(this, regenedLife);
         }
 
         public event Action<Character> AccountUnblocked;
 
         private void OnAccountUnblocked()
         {
-            var handler = AccountUnblocked;
-            if (handler != null) handler(this);
+            AccountUnblocked?.Invoke(this);
         }
 
         public event Action<Character> LookRefreshed;
 
         private void OnLookRefreshed()
         {
-            var handler = LookRefreshed;
-            if (handler != null) handler(this);
+            LookRefreshed?.Invoke(this);
         }
 
         public event Action<Character> StatsResfreshed;
 
         private void OnStatsResfreshed()
         {
-            var handler = StatsResfreshed;
-            if (handler != null) handler(this);
+            StatsResfreshed?.Invoke(this);
         }
 
         public event Action<Character, Npc, NpcActionTypeEnum, NpcAction> InteractingWith;
@@ -1300,10 +1288,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
             }
 
-            var handler = LevelChanged;
-
-            if (handler != null)
-                handler(this, currentLevel, difference);
+            LevelChanged?.Invoke(this, currentLevel, difference);
         }
 
         public void ResetStats(bool additional = false)
@@ -1554,10 +1539,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             IsRiding = !IsRiding;
 
-            UpdateLook();
-
-            MountHandler.SendMountRidingMessage(Client, IsRiding);
-
             if (IsRiding)
             {
                 var pet = Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
@@ -1573,6 +1554,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 EquippedMount.UnApplyMountEffects();
             }
+
+            UpdateLook();
+
+            MountHandler.SendMountRidingMessage(Client, IsRiding);
 
             return true;
         }
@@ -1731,10 +1716,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Map.Refresh(this);
             RefreshStats();
 
-            var handler = GradeChanged;
-
-            if (handler != null)
-                handler(this, currentLevel, difference);
+            GradeChanged?.Invoke(this, currentLevel, difference);
         }
 
         public event Action<Character, bool> PvPToggled;
@@ -1754,10 +1736,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Map.Refresh(this);
             RefreshStats();
 
-            var handler = PvPToggled;
-
-            if (handler != null)
-                handler(this, PvPEnabled);
+            PvPToggled?.Invoke(this, PvPEnabled);
         }
 
         public event Action<Character, AlignmentSideEnum> AligmenentSideChanged;
@@ -1770,10 +1749,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Honor = 0;
             Dishonor = 0;
 
-            var handler = AligmenentSideChanged;
-
-            if (handler != null)
-                handler(this, AlignmentSide);
+            AligmenentSideChanged?.Invoke(this, AlignmentSide);
         }
 
         #endregion Alignment
@@ -2603,9 +2579,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 created = true;
             }
             else party = GetParty(type);
-
-            PartyJoinErrorEnum error;
-            if (!party.CanInvite(target, out error, this))
+            if (!party.CanInvite(target, out var error, this))
             {
                 PartyHandler.SendPartyCannotJoinErrorMessage(target.Client, party, error);
                 if (created)
@@ -2838,20 +2812,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
 
-            var handler = Died;
-            if (handler != null) handler(this);
+            Died?.Invoke(this);
         }
 
         private void OnFightEnded(CharacterFighter fighter)
         {
-            var handler = FightEnded;
-            if (handler != null) handler(this, fighter);
+            FightEnded?.Invoke(this, fighter);
         }
 
         private void OnCharacterContextChanged(bool inFight)
         {
-            var handler = ContextChanged;
-            if (handler != null) handler(this, inFight);
+            ContextChanged?.Invoke(this, inFight);
         }
 
         public FighterRefusedReasonEnum CanRequestFight(Character target)
@@ -3218,9 +3189,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             m_cancelEmote = true;
             UpdateLook(emote, false, false);
+
             if (send)
                 ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, 0);
-            SendLookUpdated();
+
+            RefreshActor();
 
             return true;
         }
@@ -3262,14 +3235,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
             }
 
-            var lastEmote = m_playedEmotes.FirstOrDefault(x => x.First.EmoteId == emoteId);
-
-            if (LastEmoteUsed != null && lastEmote != null && (DateTime.Now - LastEmoteUsed.Second) < TimeSpan.FromMilliseconds(lastEmote.First.Cooldown))
-            {
-                CancelEmote();
-                return;
-            }
-
             var currentEmote = GetCurrentEmote();
 
             if (currentEmote != null)
@@ -3286,9 +3251,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_playedEmotes.Push(new Pair<Emote, DateTime>(emote, DateTime.Now));
             UpdateLook(emote, true, false);
 
-            ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, emoteId);
+            RefreshActor();
 
-            SendLookUpdated();
+            ContextRoleplayHandler.SendEmotePlayMessage(CharacterContainer.Clients, this, emoteId);
         }
 
         #endregion Emotes

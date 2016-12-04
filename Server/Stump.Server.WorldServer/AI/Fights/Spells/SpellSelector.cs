@@ -90,7 +90,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         private IEnumerable<TargetCell> ExpandZone(Cell center, SpellShapeEnum shape, int minRange, int maxRange)
         {
-            Set set;
             switch (shape)
             {
                 case SpellShapeEnum.X:
@@ -186,8 +185,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                     foreach (var target in cells)
                     {
-                        Cell cell;
-                        if (!CanReach(target, spell, out cell))
+                        if (!CanReach(target, spell, out var cell))
                             continue;
                         
                         if (Fighter.CanCastSpell(spell, target.Cell, cell) != SpellCastResult.OK)
@@ -212,9 +210,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     Possibilities.Add(cast);
             }
 
-            var evnt = AnalysePossibilitiesFinished;
-            if (evnt != null)
-                evnt(Fighter);
+            AnalysePossibilitiesFinished?.Invoke(Fighter);
         }
 
         public SpellCast FindFirstSpellCast()

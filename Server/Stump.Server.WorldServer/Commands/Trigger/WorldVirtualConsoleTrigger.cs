@@ -40,8 +40,7 @@ namespace Stump.Server.WorldServer.Commands.Trigger
 
         public override void Reply(string text)
         {
-            if (Callback != null)
-                Callback(true, text);
+            Callback?.Invoke(true, text);
         }
 
         public override void ReplyError(string message)

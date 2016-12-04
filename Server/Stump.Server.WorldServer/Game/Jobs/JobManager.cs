@@ -7,7 +7,6 @@ using Stump.Server.WorldServer.Database.Jobs;
 using System.Linq;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Jobs
@@ -42,8 +41,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
         public JobTemplate GetJobTemplate(int id)
         {
-            JobTemplate job;
-            return m_jobTemplates.TryGetValue(id, out job) ? job : null;
+            return m_jobTemplates.TryGetValue(id, out var job) ? job : null;
         }
 
         public JobRecord[] GetCharacterJobs(int characterId)

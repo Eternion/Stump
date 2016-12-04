@@ -14,8 +14,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public abstract class AIFighter : FightActor, INamedActor
     {
-        protected static Logger logger = LogManager.GetCurrentClassLogger();
-
         protected AIFighter(FightTeam team, IEnumerable<Spell> spells)
             : base(team)
         {

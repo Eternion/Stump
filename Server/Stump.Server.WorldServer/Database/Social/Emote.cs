@@ -100,8 +100,9 @@ namespace Stump.Server.WorldServer.Database.Social
 
                     playerLook.RemoveSkin((short) character.Guild.Emblem.Template.SkinId);
 
-                    playerLook.RemoveColor(8);
                     playerLook.RemoveColor(7);
+                    playerLook.RemoveColor(8);
+                    playerLook.RemoveColor(9);
                 }
 
                 return look;
@@ -128,17 +129,18 @@ namespace Stump.Server.WorldServer.Database.Social
                     break;
 
                 case EmotesEnum.EMOTE_GUILD:
-                {
-                    if (character.Guild == null)
-                        break;
+                    {
+                        if (character.Guild == null)
+                            break;
 
-                    var playerLook = look.GetRiderLook() ?? look;
+                        var playerLook = look.GetRiderLook() ?? look;
 
-                    playerLook.AddSkin((short) character.Guild.Emblem.Template.SkinId);
+                        playerLook.AddSkin((short) character.Guild.Emblem.Template.SkinId);
 
-                    playerLook.AddColor(8, character.Guild.Emblem.SymbolColor);
-                    playerLook.AddColor(7, character.Guild.Emblem.BackgroundColor);
-                }
+                        playerLook.AddColor(7, character.Guild.Emblem.BackgroundColor);
+                        playerLook.AddColor(8, character.Guild.Emblem.SymbolColor);
+                        playerLook.AddColor(9, character.Guild.Emblem.SymbolColor);
+                    }
                     break;
             }
 

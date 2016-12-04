@@ -42,11 +42,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
             if (Delay == 0)
                 return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)Dispellable,
-                    (short)Spell.Id, Effect.Id, 0, 0);
+                    (short)Spell.Id, EffectFix?.ClientEffectId ?? Effect.Id, 0, 0);
 
             return new FightTriggeredEffect(Id, Target.Id, Delay,
                 (sbyte)Dispellable,
-                (short)Spell.Id, Effect.Id, 0,
+                (short)Spell.Id, EffectFix?.ClientEffectId ?? Effect.Id, 0,
                 (values.Length > 0 ? Convert.ToInt32(values[0]) : 0),
                 (values.Length > 1 ? Convert.ToInt32(values[1]) : 0),
                 (values.Length > 2 ? Convert.ToInt32(values[2]) : 0),

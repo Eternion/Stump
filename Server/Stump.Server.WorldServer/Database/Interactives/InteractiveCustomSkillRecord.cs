@@ -20,8 +20,6 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private InteractiveSkillTemplate m_template;
-
         public InteractiveCustomSkillRecord()
         {
         }

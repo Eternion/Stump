@@ -55,6 +55,12 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
+        public int? ClientEffectId
+        {
+            get;
+            set;
+        }
+
         public int? Priority
         {
             get;

@@ -232,9 +232,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private int IncreaseCreatureKilledCount(MonsterTemplate monster)
         {
-            EffectDice effect;
-
-            if (!m_monsterKilledEffects.TryGetValue(monster.Id, out effect))
+            if (!m_monsterKilledEffects.TryGetValue(monster.Id, out var effect))
             {
                 effect = new EffectDice((short) EffectsEnum.Effect_MonsterKilledCount, 1, (short) monster.Id, 0, new EffectBase());
                 m_monsterKilledEffects.Add(monster.Id, effect);
@@ -392,16 +390,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 case ItemTypeEnum.MONTILIER:
                     if (IsEquiped())
                     {
+                        characterLook = characterLook.GetRiderLook() ?? characterLook;
+
                         var mountLook = new ActorLook((short) AppearanceId);
 
                         //KramKram
                         if (Template.Id == (int)ItemIdEnum.KRAMKRAM_13182)
                         {
-                            Color color1;
-                            Color color2;
-
-                            if (characterLook.Colors.TryGetValue(3, out color1)&&
-                                characterLook.Colors.TryGetValue(4, out color2))
+                            if (characterLook.Colors.TryGetValue(3, out var color1) &&
+                                characterLook.Colors.TryGetValue(4, out var color2))
                             {
                                 mountLook.AddColor(1, color1);
                                 mountLook.AddColor(2, color2);

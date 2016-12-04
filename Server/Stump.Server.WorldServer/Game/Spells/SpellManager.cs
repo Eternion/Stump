@@ -138,14 +138,12 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellTemplate GetSpellTemplate(int id)
         {
-            SpellTemplate template;
-            return m_spells.TryGetValue(id, out template) ? template : null;
+            return m_spells.TryGetValue(id, out var template) ? template : null;
         }
 
         public SpellLevelTemplate GetSpellTemplate(uint spellLevelId)
         {
-            SpellLevelTemplate template;
-            return m_spellsLevels.TryGetValue(spellLevelId, out template) ? template : null;
+            return m_spellsLevels.TryGetValue(spellLevelId, out var template) ? template : null;
         }
 
         public SpellTemplate GetSpellTemplate(string name, bool ignorecase)
@@ -159,8 +157,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellBombTemplate GetSpellBombTemplate(int id)
         {
-            SpellBombTemplate template;
-            return m_spellsBomb.TryGetValue(id, out template) ? template : null;
+            return m_spellsBomb.TryGetValue(id, out var template) ? template : null;
         }
 
         public SpellTemplate GetFirstSpellTemplate(Predicate<SpellTemplate> predicate)
@@ -175,8 +172,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellLevelTemplate GetSpellLevel(int id)
         {
-            SpellLevelTemplate template;
-            return m_spellsLevels.TryGetValue((uint) id, out template) ? template : null;
+            return m_spellsLevels.TryGetValue((uint) id, out var template) ? template : null;
         }
 
         public SpellLevelTemplate GetSpellLevel(int templateid, int level)
@@ -206,14 +202,12 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellType GetSpellType(uint id)
         {
-            SpellType template;
-            return m_spellsTypes.TryGetValue((int) id, out template) ? template : null;
+            return m_spellsTypes.TryGetValue((int) id, out var template) ? template : null;
         }
 
         public SpellState GetSpellState(uint id)
         {
-            SpellState state;
-            return m_spellsState.TryGetValue((int)id, out state) ? state : null;
+            return m_spellsState.TryGetValue((int)id, out var state) ? state : null;
         }
 
         public IEnumerable<SpellState> GetSpellStates()
@@ -233,8 +227,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellCastHandler GetSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
         {
-            SpellCastConstructor ctor;
-            return m_spellsCastHandler.TryGetValue(spell.Template.Id, out ctor) ? ctor(caster, spell, targetedCell, critical) : new DefaultSpellCastHandler(caster, spell, targetedCell, critical);
+            return m_spellsCastHandler.TryGetValue(spell.Template.Id, out var ctor) ? ctor(caster, spell, targetedCell, critical) : new DefaultSpellCastHandler(caster, spell, targetedCell, critical);
         }
     }
 }

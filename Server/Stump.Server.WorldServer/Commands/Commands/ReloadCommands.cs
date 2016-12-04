@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Database.I18n;
@@ -13,10 +9,8 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Game.Social;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -29,7 +23,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {"monsters", MonsterManager.Instance.Initialize},
                 {"items", ItemManager.Instance.Initialize},
                 {"world", World.Instance.Reload},
-                {"spells", SpellManager.Instance.Initialize},
                 {"effects", EffectManager.Instance.Initialize},
                 {"interactives", InteractiveManager.Instance.Initialize},
                 {"breeds", BreedManager.Instance.Initialize},
@@ -55,9 +48,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
 
             var name = trigger.Get<string>("name").ToLower();
-            Action entry;
 
-            if (!m_entries.TryGetValue(name, out entry))
+            if (!m_entries.TryGetValue(name, out var entry))
             {
                 trigger.ReplyError("{0} not a valid name.", name);
                 trigger.ReplyError("Entries : " + string.Join(", ", m_entries.Keys));

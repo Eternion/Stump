@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public Character Character => Fighter.Character;
 
-        public byte Level => Character.Level;
+        public new byte Level => Character.Level;
 
         public override bool CanLoot(FightTeam team) => Fighter.Team == team && (!Fighter.HasLeft() || Fighter.IsDisconnected);
 

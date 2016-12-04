@@ -8,12 +8,9 @@ using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.BaseServer.IPC.Messages;
-using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
@@ -68,8 +65,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             OnItemMoved(item, lastPosition);
 
-            var handler = ItemMoved;
-            if (handler != null) handler(this, item, lastPosition);
+            ItemMoved?.Invoke(this, item, lastPosition);
         }
 
 
@@ -732,9 +728,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             item.Position = position;
 
-            BasePlayerItem stacktoitem;
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
-                IsStackable(item, out stacktoitem) && stacktoitem != null)
+                IsStackable(item, out var stacktoitem) && stacktoitem != null)
                 // check if we must stack the moved item
             {
                 //Update PresetItem

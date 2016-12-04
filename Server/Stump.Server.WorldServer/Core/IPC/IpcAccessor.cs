@@ -135,25 +135,19 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void OnMessageReceived(IPCMessage message)
         {
-            var handler = MessageReceived;
-            if (handler != null)
-                handler(this, message);
+            MessageReceived?.Invoke(this, message);
         }
 
         private void OnMessageSended(IPCMessage message)
         {
-            var handler = MessageSent;
-            if (handler != null)
-                handler(this, message);
+            MessageSent?.Invoke(this, message);
         }
 
         private void OnClientConnected()
         {
             logger.Info("IPC connection etablished");
 
-            var handler = Connected;
-            if (handler != null)
-                handler(this);
+            Connected?.Invoke(this);
         }
 
         private void OnClientDisconnected()
@@ -166,9 +160,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 request.Cancel("world server - disconnected");
             }
 
-            var handler = Disconnected;
-            if (handler != null)
-                handler(this);
+            Disconnected?.Invoke(this);
         }        
 
 
@@ -214,9 +206,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             logger.Info("Access to auth. server granted");
 
-            var handler = Granted;
-            if (handler != null)
-                handler(this);
+            Granted?.Invoke(this);
         }
 
         private void OnAccessDenied(IIPCErrorMessage error)
@@ -508,8 +498,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 client.Disconnect();
             }
 
-            Character character;
-            if (!isLogged && AccountManager.Instance.IsAccountBlocked(message.AccountId, out character))
+            if (!isLogged && AccountManager.Instance.IsAccountBlocked(message.AccountId, out var character))
             {
                 logger.Warn("Account {0} blocked, waiting release", message.AccountId);
                 Action<Character> ev = null;

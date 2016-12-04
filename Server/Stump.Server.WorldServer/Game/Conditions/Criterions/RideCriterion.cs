@@ -17,9 +17,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override void Build()
         {
-            int mountId;
-
-            if (!int.TryParse(Literal, out mountId))
+            if (!int.TryParse(Literal, out var mountId))
                 throw new Exception(string.Format("Cannot build RideCriterion, {0} is not a valid mount id", Literal));
 
             MountId = mountId;

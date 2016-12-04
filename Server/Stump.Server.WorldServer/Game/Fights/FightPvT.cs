@@ -22,8 +22,6 @@ namespace Stump.Server.WorldServer.Game.Fights
     /// </summary>
     public class FightPvT : Fight<FightTaxCollectorDefenderTeam, FightTaxCollectorAttackersTeam>
     {
-        static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         [Variable] public static int PvTAttackersPlacementPhaseTime = 30000;
         [Variable] public static int PvTDefendersPlacementPhaseTime = 10000;
         bool m_isAttackersPlacementPhase;

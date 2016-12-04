@@ -1422,8 +1422,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             var character = actor as Character;
             if (character == null)
                 return;
-
-            Refresh(character);
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
@@ -1441,8 +1439,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character) || ExecuteTrigger(CellTriggerType.MOVE_ON, actor.Cell, character))
                 return;
-
-            Refresh(character);
         }
 
         #endregion

@@ -93,9 +93,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 return;
 
             Action action;
-            int maxRange;
-            int minRange;
-            bool hasRangeAttack = SpellSelector.GetRangeAttack(out minRange, out maxRange);
+            bool hasRangeAttack = SpellSelector.GetRangeAttack(out int minRange, out int maxRange);
 
             /*if ((Fighter.Stats.MP.Base - Fighter.Stats.MP.Used) > 6)
             {

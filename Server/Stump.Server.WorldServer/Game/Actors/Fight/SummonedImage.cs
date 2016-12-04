@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CanPlay() => false;
 
-        void OnTurnStarted(IFight fight, FightActor player)
+        protected override void OnTurnStarted(IFight fight, FightActor player)
         {
             if (player == Summoner)
                 Die();
