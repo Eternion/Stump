@@ -20,11 +20,11 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
-    public class SpellCast
+    public class AISpellCastPossibility
     {
         public const int MAX_CONSECUTIVE_CAST = 20;
 
-        public SpellCast(Spell spell, SpellTarget target)
+        public AISpellCastPossibility(Spell spell, SpellTarget target)
         {
             Target = target;
             Spell = spell;

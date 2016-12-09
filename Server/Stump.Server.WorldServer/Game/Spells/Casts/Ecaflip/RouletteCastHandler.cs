@@ -5,14 +5,15 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 {
     [SpellCastHandler(SpellIdEnum.ROULETTE)]
     public class RouletteCastHandler : DefaultSpellCastHandler
     {
-        public RouletteCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(caster, spell, targetedCell, critical)
+        public RouletteCastHandler(SpellCastInformations cast)
+            : base(cast)
         {
         }
 

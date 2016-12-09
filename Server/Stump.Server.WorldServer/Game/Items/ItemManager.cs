@@ -464,7 +464,8 @@ namespace Stump.Server.WorldServer.Game.Items
             if (ignorecase)
                 pattern = pattern.Remove(0, 1);
 
-            if (!ignorecase && int.TryParse(pattern, out int outvalue)) // the pattern is an id
+            int outvalue;
+            if (!ignorecase && int.TryParse(pattern, out outvalue)) // the pattern is an id
             {
                 return list.Where(entry => entry.Id == outvalue);
             }
@@ -525,7 +526,8 @@ namespace Stump.Server.WorldServer.Game.Items
             if (ignorecase)
                 pattern = pattern.Remove(0, 1);
 
-            if (!ignorecase && int.TryParse(pattern, out int outvalue)) // the pattern is an id
+            int outvalue;
+            if (!ignorecase && int.TryParse(pattern, out outvalue)) // the pattern is an id
             {
                 return list.Where(entry => entry.Template.Id == outvalue);
             }

@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// SpellCastInformations.cs
+// SpellCastImpact.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -20,9 +20,9 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
-    public class SpellCastInformations
+    public class SpellCastImpact
     {
-        public SpellCastInformations(Spell spell)
+        public SpellCastImpact(Spell spell)
         {
             Spell = spell;
             Impacts = new List<SpellTarget>();

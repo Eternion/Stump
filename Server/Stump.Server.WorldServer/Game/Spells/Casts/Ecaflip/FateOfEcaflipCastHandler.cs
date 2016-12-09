@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
@@ -14,8 +15,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
     [SpellCastHandler(SpellIdEnum.DESTIN_D_ECAFLIP_DU_DOPEUL)]
     public class FateOfEcaflipCastHandler : DefaultSpellCastHandler
     {
-        public FateOfEcaflipCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(caster, spell, targetedCell, critical)
+        public FateOfEcaflipCastHandler(SpellCastInformations cast)
+            : base(cast)
         {
         }
 

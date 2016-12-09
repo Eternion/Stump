@@ -9,67 +9,39 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
     public abstract class SpellCastHandler
     {
-        protected SpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        protected SpellCastHandler(SpellCastInformations informations)
         {
-            Caster = caster;
-            Spell = spell;
-            TargetedCell = targetedCell;
-            Critical = critical;
+            Informations = informations;
         }
 
         private MapPoint m_castPoint;
         private Cell m_customCastCell;
-
-        public FightActor Caster
+        public SpellCastInformations Informations
         {
             get;
-            private set;
         }
 
-        public Spell Spell
-        {
-            get;
-            private set;
-        }
+        public FightActor Caster => Informations.Caster;
 
-        public CastSpell CastedByEffect
-        {
-            get;
-            set;
-        }
+        public Spell Spell => Informations.Spell;
+
+        public CastSpellEffect CastedByEffect => Informations.TriggerEffect;
 
         public SpellLevelTemplate SpellLevel
         {
             get { return Spell.CurrentSpellLevel; }
         }
 
-        public Cell TargetedCell
-        {
-            get;
-            set;
-        }
-
-        public FightActor TargetedActor
-        {
-            get;
-            set;
-        }
-
-        public bool Critical
-        {
-            get;
-            private set;
-        }
-
-        public virtual bool SilentCast
-        {
-            get { return false; }
-        }
+        public Cell TargetedCell => Informations.TargetedCell;
+        
+        public bool Critical => Informations.Critical == FightSpellCastCriticalEnum.CRITICAL_HIT;
+        public virtual bool SilentCast => Informations.Silent;
 
         public MarkTrigger MarkTrigger
         {

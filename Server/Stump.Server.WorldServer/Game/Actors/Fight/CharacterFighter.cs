@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var effect in Character.Inventory.GetEquipedItems().SelectMany(x => x.Effects).Where(y => y.EffectId == EffectsEnum.Effect_CastSpell_1175))
                 EffectManager.Instance.GetSpellEffectHandler((EffectDice)effect, this,
-                    new DefaultSpellCastHandler(this, null, Cell, false), Cell, false).Apply();
+                    new DefaultSpellCastHandler(new SpellCastInformations(this, null, Cell)), Cell, false).Apply();
         }
 
         public override ObjectPosition GetLeaderBladePosition() => Character.GetPositionBeforeMove();
@@ -167,21 +167,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_weaponUses = 0;
         }
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, bool silent = false, CastSpell castSpellEffect = null, SpellCastResult[] ignored = null)
+        public override bool CastSpell(SpellCastInformations cast)
         {
-            if (!IsFighterTurn() && !force)
+            if (!IsFighterTurn() && !cast.Force)
                 return false;
 
-            // weapon attack
-            if (spell.Id != 0 || Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force, apFree, silent, castSpellEffect, ignored);
+            // not a weapon attack
+            if (cast.Spell.Id != 0 || Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
+                return base.CastSpell(cast);
 
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
 
-            if (weaponTemplate == null || !CanUseWeapon(cell, weaponTemplate))
+            if (weaponTemplate == null || !CanUseWeapon(cast.TargetedCell, weaponTemplate))
             {
-                OnSpellCastFailed(spell, cell);
+                OnSpellCastFailed(cast);
                 return false;
             }
 
@@ -193,9 +193,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 switch (critical)
                 {
                     case FightSpellCastCriticalEnum.CRITICAL_FAIL:
-                        OnWeaponUsed(weaponTemplate, cell, critical, false);
+                        OnWeaponUsed(weaponTemplate, cast.TargetedCell, critical, false);
 
-                        if (!apFree)
+                        if (!cast.ApFree)
                             UseAP((short)weaponTemplate.ApCost);
 
                         PassTurn();
@@ -221,20 +221,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         }
                     }
 
-                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, new DefaultSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT), cell,
+                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, new DefaultSpellCastHandler(cast), cast.TargetedCell,
                         critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+
                     handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte)weaponTemplate.Type.ZoneSize, (byte)weaponTemplate.Type.ZoneMinSize,
                         handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
+
                     handler.Targets = new TargetCriterion[]
                         { new TargetTypeCriterion(SpellTargetType.ALLY_ALL_EXCEPT_SELF, false), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL, false) }; // everyone but caster
+
                     handlers.Add(handler);
                 }
 
                 var silentCast = handlers.Any(entry => entry.RequireSilentCast());
 
-                OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
+                OnWeaponUsed(weaponTemplate, cast.TargetedCell, critical, silentCast);
 
-                if (!apFree)
+                if (!cast.ApFree)
                     UseAP((short)weaponTemplate.ApCost);
 
                 foreach (var handler in handlers)
@@ -256,11 +259,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             base.OnWeaponUsed(weapon, cell, critical, silentCast);
         }
 
-        public override SpellCastResult CanCastSpell(Spell spell, Cell cell, SpellCastResult[] ignored = null)
+        public override SpellCastResult CanCastSpell(SpellCastInformations cast)
         {
-             var result = base.CanCastSpell(spell, cell, ignored);
+             var result = base.CanCastSpell(cast);
 
-            if (result == SpellCastResult.OK || ignored != null)
+            if (result == SpellCastResult.OK || cast.IsConditionBypassed(result))
                 return result;
 
             switch (result)
@@ -275,7 +278,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     break;
                 case SpellCastResult.NOT_ENOUGH_AP:
                     // Impossible de lancer ce sort : Vous avez %1 PA disponible(s) et il vous en faut %2 pour ce sort !
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, cast.SpellLevel.ApCost);
                     break;
                 case SpellCastResult.UNWALKABLE_CELL:
                     // Impossible de lancer ce sort : la cellule visée n'est pas disponible !

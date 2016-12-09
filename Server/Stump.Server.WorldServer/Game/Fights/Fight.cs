@@ -2038,29 +2038,34 @@ namespace Stump.Server.WorldServer.Game.Fights
                 !caster.IsVisibleFor(entry) || silentCast, weapon), true);
         }
 
-        protected virtual void OnSpellCasting(FightActor caster, SpellCastHandler castHandler, Cell targetCell, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasting(FightActor caster, SpellCastHandler castHandler)
         {
-            var target = GetOneFighter(targetCell);
+            var target = GetOneFighter(castHandler.Informations.TargetedCell);
 
             if (castHandler.Spell.Id == 0)
-                ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, castHandler.SeeCast(entry) ? targetCell : GetInvisibleSpellCastCell(caster.Cell, targetCell), critical,
-                                                                                !caster.IsVisibleFor(entry) || silentCast, 0), true);
+                ForEach(
+                    entry =>
+                        ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target,
+                            castHandler.SeeCast(entry) ? castHandler.Informations.TargetedCell : GetInvisibleSpellCastCell(caster.Cell, castHandler.Informations.TargetedCell),
+                            castHandler.Informations.Critical,
+                            !caster.IsVisibleFor(entry) || castHandler.Informations.Silent, 0), true);
             else
                 ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
-                                                                                caster, target, castHandler.SeeCast(entry) ? targetCell : GetInvisibleSpellCastCell(caster.Cell, targetCell), critical, !caster.IsVisibleFor(entry) || silentCast, castHandler.Spell), true);
+                    caster, target, castHandler.SeeCast(entry) ? castHandler.Informations.TargetedCell : GetInvisibleSpellCastCell(caster.Cell, castHandler.Informations.TargetedCell),
+                    castHandler.Informations.Critical, !caster.IsVisibleFor(entry) || castHandler.Informations.Silent, castHandler.Spell), true);
         }
 
         private Cell GetInvisibleSpellCastCell(Cell casterCell, Cell targetedCell)
             => Cells[((MapPoint)casterCell).GetCellInDirection(((MapPoint)casterCell).OrientationTo(targetedCell), 1).CellId];
 
-        protected virtual void OnSpellCasted(FightActor caster, SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasted(FightActor caster, SpellCastHandler castHandler)
         {
             CheckFightEnd();
         }
 
-        protected virtual void OnSpellCastFailed(FightActor caster, Spell spell, Cell target)
+        protected virtual void OnSpellCastFailed(FightActor caster, SpellCastInformations cast)
         {
-            ContextHandler.SendGameActionFightNoSpellCastMessage(Clients, spell);
+            ContextHandler.SendGameActionFightNoSpellCastMessage(Clients, cast.Spell);
         }
 
         #endregion Spells

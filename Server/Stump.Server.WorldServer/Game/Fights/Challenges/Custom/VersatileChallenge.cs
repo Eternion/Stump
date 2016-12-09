@@ -47,9 +47,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 m_weaponsUsed.Add(new Pair<FightActor, int>(fighter, Fight.TimeLine.RoundNumber));
         }
 
-        void OnSpellCasting(FightActor caster, SpellCastHandler castHandler, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        void OnSpellCasting(FightActor caster, SpellCastHandler castHandler)
         {
-            if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+            if (castHandler.Informations.Critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 return;
 
             var entries = caster.SpellHistory.GetEntries(x => x.Spell.SpellId == castHandler.Spell.Id && x.CastRound == Fight.TimeLine.RoundNumber);

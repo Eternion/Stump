@@ -187,7 +187,7 @@
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
-    <Compile Include="AI\Fights\Spells\SpellCastInformations.cs" />
+    <Compile Include="AI\Fights\Spells\SpellCastImpact.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
     <Compile Include="AI\Fights\Spells\SpellIdentifier.cs" />
     <Compile Include="AI\Fights\Spells\SpellTarget.cs" />
@@ -636,6 +636,7 @@
     <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
     <Compile Include="Game\Fights\Sequences\FightMoveSequence.cs" />
     <Compile Include="Game\Fights\Sequences\FightSequence.cs" />
+    <Compile Include="Game\Fights\SpellCastInformations.cs" />
     <Compile Include="Game\Fights\SwapRequest.cs" />
     <Compile Include="Game\Fights\Teams\FightMonsterTeam.cs" />
     <Compile Include="Game\Fights\Teams\FightPlayerTeam.cs" />

@@ -1,13 +1,14 @@
 ﻿using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Sadida
 {
     [SpellCastHandler(6718)]
     public class SacrifiedDeadSpellCastHandler : DefaultSpellCastHandler
     {
-        public SacrifiedDeadSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(caster, spell, targetedCell, critical)
+        public SacrifiedDeadSpellCastHandler(SpellCastInformations cast)
+            : base(cast)
         {
             
         }

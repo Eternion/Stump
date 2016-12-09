@@ -1,14 +1,15 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Sadida
 {
     [SpellCastHandler(SpellIdEnum.SACRIFICE_2006)]
     public class SacrificeSpellCastHandler : DefaultSpellCastHandler
     {
-        public SacrificeSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(caster, spell, targetedCell, critical)
+        public SacrificeSpellCastHandler(SpellCastInformations cast)
+            : base(cast)
         {
         }
 

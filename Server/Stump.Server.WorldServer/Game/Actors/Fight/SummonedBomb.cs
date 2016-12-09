@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != this)
                 return;
 
-            CastSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell, true, true, true, ignored: new[] { SpellCastResult.OK });
+            CastAutoSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell);
             CheckAndBuildWalls();
         }
 
@@ -246,30 +246,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void Explode(int currentBonus)
         {
-            using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
+            CastSpell(new SpellCastInformations(this, ExplodSpell, Cell)
             {
-
-                var handler = SpellManager.Instance.GetSpellCastHandler(this, ExplodSpell, Cell, false);
-
-                if (handler == null)
-                    return;
-
-                //Avoid StackOverflow when using Poudre
-                //RemoveAndDispellAllBuffs();
-
-                handler.Initialize();
-
-                foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
-                {
-                    effect.Efficiency = 1 + currentBonus / 100d;
-                }
-
-                OnSpellCasting(handler, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
-
-                handler.Execute();
-
-                OnSpellCasted(handler, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
-            }
+                Force = true,
+                ApFree = true,
+                Efficiency = 1 + currentBonus / 100d,
+            });
 
             if (currentBonus <= 0)
                 return;

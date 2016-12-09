@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
        
         public const int CHARACTERISTIC_STATE = 71;
 
-        protected Buff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, bool triggered = false)
+        protected Buff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, bool triggered = false, FightActor triggerer = null)
         {
             Id = id;
             Target = target;
@@ -30,6 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             BuffTriggered = triggered;
 
             Efficiency = 1.0d;
+            DecrementReference = BuffTriggered && triggerer != null ? triggerer : Caster;
         }
 
         public SpellEffectHandler EffectHandler
@@ -50,6 +51,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public FightActor Caster
         {
             get;
+        }
+
+        public FightActor DecrementReference
+        {
+            get;
+            set;
         }
 
         public EffectDice Dice => EffectHandler.Dice;

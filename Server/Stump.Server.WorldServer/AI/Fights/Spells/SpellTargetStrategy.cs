@@ -15,6 +15,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             Spell = spell;
         }
 
-        public abstract SpellCast FindBestCast();
+        public abstract AISpellCastPossibility FindBestCast();
     }
 }

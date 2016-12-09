@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
@@ -12,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
     [SpellCastHandler(SpellIdEnum.REKOP_DU_DOPEUL)]
     public class RekopCastHandler : DefaultSpellCastHandler
     {
-        public RekopCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(caster, spell, targetedCell, critical)
+        public RekopCastHandler(SpellCastInformations cast) : base(cast)
         {
         }
 

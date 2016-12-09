@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (spellToCast == null || target == null)
                 return;
 
-            CastSpell(spellToCast, target.Cell, true, ignored: new[] { SpellCastResult.OK });
+            CastAutoSpell(spellToCast, target.Cell);
         }
 
         void OnFighterAdded(FightTeam team, FightActor actor)
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != this)
                 return;
 
-            CastSpell(new Spell((int)SpellIdEnum.TRANSKO, 1), Cell, true, true, true, ignored: new[] { SpellCastResult.OK });
+            CastAutoSpell(new Spell((int)SpellIdEnum.TRANSKO, 1), Cell);
         }
 
         void AdjustStats()

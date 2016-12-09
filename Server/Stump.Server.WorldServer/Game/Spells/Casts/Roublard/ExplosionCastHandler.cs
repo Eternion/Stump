@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
@@ -11,8 +12,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
     [SpellCastHandler(SpellIdEnum.TORNADE_ROUBLARDE)]
     public class ExplosionCastHandler : DefaultSpellCastHandler
     {
-        public ExplosionCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(caster, spell, targetedCell, critical)
+        public ExplosionCastHandler(SpellCastInformations cast)
+            : base(cast)
         {
         }
 

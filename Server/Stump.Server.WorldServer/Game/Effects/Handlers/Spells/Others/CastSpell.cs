@@ -14,9 +14,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
     [EffectHandler(EffectsEnum.Effect_CastSpell_1017)]
     [EffectHandler(EffectsEnum.Effect_CastSpell_2160)]
     [EffectHandler(EffectsEnum.Effect_CastSpell_1175)]
-    public class CastSpell : SpellEffectHandler
+    public class CastSpellEffect : SpellEffectHandler
     {
-        public CastSpell(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+        public CastSpellEffect(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
@@ -41,35 +41,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                     if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160 || Effect.EffectId == EffectsEnum.Effect_CastSpell_2160)
                     {
-                        if (Spell.Id == (int)SpellIdEnum.DOFUS_ABYSSAL)
-                        {
-                            var ignored = new[]
-                                {
-                                    SpellCastResult.CANNOT_PLAY,
-                                    SpellCastResult.CELL_NOT_FREE,
-                                    SpellCastResult.HAS_NOT_SPELL,
-                                    SpellCastResult.HISTORY_ERROR,
-                                    SpellCastResult.NOT_ENOUGH_AP,
-                                    SpellCastResult.NOT_IN_ZONE,
-                                    SpellCastResult.STATE_FORBIDDEN,
-                                    SpellCastResult.STATE_REQUIRED,
-                                    SpellCastResult.UNWALKABLE_CELL
-                                };
-
-                            Caster.CastSpell(spell, affectedActor.Cell, true, true, true, this, ignored);
-                        }
-                        else
-                        {
-                            Caster.CastSpell(spell, affectedActor.Cell, true, true, true, this, new[] { SpellCastResult.OK });
-                        }
+                        Caster.CastAutoSpell(spell, affectedActor.Cell);
                     }
                     else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
                     {
-                        affectedActor.CastSpell(spell, Caster.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                        affectedActor.CastAutoSpell(spell, Caster.Cell);
                     }
                     else
                     {
-                        affectedActor.CastSpell(spell, affectedActor.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                        affectedActor.CastAutoSpell(spell, affectedActor.Cell);
                     }
                 }
             }
@@ -86,19 +66,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
             if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
             {
-                buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                buff.Caster.CastAutoSpell(buff.Spell, buff.Target.Cell);
             }
             else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
             {
-                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                buff.Target.CastAutoSpell(buff.Spell, triggerrer.Cell);
             }
             else if (buff.Spell.Id == (int)SpellIdEnum.FRIKT) // hot fix
             {
-                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                buff.Target.CastAutoSpell(buff.Spell, triggerrer.Cell);
             }
             else
             {
-                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true, true, this, new[] { SpellCastResult.OK });
+                buff.Target.CastAutoSpell(buff.Spell, buff.Target.Cell);
             }
         }
     }

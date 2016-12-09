@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -14,8 +16,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
     {
         protected bool m_initialized;
 
-        public DefaultSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(caster, spell, targetedCell, critical)
+        public DefaultSpellCastHandler(SpellCastInformations cast)
+            : base(cast)
         {
         }
 
@@ -73,6 +75,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
                     if (!CheckWhenExecute && handler.Targets.All(x => !x.CheckWhenExecute))
                         handler.SetAffectedActors(handler.GetAffectedActors());
+
+                    handler.Efficiency = Informations.Efficiency;
 
                     handlers.Add(handler);
                 }

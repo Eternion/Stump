@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnFightStarted(IFight fight)
         {
-            Fighter.CastSpell(new Spell((int)SpellIdEnum.MANSOMURE, 1), Fighter.Cell, true, true, ignored: new[] { SpellCastResult.OK });
+            Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.MANSOMURE, 1), Fighter.Cell);
 
             fight.FightStarted -= OnFightStarted;
         }

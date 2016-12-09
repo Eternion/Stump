@@ -117,7 +117,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public void ExecuteSpellCast()
         {
-            SpellCast cast;
+            AISpellCastPossibility cast;
             while ((cast = SpellSelector.FindFirstSpellCast()) != null)
             {
                 if (cast.MoveBefore != null)

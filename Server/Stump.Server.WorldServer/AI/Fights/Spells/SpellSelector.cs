@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
@@ -24,7 +25,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             m_environment = environment;
             Fighter = fighter;
-            Possibilities = new List<SpellCastInformations>();
+            Possibilities = new List<SpellCastImpact>();
             Priorities = new Dictionary<SpellCategory, int>
             {
                 {SpellCategory.Summoning, 5},
@@ -41,7 +42,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             private set;
         }
 
-        public List<SpellCastInformations> Possibilities
+        public List<SpellCastImpact> Possibilities
         {
             get;
             private set;
@@ -145,12 +146,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public void AnalysePossibilities()
         {
-            Possibilities = new List<SpellCastInformations>();
+            Possibilities = new List<SpellCastImpact>();
             foreach (var spell in Fighter.Spells.Values)
             {
                 var category = SpellIdentifier.GetSpellCategories(spell);
                 var spellLevel = spell.CurrentSpellLevel;
-                var cast = new SpellCastInformations(spell);
+                var cast = new SpellCastImpact(spell);
 
                 if (Fighter.AP < spellLevel.ApCost)
                     continue;
@@ -188,7 +189,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         if (!CanReach(target, spell, out var cell))
                             continue;
                         
-                        if (Fighter.CanCastSpell(spell, target.Cell, cell) != SpellCastResult.OK)
+                        if (Fighter.CanCastSpell(new SpellCastInformations(Fighter, spell, target.Cell) {CastCell = cell}) != SpellCastResult.OK)
                             continue;
 
                         var impact = ComputeSpellImpact(spell, target.Cell, cell);
@@ -213,9 +214,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             AnalysePossibilitiesFinished?.Invoke(Fighter);
         }
 
-        public SpellCast FindFirstSpellCast()
+        public AISpellCastPossibility FindFirstSpellCast()
         {
-            var casts = new List<SpellCast>();
+            var casts = new List<AISpellCastPossibility>();
             var minUsedAP = 0;
             var minUsedPM = 0;
             foreach (var priority in Priorities.OrderByDescending(x => x.Value))
@@ -236,7 +237,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     if (possibleCast.IsSummoningSpell)
                     {
                         var target = new SpellTarget() {Target = new TargetCell(possibleCast.SummonCell), CastCell = Fighter.Cell, AffectedCells = new []{possibleCast.SummonCell}};
-                        casts.Add(new SpellCast(possibleCast.Spell, target));
+                        casts.Add(new AISpellCastPossibility(possibleCast.Spell, target));
                         minUsedAP += (int)possibleCast.Spell.CurrentSpellLevel.ApCost;
                         continue;
 
@@ -250,7 +251,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                         Cell castSpell = impact.CastCell;
 
-                        var cast = new SpellCast(possibleCast.Spell, impact);
+                        var cast = new AISpellCastPossibility(possibleCast.Spell, impact);
                         if (castSpell == Fighter.Cell)
                         {
                             casts.Add(cast);
@@ -546,9 +547,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         }
     }
 
-    public class SpellCastComparer : IComparer<SpellCastInformations>
+    public class SpellCastComparer : IComparer<SpellCastImpact>
     {
-        private readonly Dictionary<SpellCategory, Func<SpellCastInformations, SpellCastInformations, int>> m_comparers;
+        private readonly Dictionary<SpellCategory, Func<SpellCastImpact, SpellCastImpact, int>> m_comparers;
             
 
         private readonly SpellSelector m_spellSelector;
@@ -557,7 +558,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             Category = category;
             m_spellSelector = spellSelector;
-            m_comparers = new Dictionary<SpellCategory, Func<SpellCastInformations, SpellCastInformations, int>>()
+            m_comparers = new Dictionary<SpellCategory, Func<SpellCastImpact, SpellCastImpact, int>>()
             {
                 {SpellCategory.Summoning, CompareSummon},
                 {SpellCategory.Buff, CompareBoost},
@@ -574,17 +575,17 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         }
 
         // priority order : summon > boost > damage > heal > curse
-        public int Compare(SpellCastInformations cast1, SpellCastInformations cast2)
+        public int Compare(SpellCastImpact cast1, SpellCastImpact cast2)
         {
             return m_comparers[Category](cast1, cast2);
         }
 
-        public int CompareSummon(SpellCastInformations cast1, SpellCastInformations cast2)
+        public int CompareSummon(SpellCastImpact cast1, SpellCastImpact cast2)
         {
             return cast1.IsSummoningSpell.CompareTo(cast2.IsSummoningSpell);
         }
 
-        public int CompareBoost(SpellCastInformations cast1, SpellCastInformations cast2)
+        public int CompareBoost(SpellCastImpact cast1, SpellCastImpact cast2)
         {
             if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
@@ -597,7 +598,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             return ( max1 * efficiency1 ).CompareTo(max2 * efficiency2);
         }
 
-        public int CompareDamage(SpellCastInformations cast1, SpellCastInformations cast2)
+        public int CompareDamage(SpellCastImpact cast1, SpellCastImpact cast2)
         {
             if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
@@ -610,7 +611,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             return ( max1 * efficiency1 ).CompareTo(max2 * efficiency2);
         }
 
-        public int CompareHeal(SpellCastInformations cast1, SpellCastInformations cast2)
+        public int CompareHeal(SpellCastImpact cast1, SpellCastImpact cast2)
         {
             if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
@@ -623,7 +624,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             return ( max1 * efficiency1 ).CompareTo(max2 * efficiency2);
         }
 
-        public int CompareCurse(SpellCastInformations cast1, SpellCastInformations cast2)
+        public int CompareCurse(SpellCastImpact cast1, SpellCastImpact cast2)
         {
             if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
@@ -637,7 +638,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         }
 
         // numer of cast possible with the current ap
-        public int GetEfficiency(SpellCastInformations cast)
+        public int GetEfficiency(SpellCastImpact cast)
         {
             return (int)Math.Floor(m_spellSelector.Fighter.AP / (double)cast.Spell.CurrentSpellLevel.ApCost);
         }
