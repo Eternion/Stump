@@ -74,7 +74,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
             return true;
         }
 
-        private void TriggerBuff(TriggerBuff buff, FightActor trigerrer, BuffTriggerType trigger, object token)
+        private void TriggerBuff(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var integerEffect = GenerateEffect();
 
@@ -98,7 +98,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 
             if (Effect.Duration != 0 || Effect.Delay != 0 && Effect.EffectId != EffectsEnum.Effect_LostAP)
             {
-                var newBuff = AddStatBuffDirectly(buff.Target, (short)-value, PlayerFields.AP, (short)EffectsEnum.Effect_SubAP, triggered: true);
+                var newBuff = AddStatBuffDirectly(buff.Target, (short)-value, PlayerFields.AP, (short)EffectsEnum.Effect_SubAP, triggerrer: triggerrer);
                 if (TriggeredBuffDuration > 0)
                     newBuff.Duration = (short) TriggeredBuffDuration;
             }

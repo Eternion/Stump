@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             return true;
         }
 
-        private void TriggerBuff(TriggerBuff buff, FightActor trigerrer, BuffTriggerType trigger, object token)
+        private void TriggerBuff(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var integerEffect = GenerateEffect();
 
@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             if (Effect.Duration != 0 || Effect.Delay != 0)
             {
-                var newBuff = AddStatBuffDirectly(buff.Target, integerEffect.Value, PlayerFields.MP, triggered: true);
+                var newBuff = AddStatBuffDirectly(buff.Target, integerEffect.Value, PlayerFields.MP, triggerrer:triggerrer);
                 if (TriggeredBuffDuration > 0)
                     newBuff.Duration = (short) TriggeredBuffDuration;
             }
