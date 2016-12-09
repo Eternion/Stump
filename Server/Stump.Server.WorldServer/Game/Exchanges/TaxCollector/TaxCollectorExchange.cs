@@ -1,8 +1,11 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using Stump.Core.Mathematics;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 {
@@ -42,12 +45,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 
             //Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
             Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 5);
-            Character.Area.CallDelayed(5000, Close);
+            Character.Area.CallDelayed((5 * 60 * 1000), Close);
         }
 
         public void Close()
         {
-            TaxCollectorHandler.SendGetExchangeGuildTaxCollectorMessage(TaxCollector.Guild.Clients, TaxCollector);
+            TaxCollectorHandler.SendGetExchangeGuildTaxCollectorMessage(TaxCollector.Guild.Clients, GetExchangeGuildTaxCollector());
 
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
@@ -58,5 +61,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
         }
 
         #endregion
+
+        public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
+        {
+            return new ExchangeGuildTaxCollectorGetMessage($"{TaxCollector.FirstNameId.ToBase(36)},{TaxCollector.LastNameId.ToBase(36)}", (short)TaxCollector.Position.Map.Position.X, (short)TaxCollector.Position.Map.Position.Y, TaxCollector.Position.Map.Id,
+                (short)TaxCollector.Position.Map.SubArea.Id, Character.Name, TaxCollector.Record.CallerId, TaxCollector.Record.CallerName, TaxCollector.GatheredExperience,
+                (short)m_collector.RecoltedItems.Values.Sum(x => x.Template.RealWeight * x.Stack), m_collector.RecoltedItems.Values.Select(x => x.GetObjectItemGenericQuantity()));
+        }
     }
 }

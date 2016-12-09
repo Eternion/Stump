@@ -98,7 +98,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 
             if (Effect.Duration != 0 || Effect.Delay != 0 && Effect.EffectId != EffectsEnum.Effect_LostAP)
             {
-                var newBuff = AddStatBuffDirectly(buff.Target, (short)-value, PlayerFields.AP, (short)EffectsEnum.Effect_SubAP);
+                var newBuff = AddStatBuffDirectly(buff.Target, (short)-value, PlayerFields.AP, (short)EffectsEnum.Effect_SubAP, triggered: true);
                 if (TriggeredBuffDuration > 0)
                     newBuff.Duration = (short) TriggeredBuffDuration;
             }
