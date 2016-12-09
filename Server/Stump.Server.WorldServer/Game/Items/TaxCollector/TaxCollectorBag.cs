@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         {
             IsDirty = true;
 
-            if (Count == 0)
+            if (Count == 0 && Owner.GatheredKamas == 0)
                 Owner.Delete();
 
             base.OnItemRemoved(item, sendMessage);
@@ -74,8 +74,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
                 quantity = (int)item.Stack;
 
             RemoveItem(item, quantity, sendMessage: true);
-            var newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity,
-                                                                       item.Effects);
+            var newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity, item.Effects);
 
             character.Inventory.AddItem(newItem);
 

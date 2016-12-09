@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             if (Effect.Duration != 0 || Effect.Delay != 0)
             {
-                var newBuff = AddStatBuffDirectly(buff.Target, integerEffect.Value, PlayerFields.AP);
+                var newBuff = AddStatBuffDirectly(buff.Target, integerEffect.Value, PlayerFields.AP, triggered: true);
                 if (TriggeredBuffDuration > 0)
                     newBuff.Duration = (short) TriggeredBuffDuration;
             }

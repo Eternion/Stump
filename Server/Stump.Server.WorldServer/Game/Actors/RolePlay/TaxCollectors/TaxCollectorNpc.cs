@@ -227,6 +227,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
+        public TaxCollectorStateEnum GetState()
+        {
+            if (IsFighting)
+            {
+                if (Fighter.Fight.State != FightState.Fighting)
+                    return TaxCollectorStateEnum.STATE_WAITING_FOR_HELP;
+
+                return TaxCollectorStateEnum.STATE_FIGHTING;
+            }
+
+            return TaxCollectorStateEnum.STATE_COLLECTING;
+        }
         #endregion
 
         #region Look
@@ -411,7 +423,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
                 GetAdditionalTaxCollectorInformations(),
                 (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
-                (short) Position.Map.SubArea.Id, 2,
+                (short) Position.Map.SubArea.Id, (sbyte) GetState(),
                 Look.GetEntityLook(), GetTaxCollectorComplementaryInformations());
         }
 
@@ -451,12 +463,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public TaxCollectorBasicInformations GetTaxCollectorBasicInformations()
         {
             return new TaxCollectorBasicInformations(FirstNameId, LastNameId, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id, (short)Position.Map.SubArea.Id);
-        }
-
-        public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
-        {
-            return new ExchangeGuildTaxCollectorGetMessage("1e,6g", (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
-                (short)Position.Map.SubArea.Id, Record.CallerName, Record.CallerId, Record.CallerName, GatheredExperience, (short)Bag.BagWeight, Bag.Select(x => x.GetObjectItemGenericQuantity()));
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()

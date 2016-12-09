@@ -721,8 +721,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool TryAddMember(Character character)
         {
-            GuildMember dummy;
-            return TryAddMember(character, out dummy);
+            return TryAddMember(character, out var dummy);
         }
 
         public bool TryAddMember(Character character, out GuildMember member)
