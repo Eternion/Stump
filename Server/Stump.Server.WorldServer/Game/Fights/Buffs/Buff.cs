@@ -27,10 +27,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Delay = (short) EffectHandler.Delay;
             CustomActionId = (short?) EffectFix?.ActionId;
 
-            BuffTriggered = triggered;
-
             Efficiency = 1.0d;
-            DecrementReference = BuffTriggered && triggerer != null ? triggerer : Caster;
+
+            if (triggerer == null && effectHandler.CastHandler.Informations.Triggerer != null)
+                triggerer = effectHandler.CastHandler.Informations.Triggerer;
+
+            BuffTriggered = triggered;
+            DecrementReference = triggerer != null ? triggerer : Caster;
         }
 
         public SpellEffectHandler EffectHandler

@@ -231,15 +231,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStatBuffDirectly(target, value, caracteritic, customActionId, triggerrer, triggered:true));
+                return AddTriggerBuff(target, (buff, triggerrer, type, token) => AddStatBuffDirectly(target, value, caracteritic, customActionId, triggerrer:triggerrer));
             
             return AddStatBuffDirectly(target, value, caracteritic, customActionId);
         }
 
-        protected Buff AddStatBuffDirectly(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null, FightActor caster = null, bool noDelay = false, bool triggered = false)
+        protected Buff AddStatBuffDirectly(FightActor target, short value, PlayerFields caracteritic, short? customActionId = null, bool noDelay = false, FightActor triggerrer = null)
         {
             var id = target.PopNextBuffId();
-            var buff = new StatBuff(id, target, caster ?? Caster, this, Spell, value, caracteritic, Critical, DefaultDispellableStatus, triggered);
+            var buff = new StatBuff(id, target, Caster, this, Spell, value, caracteritic, Critical, DefaultDispellableStatus, triggerrer);
             
             if (customActionId != null)
                 buff.CustomActionId = customActionId;
@@ -292,10 +292,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         }
 
-        protected Buff AddStateBuffDirectly(FightActor target,  bool bypassMaxStack, SpellState state, FightActor caster = null)
+        protected Buff AddStateBuffDirectly(FightActor target,  bool bypassMaxStack, SpellState state, FightActor triggerer = null)
         {
             var id = target.PopNextBuffId();
-            var buff = new StateBuff(id, target, caster ?? Caster, this, Spell, DefaultDispellableStatus, state);
+            var buff = new StateBuff(id, target, Caster, this, Spell, DefaultDispellableStatus, state, triggerer:triggerer);
 
             target.AddBuff(buff, bypassMaxStack);
 

@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
 
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, this,
-                Spell, (short)bonus, caracteristic, false, FightDispellableEnum.DISPELLABLE) 
+                Spell, (short)bonus, caracteristic, false, FightDispellableEnum.DISPELLABLE, triggerer) 
                 { Duration = Dice.Value, CustomActionId = Dice.DiceNum };
 
             m_buffs.Add(new Tuple<int, StatBuff>(Fight.TimeLine.RoundNumber, statBuff));

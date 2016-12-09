@@ -10,8 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     public class StatBuff : Buff
     {
-        public StatBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, short value, PlayerFields caracteristic, bool critical, FightDispellableEnum dispelable, bool triggered = false)
-            : base(id, target, caster, effect, spell, critical, dispelable, triggered)
+        public StatBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, short value, PlayerFields caracteristic, bool critical, FightDispellableEnum dispelable, FightActor triggerer = null)
+            : base(id, target, caster, effect, spell, critical, dispelable, triggerer:triggerer)
         {
             Value = value;
             Caracteristic = caracteristic;

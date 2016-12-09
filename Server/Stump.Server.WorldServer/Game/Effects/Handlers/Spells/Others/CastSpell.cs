@@ -2,6 +2,7 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Game.Spells.Casts;
@@ -66,19 +67,37 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
             if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
             {
-                buff.Caster.CastAutoSpell(buff.Spell, buff.Target.Cell);
+                buff.Caster.CastSpell(new SpellCastInformations(buff.Caster, buff.Spell, buff.Target.Cell)
+                {
+                    Force = true,
+                    Silent = true,
+                    ApFree = true,
+                    TriggerEffect = this,
+                    Triggerer = triggerrer
+                });
             }
-            else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
+            else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017 ||
+                buff.Spell.Id == (int)SpellIdEnum.FRIKT)
             {
-                buff.Target.CastAutoSpell(buff.Spell, triggerrer.Cell);
-            }
-            else if (buff.Spell.Id == (int)SpellIdEnum.FRIKT) // hot fix
-            {
-                buff.Target.CastAutoSpell(buff.Spell, triggerrer.Cell);
+                buff.Target.CastSpell(new SpellCastInformations(buff.Target, buff.Spell, triggerrer.Cell)
+                {
+                    Force = true,
+                    Silent = true,
+                    ApFree = true,
+                    TriggerEffect = this,
+                    Triggerer = triggerrer
+                });
             }
             else
             {
-                buff.Target.CastAutoSpell(buff.Spell, buff.Target.Cell);
+                buff.Target.CastSpell(new SpellCastInformations(buff.Target, buff.Spell, buff.Target.Cell)
+                {
+                    Force = true,
+                    Silent = true,
+                    ApFree = true,
+                    TriggerEffect = this,
+                    Triggerer = triggerrer
+                });
             }
         }
     }

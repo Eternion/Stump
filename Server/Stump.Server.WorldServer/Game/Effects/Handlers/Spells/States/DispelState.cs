@@ -87,7 +87,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 var id = buff.Target.PopNextBuffId();
                 var stateBuff = new DisableStateBuff(id, buff.Target, Caster, this, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState)
                 {
-                    Duration = 1
+                    Duration = 1,
+                    DecrementReference = triggerrer
                 };
 
                 buff.Target.AddBuff(stateBuff);
