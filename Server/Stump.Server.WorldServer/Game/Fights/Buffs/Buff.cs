@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
        
         public const int CHARACTERISTIC_STATE = 71;
 
-        protected Buff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, bool triggered = false, FightActor triggerer = null)
+        protected Buff(int id, FightActor target, FightActor caster, SpellEffectHandler effectHandler, Spell spell, bool critical, FightDispellableEnum dispelable, FightActor triggerer = null)
         {
             Id = id;
             Target = target;
@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Critical = critical;
             Dispellable = dispelable;
 
-            Duration = triggered && EffectFix?.TriggerBuffDuration != null ? (short)EffectFix.TriggerBuffDuration : (short) (EffectHandler.Duration == -1 ? -1000 : Effect.Duration);
+            Duration = triggerer != null && EffectFix?.TriggerBuffDuration != null ? (short)EffectFix.TriggerBuffDuration : (short) (EffectHandler.Duration == -1 ? -1000 : Effect.Duration);
             Delay = (short) EffectHandler.Delay;
             CustomActionId = (short?) EffectFix?.ActionId;
 
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             if (triggerer == null && effectHandler.CastHandler.Informations.Triggerer != null)
                 triggerer = effectHandler.CastHandler.Informations.Triggerer;
 
-            BuffTriggered = triggered;
+            BuffTriggered = triggerer != null;
             DecrementReference = triggerer != null ? triggerer : Caster;
         }
 
