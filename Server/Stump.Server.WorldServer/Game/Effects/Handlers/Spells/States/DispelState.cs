@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
             foreach (var actor in GetAffectedActors())
             {
-                if (Effect.Duration != 0 || Effect.Delay != 0)
+                if (IsTriggerBuff())
                 {
                     AddTriggerBuff(actor, BuffTrigger);
                 }
@@ -50,10 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                             return false;
 
                         var id = actor.PopNextBuffId();
-                        var stateBuff = new DisableStateBuff(id, actor, Caster, this, Spell, DefaultDispellableStatus, actualState)
-                        {
-                            Duration = 1
-                        };
+                        var stateBuff = new DisableStateBuff(id, actor, Caster, this, Spell, DefaultDispellableStatus, actualState);
 
                         actor.AddBuff(stateBuff);
                     }
@@ -85,11 +82,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return;
 
                 var id = buff.Target.PopNextBuffId();
-                var stateBuff = new DisableStateBuff(id, buff.Target, Caster, this, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState)
-                {
-                    Duration = 1,
-                    DecrementReference = triggerrer
-                };
+                var stateBuff = new DisableStateBuff(id, buff.Target, Caster, this, Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, actualState, triggerrer);
 
                 buff.Target.AddBuff(stateBuff);
             }

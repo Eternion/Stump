@@ -9,8 +9,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class DisableStateBuff : Buff
     {
-        public DisableStateBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, FightDispellableEnum dispelable, StateBuff stateBuff)
-            : base(id, target, caster, effect, spell, false, dispelable)
+        public DisableStateBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, FightDispellableEnum dispelable, StateBuff stateBuff, FightActor triggerer = null)
+            : base(id, target, caster, effect, spell, false, dispelable, triggerer)
         {
             StateBuff = stateBuff;
         }
