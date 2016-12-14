@@ -756,6 +756,7 @@
     <Compile Include="Game\Spells\Casts\Eniripsa\FriendshipWordCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\MansomonCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\OldToyParadeCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\PunishmentCastHandler.cs" />
