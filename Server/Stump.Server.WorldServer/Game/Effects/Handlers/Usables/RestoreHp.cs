@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
     [EffectHandler(EffectsEnum.Effect_AddHealth)]
@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             // x hp restored
             Target.RefreshStats();
             BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 1, heal);
-            Target.PlayEmote(EmotesEnum.EMOTE_MANGER);
+            Target.PlayEmote(EmotesEnum.EMOTE_MANGER, true);
 
             return true;
         }
