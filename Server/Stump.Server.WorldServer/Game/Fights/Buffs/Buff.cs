@@ -93,6 +93,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public FightDispellableEnum Dispellable
         {
             get;
+            set;
         }
 
         public short? CustomActionId

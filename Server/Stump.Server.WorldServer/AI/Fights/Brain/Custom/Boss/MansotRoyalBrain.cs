@@ -11,14 +11,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
         public MansotRoyalBrain(AIFighter fighter)
             : base(fighter)
         {
-            fighter.Fight.FightStarted += OnFightStarted;
+            fighter.GetAlive += OnGetAlive;
         }
 
-        private void OnFightStarted(IFight fight)
+        private void OnGetAlive(FightActor obj)
         {
             Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.MANSOMURE, 1), Fighter.Cell);
-
-            fight.FightStarted -= OnFightStarted;
         }
+        
     }
 }

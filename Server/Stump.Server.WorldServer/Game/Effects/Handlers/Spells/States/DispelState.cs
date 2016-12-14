@@ -49,6 +49,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         if (actualState == null)
                             return false;
 
+                        foreach (var buff in actor.Buffs.OfType<DisableStateBuff>().Where(x => x.StateBuff == actualState).ToArray())
+                            actor.RemoveBuff(buff);
+
                         var id = actor.PopNextBuffId();
                         var stateBuff = new DisableStateBuff(id, actor, Caster, this, Spell, DefaultDispellableStatus, actualState);
 

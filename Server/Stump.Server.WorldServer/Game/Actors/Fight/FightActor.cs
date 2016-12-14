@@ -52,6 +52,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Events
 
+        public event Action<FightActor> GetAlive;
+
+        protected virtual void OnGetAlive()
+        {
+            GetAlive?.Invoke(this);
+        }
+
         public event Action<FightActor, bool> ReadyStateChanged;
 
         protected virtual void OnReadyStateChanged(bool isReady)
@@ -293,7 +300,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Loot = new FightLoot();
             SpellHistory = new SpellHistory(this);
             MovementHistory = new MovementHistory(this);
+
+            Fight.FightStarted += OnFightStarted;
         }
+
 
         #endregion
 
@@ -478,6 +488,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #endregion
 
         #region Turn
+        
+        private void OnFightStarted(IFight obj)
+        {
+            OnGetAlive();
+        }
 
         public void PassTurn()
         {
@@ -1052,6 +1067,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             IsRevived = true;
             Summoner = caster;
+
+            OnGetAlive();
         }
 
         public void ExchangePositions(FightActor with)
@@ -1741,7 +1758,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void KillAllSummons()
         {
-            foreach (var summon in m_summons.ToArray())
+            foreach (var summon in Fight.GetAllFighters().Where(x => x.Summoner == this).ToArray())
             {
                 summon.Die();
             }
