@@ -3219,7 +3219,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return result;
         }
 
-        public void PlayEmote(EmotesEnum emoteId)
+        public void PlayEmote(EmotesEnum emoteId, bool force = false)
         {
             var emote = ChatManager.Instance.GetEmote((int)emoteId);
 
@@ -3229,7 +3229,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
             }
 
-            if (!HasEmote(emoteId))
+            if (!HasEmote(emoteId) && !force)
             {
                 ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte)emoteId);
                 return;

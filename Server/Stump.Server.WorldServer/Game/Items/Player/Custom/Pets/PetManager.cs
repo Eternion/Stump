@@ -74,8 +74,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public PetTemplate GetPetTemplate(int id)
         {
-            PetTemplate template;
-            return m_pets.TryGetValue(id, out template) ? template : null;
+            return m_pets.TryGetValue(id, out var template) ? template : null;
         }
 
         public double GetEffectMinPower(EffectDice effect)

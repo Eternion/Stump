@@ -29,11 +29,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 pet.LifePoints++;
                 Owner.Inventory.RefreshItem(pet);
 
-
+                return true;
             }
 
             return false;
-
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -40,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             PetTemplate = PetManager.Instance.GetPetTemplate(Template.Id);
             MaxPower = IsRegularPet ? GetItemMaxPower() : 0;
-            MaxLifePoints = Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints)?.DiceNum ?? 0;
+            MaxLifePoints = Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints)?.Value ?? 0;
             
             InitializeEffects();
 
@@ -97,7 +96,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                                        x.EffectId == EffectsEnum.Effect_LastMealDate ||
                                        x.EffectId == EffectsEnum.Effect_Corpulence);
                 Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, (short)MaxLifePoints));
-                m_monsterKilledEffects = new Dictionary<int, EffectDice>();
+
+                m_monsterKilledEffects = Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).ToDictionary(x => (int)x.DiceNum);
+                foreach (var monsterEffect in Effects.Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).ToArray())
+                    Effects.Remove(monsterEffect);
             }
             else
             {
@@ -106,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 LastMealEffect = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LastMeal);
                 CorpulenceEffect = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Corpulence);
 
-                m_monsterKilledEffects = Effects.OfType<EffectDice>().ToDictionary(x => (int)x.DiceNum);
+                m_monsterKilledEffects = Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).ToDictionary(x => (int)x.DiceNum);
             }
         }
 
@@ -232,14 +234,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private int IncreaseCreatureKilledCount(MonsterTemplate monster)
         {
-            if (!m_monsterKilledEffects.TryGetValue(monster.Id, out var effect))
+            if (m_monsterKilledEffects.TryGetValue(monster.Id, out var effect))
             {
-                effect = new EffectDice((short) EffectsEnum.Effect_MonsterKilledCount, 1, (short) monster.Id, 0, new EffectBase());
-                m_monsterKilledEffects.Add(monster.Id, effect);
-                Effects.Add(effect);
-            }
-            else
+                if (Effects.Contains(effect))
+                    Effects.Add(effect);
+
                 effect.Value++;
+            }
 
             return effect.Value;
         }

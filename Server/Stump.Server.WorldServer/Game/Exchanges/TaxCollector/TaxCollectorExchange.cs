@@ -50,6 +50,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 
         public void Close()
         {
+            if (TaxCollector.IsDisposed)
+                return;
+
             TaxCollectorHandler.SendGetExchangeGuildTaxCollectorMessage(TaxCollector.Guild.Clients, GetExchangeGuildTaxCollector());
 
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
