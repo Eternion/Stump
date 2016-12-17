@@ -900,7 +900,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void ApplyItemEffects(BasePlayerItem item, bool send = true, ItemEffectHandler.HandlerOperation? force = null, double? efficiency = null)
         {
-            var applied = false;
+            bool? applied = null;
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
                 if (force != null)
@@ -917,11 +917,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
                 handler.Apply();
 
-                if (!applied)
-                    applied = handler.Applied;
+                if (!applied.HasValue && handler.Applied)
+                    applied = handler.Operation == ItemEffectHandler.HandlerOperation.APPLY;
             }
-
-            item.OnEffectApplied(applied);
+            if (applied != null)
+                item.OnEffectApplied(applied.Value);
 
             if (send)
                 Owner.RefreshStats();

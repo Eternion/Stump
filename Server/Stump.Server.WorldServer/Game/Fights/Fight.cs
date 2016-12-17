@@ -1830,11 +1830,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             using (StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH))
             {
-                ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
-
                 fighter.KillAllSummons();
                 fighter.RemoveAndDispellAllBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
                 fighter.RemoveAllCastedBuffs(FightDispellableEnum.DISPELLABLE_BY_DEATH);
+                ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
             }
 
             foreach (var trigger in m_triggers.Where(trigger => trigger.Caster == fighter).ToArray())
