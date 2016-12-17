@@ -40,15 +40,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         return false;
                     }
 
-                    if (!actor.HasState(state.Id))
+                    var actualState = actor.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == state.Id).FirstOrDefault() as StateBuff;
+                    if (actualState == null)
                         return false;
+
 
                     if (Effect.EffectId == EffectsEnum.Effect_DisableState)
                     {
-                        var actualState = actor.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == state.Id).FirstOrDefault() as StateBuff;
-                        if (actualState == null)
-                            return false;
-
                         foreach (var buff in actor.Buffs.OfType<DisableStateBuff>().Where(x => x.StateBuff == actualState).ToArray())
                             actor.RemoveBuff(buff);
 

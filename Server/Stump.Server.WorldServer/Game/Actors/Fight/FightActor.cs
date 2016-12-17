@@ -304,7 +304,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Fight.FightStarted += OnFightStarted;
         }
 
-
         #endregion
 
         #region Properties
@@ -392,9 +391,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
+        public FightActor RevivedBy
+        {
+            get;
+            private set;
+        }
+
         #region Stats
 
-        public abstract byte Level
+            public abstract 
+
+        byte Level
         {
             get;
         }
@@ -488,7 +495,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #endregion
 
         #region Turn
-        
+
         private void OnFightStarted(IFight obj)
         {
             OnGetAlive();
@@ -738,7 +745,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool CastAutoSpell(Spell spell, Cell cell)
         {
-            return CastSpell(new SpellCastInformations(this, spell, cell) { Force = true, Silent = true, ApFree = true });
+            return CastSpell(new SpellCastInformations(this, spell, cell) {Force = true, Silent = true, ApFree = true});
         }
 
         public bool CastSpell(Spell spell, Cell cell, params SpellCastResult[] ignored)
@@ -1066,7 +1073,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             DamageTaken = Stats.Health.TotalMax - healAmount;
 
             IsRevived = true;
-            Summoner = caster;
+            RevivedBy = caster;
 
             OnGetAlive();
         }
@@ -1758,7 +1765,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void KillAllSummons()
         {
-            foreach (var summon in Fight.GetAllFighters().Where(x => x.Summoner == this).ToArray())
+            foreach (var summon in Fight.GetAllFighters().Where(x => x.Summoner == this || x.RevivedBy == this).ToArray())
             {
                 summon.Die();
             }
