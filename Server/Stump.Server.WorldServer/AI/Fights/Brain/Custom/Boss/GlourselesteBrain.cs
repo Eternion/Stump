@@ -4,10 +4,10 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier((int)MonsterIdEnum.MANSOT_ROYAL_2848)]
-    public class MansotRoyalBrain : Brain
+    [BrainIdentifier((int)MonsterIdEnum.GLOURSELESTE_2864)]
+    public class GlourselesteBrain : Brain
     {
-        public MansotRoyalBrain(AIFighter fighter)
+        public GlourselesteBrain(AIFighter fighter)
             : base(fighter)
         {
             fighter.GetAlive += OnGetAlive;
@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnGetAlive(FightActor obj)
         {
-            Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.MANSOMURE, 1), Fighter.Cell);
-        }    
+            Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.GLOURSONGEUR, 1), Fighter.Cell);
+        }
     }
 }

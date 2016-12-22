@@ -175,6 +175,7 @@
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BlockBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\CadranBrain.cs" />
@@ -696,6 +697,7 @@
     <Compile Include="Game\Items\Player\Custom\Pets\PetManager.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotionManager.cs" />
+    <Compile Include="Game\Items\Player\Custom\RikikiWandItem.cs" />
     <Compile Include="Game\Items\Player\Custom\Watches.cs" />
     <Compile Include="Game\Items\Player\Custom\WrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\PetItem.cs" />

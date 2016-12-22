@@ -223,9 +223,7 @@ namespace Stump.Tools.SpellsExplorer
 
             if (pattern.All(entry => entry >= '0' && entry <= '9'))
             {
-                int id;
-
-                if (!int.TryParse(pattern, out id))
+                if (!int.TryParse(pattern, out int id))
                     yield break;
 
                 yield return SpellManager.Instance.GetSpellTemplate(id);

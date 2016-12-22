@@ -95,9 +95,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                                        x.EffectId == EffectsEnum.Effect_LastMeal ||
                                        x.EffectId == EffectsEnum.Effect_LastMealDate ||
                                        x.EffectId == EffectsEnum.Effect_Corpulence);
+
                 Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, (short)MaxLifePoints));
 
-                m_monsterKilledEffects = Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).ToDictionary(x => (int)x.DiceNum);
+                m_monsterKilledEffects = new Dictionary<int, EffectDice>();
+
                 foreach (var monsterEffect in Effects.Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).ToArray())
                     Effects.Remove(monsterEffect);
             }
@@ -234,11 +236,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private int IncreaseCreatureKilledCount(MonsterTemplate monster)
         {
-            if (m_monsterKilledEffects.TryGetValue(monster.Id, out var effect))
+            if (!m_monsterKilledEffects.TryGetValue(monster.Id, out var effect))
             {
-                if (Effects.Contains(effect))
-                    Effects.Add(effect);
-
+                effect = new EffectDice((short)EffectsEnum.Effect_MonsterKilledCount, 1, (short)monster.Id, 0, new EffectBase());
+                m_monsterKilledEffects.Add(monster.Id, effect);
+                Effects.Add(effect);
+            }
+            else
+            {
                 effect.Value++;
             }
 
@@ -323,7 +328,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (effect?.Value >= possibleEffect.Max)
                 return false;
 
-            if (PetTemplate.PossibleEffects.Count > 1 && EffectManager.Instance.GetItemPower(this) >= MaxPower)
+            if (PetTemplate.PossibleEffects.Count > 0 && EffectManager.Instance.GetItemPower(this) >= MaxPower)
                 return false;
 
             if (effect == null)

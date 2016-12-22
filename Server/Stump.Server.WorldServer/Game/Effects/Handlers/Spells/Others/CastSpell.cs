@@ -90,14 +90,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             }
             else
             {
-                buff.Target.CastSpell(new SpellCastInformations(buff.Target, buff.Spell, buff.Target.Cell)
+                if (buff.Spell.Id == (int)SpellIdEnum.GLOURSOMPTUEUX)
                 {
-                    Force = true,
-                    Silent = true,
-                    ApFree = true,
-                    TriggerEffect = this,
-                    Triggerer = triggerrer
-                });
+                    buff.Target.CastSpell(new SpellCastInformations(buff.Target, buff.Spell, buff.Caster.Cell)
+                    {
+                        Force = true,
+                        Silent = true,
+                        ApFree = true,
+                        TriggerEffect = this,
+                        Triggerer = triggerrer
+                    });
+                }
+                else
+                {
+                    buff.Target.CastSpell(new SpellCastInformations(buff.Target, buff.Spell, buff.Target.Cell)
+                    {
+                        Force = true,
+                        Silent = true,
+                        ApFree = true,
+                        TriggerEffect = this,
+                        Triggerer = triggerrer
+                    });
+                }
             }
         }
     }
