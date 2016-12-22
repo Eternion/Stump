@@ -25,11 +25,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         {
             m_entityLook = new ObjectValidator<EntityLook>(BuildEntityLook);
         }
+
         public ActorLook(short bones)
             :this()
         {
             m_bonesID = bones;
         }
+
         public ActorLook(short bones, IEnumerable<short> skins, Dictionary<int, Color> indexedColors, IEnumerable<short> scales, 
             IEnumerable<SubActorLook> subLooks)
             : this()
