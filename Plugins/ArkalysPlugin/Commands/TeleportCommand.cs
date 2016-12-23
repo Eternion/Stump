@@ -1,150 +1,140 @@
 ﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Commands;
+using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Initialization;
+using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Maps.Cells;
-using System;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Handlers;
+using Stump.Server.WorldServer.Handlers.Dialogs;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ArkalysPlugin.Commands
 {
-    public class TPCommands : SubCommandContainer
+    public class TPCommands : InGameCommand
     {
+        [Variable(definableByConfig: true, DefinableRunning = true)]
+        public static List<TeleportMap> Destinations = new List<TeleportMap>
+        {
+                new TeleportMap(88212759, 273, 785),
+                new TeleportMap(72363008, 179, 786),
+                new TeleportMap(72359936, 212, 787)
+        };
+
         public TPCommands()
         {
             Aliases = new[] { "tp" };
             RequiredRole = RoleEnum.Player;
             Description = "Teleport Commands";
         }
-    }
-
-    public class NpcTPCommand : InGameSubCommand
-    {
-        [Variable(true)]
-        public static int NpcMap;
-
-        [Variable(true)]
-        public static short NpcCell;
-
-        [Variable(true)]
-        public static byte NpcDirection;
-
-        public NpcTPCommand()
-        {
-            Aliases = new[] { "pnj" };
-            RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à la zone d'achat d'équipements";
-            ParentCommandType = typeof (TPCommands);
-        }
 
         public override void Execute(GameTrigger trigger)
         {
-            var map = World.Instance.GetMap(NpcMap);
-
-            if (map == null)
-            {
-                trigger.ReplyError("Map {0} not found", NpcMap);
-                return;
-            }
-
-            if (trigger.Character.MustBeJailed())
-            {
-                var remainingTime = trigger.Character.Account.BanEndDate == null ? -1 : (trigger.Character.Account.BanEndDate - DateTime.Now).Value.TotalMinutes;
-                trigger.Reply($"Vous ne pouvez pas bouger, vous êtes en prison pour encore {remainingTime} minutes");
-                return;
-            }
-
-            var cell = map.Cells[NpcCell];
-
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)NpcDirection));
-            trigger.Reply("Téléporté à la zone d'achat d'équipements");
+            var dialog = new TeleportDialog(trigger.Character, Destinations);
+            dialog.Open();
         }
     }
 
-    public class ShopTPCommand : InGameSubCommand
+    public class TeleportMap
     {
-        [Variable(true)]
-        public static int ShopMap;
+        public int MapId;
+        public int CellId;
+        public short SubAreaId;
 
-        [Variable(true)]
-        public static short ShopCell;
+        public TeleportMap() { }
 
-        [Variable(true)]
-        public static byte ShopDirection;
-
-        public ShopTPCommand()
+        public TeleportMap(int mapId, int cellId, short subAreaId)
         {
-            Aliases = new[] { "shop", "boutique" };
-            RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace boutique";
-            ParentCommandType = typeof (TPCommands);
-        }
-
-        public override void Execute(GameTrigger trigger)
-        {
-            var map = World.Instance.GetMap(ShopMap);
-
-            if (map == null)
-            {
-                trigger.ReplyError("Map {0} not found", ShopMap);
-                return;
-            }
-
-            if (trigger.Character.MustBeJailed())
-            {
-                var remainingTime = trigger.Character.Account.BanEndDate == null ? -1 : (trigger.Character.Account.BanEndDate - DateTime.Now).Value.TotalMinutes;
-                trigger.Reply($"Vous ne pouvez pas bouger, vous êtes en prison pour encore {remainingTime} minutes");
-                return;
-            }
-
-            var cell = map.Cells[ShopCell];
-
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)ShopDirection));
-            trigger.Reply("Téléporté au shop");
+            MapId = mapId;
+            CellId = cellId;
+            SubAreaId = subAreaId;
         }
     }
 
-    public class PvPTPCommand : InGameSubCommand
+    public class TeleportHandler : WorldHandlerContainer
     {
-        [Variable(true)]
-        public static int PvPMap;
-
-        [Variable(true)]
-        public static short PvPCell;
-
-        [Variable(true)]
-        public static byte PvPDirection;
-
-        public PvPTPCommand()
+        [Initialization(InitializationPass.Last, Silent = true)]
+        public static void Initialize()
         {
-            Aliases = new[] { "pvp" };
-            RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace PvP";
-            ParentCommandType = typeof(TPCommands);
+            WorldServer.Instance.HandlerManager.Register(typeof(TeleportHandler));
         }
 
-        public override void Execute(GameTrigger trigger)
+        [WorldHandler(TeleportRequestMessage.Id)]
+        public static void HandleTeleportRequestMessage(WorldClient client, TeleportRequestMessage message)
         {
-            var map = World.Instance.GetMap(PvPMap);
+            var dialog = client.Character.Dialog as TeleportDialog;
+
+            if (dialog == null)
+                return;
+
+            var map = World.Instance.GetMap(message.mapId);
 
             if (map == null)
-            {
-                trigger.ReplyError("Map {0} not found", PvPMap);
                 return;
-            }
 
-            if (trigger.Character.MustBeJailed())
-            {
-                var remainingTime = trigger.Character.Account.BanEndDate == null ? -1 : (trigger.Character.Account.BanEndDate - DateTime.Now).Value.TotalMinutes;
-                trigger.Reply($"Vous ne pouvez pas bouger, vous êtes en prison pour encore {remainingTime} minutes");
+            dialog.Teleport(map);
+        }
+    }
+
+    public class TeleportDialog : IDialog
+    {
+        private readonly List<TeleportMap> m_destinations;
+
+        public TeleportDialog(Character character, IEnumerable<TeleportMap> destinations)
+        {
+            Character = character;
+            m_destinations = destinations.ToList();
+        }
+
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_TELEPORTER;
+
+        public Character Character
+        {
+            get;
+        }
+
+        public void Open()
+        {
+            Character.SetDialog(this);
+            SendZaapListMessage(Character.Client);
+        }
+
+        public void Close()
+        {
+            Character.CloseDialog(this);
+            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
+        }
+
+        public void Teleport(Map map)
+        {
+            var destination = m_destinations.FirstOrDefault(x => x.MapId == map.Id);
+            if (destination == null)
                 return;
-            }
 
-            var cell = map.Cells[PvPCell];
+            var cell = map.GetCell(destination.CellId);
+            if (cell == null)
+                return;
 
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)PvPDirection));
-            trigger.Reply("Téléporté à l'espace PvP");
+            Character.Teleport(map, cell);
+
+            Close();
+        }
+
+        public void SendZaapListMessage(IPacketReceiver client)
+        {
+            client.Send(new ZaapListMessage((sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP,
+                m_destinations.Select(entry => entry.MapId),
+                m_destinations.Select(entry => entry.SubAreaId),
+                m_destinations.Select(x => (short)0),
+                m_destinations.Select(x => (sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP),
+                Character.Map.Id));
         }
     }
 }
