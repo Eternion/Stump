@@ -166,7 +166,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     continue;
 
                 // summoning is the priority
-                if ((category & SpellCategory.Summoning) != 0 && (Fighter.CanSummon() || (category & SpellCategory.Healing) != 0))
+                if ((category & SpellCategory.Summoning) != 0 &&
+                    ((category & SpellCategory.Healing) == 0 || Fighter.Team.Fighters.Any(x => x.IsDead())) && // revive effect and an ally is dead
+                    (Fighter.CanSummon() || (category & SpellCategory.Healing) != 0 && Fighter.Team.Fighters.Any(x => x.IsDead()))) // can summon or is revive spell
                 {
                     var adjacentCell = Fighter.GetCastZoneSet(spell.CurrentSpellLevel, Fighter.Position.Point).EnumerateValidPoints().
                         OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).

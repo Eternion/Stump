@@ -350,9 +350,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CanTackle(FightActor fighter) => false;
 
-        public override int GetTackledAP() => 0;
+        public override int GetTackledAP(int mp, Cell cell) => 0;
 
-        public override int GetTackledMP() => 0;
+        public override int GetTackledMP(int mp, Cell cell) => 0;
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {

@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             }*/
             if (hasRangeAttack && maxRange > 3 && minRange < maxRange)
             {
-                action = new StayInRange(Fighter, minRange, maxRange);
+                action = new StayInRange(Fighter, minRange, maxRange, Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.CastTestLos));
             }
             else
             {

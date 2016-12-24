@@ -1416,7 +1416,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
 
-        public virtual int GetTackledMP()
+        public int GetTackledMP()
         {
             return GetTackledMP(MP, Cell);
         }
@@ -1432,7 +1432,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) Math.Round(mp * (1 - GetTacklePercent(cell)));
         }
 
-        public virtual int GetTackledAP()
+        public int GetTackledAP()
         {
             return GetTackledAP(AP, Cell);
         }

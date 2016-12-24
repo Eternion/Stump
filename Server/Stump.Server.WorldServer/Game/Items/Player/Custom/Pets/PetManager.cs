@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     public class PetManager : DataManager<PetManager>
     {
-        public const double DEFAULT_STAT_POWER = 1;
+        public const double DEFAULT_STAT_POWER = 0;
         public static readonly Dictionary<CharacteristicEnum, double> POWER_PER_STAT = new Dictionary<CharacteristicEnum, double>
         {
             {CharacteristicEnum.AP, 100},

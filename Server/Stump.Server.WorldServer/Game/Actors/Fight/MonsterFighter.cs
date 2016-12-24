@@ -74,13 +74,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return m_stats; }
         }
 
+
         // monster ignore tackles ...
-        public override int GetTackledAP()
+        public override int GetTackledAP(int mp, Cell cell)
         {
             return 0;
         }
 
-        public override int GetTackledMP()
+        public override int GetTackledMP(int mp, Cell cell)
         {
             return 0;
         }

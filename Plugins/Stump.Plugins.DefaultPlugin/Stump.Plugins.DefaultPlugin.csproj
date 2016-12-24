@@ -150,6 +150,7 @@
     <Compile Include="Code\ItemIdEnumGeneration.cs" />
     <Compile Include="Code\StateEnumGeneration.cs" />
     <Compile Include="Global\ZaapFinder.cs" />
+    <Compile Include="Items\ItemsFix.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
     <Compile Include="Npcs\NpcBank.cs" />
     <Compile Include="Npcs\NpcPet.cs" />

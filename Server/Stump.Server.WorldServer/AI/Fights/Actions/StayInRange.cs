@@ -8,11 +8,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
     public class StayInRange : AIAction
     {
-        public StayInRange(AIFighter fighter, int minRange, int maxRange)
+        public StayInRange(AIFighter fighter, int minRange, int maxRange, bool los)
             : base(fighter)
         {
             MinRange = minRange;
             MaxRange = maxRange;
+            LoS = los;
         }
 
         public int MinRange
@@ -27,6 +28,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             set;
         }
 
+        public bool LoS
+        {
+            get;
+            set;
+        }
+
         protected override RunStatus Run(object context)
         {
             if (!Fighter.CanMove())
@@ -36,17 +43,20 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
             if (enemies.Length <= 0)
                 return RunStatus.Failure;
-
-            var zone = enemies.Select(x => (Set)new LozengeSet(x.Position.Point, MaxRange, MinRange))
-                              .Aggregate((set, current) => set.IntersectWith(current));
-
-            var result = zone.EnumerateValidPoints().Where(x =>
-                Fighter.Brain.Environment.CellInformationProvider.IsCellWalkable(x.CellId)).
-                              OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
+            var result = 
+                (from enemy in enemies
+                from cell in new LozengeSet(enemy.Position.Point, MaxRange, MinRange).EnumerateValidPoints()
+                where Fighter.Brain.Environment.CellInformationProvider.IsCellWalkable(cell.CellId) &&
+                      (!LoS || Fighter.Fight.CanBeSeen(cell, enemy.Position.Point))
+                orderby cell.ManhattanDistanceTo(Fighter.Position.Point)
+                select cell).FirstOrDefault();
 
             // too far away, just try to move closer
             if (result == null)
             {
+                var zone = enemies.Select(x => (Set)new LozengeSet(x.Position.Point, MaxRange, MinRange))
+                              .Aggregate((set, current) => set.IntersectWith(current));
+
                 result = zone.EnumerateValidPoints().OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
                 if (result == null)
