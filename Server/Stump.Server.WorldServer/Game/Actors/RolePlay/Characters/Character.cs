@@ -818,10 +818,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public ActorLook DefaultLook
         {
-            get { return m_record.EntityLook; }
+            get { return m_record.DefaultLook; }
             set
             {
-                m_record.EntityLook = value;
+                m_record.DefaultLook = value;
 
                 UpdateLook();
             }
@@ -830,7 +830,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public override ActorLook Look
         {
             get { return CustomLookActivated ? CustomLook : m_look; }
-            set { m_look = value; }
+            set
+            {
+                m_look = value;
+                m_record.LastLook = value;
+            }
         }
 
         public override SexTypeEnum Sex

@@ -132,11 +132,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 }
 
                 character.Head = head.Id;
-                character.EntityLook = breed.GetLook(character.Sex);
-                character.EntityLook.AddSkins(head.Skins);
+                character.DefaultLook = breed.GetLook(character.Sex);
+                character.DefaultLook.AddSkins(head.Skins);
 
                 foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
-                    character.EntityLook.SetScales(scale);
+                    character.DefaultLook.SetScales(scale);
 
             }
 
@@ -175,7 +175,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     i++;
                 }
 
-                character.EntityLook.SetColors(m_colors.Select(x => x.Key).ToArray(), m_colors.Select(x => x.Value).ToArray());
+                character.DefaultLook.SetColors(m_colors.Select(x => x.Key).ToArray(), m_colors.Select(x => x.Value).ToArray());
             }
 
             character.MandatoryChanges = 0;
@@ -339,7 +339,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.Id,
                     characterRecord.Name,
                     ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
-                    characterRecord.EntityLook.GetEntityLook(),
+                    characterRecord.LastLook.GetEntityLook(),
                     (sbyte)characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
@@ -356,7 +356,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterBaseInformations.Add(new CharacterBaseInformations((short)characterRecord.Id,
                                                                             characterRecord.Name,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
-                                                                            characterRecord.EntityLook.GetEntityLook(),
+                                                                            characterRecord.LastLook.GetEntityLook(),
                                                                             (sbyte)characterRecord.Breed,
                                                                             characterRecord.Sex == SexTypeEnum.SEX_MALE));
 
@@ -374,7 +374,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 charactersToRemodel.Add(new CharacterToRemodelInformations(characterRecord.Id, characterRecord.Name,
                                                                                         (sbyte)characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE,
-                                                                                        (short)characterRecord.Head, characterRecord.EntityLook.Colors.Values.Select(x => x.ToArgb()),
+                                                                                        (short)characterRecord.Head, characterRecord.DefaultLook.Colors.Values.Select(x => x.ToArgb()),
                                                                                         characterRecord.PossibleChanges, characterRecord.MandatoryChanges));
             }
             client.Send(new CharactersListWithRemodelingMessage(characterBaseInformations,
