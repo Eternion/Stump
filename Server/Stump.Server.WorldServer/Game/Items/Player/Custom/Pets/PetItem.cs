@@ -38,6 +38,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             : base(owner, record)
         {
             PetTemplate = PetManager.Instance.GetPetTemplate(Template.Id);
+
+            if (PetTemplate == null)
+                return;
+
             MaxPower = IsRegularPet ? GetItemMaxPower() : 0;
             MaxLifePoints = Template.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints)?.Value ?? 0;
             
@@ -85,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             get;
         }
 
-        public bool IsRegularPet => PetTemplate.PossibleEffects.Count > 0;
+        public bool IsRegularPet => PetTemplate?.PossibleEffects.Count > 0;
         private void InitializeEffects()
         {
             // new item
