@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
     [ItemType(ItemTypeEnum.FAMILIER)]
     public sealed class PetItem : BasePlayerItem
     {
+        private bool m_dead;
         public const EffectsEnum MealCountEffect = EffectsEnum.Effect_MealCount;
 
         private Dictionary<int, EffectDice> m_monsterKilledEffects;
@@ -272,6 +273,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private void Die()
         {
+            if (m_dead)
+                return;
+
             ItemTemplate ghostItem; 
             if (PetTemplate.GhostItemId == null || (ghostItem = ItemManager.Instance.TryGetTemplate(PetTemplate.GhostItemId.Value)) == null)
             {
@@ -283,6 +287,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             var item = ItemManager.Instance.CreatePlayerItem(Owner, ghostItem, 1, Effects.Clone());
             Owner.Inventory.RemoveItem(this);
             Owner.Inventory.AddItem(item);
+            m_dead = true;
         }
 
         public override bool OnRemoveItem()
