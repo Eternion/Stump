@@ -101,6 +101,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                                        x.EffectId == EffectsEnum.Effect_Corpulence);
 
                 Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, (short)MaxLifePoints));
+                Corpulence = 0;
 
                 m_monsterKilledEffects = new Dictionary<int, EffectDice>();
 
@@ -112,9 +113,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 LifePointsEffect = Effects.OfType<EffectInteger>().First(x => x.EffectId == EffectsEnum.Effect_LifePoints);
                 LastMealDateEffect = Effects.OfType<EffectDate>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LastMealDate);
                 LastMealEffect = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LastMeal);
-                CorpulenceEffect = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Corpulence);
+                CorpulenceEffect = Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Corpulence);
 
                 m_monsterKilledEffects = Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).ToDictionary(x => (int)x.DiceNum);
+                UpdateCorpulence();
             }
         }
 
@@ -141,7 +143,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             set;
         }
 
-        private EffectInteger CorpulenceEffect
+        private EffectDice CorpulenceEffect
         {
             get;
             set;
@@ -214,9 +216,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public int? Corpulence
         {
-            get { return CorpulenceEffect?.Value; }
+            get { return CorpulenceEffect?.DiceFace > 0 ? CorpulenceEffect?.DiceFace : (CorpulenceEffect?.DiceNum > 0 ? -CorpulenceEffect.DiceNum : (int?)0); }
             set
             {
+                if (value < -100)
+                    value = -100;
+
                 if (value == null)
                 {
                     if (CorpulenceEffect == null)
@@ -227,10 +232,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 }
                 else
                 {
-                    if (CorpulenceEffect != null)
-                        CorpulenceEffect.Value = (short)value.Value;
-                    else
-                        Effects.Add(CorpulenceEffect = new EffectInteger(EffectsEnum.Effect_Corpulence, (short)value.Value));
+                    if (CorpulenceEffect == null)
+                        Effects.Add(CorpulenceEffect = new EffectDice(EffectsEnum.Effect_Corpulence, 0,0,0));
+
+                    CorpulenceEffect.DiceFace = (short) (value.Value > 0 ? value.Value : 0);
+                    CorpulenceEffect.DiceNum = (short)(value.Value < 0 ? -value.Value : 0);
                 }
 
 
@@ -292,24 +298,44 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (possibleFood == null)
                 return false;
 
-            if (Corpulence == 3)
+            short message = 32;
+            var bonus = true;
+            // Votre familier apprécie le repas.
+            if (Corpulence < 0)
             {
+                Corpulence++;
+                bonus = false;
+            }
+            else if ((DateTime.Now - LastMealDate)?.TotalHours < PetTemplate.MinDurationBeforeMeal)
+            {
+                Corpulence++;
+                message = 26; // Vous donnez à manger à votre familier alors qui'il n'avait plus faim. Il se force pour vous faire plaisir
 
+                if (Corpulence > 6)
+                {
+                    LifePoints--;
+                    bonus = false;
+                    message = 27;
+                    // Vous donnez à manger à répétition à votre familier déjà obèse. Il avale quand même la ressource et fait une indigestion.
+                }
             }
 
-            var effectMealCount = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == MealCountEffect);
-
-            if (effectMealCount == null)
+            if (bonus)
             {
-                effectMealCount = new EffectInteger(MealCountEffect, 1);
-                Effects.Add(effectMealCount);
-            }
-            else
-                effectMealCount.Value++;
+                var effectMealCount = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == MealCountEffect);
 
-            if (effectMealCount.Value % MealsPerBonus == 0)
-            {
-                AddBonus(possibleFood);
+                if (effectMealCount == null)
+                {
+                    effectMealCount = new EffectInteger(MealCountEffect, 1);
+                    Effects.Add(effectMealCount);
+                }
+                else
+                    effectMealCount.Value++;
+
+                if (effectMealCount.Value % MealsPerBonus == 0)
+                {
+                    AddBonus(possibleFood);
+                }
             }
 
             LastMealDate = DateTime.Now;
@@ -317,8 +343,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             Invalidate();
             Owner.Inventory.RefreshItem(this);
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, message);
 
             return true;
+        }
+
+        public void UpdateCorpulence()
+        {
+            if (IsRegularPet && LastMealDate != null && (DateTime.Now - LastMealDate)?.TotalHours > PetTemplate.MaxDurationBeforeMeal)
+            {
+                Corpulence -= (int) Math.Floor((DateTime.Now - LastMealDate.Value).TotalHours / PetTemplate.MaxDurationBeforeMeal);
+
+                Invalidate();
+                Owner.Inventory.RefreshItem(this);
+            }
         }
 
         private bool AddBonus(PetFoodRecord food)
@@ -466,6 +504,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             if (update && LifePoints > 0)
                 Owner.Inventory.RefreshItem(this);
+
+            UpdateCorpulence();
         }
     }
 }

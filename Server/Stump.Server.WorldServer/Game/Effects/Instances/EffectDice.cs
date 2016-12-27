@@ -2,6 +2,7 @@
 using System.IO;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
@@ -34,6 +35,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             m_dicenum = (short) effect.diceNum;
             m_diceface = (short) effect.diceSide;
+        }
+
+        public EffectDice(EffectsEnum effect, short value, short dicenum, short diceface)
+            : this((short)effect,value,dicenum,diceface,new EffectBase())
+        {
+            
         }
 
         public override int ProtocoleId
