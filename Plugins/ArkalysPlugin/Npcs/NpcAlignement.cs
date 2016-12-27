@@ -115,7 +115,7 @@ namespace ArkalysPlugin.Npcs
         {
             if (replyId == NpcAlignement.ReplyBecomeAngel)
             {
-                var template = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.TwiggySword);
+                var template = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.EPEE_DE_BOISAILLE_44);
                 if (template == null)
                 {
                     Close();
@@ -147,7 +147,7 @@ namespace ArkalysPlugin.Npcs
             }
             else if (replyId == NpcAlignement.ReplyBecomeEvil)
             {
-                var template = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.TwiggyDaggers);
+                var template = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.DAGUES_DE_BOISAILLE_97);
                 if (template == null)
                 {
                     Close();

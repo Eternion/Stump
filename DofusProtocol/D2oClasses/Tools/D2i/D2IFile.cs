@@ -129,7 +129,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
 
             if (value.HasAccents())
             {
-                entry.UnDiactricialText = value.RemoveAccents();
+                entry.UnDiactricialText = value.RemoveAccents().ToLower();
                 entry.UseUndiactricalText = true;
             }
             else
