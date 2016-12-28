@@ -84,53 +84,77 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
         {
             SecondTrader.Clear();
 
-            if (FirstTrader.Items.Count != 2 || FirstTrader.Items.Any(x => x.Stack != 1))
+            if (FirstTrader.Items.Count != 2)
                 return;
 
-            bool eniripsaPowder = FirstTrader.Items.Any(x => x.Template.Id == (int) ItemIdEnum.POUDRE_DENIRIPSA_2239);
-            bool resurectionPowder = FirstTrader.Items.Any(x => x.Template.Id == (int) ItemIdEnum.POUDRE_DE_RESURRECTION_8012);
+            var eniripsaPowder = FirstTrader.Items.FirstOrDefault(x => x.Template.Id == (int) ItemIdEnum.POUDRE_DENIRIPSA_2239)?.Stack ?? 0;
+            var resurectionPowder = FirstTrader.Items.FirstOrDefault(x => x.Template.Id == (int) ItemIdEnum.POUDRE_DE_RESURRECTION_8012)?.Stack ?? 0;
 
-            if (!(eniripsaPowder ^ resurectionPowder))
-                return;
-            
-            var ghost = FirstTrader.Items.OfType<PlayerTradeItem>().FirstOrDefault(x => x.Template.Type.ItemType == ItemTypeEnum.FANTÔME_DE_FAMILIER ||
-                                                                                        x.Template.Type.ItemType == ItemTypeEnum.FANTÔME_DE_MONTILIER);
-
-            if (ghost == null)
+            if ((eniripsaPowder == 0 && resurectionPowder == 0) || (eniripsaPowder != 0 && resurectionPowder != 0))
                 return;
 
-            var petTemplate = PetManager.Instance.Pets.Values.FirstOrDefault(x => x.GhostItemId == ghost.Template.Id);
-
-            if (petTemplate == null)
+             var ghost = FirstTrader.Items.OfType<PlayerTradeItem>().FirstOrDefault(x => x.Template.Type.ItemType == ItemTypeEnum.FANTÔME_DE_FAMILIER ||
+                                                                                            x.Template.Type.ItemType == ItemTypeEnum.FANTÔME_DE_MONTILIER);
+            var pet =  FirstTrader.Items.OfType<PlayerTradeItem>().FirstOrDefault(x => x.Template.Type.ItemType == ItemTypeEnum.FAMILIER ||
+                                                                                            x.Template.Type.ItemType == ItemTypeEnum.MONTILIER);
+                
+            if (ghost != null)
             {
-                logger.Error($"Ghost {ghost.Template.Id} has no matching pet");
-                return;
+                var petTemplate = PetManager.Instance.Pets.Values.FirstOrDefault(x => x.GhostItemId == ghost.Template.Id);
+
+                if (petTemplate == null)
+                {
+                    logger.Error($"Ghost {ghost.Template.Id} has no matching pet");
+                    return;
+                }
+
+                var itemTemplate = ItemManager.Instance.TryGetTemplate(petTemplate.Id);
+
+                if (itemTemplate == null)
+                {
+                    logger.Error($"Pet {petTemplate.Id} is no valid item !");
+                    return;
+                }
+
+                var effects = ghost.Effects.Clone();
+                var hpEffect = effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints);
+
+                if (hpEffect == null)
+                    effects.Add(hpEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, 0));
+
+                var maxHp = itemTemplate.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints)?.Value ?? 0;
+                if (eniripsaPowder > 0)
+                {
+                    if (petTemplate.PossibleEffects.Count > 0)
+                        effects.RemoveAll(x => x != hpEffect && x.EffectId != EffectsEnum.Effect_MealCount);
+
+                    hpEffect.Value = (short)Math.Min(maxHp, eniripsaPowder);
+                }
+                else
+                    hpEffect.Value = maxHp;
+
+                SecondTrader.AddItem(itemTemplate, 1, effects);
             }
-
-            var itemTemplate = ItemManager.Instance.TryGetTemplate(petTemplate.Id);
-
-            if (itemTemplate == null)
+            else if (pet != null && eniripsaPowder > 0)
             {
-                logger.Error($"Pet {petTemplate.Id} is no valid item !");
-                return;
+                var petItem = pet.PlayerItem as PetItem;
+
+                if (petItem == null)
+                    return;
+                
+                var effects = pet.Effects.Clone();
+                var hpEffect = effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints);
+
+                if (hpEffect == null)
+                    return;
+
+                hpEffect.Value += (short)eniripsaPowder;
+
+                if (hpEffect.Value > petItem.MaxLifePoints)
+                    hpEffect.Value = (short)petItem.MaxLifePoints;
+
+                SecondTrader.AddItem(petItem.Template, 1, effects);
             }
-
-            var effects = ghost.Effects.Clone();
-            var hpEffect = effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints);
-
-            if (hpEffect == null)
-                effects.Add(hpEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, 0));
-
-            if (eniripsaPowder)
-            {
-                if (petTemplate.PossibleEffects.Count > 0)
-                    effects.RemoveAll(x => x != hpEffect && x.EffectId != EffectsEnum.Effect_MealCount);
-                hpEffect.Value = 1;
-            }
-            else
-                hpEffect.Value = itemTemplate.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LifePoints)?.DiceNum ?? 0;
-
-            SecondTrader.AddItem(itemTemplate, 1, effects);
         }
 
         protected override void Apply()

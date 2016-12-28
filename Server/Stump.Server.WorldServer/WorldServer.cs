@@ -156,10 +156,6 @@ namespace Stump.Server.WorldServer
             ClientManager.Start(Host, Port);
 
             IOTaskPool.Start();
-#if DEBUG
-            Console.Beep(544, 200);
-#endif
-
             StartTime = DateTime.Now;
         }
 

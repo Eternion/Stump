@@ -111,9 +111,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         /// <returns>True whenever the item can be removed</returns>
         public virtual bool OnRemoveItem()
         {
-            if (IsEquiped())
-                OnEquipItem(true);
-
+            IsDeleted = true;
             return true;
         }
 
@@ -372,6 +370,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public double CurrentSubAreaBonus
         {
             get { return Template.FavoriteSubAreas.Contains((uint) Owner.SubArea.Id) ? Template.FavoriteSubAreasBonus : 0; }
+        }
+
+        public bool IsDeleted
+        {
+            get;
+            private set;
         }
 
         #endregion

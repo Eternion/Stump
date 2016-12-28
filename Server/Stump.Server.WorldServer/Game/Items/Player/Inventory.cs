@@ -1072,7 +1072,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void RefreshItem(BasePlayerItem item)
         {
-            InventoryHandler.SendObjectModifiedMessage(Owner.Client, item);
+            if (!item.IsDeleted)
+                InventoryHandler.SendObjectModifiedMessage(Owner.Client, item);
         }
 
         public override bool IsStackable(BasePlayerItem item, out BasePlayerItem stackableWith)
