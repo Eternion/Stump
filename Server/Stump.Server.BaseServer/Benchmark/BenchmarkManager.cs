@@ -21,7 +21,7 @@ namespace Stump.Server.BaseServer.Benchmark
         public static BenchmarkingType BenchmarkingType = BenchmarkingType.Complete;
 
         [Variable(true)]
-        public static int EntriesLimit = 10000;
+        public static int EntriesLimit = 1000000;
 
         public ReadOnlyCollection<BenchmarkEntry> Entries
         {
@@ -82,12 +82,21 @@ namespace Stump.Server.BaseServer.Benchmark
             var builder = new StringBuilder();
 
             builder.AppendFormat("Benchmarking report - {0} entries\n", m_entries.Count);  
+            
+            builder.AppendFormat("Longest entries : \n");  
+            
+            foreach (var entry in sortedEntries.Take(10))
+            {
+                builder.AppendFormat("- {0}\n", entry);
+            }
 
-            foreach (var group in sortedEntries.GroupBy(x => x.MessageType))
+            builder.AppendFormat("Grouped entries : \n");  
+
+            foreach (var group in sortedEntries.GroupBy(x => x.MessageType).Take(20))
             {
                 var average = (long)group.Average(x => x.Timestamp.TotalMilliseconds);
 
-                builder.AppendFormat("{0} {1}ms ({2} entries)\n", group.Key, average, group.Count());
+                builder.AppendFormat("{0} avg:{1}ms max:{2} ({3} entries)\n", group.Key, average, group.Max(x => x.Timestamp.TotalMilliseconds), group.Count());
             }
 
             return builder.ToString();
