@@ -542,7 +542,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 m_mapsByPoint[map.Position].Add(map);
             }
-
             subArea.Area = this;
         }
 
