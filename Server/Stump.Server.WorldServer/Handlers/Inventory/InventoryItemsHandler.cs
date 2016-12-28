@@ -116,11 +116,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 message.foodQuantity = (short) food.Stack;
 
             var i = 0;
-            for (; i < message.foodQuantity; i++)
-            {
-                if (!item.Feed(food))
-                    break;
-            }
+            while (i < message.foodQuantity && item.Feed(food))
+                i++;
 
             client.Character.Inventory.RemoveItem(food, i);
         }

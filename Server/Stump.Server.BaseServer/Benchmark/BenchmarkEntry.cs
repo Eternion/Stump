@@ -78,14 +78,14 @@ namespace Stump.Server.BaseServer.Benchmark
         public override string ToString()
         {
             if (AdditionalProperties.Count == 0)
-                return String.Format("{0} -{1:F}ms", MessageType, Timestamp.TotalMilliseconds);
+                return String.Format("{0} - {1:F}ms", MessageType, Timestamp.TotalMilliseconds);
 
             var sb = new StringBuilder();
 
             foreach (var key in AdditionalProperties.Keys)
                 sb.AppendFormat("{0}:{1}", key, AdditionalProperties[key]);
 
-            return String.Format("{0} -{1:F}ms - {2}", MessageType, Timestamp.TotalMilliseconds, sb);
+            return String.Format("{0} - {1:F}ms - {2}", MessageType, Timestamp.TotalMilliseconds, sb);
         }
     }
 }

@@ -205,7 +205,9 @@ namespace Stump.Server.WorldServer.Core.IPC
             AccessGranted = true;
 
             logger.Info("Access to auth. server granted");
-
+#if DEBUG
+            Console.Beep(444, 200);
+#endif
             Granted?.Invoke(this);
         }
 

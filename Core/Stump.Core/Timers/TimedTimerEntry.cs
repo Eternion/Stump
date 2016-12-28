@@ -140,7 +140,7 @@ namespace Stump.Core.Timers
 
         public override string ToString()
         {
-            return string.Format("{0} (Callback = {1}, Delay = {2})", GetType(), Action, Delay);
+            return string.Format("{0} (Callback = {1}.{2}, Delay = {3})", GetType(), Action.Target, Action.Method, Delay);
         }
     }
 

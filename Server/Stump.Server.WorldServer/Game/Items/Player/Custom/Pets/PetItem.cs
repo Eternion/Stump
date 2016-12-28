@@ -155,13 +155,17 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             get { return LifePointsEffect.Value; }
             set { LifePointsEffect.Value = (short)value;
 
-                Invalidate();
+                if (value > MaxLifePoints)
+                    value = MaxLifePoints;
 
                 if (value <= 0)
                     Die();
 
+                Invalidate();
+
             }
         }
+        
 
         public DateTime? LastMealDate
         {
@@ -297,6 +301,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool Feed(BasePlayerItem food)
         {
+            if (IsDeleted)
+                return false;
+
             var possibleFood = PetTemplate.Foods.FirstOrDefault(x => (x.FoodType == FoodTypeEnum.ITEM && x.FoodId == food.Template.Id) ||
                                                             (x.FoodType == FoodTypeEnum.ITEMTYPE && x.FoodId == food.Template.TypeId));
 

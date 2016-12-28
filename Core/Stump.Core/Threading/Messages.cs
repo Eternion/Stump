@@ -82,7 +82,7 @@ namespace Stump.Core.Threading
             var actions = Callback.GetInvocationList();
             foreach (var del in actions)
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.Append( del.Method.ReflectedType.FullName + "." + del.Method.Name );
             }
             return sb.ToString();
         }
@@ -202,7 +202,7 @@ namespace Stump.Core.Threading
             Delegate[] actions = Callback.GetInvocationList();
             foreach ( Delegate del in actions )
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.Append( del.Method.ReflectedType.FullName + "." + del.Method.Name );
             }
             return sb.ToString();
         }
@@ -301,7 +301,7 @@ namespace Stump.Core.Threading
             Delegate[] actions = Callback.GetInvocationList();
             foreach ( Delegate del in actions )
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.Append( del.Method.ReflectedType.FullName + "." + del.Method.Name );
             }
             return sb.ToString();
         }
@@ -400,7 +400,7 @@ namespace Stump.Core.Threading
             var actions = Callback.GetInvocationList();
             foreach (var del in actions)
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.Append( del.Method.ReflectedType.FullName + "." + del.Method.Name );
             }
             return sb.ToString();
         }
@@ -510,7 +510,7 @@ namespace Stump.Core.Threading
             Delegate[] actions = Callback.GetInvocationList();
             foreach ( Delegate del in actions )
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.Append( del.Method.ReflectedType.FullName + "." + del.Method.Name );
             }
             return sb.ToString();
         }

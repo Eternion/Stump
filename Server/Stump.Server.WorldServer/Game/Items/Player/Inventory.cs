@@ -911,14 +911,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 if (force != null)
                     handler.Operation = force.Value;
-
-                if ((item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.APPLY) ||
-                    (!item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.UNAPPLY))
-                {
-
-                    continue;
-                }
-
+                
                 handler.Efficiency = efficiency ?? 1+item.CurrentSubAreaBonus/100d;
 
                 handler.Apply();
@@ -1079,7 +1072,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void RefreshItem(BasePlayerItem item)
         {
-            InventoryHandler.SendObjectModifiedMessage(Owner.Client, item);
+            if (!item.IsDeleted)
+                InventoryHandler.SendObjectModifiedMessage(Owner.Client, item);
         }
 
         public override bool IsStackable(BasePlayerItem item, out BasePlayerItem stackableWith)
