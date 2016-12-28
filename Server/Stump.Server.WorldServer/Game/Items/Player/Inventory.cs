@@ -911,14 +911,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 if (force != null)
                     handler.Operation = force.Value;
-
-                if ((item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.APPLY) ||
-                    (!item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.UNAPPLY))
-                {
-
-                    continue;
-                }
-
+                
                 handler.Efficiency = efficiency ?? 1+item.CurrentSubAreaBonus/100d;
 
                 handler.Apply();
