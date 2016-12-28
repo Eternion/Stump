@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var affectedActor in GetAffectedActors())
             {
-                Caster.CarryActor(affectedActor, Effect, Spell);
+                Caster.CarryActor(affectedActor, Effect, Spell, CastHandler);
             }
 
             return true;

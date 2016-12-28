@@ -1933,7 +1933,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor GetCarryingActor() => Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
 
-        public void CarryActor(FightActor target, EffectBase effect, Spell spell)
+        public void CarryActor(FightActor target, EffectBase effect, Spell spell, SpellCastHandler castHandler)
         {
             var stateCarried = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTE_8);
             var stateCarrying = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTEUR_3);
@@ -1947,14 +1947,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
 
-            var addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), this, null, Cell, false);
+            var addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), this, castHandler, Cell, false);
             var actorBuff = new StateBuff(actorBuffId, this, this, addStateHandler,
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarrying)
             {
                 Duration = -1000
             };
 
-            addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), target, null, target.Cell, false);
+            addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), target, castHandler, target.Cell, false);
             var targetBuff = new StateBuff(targetBuffId, target, this, addStateHandler,
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarried)
             {
