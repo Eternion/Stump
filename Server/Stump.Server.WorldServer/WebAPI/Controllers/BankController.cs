@@ -2,8 +2,10 @@
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web.Http;
 
 namespace Stump.Server.WorldServer.WebAPI.Controllers
@@ -43,38 +45,70 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
         [Route("Account/{accountId:int}/Bank/{itemId:int}/{amount:int}/{maxStats:bool?}")]
         public IHttpActionResult Put(int accountId, int itemId, int amount, bool maxStats = false)
         {
-            var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
-
-            if (character == null)
-                return NotFound();
-
-            var item = ItemManager.Instance.CreateBankItem(character, itemId, amount, maxStats);
-
-            if (item == null)
-                return StatusCode(HttpStatusCode.InternalServerError);
-
-            if (item.Template.Id == (int)ItemIdEnum.TokenScroll)
+            IHttpActionResult result = null;
+            bool timeout = false;
+            var resetEvent = new ManualResetEventSlim();
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
             {
-                if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_AddOgrines))
+                if (timeout)
                 {
-                    item.Effects.Add(new EffectInteger(EffectsEnum.Effect_AddOgrines, (short)amount));
-                    item.Stack = 1;
+                    return;
                 }
-            }
-            else if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+
+                var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
+
+                if (character == null)
+                {
+                    result = NotFound();
+                    resetEvent.Set();
+                    return;
+                }
+
+                var item = ItemManager.Instance.CreateBankItem(character, itemId, amount, maxStats);
+
+                if (item == null)
+                {
+                    result = StatusCode(HttpStatusCode.InternalServerError);
+                    resetEvent.Set();
+                    return;
+                }
+
+                if (item.Template.Id == (int)ItemIdEnum.TokenScroll)
+                {
+                    if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_AddOgrines))
+                    {
+                        item.Effects.Add(new EffectInteger(EffectsEnum.Effect_AddOgrines, (short)amount));
+                        item.Stack = 1;
+                    }
+                }
+                else if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+                {
+                    item.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
+                }
+
+                var playerItem = character.Bank.AddItem(item);
+
+                if (playerItem == null)
+                {
+                    result = StatusCode(HttpStatusCode.InternalServerError);
+                    resetEvent.Set();
+                    return;
+                }
+
+                //Des objets ont été déposés dans votre banque.
+                character.SendSystemMessage(21, true);
+
+                result = Ok();
+                resetEvent.Set();
+            });
+
+            if (!resetEvent.Wait(15 * 1000))
             {
-                item.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
+                timeout = true;
+                return InternalServerError(new TimeoutException());
             }
 
-            var playerItem = character.Bank.AddItem(item);
-
-            if (playerItem == null)
-                return StatusCode(HttpStatusCode.InternalServerError);
-
-            //Des objets ont été déposés dans votre banque.
-            character.SendSystemMessage(21, true);
-
-            return Ok();
+            return result;
         }
 
         [Route("Account/{accountId:int}/Bank/{guid:int}/{amount:int}")]
