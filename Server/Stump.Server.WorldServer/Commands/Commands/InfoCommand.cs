@@ -74,6 +74,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Give informations about an area";
             ParentCommandType = typeof(InfoCommand);
             AddParameter("area", "area", "Target area", isOptional: true, converter: ParametersConverter.AreaConverter);
+            AddParameter<bool>("msgqueue", "msgqueue", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -98,6 +99,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.ReplyBold("Enabled : {0}", area.IsRunning);
             trigger.ReplyBold("Objects : {0}", area.ObjectCount);
             trigger.ReplyBold("Timers : {0}", area.TimersCount);
+            trigger.ReplyBold("MsgQueue : {0}", area.MsgQueueCount);
             trigger.ReplyBold("Update interval : {0}ms", area.UpdateDelay);
             trigger.ReplyBold("AvgUpdateTime : {0}ms", area.AverageUpdateTime);
             trigger.ReplyBold("LastUpdate : {0}", area.LastUpdateTime);
@@ -117,6 +119,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var errors = group.Where(x => x.AdditionalProperties.ContainsKey("exception"));
 
                 trigger.ReplyBold("- {0} {1} ms {2} entries {3} errors", group.Key, average, group.Count(), errors.Count());
+            }
+
+            if (trigger.IsArgumentDefined("msgqueue"))
+            {
+                foreach(var msg in area.MessageQueue.Select(x => x as Stump.Core.Threading.Message))
+                {
+                    trigger.ReplyBold(msg.ToString());
+                }
             }
         }
     }

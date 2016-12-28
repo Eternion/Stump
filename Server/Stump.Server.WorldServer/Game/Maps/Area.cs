@@ -105,6 +105,16 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return m_timers.Count; }
         }
 
+        public List<IMessage> MessageQueue
+        {
+            get { return m_messageQueue.ToList(); }
+        }
+
+        public int MsgQueueCount
+        {
+            get { return m_messageQueue.Count; }
+        }
+
         /// <summary>
         /// Don't modify the List.
         /// </summary>

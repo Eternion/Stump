@@ -447,6 +447,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\GiveOgrines.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GuildPotion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnFatalBlow.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnSmileyPack.cs" />
@@ -698,6 +699,7 @@
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotionManager.cs" />
     <Compile Include="Game\Items\Player\Custom\RikikiWandItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\TokenScroll.cs" />
     <Compile Include="Game\Items\Player\Custom\Watches.cs" />
     <Compile Include="Game\Items\Player\Custom\WrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\PetItem.cs" />

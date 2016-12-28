@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             // check type
 
             dropOnItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_LivingObjectId, (short)Template.Id));
-            foreach (var effect in Effects)
+            foreach (var effect in Effects.Where(x => x.EffectId != EffectsEnum.Effect_NonExchangeable_981 && x.EffectId != EffectsEnum.Effect_NonExchangeable_982))
             {
                 dropOnItem.Effects.RemoveAll(x => x.EffectId == effect.EffectId);
                 dropOnItem.Effects.Add(effect);

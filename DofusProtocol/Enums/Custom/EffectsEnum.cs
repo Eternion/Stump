@@ -2351,6 +2351,8 @@
         /// </summary>
         Effect_2798 = 2798,
 
+        Effect_AddOgrines = 15000,
+
         End
     }
 }

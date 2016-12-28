@@ -291,11 +291,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
         }
 
-        public SpellEffectFix EffectFix
-        {
-            get;
-            set;
-        }
+        [NonSerialized]
+        public SpellEffectFix EffectFix;
 
         public bool IsDirty
         {

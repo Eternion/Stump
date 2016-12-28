@@ -1533,13 +1533,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (!IsRiding && !Map.Outdoor && !Map.SpawningPools.Any(x => x is DungeonSpawningPool))
+           /* if (!IsRiding && !Map.Outdoor && !Map.SpawningPools.Any(x => x is DungeonSpawningPool))
             {
                 //Impossible d'être sur une monture à l'intérieur d'une maison.
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
 
                 return false;
-            }
+            }*/
 
             IsRiding = !IsRiding;
 
@@ -2384,8 +2384,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             else if (!MustBeJailed() && IsInJail() && !IsGameMaster())
                 Teleport(Breed.GetStartPosition());
 
-            if (IsRiding && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
-                Dismount();
+            /*if (IsRiding && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
+                Dismount();*/
 
             ResetCurrentSkill();
 
