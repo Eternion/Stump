@@ -81,15 +81,10 @@ namespace Stump.Server.WorldServer.Game.Arena
             return Party != null ? Party.Members : Enumerable.Repeat(Character, 1);
         }
 
-        public WorldClientCollection EnumerateClients()
-        {
-            return Party != null ? new WorldClientCollection(Party.Members.Select(x => x.Client)) : new WorldClientCollection(Character.Client);
-        }
-
         public bool IsCompatibleWith(ArenaQueueMember member)
         {
             return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank, MaxMatchableRank)
-                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference && (!ArenaCheckIP || !member.EnumerateClients().Any(x => EnumerateClients().Any(y => y.IP == x.IP)));
+                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference && (!ArenaCheckIP || !member.EnumerateCharacters().Any(x => EnumerateCharacters().Any(y => y.Client.IP == x.Client.IP)));
         }
     }
 }

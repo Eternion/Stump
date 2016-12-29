@@ -553,12 +553,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 taxCollector.Map.Refresh(taxCollector);
             }
 
-            foreach (var client in Clients)
+            foreach (var member in Members)
             {
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 383);
-                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
+                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 383);
+                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member.Character.GuildMember);
 
-                client.Character.RefreshActor();
+                member.Character.RefreshActor();
             }
 
             return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK;
@@ -583,12 +583,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 taxCollector.Map.Refresh(taxCollector);
             }
 
-            foreach (var client in Clients)
+            foreach (var member in Members.Where(x => x.IsConnected))
             {
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 382);
-                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
+                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 382);
+                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member.Character.GuildMember);
 
-                client.Character.RefreshActor();
+                member.Character.RefreshActor();
             }
 
             return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK;
