@@ -67,17 +67,7 @@ namespace Stump.Tools.SpellsExplorer
 
             Console.WriteLine("Loading spells...");
             SpellManager.Instance.Initialize();
-
-            MonsterManager.Instance.Initialize();
-
-            foreach(var grade in MonsterManager.Instance.GetMonsterGrades())
-            {
-                foreach(var spell in grade.Spells)
-                {
-                    if (spell.CurrentSpellLevel.ApCost == 0)
-                        Console.WriteLine($"{grade.Template.Name} - Spell {spell}");
-                }
-            }
+            
 
             while (true)
             {

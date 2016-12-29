@@ -303,11 +303,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public int MaxConsecutiveSpellCast(Spell spell, int ap)
         {
-            if (spell.CurrentSpellLevel.ApCost == 0)
-            {
-                logger.Warn($"Spell {spell} cost 0 AP -> can't be a valid AI spell !");
+            // can be casted indefinitly 
+            if (spell.CurrentSpellLevel.ApCost == 0 && spell.CurrentSpellLevel.MinCastInterval == 0)
                 return 0; 
-            }
 
             if (spell.CurrentSpellLevel.GlobalCooldown > 0)
                 return 1;
