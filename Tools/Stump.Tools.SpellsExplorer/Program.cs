@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Spells;
 using System.IO;
 using Stump.Core.Attributes;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Tools.SpellsExplorer
@@ -66,9 +67,7 @@ namespace Stump.Tools.SpellsExplorer
 
             Console.WriteLine("Loading spells...");
             SpellManager.Instance.Initialize();
-
-            ItemManager.Instance.Initialize();
-
+            
 
             while (true)
             {
@@ -262,6 +261,7 @@ namespace Stump.Tools.SpellsExplorer
 
             Console.WriteLine("Type : {0} - {1}", type.ShortName, type.LongName);
             Console.WriteLine("Level.SpellBreed = {0}, Level.HideEffects = {1}", levelTemplate.SpellBreed, levelTemplate.HideEffects);
+            Console.WriteLine("Cost = {0}, Max Stack = {1}, MaxCastPerTurn = {2}, MaxCastPerTarget= {3}, MinCastInterval = {4}", levelTemplate.ApCost, levelTemplate.MaxStack, levelTemplate.MaxCastPerTurn, levelTemplate.MaxCastPerTarget, levelTemplate.MinCastInterval);
             Console.WriteLine("Range = {0}, MinRange = {1}, RangeCanBeBoosted={2}", levelTemplate.Range, levelTemplate.MinRange, levelTemplate.RangeCanBeBoosted);
             Console.WriteLine("CastInLine = {0}, CastInDiagonal = {1}, CastTestLos={2}", levelTemplate.CastInLine, levelTemplate.CastInDiagonal, levelTemplate.CastTestLos);
             Console.WriteLine("StatesRequired = {0}, StatesForbidden = {1}", levelTemplate.StatesRequiredCSV, levelTemplate.StatesForbiddenCSV);

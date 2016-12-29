@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
     public class AISpellCastPossibility
     {
-        public const int MAX_CONSECUTIVE_CAST = 20;
+        public const int MAX_CONSECUTIVE_CAST = 10;
 
         public AISpellCastPossibility(Spell spell, SpellTarget target)
         {

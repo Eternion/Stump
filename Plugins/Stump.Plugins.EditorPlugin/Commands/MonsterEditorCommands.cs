@@ -302,22 +302,26 @@ namespace Stump.Plugins.EditorPlugin.Commands
             ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("spell", "spell", converter: ParametersConverter.SpellTemplateConverter);
+            AddParameter<int>("level", "level", "Spell level (1 to 6)", isOptional: true);
         }
 
         public override void ExecuteAdd(TriggerBase trigger)
         {
             var monster = trigger.Get<MonsterTemplate>("monster");
             var spell = trigger.Get<SpellTemplate>("spell");
+            var level = trigger.IsArgumentDefined("level") ? (int?) trigger.Get<int>("level") : null;
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
                 {
                     foreach (var grade in monster.Grades)
                     {
+                        var spellLevel = Math.Min(level ?? (int)grade.GradeId, spell.SpellLevelsIds.Length + 1);
+
                         var monsterSpell = new MonsterSpell()
                         {
                             SpellId = spell.Id,
-                            Level = (sbyte) grade.GradeId,
+                            Level = (sbyte)spellLevel,
                             MonsterGrade = grade,
                         };
 

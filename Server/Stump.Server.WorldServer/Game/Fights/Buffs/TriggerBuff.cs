@@ -99,7 +99,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
             protected set;
         }
-
         public void SetTrigger(BuffTriggerType trigger)
         {
             Triggers = new List<BuffTrigger> { new BuffTrigger(trigger) };
@@ -110,6 +109,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Apply()
         {
+            if (Applied)
+                return;
+
             base.Apply();
             if (ShouldTrigger(BuffTriggerType.Instant))
                 Apply(Caster, BuffTriggerType.Instant);
@@ -117,12 +119,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
+            if (Applied)
+                return;
+
             base.Apply();
             ApplyTrigger?.Invoke(this, fighterTrigger, trigger, token);
         }
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger)
         {
+            if (Applied)
+                return;
+
             base.Apply();
             ApplyTrigger?.Invoke(this, fighterTrigger, trigger, Token);
         }
