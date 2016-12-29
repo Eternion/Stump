@@ -131,6 +131,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
         }
 
+        public bool Exploded
+        {
+            get;
+            private set;
+        }
+
         public int DamageBonusPercent => Stats[PlayerFields.ComboBonus].TotalSafe;
 
         public override bool CanPlay() => false;
@@ -247,6 +253,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void Explode(int currentBonus)
         {
+            if (Exploded)
+                return;
+
+            Exploded = true;
             CastSpell(new SpellCastInformations(this, ExplodSpell, Cell)
             {
                 Force = true,
