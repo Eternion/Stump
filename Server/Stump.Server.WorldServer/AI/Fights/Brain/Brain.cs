@@ -160,11 +160,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 var targets = Fighter.Fight.GetAllFighters(cast.Target.AffectedCells).ToArray();
 
                 var i = 0;
-                while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell.Cell) == SpellCastResult.OK && i <= cast.MaxConsecutiveCast)
+                while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell.Cell) == SpellCastResult.OK && i < cast.MaxConsecutiveCast)
                 {
                     if (!Fighter.CastSpell(cast.Spell, cast.TargetCell.Cell))
                         break;
-                    
+
                     i++;
 
                     if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell)) ||
@@ -175,7 +175,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                     }
                 }
 
-                if (i > 0 && Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
+                if (i > 0 && i < cast.MaxConsecutiveCast && Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
                     SpellSelector.AnalysePossibilities();
                 else
                     break;

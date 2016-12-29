@@ -120,6 +120,6 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellItem GetSpellItem() => new SpellItem(Id, (sbyte)CurrentLevel);
 
-        public override string ToString() => string.Format("{0} ({1})", Template.Name, Template.Id);
+        public override string ToString() => string.Format("{0} ({1}) (lvl:{2})", Template.Name, Template.Id, CurrentLevel);
     }
 }

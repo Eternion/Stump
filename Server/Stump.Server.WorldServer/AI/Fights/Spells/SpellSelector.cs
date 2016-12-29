@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Database.World;
@@ -19,6 +20,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
     public class SpellSelector
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly EnvironmentAnalyser m_environment;
 
         public SpellSelector(AIFighter fighter, EnvironmentAnalyser environment)
@@ -300,6 +303,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public int MaxConsecutiveSpellCast(Spell spell, int ap)
         {
+            if (spell.CurrentSpellLevel.ApCost == 0)
+            {
+                logger.Warn($"Spell {spell} cost 0 AP -> can't be a valid AI spell !");
+                return 0; 
+            }
+
             if (spell.CurrentSpellLevel.GlobalCooldown > 0)
                 return 1;
 
