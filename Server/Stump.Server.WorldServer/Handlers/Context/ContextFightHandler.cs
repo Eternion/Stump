@@ -162,13 +162,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 }
                 else
                 {
+                    
+                    foreach(var character in target.Map.GetAllCharacters().Where(x => x != target && x != client.Character))
+                        ContextRoleplayHandler.SendGameRolePlayAggressionMessage(character.Client, client.Character, target);
                     //<b>%1</b> agresse <b>%2</b>
-                    foreach (var mapClient in target.Map.Clients.Where(mapClient => mapClient != client && mapClient != target.Client))
-                    {
-                        ContextRoleplayHandler.SendGameRolePlayAggressionMessage(mapClient, client.Character, target);
-                    }
 
-                    var fight = Singleton<FightManager>.Instance.CreateAgressionFight(target.Map,
+                    var fight = FightManager.Instance.CreateAgressionFight(target.Map,
                         client.Character.AlignmentSide, target.AlignmentSide);
 
                     fight.ChallengersTeam.AddFighter(client.Character.CreateFighter(fight.ChallengersTeam));

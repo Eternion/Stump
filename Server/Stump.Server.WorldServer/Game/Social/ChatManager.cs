@@ -364,13 +364,10 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
             }
 
-            client.Character.Guild.Clients.ForEach(entry =>
-            {
-                if (objectItems != null)
-                    SendChatServerWithObjectMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg, objectItems);
-                else
-                    SendChatServerMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg);
-            });
+            if (objectItems != null)
+                SendChatServerWithObjectMessage(client.Character.Guild.Clients, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg, objectItems);
+            else
+                SendChatServerMessage(client.Character.Guild.Clients, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg);
         }
 
         public void SayTeam(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)

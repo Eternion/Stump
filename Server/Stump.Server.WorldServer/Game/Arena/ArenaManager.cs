@@ -121,11 +121,10 @@ namespace Stump.Server.WorldServer.Game.Arena
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, true,
                 PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
 
-            foreach (var client in party.Clients.Where(client => client != party.Leader.Client))
-            {
+
+            foreach(var character in party.Members.Where(x => x != party.Leader))
+                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 272, party.Leader.Name);
                 //%1 vous a inscrit à un combat en Kolizéum.
-                BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 272, party.Leader.Name);
-            }
         }
 
         public void RemoveFromQueue(ArenaParty party)
