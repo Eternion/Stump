@@ -44,6 +44,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
             private set;
         }
 
+        public FightSequence BranchRoot
+        {
+            get
+            {
+                var current = this;
+                while (current.Parent != null)
+                    current = current.Parent;
+
+                return current;
+            }
+        }
+
         public bool Ended
         {
             get;

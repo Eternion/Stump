@@ -185,7 +185,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get;
         }
+        
 
+        FightSequence CurrentRootSequence   
+        {
+            get;
+        }
         DateTime LastSequenceEndTime { get; }
 
         bool IsSequencing
@@ -2107,6 +2112,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
             private set;
         }
+
+        public FightSequence CurrentRootSequence => LastSequence.BranchRoot;
 
         public bool IsSequencing => LastSequence != null && !LastSequence.Ended;
         
