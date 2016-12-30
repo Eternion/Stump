@@ -119,10 +119,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
             // to avoid recursion cannot be triggered twice in the same sequence (spell cast, move, turn end/begin...)
-            if (m_lastTriggeredSequence == fighterTrigger.Fight.LastSequence)
+            if (m_lastTriggeredSequence == fighterTrigger.Fight.CurrentRootSequence)
                 return;
 
-            m_lastTriggeredSequence = fighterTrigger.Fight.LastSequence; 
+            m_lastTriggeredSequence = fighterTrigger.Fight.CurrentRootSequence; 
             base.Apply();
             ApplyTrigger?.Invoke(this, fighterTrigger, trigger, token);
         }
