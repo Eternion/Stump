@@ -1116,7 +1116,7 @@ namespace DBSynchroniser
         }
 
         #endregion
-
+            
         #region Helpers
 
         static IList GetTableRows(D2OTable table)
@@ -1155,5 +1155,5 @@ namespace DBSynchroniser
         }
 
         #endregion
-    }
+    }   
 }

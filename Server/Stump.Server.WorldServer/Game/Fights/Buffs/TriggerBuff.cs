@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Fights.Sequences;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
@@ -58,6 +59,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             {"tS", BuffTriggerType.OnTackle},
             {"X", BuffTriggerType.OnDeath},
         };
+
+        private FightSequence m_lastTriggeredSequence;
         
         public TriggerBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority,
             TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger = null)
@@ -115,14 +118,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
+            // to avoid recursion cannot be triggered twice in the same sequence (spell cast, move, turn end/begin...)
+            if (m_lastTriggeredSequence == fighterTrigger.Fight.LastSequence)
+                return;
+
+            m_lastTriggeredSequence = fighterTrigger.Fight.LastSequence; 
             base.Apply();
             ApplyTrigger?.Invoke(this, fighterTrigger, trigger, token);
         }
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger)
         {
-            base.Apply();
-            ApplyTrigger?.Invoke(this, fighterTrigger, trigger, Token);
+            Apply(fighterTrigger, trigger, Token);
         }
         
 
