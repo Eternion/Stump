@@ -423,6 +423,7 @@
     <Compile Include="Game\Conditions\Criterions\SubAreaCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubscribeCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubscribeZoneCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\SubscriptionTimeCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\UnknownCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\UnusableCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\WeightCriterion.cs" />
@@ -686,6 +687,7 @@
     <Compile Include="Game\Items\Player\Bank.cs" />
     <Compile Include="Game\Items\Player\BankItem.cs" />
     <Compile Include="Database\Items\BankItemRecord.cs" />
+    <Compile Include="Game\Items\Player\Custom\BoundWrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\DofusItem.cs" />
     <Compile Include="Game\Items\Player\Custom\GuildShieldItem.cs" />
     <Compile Include="Game\Items\Player\Custom\Mounts\HarnessItem.cs" />

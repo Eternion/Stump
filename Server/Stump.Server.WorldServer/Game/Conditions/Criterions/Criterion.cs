@@ -260,6 +260,9 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 case SubscribeCriterion.Identifier:
                     return new SubscribeCriterion();
 
+                case SubscriptionTimeCriterion.Identifier:
+                    return new SubscriptionTimeCriterion();
+
                 case SubscribeZoneCriterion.Identifier:
                     return new SubscribeZoneCriterion();
 

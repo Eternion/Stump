@@ -1526,7 +1526,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (!IsRiding && (IsBusy() || IsInFight()))
+            if (!IsRiding && (IsBusy() || (IsInFight() && Fight.State != FightState.Placement)))
             {
                 //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
