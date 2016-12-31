@@ -399,7 +399,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             if (item.IsEquiped())
                 MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-                    
             return item.OnRemoveItem() && base.RemoveItem(item, delete, sendMessage);
         }
 

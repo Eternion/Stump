@@ -181,11 +181,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        FightSequence LastSequence
+        FightSequence CurrentSequence
         {
             get;
         }
-        
 
         FightSequence CurrentRootSequence   
         {
@@ -311,7 +310,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         FightSequence StartMoveSequence(FightPath path);
 
         FightSequence StartSequence(SequenceTypeEnum sequenceType);
-
+        void OnSequenceEnded(FightSequence fightSequence);
         void EndAllSequences();
 
         bool AcknowledgeAction(CharacterFighter fighter, int sequenceId);
@@ -2107,15 +2106,19 @@ namespace Stump.Server.WorldServer.Game.Fights
         private int m_nextSequenceId = 1;
         private readonly List<FightSequence> m_sequencesRoot = new List<FightSequence>();
 
-        public FightSequence LastSequence
+        public FightSequence CurrentSequence
         {
             get;
             private set;
         }
 
-        public FightSequence CurrentRootSequence => LastSequence.BranchRoot;
+        public FightSequence CurrentRootSequence
+        {
+            get;
+            private set;
+        }
 
-        public bool IsSequencing => LastSequence != null && !LastSequence.Ended;
+        public bool IsSequencing => CurrentRootSequence != null && !CurrentRootSequence.Ended;
         
         public DateTime LastSequenceEndTime => m_sequencesRoot.Count > 0 ? m_sequencesRoot.Max(x => x.EndTime) : DateTime.Now;
 
@@ -2145,16 +2148,27 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
 
                 m_sequencesRoot.Add(sequence);
+                CurrentRootSequence = sequence;
             }
             else
-                LastSequence.AddChildren(sequence);
+                CurrentSequence.AddChildren(sequence);
             
 
-            LastSequence = sequence;
+            CurrentSequence = sequence;
              
             // just send the root sequence
             if (sequence.Parent == null)
                 ActionsHandler.SendSequenceStartMessage(Clients, sequence);
+        }
+
+        public void OnSequenceEnded(FightSequence sequence)
+        {
+            if (CurrentSequence != sequence)
+            {
+                logger.Error($"Sequence incoherence {sequence} instead of {CurrentSequence}");
+            }
+
+            CurrentSequence = sequence.Parent;
         }
         
 
@@ -2167,7 +2181,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public void ResetSequences()
         {
             m_sequencesRoot.Clear();
-            LastSequence = null;
+            CurrentSequence = null;
             m_nextSequenceId = 1;
         }
 

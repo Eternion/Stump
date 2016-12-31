@@ -137,6 +137,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
                 child.EndSequence();
 
             Ended = true;
+            Fight.OnSequenceEnded(this);
 
             if (Parent == null)
                 ActionsHandler.SendSequenceEndMessage(Fight.Clients, this);
@@ -145,6 +146,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
         public void Dispose()
         {
             EndSequence();
+        }
+
+        public override string ToString()
+        {
+            return Type.ToString();
         }
     }
 }
