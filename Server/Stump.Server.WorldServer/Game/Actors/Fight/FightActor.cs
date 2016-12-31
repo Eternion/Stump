@@ -836,7 +836,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void TriggerDamageBuffs(Damage damage)
         {
-            TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
+            if (damage.School != EffectSchoolEnum.Pushback && !damage.ReflectedDamages && !IsIndirectSpellCast(damage.Spell))
+                TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
+
             TriggerBuffs(damage.Source, damage.Source.IsEnnemyWith(this) ? BuffTriggerType.OnDamagedByEnemy : BuffTriggerType.OnDamagedByAlly, damage);
 
             switch (damage.School)
@@ -1817,6 +1819,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsIndirectSpellCast(Spell spell)
         {
+            if (spell == null)
+                return false;
+
             return spell.Template.Id == (int) SpellIdEnum.EXPLOSION_SOURNOISE
                    || spell.Template.Id == (int) SpellIdEnum.EXPLOSION_DE_MASSE
                    || spell.Template.Id == (int) SpellIdEnum.PIÈGE_MORTEL_SRAM

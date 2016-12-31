@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             : base(id, team, template.Spells.ToArray(), summoner, cell, template.MonsterId)
         {
             Monster = template;
-            Look = Monster.Template.EntityLook;
+            Look = Monster.Template.EntityLook.Clone();
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
             AdjustStats();
