@@ -398,7 +398,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool sendMessage = true)
         {
             if (item.IsEquiped())
-                OnItemMoved(item, item.Position);
+                MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
                     
             return item.OnRemoveItem() && base.RemoveItem(item, delete, sendMessage);
         }

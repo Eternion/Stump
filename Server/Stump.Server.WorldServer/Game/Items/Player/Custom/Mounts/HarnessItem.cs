@@ -37,6 +37,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool CanEquip()
         {
+            if (IsEquiped())
+                return false;
+
             if (!Owner.HasEquippedMount() || !Owner.IsRiding)
             {
                 // Vous ne pouvez pas équiper un harnachement directement, essayez plutôt de l'associer sur une monture équipée.
@@ -52,10 +55,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         public override bool OnEquipItem(bool unequip)
         {
             if (!unequip)
+            {
                 foreach (var item in Owner.Inventory.Where(x => x.Position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_RIDE_HARNESS && x != this).ToArray())
                 {
                     Owner.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
                 }
+            }
 
             Owner.UpdateLook();
             Owner.EquippedMount?.RefreshMount();

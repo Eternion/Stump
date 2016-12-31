@@ -28,25 +28,25 @@ namespace Stump.Server.WorldServer.Game.Maps
         public ItemTemplate Item
         {
             get;
-            protected set;
+            private set;
         }
 
         public List<EffectBase> Effects
         {
             get;
-            protected set;
+            private set;
         }
 
         public int Quantity
         {
             get;
-            protected set;
+            private set;
         }
 
         public DateTime SpawnDate
         {
             get;
-            protected set;
+            private set;
         }
     }
 }
