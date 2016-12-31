@@ -267,12 +267,18 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (apparenceWrapper == null)
                 return;
 
-            var wrapperItem = ItemManager.Instance.TryGetTemplate(apparenceWrapper.Value);
+            var wrapperItemTemplate = ItemManager.Instance.TryGetTemplate(apparenceWrapper.Value);
 
             host.Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_Apparence_Wrapper);
             host.Invalidate();
 
             client.Character.Inventory.RefreshItem(host);
+
+            var wrapperItem = ItemManager.Instance.CreatePlayerItem(client.Character, wrapperItemTemplate, 1);
+
+            if (!wrapperItem.Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+                wrapperItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 1));
+
             client.Character.Inventory.AddItem(wrapperItem);
             client.Character.UpdateLook();
 

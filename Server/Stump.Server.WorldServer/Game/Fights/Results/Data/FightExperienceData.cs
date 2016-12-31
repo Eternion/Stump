@@ -70,7 +70,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
             set;
         }
 
-
         public override DofusProtocol.Types.FightResultAdditionalData GetFightResultAdditionalData()
         {
             return new FightResultExperienceData(ShowExperience, ShowExperienceLevelFloor, ShowExperienceNextLevelFloor, ShowExperienceFightDelta, ShowExperienceForGuild, ShowExperienceForMount,
