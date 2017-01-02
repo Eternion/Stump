@@ -1201,6 +1201,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnPlayerLifeStatusChanged(PlayerLifeStatusEnum status)
         {
+            Dismount();
+
             var phoenixMapId = 0;
 
             if (status == PlayerLifeStatusEnum.STATUS_PHANTOM)

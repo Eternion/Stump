@@ -650,18 +650,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (send)
                     BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 78);
 
+                
                 return false;
             }
 
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
-            if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
-                return true;
+            if (shield != null && (item.Template is WeaponTemplate && item.Template.TwoHanded))
+            {
+                //Vous avez dû lâcher votre bouclier pour équiper une arme à deux mains.
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
 
-            //Vous avez dû lâcher votre bouclier pour équiper une arme à deux mains.
-            if (send)
-                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
+                return false;
+            }
 
-            return false;
+            return true;
         }
 
         public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item) => !m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType) ? new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED } : m_itemsPositioningRules[item.Template.Type.SuperType];
