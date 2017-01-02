@@ -46,6 +46,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightSpellCastCriticalEnum Critical
         {
             get;
+            set;
         }
 
         public CastSpellEffect TriggerEffect

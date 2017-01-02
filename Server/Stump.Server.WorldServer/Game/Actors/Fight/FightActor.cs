@@ -774,9 +774,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
             {
-                var critical = RollCriticalDice(spellLevel);
+                cast.Critical = RollCriticalDice(spellLevel);
 
-                if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+                if (cast.Critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 {
                     OnSpellCasting(new DefaultSpellCastHandler(cast));
 

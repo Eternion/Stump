@@ -130,8 +130,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         }
 
                         targets++;
-                    }
-                    
+                    }             
                 }
 
                 if (actor.IsCarrying())

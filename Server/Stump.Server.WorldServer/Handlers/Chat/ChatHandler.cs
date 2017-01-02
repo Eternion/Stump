@@ -229,7 +229,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
         public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
         {
-            SendChatServerMessage(client, sender, channel, message, DateTime.UtcNow.GetUnixTimeStamp(), "");
+            SendChatServerMessage(client, sender, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint)
