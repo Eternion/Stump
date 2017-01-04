@@ -78,7 +78,6 @@ using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.Social;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
-using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
@@ -1320,6 +1319,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             StatsPoints = (ushort)newPoints;
 
             RefreshStats();
+            Inventory.CheckItemsCriterias();
 
             //Caractéristiques (de base et additionnelles) réinitialisées.(469)
             //Caractéristiques de base réinitialisées.(470)
@@ -1528,7 +1528,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (!IsRiding && (IsBusy() || (IsInFight() && Fight.State != FightState.Placement)))
+            if (IsBusy() || (IsInFight() && Fight.State != FightState.Placement))
             {
                 //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
@@ -2117,6 +2117,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
+            if (IsGhost())
+            {
+                if (send)
+                    // Aucun combat de kolizéum ne vous sera proposé tant que vous serez en tombe ou en fantôme.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 373);
+
+                return false;
+            }
+
             if (Fight is ArenaFight)
             {
                 if (send)
@@ -2126,7 +2135,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (Fight is FightAgression || Fight is FightPvT)
+            if (Fight is FightAgression || Fight is FightPvT || Fight is FightDuel)
                 return false;
 
             return true;
@@ -2375,8 +2384,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 BasicHandler.SendBasicNoOperationMessage(Client);
             }
-
-            BasicHandler.SendBasicTimeMessage(Client);
 
             if (map.Zaap != null && !KnownZaaps.Contains(map))
                 DiscoverZaap(map);
@@ -2880,7 +2887,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Math.Abs(Level - target.Level) > 20)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
-            if (IsGhost())
+            if (IsGhost() ||target.IsGhost())
                 return FighterRefusedReasonEnum.GHOST_REFUSED;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;

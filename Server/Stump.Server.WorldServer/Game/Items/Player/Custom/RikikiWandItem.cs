@@ -14,12 +14,34 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override ActorLook UpdateItemSkin(ActorLook characterLook)
+        /*public override ActorLook UpdateItemSkin(ActorLook characterLook)
         {
-            characterLook.SetScales(Owner.Breed.GetLook(Owner.Sex).Scales.ToArray());
+            var look = characterLook.GetRiderLook() ?? characterLook;
+
+            look.SetScales(Owner.Breed.GetLook(Owner.Sex).Scales.ToArray());
 
             if (IsEquiped())
-                characterLook.Rescale(0.5);
+                look.Rescale(0.8);
+
+            if (characterLook.GetRiderLook() != null)
+                characterLook.SetRiderLook(look);
+            else
+                characterLook = look;
+
+            return characterLook;
+        }*/
+
+        public override ActorLook UpdateItemSkin(ActorLook characterLook)
+        {
+            (characterLook.GetRiderLook() ?? characterLook).SetScales(Owner.Breed.GetLook(Owner.Sex).Scales.ToArray());
+
+            if (IsEquiped())
+            {
+                characterLook.Rescale(0.8);
+
+                foreach (var subLook in characterLook.SubLooks)
+                    subLook.Look.Rescale(0.8);
+            }
 
             return characterLook;
         }

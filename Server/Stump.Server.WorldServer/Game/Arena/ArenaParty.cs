@@ -5,7 +5,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Parties;
-using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {

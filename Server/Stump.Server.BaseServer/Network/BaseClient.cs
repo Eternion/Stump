@@ -24,6 +24,9 @@ namespace Stump.Server.BaseServer.Network
         public static int MessagesEntriesLimit = 20;
 
         [Variable(DefinableRunning = true)]
+        public static bool FloodCheck = true;
+
+        [Variable(DefinableRunning = true)]
         public static double FloodMinTime = 3.0;
 
         [Variable(DefinableRunning = true)]
@@ -282,7 +285,7 @@ namespace Stump.Server.BaseServer.Network
                 var time = m_messagesHistory.Last.Value.First.Subtract(m_messagesHistory.First.Value.First);
 
                 //Flood check, 
-                if (m_messagesHistory.Count == m_messagesHistory.MaxItems && time.TotalSeconds < FloodMinTime)
+                if (FloodCheck && (m_messagesHistory.Count == m_messagesHistory.MaxItems && time.TotalSeconds < FloodMinTime))
                 {
                     logger.Error($"Forced disconnection {this}: Flood: {m_messagesHistory.Count} messages in {time.TotalSeconds} seconds ! - LastMessages: {m_messagesHistory.Select(x => x.Second).ToCSV(",")}");
                     Disconnect();

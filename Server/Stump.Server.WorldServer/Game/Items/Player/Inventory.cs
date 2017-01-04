@@ -651,8 +651,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (send)
                     BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 78);
 
-                
-                return false;
+                MoveItem(weapon, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                return true;
             }
 
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
@@ -662,7 +662,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (send)
                     BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
 
-                return false;
+                MoveItem(shield, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                return true;
             }
 
             return true;

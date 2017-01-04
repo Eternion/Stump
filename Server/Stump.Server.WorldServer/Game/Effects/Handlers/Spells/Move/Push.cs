@@ -72,7 +72,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
-                Distance = (short)(PushDirection.Value.IsDiagonal() ? Math.Ceiling(integerEffect.Value / 2.0) : integerEffect.Value);
+                if (Distance == 0)
+                    Distance = (short)(PushDirection.Value.IsDiagonal() ? Math.Ceiling(integerEffect.Value / 2.0) : integerEffect.Value);
+
                 var stopCell = startCell.GetCellInDirection(PushDirection.Value, Distance);
                 
                 for (var i = 0; i < Distance; i++)

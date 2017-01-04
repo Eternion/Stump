@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                     break;
             }
 
-            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, silentCast, false, target?.Id ?? 0, cell.Id, (sbyte)castCritical, weaponId));
+            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, silentCast, true, target?.Id ?? 0, cell.Id, (sbyte)castCritical, weaponId));
         }
 
         public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, ActorLook look)
