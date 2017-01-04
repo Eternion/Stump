@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 {
     public sealed class WorldObjectItem : WorldObject
     {
-        public  WorldObjectItem(int id, Map map, Cell cell, ItemTemplate template, List<EffectBase> effects, int quantity)
+        public WorldObjectItem(int id, Map map, Cell cell, ItemTemplate template, List<EffectBase> effects, int quantity)
         {
             Id = id;
             Position = new ObjectPosition(map, cell);

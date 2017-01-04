@@ -34,10 +34,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     case 0:
                         break;
                     case 667: //Pandawa - Picole
-                        bonesId = (short) (driverLook != null ? 1084 : 44);
+                        bonesId = (short)(driverLook != null ? 1084 : 44);
                         break;
                     case 729: //Xelor - Momification
-                        bonesId = (short) (driverLook != null ? 1068 : 113);
+                        bonesId = (short)(driverLook != null ? 1068 : 113);
                         break;
                     case 103: //Zobal - Pleutre
                     case 106:

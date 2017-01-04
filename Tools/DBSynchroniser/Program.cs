@@ -41,6 +41,7 @@ using Stump.Server.WorldServer.Database.Effects;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Items.Pets;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -953,17 +954,21 @@ namespace DBSynchroniser
 
                 foreach (var spell in obj.Spells)
                 {
-                    var maxLevel = worldDatabase.Database.Fetch<int>($"SELECT COUNT(Id) FROM spells_levels WHERE SpellId = {spell}").FirstOrDefault();
+                    var levels = worldDatabase.Database.Fetch<SpellLevelTemplate>($"SELECT * FROM spells_levels WHERE SpellId = {spell}");
+
 
                     foreach (var grade in obj.Grades)
                     {
                         var gradeId = worldDatabase.Database.Fetch<int>($"SELECT Id FROM monsters_grades WHERE MonsterId = {grade.MonsterId} AND GradeId = {grade.Grade}").FirstOrDefault();
 
+                        // we have to exclude spell that have 0 AP cost (generally triggered spells)
+                        var level = new[] {(int)grade.Grade, levels.Count, levels.FindLastIndex(x => x.ApCost > 0 || x.MinCastInterval > 0) + 1}.Min();
+
                         var record = new MonsterSpell
                         {
                             MonsterGradeId = gradeId,
                             SpellId = (int)spell,
-                            Level = grade.Level > maxLevel ? (short)maxLevel : (short)grade.Level
+                            Level = (short)level
                         };
 
                         worldDatabase.Database.Insert(record);
