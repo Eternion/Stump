@@ -974,7 +974,7 @@ namespace DBSynchroniser
                 UpdateCounter(i, rows.Count);
             }
 
-            worldDatabase.Database.Execute("DELETE FROM monsters_spells WHERE Id = -1");//Avoid bad spells
+            worldDatabase.Database.Execute("DELETE FROM monsters_spells WHERE SpellId = -1");//Avoid bad spells
 
             EndCounter();
         }
