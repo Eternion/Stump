@@ -16,6 +16,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
     {
         const short PET_SIZE = 75;
 
+        List<short> m_defaultScales = new List<short>();
         List<short> m_scales = new List<short>();
         List<short> m_skins = new List<short>();
         List<SubActorLook> m_subLooks = new List<SubActorLook>();
@@ -40,6 +41,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_skins = skins.ToList();
             m_colors = indexedColors;
             m_scales = scales.ToList();
+            m_defaultScales = scales.ToList();
             m_subLooks = subLooks.ToList();
         }
 
@@ -54,6 +56,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         public ReadOnlyCollection<short> Skins => m_skins.AsReadOnly();
 
         public ReadOnlyCollection<short> Scales => m_scales.AsReadOnly();
+
+        public ReadOnlyCollection<short> DefaultScales => m_defaultScales.AsReadOnly();
 
         public ReadOnlyCollection<SubActorLook> SubLooks => m_subLooks.AsReadOnly();
 
@@ -97,6 +101,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public void ResetScales()
+        {
+            m_scales = m_defaultScales.ToList();
+            m_entityLook.Invalidate();
+        }
 
         public void SetScales(params short[] scales)
         {
@@ -276,6 +285,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_colors = m_colors.ToDictionary(x => x.Key, x => x.Value),
             m_skins = m_skins.ToList(),
             m_scales = m_scales.ToList(),
+            m_defaultScales = m_defaultScales.ToList(),
             m_subLooks = m_subLooks.Select(x => new SubActorLook(x.BindingIndex, x.BindingCategory, x.Look.Clone())).ToList(),
         };
 
