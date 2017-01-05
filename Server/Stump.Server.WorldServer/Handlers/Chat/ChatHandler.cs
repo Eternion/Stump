@@ -201,17 +201,17 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
         public static  void SendChatServerWithObjectMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string content, string fingerprint, IEnumerable<ObjectItem> objectItems)
         {
-            client.Send(new ChatServerWithObjectMessage((sbyte)channel, content, DateTime.UtcNow.GetUnixTimeStamp(), fingerprint, sender.Id, sender.Name, 0, objectItems));
+            client.Send(new ChatServerWithObjectMessage((sbyte)channel, content, DateTime.Now.GetUnixTimeStamp(), fingerprint, sender.Id, sender.Name, 0, objectItems));
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, string message)
         {
-            SendChatServerMessage(client, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, message, DateTime.UtcNow.GetUnixTimeStamp(), "", 0, "", 0);
+            SendChatServerMessage(client, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, message, DateTime.Now.GetUnixTimeStamp(), "", 0, "", 0);
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string message)
         {
-            SendChatServerMessage(client, sender, channel, message, DateTime.UtcNow.GetUnixTimeStamp(), "");
+            SendChatServerMessage(client, sender, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string message,
@@ -268,7 +268,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
         public static void SendChatAdminServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
         {
-            SendChatAdminServerMessage(client, sender, channel, message, DateTime.UtcNow.GetUnixTimeStamp(), "");
+            SendChatAdminServerMessage(client, sender, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
         public static void SendChatAdminServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message,
@@ -300,7 +300,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         
         public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel, string message)
         {
-            SendChatServerCopyMessage(client, sender, receiver, channel, message, DateTime.UtcNow.GetUnixTimeStamp(), "");
+            SendChatServerCopyMessage(client, sender, receiver, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
         public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint)
@@ -320,7 +320,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         public static void SendChatServerCopyWithObjectMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,
                                                      string message, IEnumerable<ObjectItem> objectItems)
         {
-            SendChatServerCopyWithObjectMessage(client, sender, receiver, channel, message, DateTime.UtcNow.GetUnixTimeStamp(), "", objectItems);
+            SendChatServerCopyWithObjectMessage(client, sender, receiver, channel, message, DateTime.Now.GetUnixTimeStamp(), "", objectItems);
         }
 
         public static void SendChatServerCopyWithObjectMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel, string message,

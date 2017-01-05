@@ -212,6 +212,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.Character.LoadRecord();
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
+            BasicHandler.SendBasicTimeMessage(client);
 
             SendCharacterSelectedSuccessMessage(client);
 
