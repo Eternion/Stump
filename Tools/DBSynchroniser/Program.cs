@@ -23,30 +23,22 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele;
-using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Monsters;
-using System.Net;
-using System.Text;
-using HtmlAgilityPack;
-using System.Net.Http;
-using System.Threading;
 using DBSynchroniser.Http;
 using DBSynchroniser.Interactives;
 using DBSynchroniser.Maps.Transitions;
 using Stump.Core.Extensions;
-using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Effects;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Items.Pets;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using LangText = DBSynchroniser.Records.Langs.LangText;
 using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
+using Stump.Server.WorldServer.Database.Mounts;
 
 namespace DBSynchroniser
 {
@@ -113,6 +105,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Generate interactive spawn (on stump_world)", GenerateInteractiveSpawnWithWarning),
             Tuple.Create<string, Action>("Generate monsters spells, spawns and drops (on stump_world)", GenerateMonstersSpawnsAndDrops),
             Tuple.Create<string, Action>("Import pets foods (on stump_world)", ImportPetsFoods),
+            Tuple.Create<string, Action>("Import mounts (on stump_world)", ImportMounts),
             Tuple.Create<string, Action>("Fix map transitions (on stump_world)", MapTransitionFix.ApplyFix),
         };
 
@@ -176,13 +169,18 @@ namespace DBSynchroniser
 
         private static IEnumerable<D2OTable> EnumerateTables(Assembly assembly)
         {
-            return from type in assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null && type.GetCustomAttribute<D2OIgnore>(false) == null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
-            {
-                Type = type,
-                ClassName = attr.Name,
-                TableName = tableAttr.TableName,
-                Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
-            };
+            return from type in assembly.GetTypes()
+                   let attr = type.GetCustomAttribute<D2OClassAttribute>()
+                   where attr != null && type.GetCustomAttribute<D2OIgnore>(false) == null
+                   let tableAttr = type.GetCustomAttribute<TableNameAttribute>()
+                   where tableAttr != null
+                   select new D2OTable
+                   {
+                       Type = type,
+                       ClassName = attr.Name,
+                       TableName = tableAttr.TableName,
+                       Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
+                   };
         }
 
         private static void ShowMenus()
@@ -984,6 +982,90 @@ namespace DBSynchroniser
             EndCounter();
         }
 
+        public static void ImportMounts()
+        {
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'mounts_bonus' AND UPDATE 'mounts_templates'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            Console.WriteLine("Importing mounts stats ...");
+            var worldDatabase = ConnectToWorld();
+            if (worldDatabase == null)
+                return;
+
+            Console.WriteLine("Initializing texts ...");
+            TextManager.Instance.ChangeDataSource(worldDatabase.Database);
+            TextManager.Instance.Initialize();
+            TextManager.Instance.SetDefaultLanguage(Languages.French);
+
+            Console.WriteLine("Fetch effects template ...");
+            var effectsTemplates = worldDatabase.Database.Fetch<EffectTemplate>(EffectTemplateRelator.FetchQuery).ToDictionary(entry => (short)entry.Id);
+
+            Console.WriteLine("Fetch items template ...");
+            var mountsTemplates = worldDatabase.Database.Fetch<MountTemplate>("SELECT * FROM mounts_templates").ToDictionary(entry => (short)entry.Id);
+
+            worldDatabase.Database.Execute("DELETE FROM mounts_bonus");
+            worldDatabase.Database.Execute("ALTER TABLE mounts_bonus AUTO_INCREMENT=1");
+
+            InitializeCounter();
+
+            var i = 0;
+            foreach (var mountTemplate in mountsTemplates)
+            {
+                var info = MountsExplorer.GetMountWebInfo(mountTemplate.Key);
+
+                if (info == null)
+                    continue;
+
+                foreach (var effect in info.Effects)
+                {
+                    var field = "";
+
+                    switch (effect.Name)
+                    {
+                        case "Temps de gestation":
+                            field = "FecondationTime";
+                            break;
+                        case "Maturité":
+                            field = "MaturityBase";
+                            break;
+                        case "Nombre de pods":
+                            field = "PodsBase";
+                            break;
+                        case "Energie":
+                            field = "EnergyBase";
+                            break;
+                        case "Taux d'apprentisage":
+                            field = "LearnCoefficient";
+                            effect.Value.Replace("%", string.Empty);
+                            break;
+                    }
+
+                    if (field == "")
+                    {
+                        var possibleEffect = effectsTemplates.FirstOrDefault(x => x.Value.Boost && x.Value.BonusType == 1
+                            && x.Value.Operator == "+" && x.Value.Description.ToLower().EndsWith(effect.Name.ToLower()));
+
+                        if (possibleEffect.Value == null)
+                            continue;
+
+                        var query = $"INSERT INTO `mounts_bonus` VALUES (NULL, '{mountTemplate.Key}', '{possibleEffect.Key}', '{effect.Value}')";
+                        worldDatabase.Database.Execute(query);
+                    }
+                    else
+                    {
+                        var query = $"UPDATE `mounts_templates` SET `{field}` = '{effect.Value}' WHERE `Id` = '{mountTemplate.Key}'";
+                        worldDatabase.Database.Execute(query);
+                    }
+                }
+
+                i++;
+                UpdateCounter(i, mountsTemplates.Count);
+            }
+
+            EndCounter();
+        }
+
         public static void ImportPetsFoods()
         {
             Console.WriteLine("WARNING IT WILL ERASE TABLES 'items_pets_foods'. ARE YOU SURE ? (y/n)");
@@ -1000,14 +1082,11 @@ namespace DBSynchroniser
             TextManager.Instance.Initialize();
             TextManager.Instance.SetDefaultLanguage(Languages.French);
 
-
             Console.WriteLine("Fetch effects template ...");
             var effectsTemplates = worldDatabase.Database.Fetch<EffectTemplate>(EffectTemplateRelator.FetchQuery).ToDictionary(entry => (short)entry.Id);
-
             
             Console.WriteLine("Fetch items template ...");
             var itemsTemplates = worldDatabase.Database.Fetch<ItemTemplate>(ItemTemplateRelator.FetchQuery).ToDictionary(entry => (short)entry.Id);
-
 
             worldDatabase.Database.Execute("DELETE FROM items_pets_foods");
             worldDatabase.Database.Execute("ALTER TABLE items_pets_foods AUTO_INCREMENT=1");
