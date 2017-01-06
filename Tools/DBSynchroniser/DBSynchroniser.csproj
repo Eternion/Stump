@@ -29,7 +29,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -134,7 +134,9 @@
   <ItemGroup>
     <Compile Include="BinaryFieldAttribute.cs" />
     <Compile Include="D2OTable.cs" />
+    <Compile Include="Http\MountsExplorer.cs" />
     <Compile Include="Http\PetsExplorer.cs" />
+    <Compile Include="Http\MountWebInfo.cs" />
     <Compile Include="Http\PetWebInfo.cs" />
     <Compile Include="Interactives\IdentifiableElement.cs" />
     <Compile Include="Interactives\InteractiveSpawnLoader.cs" />

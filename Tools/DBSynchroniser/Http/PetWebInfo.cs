@@ -1,5 +1,4 @@
-﻿
-using Stump.Server.WorldServer.Database.Items.Pets;
+﻿using Stump.Server.WorldServer.Database.Items.Pets;
 
 namespace DBSynchroniser.Http
 {
