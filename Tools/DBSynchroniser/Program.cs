@@ -39,6 +39,8 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using LangText = DBSynchroniser.Records.Langs.LangText;
 using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
 using Stump.Server.WorldServer.Database.Mounts;
+using Stump.DofusProtocol.D2oClasses.Tools.Ma3;
+using Stump.Server.WorldServer.Game.Actors.Look;
 
 namespace DBSynchroniser
 {
@@ -107,6 +109,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Import pets foods (on stump_world)", ImportPetsFoods),
             Tuple.Create<string, Action>("Import mounts (on stump_world)", ImportMounts),
             Tuple.Create<string, Action>("Fix map transitions (on stump_world)", MapTransitionFix.ApplyFix),
+            Tuple.Create<string, Action>("Import items appearanceId (on stump_data)", ImportItemsAppearance)
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -978,6 +981,50 @@ namespace DBSynchroniser
             }
 
             worldDatabase.Database.Execute("DELETE FROM monsters_spells WHERE SpellId = -1");//Avoid bad spells
+
+            EndCounter();
+        }
+
+        public static void ImportItemsAppearance()
+        {
+            Console.WriteLine("WARNING IT WILL UPDATE TABLES 'Items'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            if (!File.Exists("Items.ma3"))
+            {
+                Console.WriteLine("Items.ma3 not found. Please download here: http://www.dofus.tools/myAvatar3/assets/data/Items.ma3");
+                return;
+            }
+
+            var reader = new Ma3Reader("Items.ma3");
+            var items = reader.ReadFile();
+            var test = items.Where(x => x.Look != string.Empty);
+
+            InitializeCounter();
+
+            var i = 0;
+            foreach (var item in items)
+            {
+                var appearanceId = (short)item.SkinId;
+
+                if (item.Look != string.Empty)
+                {
+                    try
+                    {
+                        appearanceId = ActorLook.Parse(item.Look).BonesID;
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
+                    }
+                }
+
+                Database.Database.Execute($"UPDATE `Items` SET `AppearanceId` = '{appearanceId}' WHERE `Id` = '{item.Id}'");
+
+                i++;
+                UpdateCounter(i, items.Count);
+            }
 
             EndCounter();
         }

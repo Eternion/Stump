@@ -463,6 +463,7 @@
     <Compile Include="Tools\Ele\EleGraphicalElementTypes.cs" />
     <Compile Include="Tools\Ele\EleInstance.cs" />
     <Compile Include="Tools\Ele\EleReader.cs" />
+    <Compile Include="Tools\Ma3\Ma3Reader.cs" />
     <Compile Include="Tools\StringPatternDecoder.cs" />
     <Compile Include="Tools\Swl\SwfReader.cs" />
     <Compile Include="Tools\Swl\SwlFile.cs" />
