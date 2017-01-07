@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Characters;
+using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -74,6 +75,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                     Character.Inventory.AddItem(item, false);
                 }
             }
+
             if (ExperienceData != null)
                 ExperienceData.Apply();
 
@@ -81,6 +83,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 PvpData.Apply();
 
             CharacterHandler.SendCharacterStatsListMessage(Character.Client);
+            InventoryHandler.SendInventoryContentMessage(Character.Client);
         }
 
         public void AddEarnedExperience(int experience)
