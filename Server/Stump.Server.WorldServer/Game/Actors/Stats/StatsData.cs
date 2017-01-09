@@ -211,17 +211,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             {
                 Base = Base,
                 Additional = Additional,
-                Context = 0,
+                Context = Context,
                 Equiped = Equiped,
                 Given = Given
             };
 
             return clone;
-        }
-
-        public virtual void CopyContext(StatsData target)
-        {
-            target.Context = Context;
         }
     }
 }

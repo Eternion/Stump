@@ -392,7 +392,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 throw new Exception("Fighter wasn't disconnected");
             }
 
-            Character.Stats.CopyContext(character.Stats);
+            character.Stats.InitializeFromStats(Character.Stats);
             Character = character;
         }
 

@@ -382,18 +382,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public void InitializeFromStats(StatsFields fields)
         {
+            Fields.Clear();
+
             foreach (var field in fields.Fields)
             {
                 Fields.Add(field.Key, field.Value.CloneAndChangeOwner(Owner));
-            }
-        }
-
-
-        public void CopyContext(StatsFields fields)
-        {
-            foreach (var field in Fields)
-            {
-                field.Value.CopyContext(fields[field.Key]);
             }
         }
     }

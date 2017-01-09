@@ -278,6 +278,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             //Loading complete
             SendCharacterLoadingCompleteMessage(client);
 
+            BasicHandler.SendServerExperienceModificatorMessage(client);
+
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;
             client.WorldAccount.LastIp = client.IP;

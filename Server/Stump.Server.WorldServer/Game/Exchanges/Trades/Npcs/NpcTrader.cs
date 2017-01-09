@@ -83,7 +83,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
                 OnItemMoved(item, false, (int)amount);
             }
         }
-
         
         public void AddItem(ItemTemplate template, uint amount, List<EffectBase> effects)
         {
@@ -101,7 +100,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
                 OnItemMoved(item, false, (int)amount);
             }
         }
-
 
         public bool RemoveItem(ItemTemplate template, uint amount)
         {

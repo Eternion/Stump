@@ -60,16 +60,14 @@ namespace Stump.Server.WorldServer.Game
 
         void OnCharacterEntered(Character character)
         {
-            var handler = CharacterJoined;
-            if (handler != null) handler(character);
+            CharacterJoined?.Invoke(character);
         }
 
         public event Action<Character> CharacterLeft;
 
         void OnCharacterLeft(Character character)
         {
-            var handler = CharacterLeft;
-            if (handler != null) handler(character);
+            CharacterLeft?.Invoke(character);
         }
 
         public int CharacterCount
