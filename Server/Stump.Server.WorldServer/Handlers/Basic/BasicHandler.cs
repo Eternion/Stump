@@ -127,5 +127,10 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         {
             client.Send(new CinematicMessage(cinematicId));
         }
+
+        public static void SendServerExperienceModificatorMessage(IPacketReceiver client)
+        {
+            client.Send(new ServerExperienceModificatorMessage((short)(Rates.XpRate * 100)));
+        }
     }
 }

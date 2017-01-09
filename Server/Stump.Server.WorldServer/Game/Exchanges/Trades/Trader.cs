@@ -14,27 +14,21 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
 
         protected virtual void OnItemMoved(TradeItem item, bool modified, int difference)
         {
-            var handler = ItemMoved;
-            if (handler != null)
-                handler(this, item, modified, difference);
+            ItemMoved?.Invoke(this, item, modified, difference);
         }
 
         public event KamasChangedHandler KamasChanged;
 
         protected virtual void OnKamasChanged(uint kamasAmount)
         {
-            var handler = KamasChanged;
-            if (handler != null)
-                handler(this, kamasAmount);
+            KamasChanged?.Invoke(this, kamasAmount);
         }
 
         public event ReadyStatusChangedHandler ReadyStatusChanged;
 
         protected virtual void OnReadyStatusChanged(bool isready)
         {
-            var handler = ReadyStatusChanged;
-            if (handler != null)
-                handler(this, isready);
+            ReadyStatusChanged?.Invoke(this, isready);
         }
 
         private readonly List<TradeItem> m_items = new List<TradeItem>();

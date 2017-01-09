@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
 
-                return item != null && item.Stack >= x.Stack;
+                return item != null && item.Stack >= x.Stack && !item.IsEquiped();
             }))
             {
                 return;
@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             {
                 var item = SecondTrader.Character.Inventory.TryGetItem(x.Guid);
 
-                return item != null && item.Stack >= x.Stack;
+                return item != null && item.Stack >= x.Stack && !item.IsEquiped();
             }))
             {
                 return;
