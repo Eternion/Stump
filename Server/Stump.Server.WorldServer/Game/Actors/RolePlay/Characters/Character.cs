@@ -873,7 +873,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public PlayerStatus Status
         {
             get;
-            set;
+            private set;
         }
 
         public void SetStatus(PlayerStatusEnum status)
@@ -2665,6 +2665,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             DenyAllInvitations(party.Type);
             UpdateRegenedLife();
+
+            if (party.Disbanded)
+                return false;
 
             SetParty(party);
             party.MemberRemoved += OnPartyMemberRemoved;

@@ -5,10 +5,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
-
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using System;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
@@ -34,7 +32,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             if (integerEffect == null)
                 return false;
 
-            LastDeadFighter = Caster.Team.GetLastDeadFighter();
+            if (Spell.Id == (int)SpellIdEnum.LAISSE_SPIRITUELLE_420)
+                LastDeadFighter = Caster.Team.GetLastDeadFighter(true);
+            else
+                LastDeadFighter = Caster.Team.GetLastDeadFighter();
 
             if (LastDeadFighter == null)
                 return false;
@@ -59,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             {
                 var actorBuffId = actor.PopNextBuffId();
 
-                var addStateHandler = new AddState(new EffectDice((short)EffectsEnum.Effect_AddState, (short)SpellStatesEnum.ZOMBI_74, 0, 0, new EffectBase()), actor, null, actor.Cell, false);
+                var addStateHandler = new AddState(new EffectDice(EffectsEnum.Effect_AddState, (short)SpellStatesEnum.ZOMBI_74, 0, 0), actor, null, actor.Cell, false);
                 var actorBuff = new StateBuff(actorBuffId, actor, Caster, addStateHandler,
                     Spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.ZOMBI_74))
                 {

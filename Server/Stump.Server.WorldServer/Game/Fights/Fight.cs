@@ -1405,7 +1405,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             OnTeamOptionsChanged(DefendersTeam, FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
         }
 
-        public virtual bool CanSpectatorJoin(Character spectator) => !SpectatorClosed && (State == FightState.Placement || State == FightState.Fighting);
+        public virtual bool CanSpectatorJoin(Character spectator) => (!SpectatorClosed && (State == FightState.Placement || State == FightState.Fighting)) || spectator.IsGameMaster();
 
         public bool AddSpectator(FightSpectator spectator)
         {
@@ -1447,8 +1447,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (Challenge.Status != ChallengeStatusEnum.RUNNING)
                     ContextHandler.SendChallengeResultMessage(spectator.Client, Challenge);
             }
-            // Spectator 'X' joined
-            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
+            if (!spectator.Character.Invisible)
+            {
+                // Spectator 'X' joined
+                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
+            }
 
             if (TimeLine.Current != null)
                 ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying);
@@ -1536,8 +1539,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
 
                 DecrementGlyphDuration(FighterPlaying);
-                FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
                 TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
+                FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
             }
 
             // can die with triggers

@@ -178,7 +178,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
             if (!client.Character.Guild.CanAddMember())
             {
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 55, Guild.MaxMembersNumber);
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 55, client.Character.Guild.MaxMembers);
                 return;
             }
 

@@ -42,7 +42,32 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                     if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160 || Effect.EffectId == EffectsEnum.Effect_CastSpell_2160)
                     {
-                        Caster.CastAutoSpell(spell, affectedActor.Cell);
+                        if (Spell.Id == (int)SpellIdEnum.DOFUS_ABYSSAL)
+                        {
+                            var ignored = new[]
+                                {
+                                    SpellCastResult.CANNOT_PLAY,
+                                    SpellCastResult.CELL_NOT_FREE,
+                                    SpellCastResult.HAS_NOT_SPELL,
+                                    SpellCastResult.HISTORY_ERROR,
+                                    SpellCastResult.NOT_ENOUGH_AP,
+                                    SpellCastResult.NOT_IN_ZONE,
+                                    SpellCastResult.STATE_FORBIDDEN,
+                                    SpellCastResult.STATE_REQUIRED,
+                                    SpellCastResult.UNWALKABLE_CELL
+                                };
+
+                            Caster.CastSpell(new SpellCastInformations(Caster, spell, affectedActor.Cell)
+                                {
+                                    Silent = true,
+                                    ApFree = true,
+                                    BypassedConditions = ignored
+                                });
+                        }
+                        else
+                        {
+                            Caster.CastAutoSpell(spell, affectedActor.Cell);
+                        }
                     }
                     else if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1017)
                     {
