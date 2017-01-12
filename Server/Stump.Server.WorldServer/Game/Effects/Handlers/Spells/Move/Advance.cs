@@ -14,6 +14,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             : base(effect, caster, castHandler, targetedCell, critical)
         {
             Pull = true;
+            DamagesDisabled = true;
         }
 
         protected override bool InternalApply()

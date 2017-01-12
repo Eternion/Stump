@@ -164,14 +164,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnSpellCasting(SpellCastHandler castHandler)
         {
-            var handler = SpellCasting;
-            if (handler != null)
-                handler(this, castHandler);
+            SpellCasting?.Invoke(this, castHandler);
+
+            SpellHistory.RegisterCastedSpell(castHandler.SpellLevel, Fight.GetOneFighter(castHandler.TargetedCell));
         }
 
         public event SpellCastingHandler SpellCasted;
 
-        protected virtual void OnSpellCasted(SpellCastHandler castHandler, bool history = true)
+        protected virtual void OnSpellCasted(SpellCastHandler castHandler)
         {
             if (castHandler.SpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) && VisibleState == VisibleStateEnum.INVISIBLE)
             {
@@ -185,9 +185,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     Fight.ForEach(x => ActionsHandler.SendGameActionFightInvisibleDetectedMessage(x.Client, this, this), true);
                 }
             }
-
-            if (history)
-                SpellHistory.RegisterCastedSpell(castHandler.SpellLevel, Fight.GetOneFighter(castHandler.TargetedCell));
 
             SpellCasted?.Invoke(this, castHandler);
         }
@@ -758,7 +755,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return CastSpell(new SpellCastInformations(this, spell, cell));
         }
 
-
         public virtual bool CastSpell(SpellCastInformations cast)
         {
             if (!cast.Force && (!IsFighterTurn() || IsDead()))
@@ -908,6 +904,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage.Source != null && !damage.IgnoreDamageBoost)
             {
+                if (damage.Spell != null)
+                    damage.Amount += damage.Source.GetSpellBoost(damage.Spell);
+
                 damage.Source.CalculateDamageBonuses(damage);
             }
 
@@ -1149,9 +1148,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage.MarkTrigger is Trap)
                 bonusPercent += Stats[PlayerFields.TrapBonusPercent].TotalSafe;
-
-            if (damage.Spell != null)
-                bonus += damage.Source.GetSpellBoost(damage.Spell);
 
             damage.Amount = (int) Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus) / 100d
                                                + (bonus + criticalBonus + phyMgkBonus + eltBonus)) * ((100 + mult) / 100.0));

@@ -102,6 +102,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                                        x.EffectId == EffectsEnum.Effect_Corpulence);
 
                 Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, (short)MaxLifePoints));
+                Effects.Add(new EffectInteger(EffectsEnum.Effect_MealCount, 0));
+
                 Corpulence = 0;
 
                 m_monsterKilledEffects = new Dictionary<int, EffectDice>();

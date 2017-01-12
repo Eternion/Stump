@@ -5,8 +5,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-
 using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_Rewind)]
@@ -40,6 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             else
             {
                 buff.Target.Position.Cell = dstCell;
+
                 ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(buff.Target.Fight.Clients, Caster, buff.Target, buff.Target.Position.Cell);
             }
         }

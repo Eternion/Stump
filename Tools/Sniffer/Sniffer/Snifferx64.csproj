@@ -61,7 +61,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <ProjectGuid>{D91BCC72-4891-40C1-A1EF-D3F2BC76914D}</ProjectGuid>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>

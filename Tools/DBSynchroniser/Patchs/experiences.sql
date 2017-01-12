@@ -200,4 +200,4 @@ INSERT INTO `experiences` VALUES ('196', '3051194000', '20011940000', null, null
 INSERT INTO `experiences` VALUES ('197', '3257146000', '20571460000', null, null, '386120');
 INSERT INTO `experiences` VALUES ('198', '3474606000', '21146060000', null, null, '390060');
 INSERT INTO `experiences` VALUES ('199', '3703616000', '21736160000', null, null, '394020');
-INSERT INTO `experiences` VALUES ('200', '7407232000', '22356230000', null, null, '398000');
+INSERT INTO `experiences` VALUES ('200', '5555424000', '22356230000', null, null, '398000');

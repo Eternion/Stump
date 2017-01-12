@@ -6,9 +6,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-
 using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_RepelsTo)]
@@ -52,12 +51,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target.IsCarrying())
                 target.ThrowActor(Map.Cells[startCell.Id], true);
 
-            foreach (var character in Fight.GetCharactersAndSpectators().Where(target.IsVisibleFor))
-                ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, target, startCell.Id, endCell.Id);
+            if (target.IsAlive())
+            {
+                foreach (var character in Fight.GetCharactersAndSpectators().Where(target.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, target, startCell.Id, endCell.Id);
+            }
             
             target.Cell = endCell;
             target.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
-
 
             return true;
         }

@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 
@@ -9,8 +10,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(PlayerStatusUpdateRequestMessage.Id)]
         public static void HandlePlayerStatusUpdateRequestMessage(WorldClient client, PlayerStatusUpdateRequestMessage message)
         {
-            client.Character.Status = message.status;
-            SendPlayerStatusUpdateMessage(client, message.status);
+            client.Character.SetStatus((PlayerStatusEnum)message.status.statusId);
         }
 
         public static void SendPlayerStatusUpdateMessage(WorldClient client, PlayerStatus status)
