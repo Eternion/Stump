@@ -78,6 +78,7 @@ using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.Social;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 

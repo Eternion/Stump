@@ -1,5 +1,4 @@
-﻿<#@ assembly name="System.dll" #>
-<#@ import namespace="System" #>
+﻿<#@ import namespace="System" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
