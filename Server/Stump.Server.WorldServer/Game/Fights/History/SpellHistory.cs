@@ -6,7 +6,6 @@ using Stump.Core.Collections;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Spells;
 using System.Linq;
 using Stump.DofusProtocol.Types;
 
@@ -86,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         public bool CanCastSpell(SpellLevelTemplate spell)
         {
             if (spell.GlobalCooldown != 0 &&
-                Owner.Team.Fighters.Any(x => x.SpellHistory.GetMostRecentEntry(spell) != null &&
+                Owner.Team.Fighters.OfType<CharacterFighter>().Any(x => x.SpellHistory.GetMostRecentEntry(spell) != null &&
                                             x.SpellHistory.GetMostRecentEntry(spell).IsGlobalCooldownActive(CurrentRound)))
                 return false;
 

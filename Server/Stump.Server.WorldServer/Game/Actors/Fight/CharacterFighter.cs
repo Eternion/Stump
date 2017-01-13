@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -9,12 +8,10 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -266,6 +263,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (result == SpellCastResult.OK || cast.IsConditionBypassed(result))
                 return result;
 
+            if (cast.Silent)
+                return result;
+
             switch (result)
             {
                 case SpellCastResult.NO_LOS:
@@ -392,7 +392,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 throw new Exception("Fighter wasn't disconnected");
             }
 
-            Character.Stats.CopyContext(character.Stats);
+            character.Stats.InitializeFromStats(Character.Stats);
             Character = character;
         }
 

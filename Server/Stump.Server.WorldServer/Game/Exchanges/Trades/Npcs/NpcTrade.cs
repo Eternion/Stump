@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
                 {
                     var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
                     
-                    return item != null && item.Stack >= x.Stack;
+                    return item != null && item.Stack >= x.Stack && !item.IsEquiped();
                 }))
             {
                 return;

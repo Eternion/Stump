@@ -102,6 +102,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                                        x.EffectId == EffectsEnum.Effect_Corpulence);
 
                 Effects.Add(LifePointsEffect = new EffectInteger(EffectsEnum.Effect_LifePoints, (short)MaxLifePoints));
+                Effects.Add(new EffectInteger(EffectsEnum.Effect_MealCount, 0));
+
                 Corpulence = 0;
 
                 m_monsterKilledEffects = new Dictionary<int, EffectDice>();
@@ -253,7 +255,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             if (!m_monsterKilledEffects.TryGetValue(monster.Id, out var effect))
             {
-                effect = new EffectDice((short)EffectsEnum.Effect_MonsterKilledCount, 1, (short)monster.Id, 0, new EffectBase());
+                effect = new EffectDice(EffectsEnum.Effect_MonsterKilledCount, 1, (short)monster.Id, 0);
                 m_monsterKilledEffects.Add(monster.Id, effect);
                 Effects.Add(effect);
             }
@@ -288,7 +290,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 return;
             }
 
-            var item = ItemManager.Instance.CreatePlayerItem(Owner, ghostItem, 1, Effects.Clone());
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, ghostItem, (int)Stack, Effects.Clone());
             Owner.Inventory.RemoveItem(this);
             Owner.Inventory.AddItem(item);
             m_dead = true;

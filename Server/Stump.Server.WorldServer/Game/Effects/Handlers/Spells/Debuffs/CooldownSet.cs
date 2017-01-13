@@ -3,7 +3,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.History;
-using Stump.Server.WorldServer.Handlers.Actions;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Handlers.Actions;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs

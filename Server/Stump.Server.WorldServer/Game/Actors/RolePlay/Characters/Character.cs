@@ -874,7 +874,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public PlayerStatus Status
         {
             get;
-            set;
+            private set;
         }
 
         public void SetStatus(PlayerStatusEnum status)
@@ -1201,7 +1201,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnPlayerLifeStatusChanged(PlayerLifeStatusEnum status)
         {
-            Dismount();
+            if (status != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+                Dismount();
 
             var phoenixMapId = 0;
 
@@ -2665,6 +2666,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             DenyAllInvitations(party.Type);
             UpdateRegenedLife();
+
+            if (party.Disbanded)
+                return false;
 
             SetParty(party);
             party.MemberRemoved += OnPartyMemberRemoved;

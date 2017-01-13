@@ -107,6 +107,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 }
 
+                if (actor.IsAlive())
+                {
+                    foreach (var character in Fight.GetCharactersAndSpectators().Where(actor.IsVisibleFor))
+                        ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actor, startCell.CellId, stopCell.CellId);
+                }
+
                 if (!DamagesDisabled)
                 {
                     var fightersInline = Fight.GetAllFightersInLine(startCell, Distance, PushDirection.Value);
@@ -137,9 +143,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 if (actor.IsCarrying())
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
-
-                foreach (var character in Fight.GetCharactersAndSpectators().Where(actor.IsVisibleFor))
-                    ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actor, startCell.CellId, stopCell.CellId);
 
                 actor.Position.Cell = Map.Cells[stopCell.CellId];
 

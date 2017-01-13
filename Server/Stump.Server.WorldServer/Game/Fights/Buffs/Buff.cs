@@ -29,11 +29,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
             Efficiency = 1.0d;
 
-            if (triggerer == null && effectHandler.CastHandler.Informations.Triggerer != null)
+            if (triggerer == null && effectHandler.CastHandler?.Informations.Triggerer != null)
                 triggerer = effectHandler.CastHandler.Informations.Triggerer;
 
             BuffTriggered = triggerer != null;
-            DecrementReference = triggerer != null ? triggerer : Caster;
+            DecrementReference = triggerer ?? Caster;
         }
 
         public SpellEffectHandler EffectHandler
@@ -156,8 +156,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
                     using (fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED))
                     {
-                        var buffTrigger = this as TriggerBuff;
-                        if (buffTrigger != null && buffTrigger.ShouldTrigger(BuffTriggerType.Instant))
+                        if (this is TriggerBuff buffTrigger && buffTrigger.ShouldTrigger(BuffTriggerType.Instant))
                             buffTrigger.Apply(Target, BuffTriggerType.Instant);
                         else
                             Apply();

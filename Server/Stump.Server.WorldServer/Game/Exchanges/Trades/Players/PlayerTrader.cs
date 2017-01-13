@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
 
         public virtual bool MoveItemToPanel(BasePlayerItem item, int quantity)
         {
-            if (quantity <= 0 || quantity > item.Stack)
+            if (quantity <= 0 || quantity > item.Stack || item.IsEquiped())
                 return false;
 
             if ((item.IsLinkedToAccount() || item.IsLinkedToPlayer()) && Trade is PlayerTrade)
@@ -87,7 +87,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
 
                 return true;
             }
-
 
             var newItem = new PlayerTradeItem(this, item, (uint)quantity);
             AddItem(newItem);

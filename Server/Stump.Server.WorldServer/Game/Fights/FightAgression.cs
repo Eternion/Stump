@@ -132,8 +132,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var winnersLevel = (double)Winners.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
             var losersLevel = (double)Losers.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
+            var maxLosersLevel = winnersLevel + 15;
 
-            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * (losersLevel / winnersLevel));
+            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ((losersLevel > maxLosersLevel ? maxLosersLevel : losersLevel) / winnersLevel));
 
             if (Losers == character.Team)
                 delta = -delta;

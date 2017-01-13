@@ -139,29 +139,20 @@ namespace Stump.Server.AuthServer.Managers
 
         public IpBan FindIpBan(string ip)
         {
-            lock (m_ipBans)
-            {
-                return m_ipBans.FirstOrDefault(x => x.IPAsString == ip);
-            }
+            return m_ipBans.FirstOrDefault(x => x.IPAsString == ip);
         }
 
         public HardwareIdBan FindHardwareIdBan(string hardwareId)
         {
-            lock (m_hardwareIdBans)
-            {
-                return m_hardwareIdBans.FirstOrDefault(x => x.HardwareId == hardwareId);
-            }
+            return m_hardwareIdBans.FirstOrDefault(x => x.HardwareId == hardwareId);
         }
 
         public IpBan FindMatchingIpBan(string ipStr)
         {
-            lock (m_ipBans)
-            {
-                var ip = IPAddress.Parse(ipStr);
-                var bans = m_ipBans.Where(entry => entry.Match(ip));
+            var ip = IPAddress.Parse(ipStr);
+            var bans = m_ipBans.Where(entry => entry.Match(ip));
 
-                return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
-            }
+            return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
         }
 
         public UserGroupRecord FindUserGroup(int id)
