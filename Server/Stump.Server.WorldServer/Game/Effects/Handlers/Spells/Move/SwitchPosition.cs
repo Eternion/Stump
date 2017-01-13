@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             Caster.ExchangePositions(target);
 
-            Caster.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
+            //Caster.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
             target.TriggerBuffs(Caster, BuffTriggerType.OnMoved);
 
             return true;

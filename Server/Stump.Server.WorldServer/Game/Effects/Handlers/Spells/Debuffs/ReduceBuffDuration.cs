@@ -4,7 +4,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
@@ -46,6 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     actor.RemoveBuff(buff);
             }
 
+            actor.TriggerBuffs(actor, BuffTriggerType.OnDispelled);
             ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Effect.Id, Caster, actor, (short)-duration);
         }
 

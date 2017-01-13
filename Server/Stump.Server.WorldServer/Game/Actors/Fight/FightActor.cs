@@ -18,7 +18,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
@@ -54,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor> GetAlive;
 
-        protected virtual void OnGetAlive()
+        public virtual void OnGetAlive()
         {
             GetAlive?.Invoke(this);
         }
@@ -63,18 +62,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnReadyStateChanged(bool isReady)
         {
-            var handler = ReadyStateChanged;
-            if (handler != null)
-                handler(this, isReady);
+            ReadyStateChanged?.Invoke(this, isReady);
         }
 
         public event Action<FightActor, Cell, bool> CellShown;
 
         protected virtual void OnCellShown(Cell cell, bool team)
         {
-            var handler = CellShown;
-            if (handler != null)
-                handler(this, cell, team);
+            CellShown?.Invoke(this, cell, team);
         }
 
         public event Action<FightActor, int, int, int, FightActor, EffectSchoolEnum> LifePointsChanged;
@@ -83,45 +78,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnLeft()
         {
-            var evnt = FighterLeft;
-            if (evnt != null)
-                evnt(this);
+            FighterLeft?.Invoke(this);
         }
 
         protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
-            var handler = LifePointsChanged;
-
-            if (handler != null)
-                handler(this, delta, shieldDamages, permanentDamages, from, school);
+            LifePointsChanged?.Invoke(this, delta, shieldDamages, permanentDamages, from, school);
         }
 
         public event Action<FightActor, Damage> BeforeDamageInflicted;
 
         protected virtual void OnBeforeDamageInflicted(Damage damage)
         {
-            var handler = BeforeDamageInflicted;
-
-            if (handler != null)
-                handler(this, damage);
+            BeforeDamageInflicted?.Invoke(this, damage);
         }
 
         public event Action<FightActor, Damage> DamageInflicted;
 
         protected virtual void OnDamageInflicted(Damage damage)
         {
-            var handler = DamageInflicted;
-
-            if (handler != null)
-                handler(this, damage);
+            DamageInflicted?.Invoke(this, damage);
         }
 
         public event Action<FightActor, FightActor, int> DamageReducted;
 
         protected virtual void OnDamageReducted(FightActor source, int reduction)
         {
-            var handler = DamageReducted;
-            handler?.Invoke(this, source, reduction);
+            DamageReducted?.Invoke(this, source, reduction);
         }
 
         public event Action<FightActor, FightActor> DamageReflected;
@@ -129,8 +112,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected internal virtual void OnDamageReflected(FightActor target)
         {
             ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target);
-            var handler = DamageReflected;
-            handler?.Invoke(this, target);
+            DamageReflected?.Invoke(this, target);
         }
 
 
@@ -138,24 +120,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnPrePlacementChanged(ObjectPosition position)
         {
-            var handler = PrePlacementChanged;
-            handler?.Invoke(this, position);
+            PrePlacementChanged?.Invoke(this, position);
         }
 
         public event Action<FightActor, FightActor> PrePlacementSwapped;
 
         protected virtual void OnPrePlacementSwapped(FightActor actor)
         {
-            var handler = PrePlacementSwapped;
-            handler?.Invoke(this, actor);
+            PrePlacementSwapped?.Invoke(this, actor);
         }
 
         public event Action<FightActor> TurnPassed;
 
         protected virtual void OnTurnPassed()
         {
-            var handler = TurnPassed;
-            handler?.Invoke(this);
+            TurnPassed?.Invoke(this);
         }
 
         public delegate void SpellCastingHandler(FightActor caster, SpellCastHandler castHandler);
@@ -165,7 +144,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected virtual void OnSpellCasting(SpellCastHandler castHandler)
         {
             SpellCasting?.Invoke(this, castHandler);
-
             SpellHistory.RegisterCastedSpell(castHandler.SpellLevel, Fight.GetOneFighter(castHandler.TargetedCell));
         }
 
@@ -1570,6 +1548,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 RemoveBuff(buff);
             }
+
+            TriggerBuffs(this, BuffTriggerType.OnDispelled);
         }
 
         public void RemoveAndDispellAllBuffs(FightActor caster, FightDispellableEnum dispellable = FightDispellableEnum.REALLY_NOT_DISPELLABLE)
@@ -2072,7 +2052,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             ExchangePositions(target);
 
-            TriggerBuffs(this, BuffTriggerType.OnMoved);
+            //TriggerBuffs(this, BuffTriggerType.OnMoved);
             target.TriggerBuffs(this, BuffTriggerType.OnMoved);
 
             return true;

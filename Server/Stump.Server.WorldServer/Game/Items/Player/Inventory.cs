@@ -846,9 +846,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 return false;
             }
 
-            if (item.Template.Level <= Owner.Level)
-                return true;
-
             if (send)
                 BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
             return false;

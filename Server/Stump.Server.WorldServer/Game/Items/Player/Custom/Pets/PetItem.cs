@@ -438,14 +438,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override ActorLook UpdateItemSkin(ActorLook characterLook)
         {
-            if (AppearanceId <= 0)
+            var petLook = PetTemplate.Look?.Clone();
+
+            if (petLook == null)
                 return characterLook;
 
             switch (Template.Type.ItemType)
             {
                 case ItemTypeEnum.FAMILIER:
                     if (IsEquiped())
-                        characterLook.SetPetSkin((short) AppearanceId);
+                        characterLook.SetPetSkin(petLook.BonesID, petLook.DefaultScales.ToArray());
                     else
                         characterLook.RemovePets();
                     break;
@@ -454,23 +456,24 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                     {
                         characterLook = characterLook.GetRiderLook() ?? characterLook;
 
-                        var mountLook = new ActorLook((short) AppearanceId);
-
                         //KramKram
                         if (Template.Id == (int)ItemIdEnum.KRAMKRAM_13182)
                         {
                             if (characterLook.Colors.TryGetValue(3, out var color1) &&
                                 characterLook.Colors.TryGetValue(4, out var color2))
                             {
-                                mountLook.AddColor(1, color1);
-                                mountLook.AddColor(2, color2);
+                                petLook.AddColor(1, color1);
+                                petLook.AddColor(2, color2);
                             }
                         }
 
-                        characterLook.BonesID = 2;
-                        mountLook.SetRiderLook(characterLook);
+                        if (AppearanceId != 0)
+                            petLook.AddSkin((short)AppearanceId);
 
-                        return mountLook;
+                        characterLook.BonesID = 2;
+                        petLook.SetRiderLook(characterLook);
+
+                        return petLook;
                     }
                     else
                     {
