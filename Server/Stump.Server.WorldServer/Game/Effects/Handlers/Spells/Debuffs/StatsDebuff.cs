@@ -4,7 +4,10 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SubAgility)]
@@ -51,7 +54,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     continue;
 
                 if (Effect.EffectId == EffectsEnum.Effect_SubRange)
+                {
                     actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_DEBOOST_RANGE, Caster, actor, (short)(-integerEffect.Value));
+                    actor.TriggerBuffs(actor, BuffTriggerType.OnRangeLost);
+                }
 
                 AddStatBuff(actor, (short) (-integerEffect.Value), GetEffectCaracteristic(Effect.EffectId));
             }

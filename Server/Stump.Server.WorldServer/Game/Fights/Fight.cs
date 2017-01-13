@@ -1290,6 +1290,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             TimeLine.InsertFighter(fighter, TimeLine.Fighters.IndexOf(fighter.Summoner) + 1);
             BindFighterEvents(fighter);
+            fighter.OnGetAlive();
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }

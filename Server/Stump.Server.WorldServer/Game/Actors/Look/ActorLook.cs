@@ -14,8 +14,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 {
     public class ActorLook
     {
-        const short PET_SIZE = 75;
-
         List<short> m_defaultScales = new List<short>();
         List<short> m_scales = new List<short>();
         List<short> m_skins = new List<short>();
@@ -210,7 +208,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
                 subLook.SubEntityValidator.ObjectInvalidated += OnSubEntityInvalidated;
         }
 
-        public void SetPetSkin(short skin)
+        public void SetPetSkin(short skin, short[] scales)
         {
             var petLook = PetLook;
 
@@ -221,7 +219,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             else
             {
                 SetSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, petLook = new ActorLook()));
-                petLook.SetScales(PET_SIZE);
+                petLook.SetScales(scales);
             }
 
             petLook.BonesID = skin;

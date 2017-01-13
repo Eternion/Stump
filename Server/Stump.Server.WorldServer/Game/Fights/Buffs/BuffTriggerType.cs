@@ -34,9 +34,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         OnTurnBegin, // TB
         OnTurnEnd, // TE
 
-        /* AP, MP */
+        /* AP, MP, PO */
         OnMPLost, // m
         OnAPLost, // A
+        OnRangeLost, // R
 
         /* HEAL */
         OnHealed, //H
@@ -47,21 +48,24 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         OnStateRemoved, //Eo
         OnSpecificStateRemoved, //Eo#
 
+        /* BUFF */
+        OnDispelled, //d
+
         /* OTHERS */
         OnCriticalHit, //CC
+        OnDeath, //X
 
-        /* UNKNOWN */
-        Unknown_1, //d
-        OnMoved, //M
-        Unknown_3, //mA
-        Unknown_4, //ML
+        /* MOVEMENT */
         OnPushed, //MP
-        Unknown_6, //MS
-        Unknown_7, //P
-        Unknown_8, //R
+        OnMoved, //M
         OnTackled, //tF
         OnTackle, //tS
-        OnDeath, //X
+
+        /* UNKNOWN */
+        Unknown_3, //mA
+        Unknown_4, //ML
+        Unknown_6, //MS
+        Unknown_7, //P
 
         /* CUSTOM */
         BeforeDamaged,
@@ -81,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         /*
         *A=lose AP (101)
         *CC=on critical hit
-        *d=
+        *d=dispell
         *D=damage
         *DA=damage air
         *DBA=damage on ally
@@ -107,20 +111,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         *H=on heal
         *I=instant
         *m=lose mp (127)
-        *M=
+        *M=OnMoved
         *mA=
         *MD=push damage
         *MDM=
         *MDP=
         *ML=
-        *MP=
+        *MP=Pushed
         *MS=
         *P=
-        *R=
+        *R=Lost Range
         *TB=turn begin
         *TE=turn end
-        *tF=
-        *tS=
-        *X*/
+        *tF=Tackled
+        *tS=Tackle
+        *X= Death
+        */
     }
 }

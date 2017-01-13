@@ -40,7 +40,6 @@ using LangText = DBSynchroniser.Records.Langs.LangText;
 using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.DofusProtocol.D2oClasses.Tools.Ma3;
-using Stump.Server.WorldServer.Game.Actors.Look;
 
 namespace DBSynchroniser
 {
@@ -1003,6 +1002,10 @@ namespace DBSynchroniser
 
             InitializeCounter();
 
+            var worldDatabase = ConnectToWorld();
+            if (worldDatabase == null)
+                return;
+
             var i = 0;
             foreach (var item in items)
             {
@@ -1012,7 +1015,8 @@ namespace DBSynchroniser
                 {
                     try
                     {
-                        appearanceId = ActorLook.Parse(item.Look).BonesID;
+                        worldDatabase.Database.Execute($"UPDATE `items_pets` SET `LookString` = '{item.Look}' WHERE `Id` = '{item.Id}'");
+                        appearanceId = 0;
                     }
                     catch (Exception ex)
                     {
@@ -1090,7 +1094,7 @@ namespace DBSynchroniser
 
                     if (field == "")
                     {
-                        var possibleEffect = effectsTemplates.FirstOrDefault(x => x.Value.Boost && x.Value.BonusType == 1
+                        var possibleEffect = effectsTemplates.FirstOrDefault(x => x.Value.BonusType == 1
                             && x.Value.Operator == "+" && x.Value.Description.ToLower().EndsWith(effect.Name.ToLower()));
 
                         if (possibleEffect.Value == null)

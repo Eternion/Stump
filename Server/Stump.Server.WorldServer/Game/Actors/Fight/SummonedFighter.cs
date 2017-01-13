@@ -18,6 +18,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Position = summoner.Position.Clone();
             Cell = cell;
             Summoner = summoner;
+
+            FightStartPosition = Position.Clone();
+            MovementHistory.RegisterEntry(FightStartPosition.Cell);
         }
 
         protected SummonedFighter(int id, FightTeam team, IEnumerable<Spell> spells, FightActor summoner, Cell cell, int identifier)
@@ -27,6 +30,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Position = summoner.Position.Clone();
             Cell = cell;
             Summoner = summoner;
+
+            FightStartPosition = Position.Clone();
+            MovementHistory.RegisterEntry(FightStartPosition.Cell);
         }
 
         public override sealed int Id

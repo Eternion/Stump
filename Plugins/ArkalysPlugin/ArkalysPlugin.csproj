@@ -137,11 +137,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnouncePopup\AnnouncePopup.cs" />
+    <Compile Include="AtomDropper.cs" />
+    <Compile Include="AtomsManager.cs" />
     <Compile Include="Commands\GiveCommand.cs" />
     <Compile Include="Commands\TeleportCommand.cs" />
     <Compile Include="Npcs\NpcAlignement.cs" />
     <Compile Include="Npcs\NpcDofus.cs" />
-    <Compile Include="OrbsManager.cs" />
     <Compile Include="Prestige\PrestigeNpc.cs" />
     <Compile Include="Votes\VoteChecker.cs" />
     <Compile Include="Npcs\NpcShops.cs" />
@@ -194,6 +195,7 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="ArkalysPlugin.csproj.DotSettings" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -5,10 +5,10 @@ using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Items.Pets;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Actors.Look;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {
@@ -47,6 +47,8 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         private string m_foodTypesCSV;
         private byte[] m_possibleEffectsBin;
         private List<EffectBase> m_possibleEffects;
+        private ActorLook m_look;
+        private string m_lookString;
 
         [PrimaryKey("Id", false)]
         public int Id
@@ -148,6 +150,27 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        [Ignore]
+        public ActorLook Look
+        {
+            get { return m_look; }
+            set
+            {
+                m_look = value;
+                m_lookString = value != null ? value.ToString() : string.Empty;
+            }
+        }
+
+        [NullString]
+        public string LookString
+        {
+            get { return m_lookString; }
+            set
+            {
+                m_lookString = value;
+                m_look = !string.IsNullOrEmpty(m_lookString) ? ActorLook.Parse(m_lookString) : null;
+            }
+        }
 
         #region IAssignedByD2O Members
 
@@ -170,6 +193,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             m_foodItemsCSV = m_foodItems.ToCSV(",");
             m_foodTypesCSV = m_foodTypes.ToCSV(",");
+            m_lookString = m_look == null ? null : m_look.ToString();
         }
 
         #endregion

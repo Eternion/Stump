@@ -36,11 +36,6 @@ namespace DBSynchroniser.Http
                 .Where(x => x.Name == "div" && x.Attributes["class"]?.Value == "ak-title"
                             && x.ParentNode.Name == "div" && x.ParentNode.Attributes["class"]?.Value == "ak-content");
 
-            foreach (var stat in statsDiv)
-            {
-                var webStat = ParseStat(stat);
-            }
-
             return new MountWebInfo(mountId, statsDiv.Select(x => ParseStat(x)).ToArray());
         }
 
