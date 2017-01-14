@@ -40,6 +40,7 @@ using LangText = DBSynchroniser.Records.Langs.LangText;
 using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.DofusProtocol.D2oClasses.Tools.Ma3;
+using Stump.Server.WorldServer.Game.Actors.Look;
 
 namespace DBSynchroniser
 {
@@ -998,7 +999,7 @@ namespace DBSynchroniser
 
             var reader = new Ma3Reader("Items.ma3");
             var items = reader.ReadFile();
-            var test = items.Where(x => x.Look != string.Empty);
+            reader.Dispose();
 
             InitializeCounter();
 
@@ -1016,7 +1017,7 @@ namespace DBSynchroniser
                     try
                     {
                         worldDatabase.Database.Execute($"UPDATE `items_pets` SET `LookString` = '{item.Look}' WHERE `Id` = '{item.Id}'");
-                        appearanceId = 0;
+                        appearanceId = ActorLook.Parse(item.Look).BonesID;
                     }
                     catch (Exception ex)
                     {

@@ -846,9 +846,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 return false;
             }
 
-            if (send)
-                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
-            return false;
+            return true;
         }
 
         public void UseItem(BasePlayerItem item, int amount = 1)
