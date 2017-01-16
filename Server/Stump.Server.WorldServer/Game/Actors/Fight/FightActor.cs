@@ -2137,17 +2137,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool CanTackle(FightActor fighter)
             => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && CanBePushed() && fighter.CanBePushed() && fighter.Position.Cell != Position.Cell;
 
-        public virtual bool CanBePushed() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantBePushed);
+        public virtual bool CanBePushed() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantBeMoved && !x.State.CantBePushed);
 
-        public virtual bool CanSwitchPos() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantSwitchPosition);
+        public virtual bool CanSwitchPos() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantBeMoved && !x.State.CantSwitchPosition);
 
-        public virtual bool CanBeHeal() => GetStates().All(x => !x.State.Incurable);
+        public virtual bool CanBeHeal() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.Incurable);
 
-        public virtual bool CanDealDamage() => GetStates().All(x => !x.State.CantDealDamage);
+        public virtual bool CanDealDamage() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantDealDamage);
 
-        public virtual bool CanPlay() => GetStates().All(x => !x.State.PreventsFight);
+        public virtual bool CanPlay() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.PreventsFight);
 
-        public virtual bool IsInvulnerable(bool closeRange) => GetStates().Any(x => x.State.Invulnerable || (closeRange && x.State.InvulnerableMelee) || (!closeRange && x.State.InvulnerableRange));
+        public virtual bool IsInvulnerable(bool closeRange) => GetStates().Where(x => !x.IsDisabled).Any(x => x.State.Invulnerable || (closeRange && x.State.InvulnerableMelee) || (!closeRange && x.State.InvulnerableRange));
 
         public virtual bool HasLeft() => false;
 
