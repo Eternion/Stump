@@ -8,8 +8,8 @@
     <ProjectGuid>{9E50768A-CB28-4ACF-8961-295F82BDB5D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArkalysPlugin</RootNamespace>
-    <AssemblyName>ArkalysPlugin</AssemblyName>
+    <RootNamespace>GameplayPlugin</RootNamespace>
+    <AssemblyName>GameplayPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -195,7 +195,6 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ArkalysPlugin.csproj.DotSettings" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

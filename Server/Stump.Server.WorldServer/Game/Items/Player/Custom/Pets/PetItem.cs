@@ -438,7 +438,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override ActorLook UpdateItemSkin(ActorLook characterLook)
         {
-            var petLook = PetTemplate.Look?.Clone();
+            var petLook = PetTemplate?.Look?.Clone();
 
             if (petLook == null)
                 return characterLook;

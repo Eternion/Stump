@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         public override bool CanEquip()
         {
             if (IsEquiped())
-                return false;
+                return true;
 
             if (!Owner.HasEquippedMount() || !Owner.IsRiding)
             {

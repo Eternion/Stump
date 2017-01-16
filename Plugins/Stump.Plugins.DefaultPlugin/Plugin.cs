@@ -24,7 +24,7 @@ namespace Stump.Plugins.DefaultPlugin
 
         public override string Author
         {
-            get { return "bouh2"; }
+            get { return "Azote"; }
         }
 
         public override Version Version

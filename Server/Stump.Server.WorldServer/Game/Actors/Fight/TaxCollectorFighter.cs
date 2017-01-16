@@ -5,7 +5,6 @@ using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
@@ -33,8 +32,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(TaxCollectorNpc);
             
-            Cell cell;
-            if (!Fight.FindRandomFreeCell(this, out cell, false))
+            if (!Fight.FindRandomFreeCell(this, out var cell, false))
                 return;
 
             Position = new ObjectPosition(TaxCollectorNpc.Map, cell, TaxCollectorNpc.Direction);
@@ -70,8 +68,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public TaxCollectorFightersInformation GetTaxCollectorFightersInformation()
         {
-            var allies = Fight.State == FightState.Placement && Fight is FightPvT
-                ? (Fight as FightPvT).DefendersQueue.Select(x => x.GetCharacterMinimalPlusLookInformations())
+            var allies = Fight.State == FightState.Placement && Fight is FightPvT pvtFight
+                ? pvtFight.DefendersQueue.Select(x => x.GetCharacterMinimalPlusLookInformations())
                 : Team.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterMinimalPlusLookInformations());
 
             return new TaxCollectorFightersInformation(TaxCollectorNpc.GlobalId, allies,

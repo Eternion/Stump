@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target == null)
                 return false;
 
-            if (!target.CanBePushed() || target.HasState((int)SpellStatesEnum.INEBRANLABLE_157))
+            if (!target.CanBePushed())
                 return false;
 
             var startCell = target.Cell;

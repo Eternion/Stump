@@ -7,8 +7,8 @@
     <ProjectGuid>{C625DF79-CEA6-424F-9553-68547A04A556}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArkalysAntiCheat</RootNamespace>
-    <AssemblyName>ArkalysScriptPlugin</AssemblyName>
+    <RootNamespace>ScriptsPlugin</RootNamespace>
+    <AssemblyName>ScriptsPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

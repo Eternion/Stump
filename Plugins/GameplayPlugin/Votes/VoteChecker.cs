@@ -9,7 +9,7 @@ using Stump.Server.WorldServer.Game;
 using System;
 using System.Linq;
 
-namespace ArkalysPlugin.Votes
+namespace GameplayPlugin.Votes
 {
     public static class VoteChecker
     {

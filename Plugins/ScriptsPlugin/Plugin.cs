@@ -1,7 +1,7 @@
 ﻿using System;
 using Stump.Server.BaseServer.Plugins;
 
-namespace ArkalysScriptPlugin
+namespace ScriptsPlugin
 {
     public class Plugin : PluginBase
     {
@@ -13,17 +13,17 @@ namespace ArkalysScriptPlugin
 
         public override string Name
         {
-            get { return "Arkalys Script"; }
+            get { return "Scripts Plugin"; }
         }
 
         public override string Description
         {
-            get { return "This plugin do multiple things..."; }
+            get { return ""; }
         }
 
         public override string Author
         {
-            get { return "Orochi"; }
+            get { return "Adam"; }
         }
 
         public override Version Version

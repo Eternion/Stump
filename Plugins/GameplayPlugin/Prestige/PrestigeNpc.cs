@@ -28,7 +28,7 @@ using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using System.Linq;
 
-namespace ArkalysPlugin.Prestige
+namespace GameplayPlugin.Prestige
 {
     public static class PrestigeNpc
     {
