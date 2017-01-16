@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.BaseServer.Commands;
 
-namespace ArkalysPlugin.Commands
+namespace GameplayPlugin.Commands
 {
     public class GiveCommand : SubCommandContainer
     {

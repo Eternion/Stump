@@ -16,7 +16,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
-namespace ArkalysPlugin.Npcs
+namespace GameplayPlugin.Npcs
 {
     public static class NpcDofus
     {

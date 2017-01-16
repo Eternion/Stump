@@ -81,6 +81,7 @@ using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
+using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -1481,16 +1482,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (EquippedMount != null)
             {
+                if (!Dismount())
+                    return;
+
                 if (EquippedMount.Harness != null)
                 {
                     Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
                     // Votre harnachement est déposé dans votre inventaire.
                     BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
                 }
 
-                Dismount();
                 EquippedMount = null;
-
                 MountHandler.SendMountUnSetMessage(Client);
 
             }
@@ -1530,7 +1533,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (IsBusy() || (IsInFight() && Fight.State != FightState.Placement))
+            if ((IsBusy() && !(Dialog is PaddockExchange)) || (IsInFight() && Fight.State != FightState.Placement))
             {
                 //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
@@ -2748,10 +2751,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnFollowedMemberEnterMap(RolePlayActor actor, Map map)
         {
-            if (!(actor is Character))
+            if (!(actor is Character character))
                 return;
 
-            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, (Character)actor, true);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, character, true);
         }
 
         #endregion Party
@@ -2903,7 +2906,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
-            if (target.IsBusy() || IsFighting() || IsSpectator() || !IsInWorld)
+
+            if (IsBusy() || IsFighting() || IsSpectator() || !IsInWorld)
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+
+            if (target.IsBusy() || target.IsFighting || !target.IsInWorld)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (target.Map != Map)
@@ -2918,6 +2925,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public FighterRefusedReasonEnum CanAttack(MonsterGroup group)
         {
             if (IsFighting() || IsSpectator() || !IsInWorld)
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+
+            if (!group.IsInWorld)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (group.Map != Map)

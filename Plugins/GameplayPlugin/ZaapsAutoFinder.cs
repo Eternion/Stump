@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 
-namespace ArkalysPlugin
+namespace GameplayPlugin
 {
     public class ZaapsAutoFinder
     {

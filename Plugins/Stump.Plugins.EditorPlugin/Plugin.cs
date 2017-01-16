@@ -1,5 +1,4 @@
 using System;
-using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Plugins.EditorPlugin
@@ -24,7 +23,7 @@ namespace Stump.Plugins.EditorPlugin
 
         public override string Author
         {
-            get { return "bouh2"; }
+            get { return "Azote"; }
         }
 
         public override Version Version

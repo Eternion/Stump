@@ -15,6 +15,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         OnDamagedNeutral, // DN
         OnDamagedByAlly, // DBA
         OnDamagedByEnemy, // DBE
+        OnDamagedBySummon, // DI
         OnDamagedByWeapon, // DC
         OnDamagedBySpell, // DS
         OnDamagedByGlyph, // DG
@@ -22,12 +23,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         OnDamagedInCloseRange, //DM
         OnDamagedInLongRange, //DR
         OnDamagedByPush, // MD
-        OnDamagedUnknown_1, // DI
+        OnDamagedByEnemyPush, //MDP
+        OnDamageEnemyByPush, // MDM
         OnDamagedUnknown_2, // Dr
         OnDamagedUnknown_3, // DTB
         OnDamagedUnknown_4, // DTE
-        OnDamagedUnknown_5, // MDM
-        OnDamagedUnknown_6, // MDP
 
 
         /* TURN */
@@ -114,8 +114,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         *M=OnMoved
         *mA=
         *MD=push damage
-        *MDM=
-        *MDP=
+        *MDM=receive push damages from enemy push
+        *MDP=inflict push damage to enemy
         *ML=
         *MP=Pushed
         *MS=

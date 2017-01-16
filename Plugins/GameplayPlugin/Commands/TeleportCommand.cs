@@ -16,7 +16,7 @@ using Stump.Server.WorldServer.Handlers.Dialogs;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ArkalysPlugin.Commands
+namespace GameplayPlugin.Commands
 {
     public class TPCommands : InGameCommand
     {

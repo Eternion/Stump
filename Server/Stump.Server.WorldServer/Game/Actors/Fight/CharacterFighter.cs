@@ -174,9 +174,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return base.CastSpell(cast);
 
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
-            var weaponTemplate =  weapon.Template as WeaponTemplate;
 
-            if (weaponTemplate == null || !CanUseWeapon(cast.TargetedCell, weaponTemplate))
+            if (!(weapon.Template is WeaponTemplate weaponTemplate) || !CanUseWeapon(cast.TargetedCell, weaponTemplate))
             {
                 OnSpellCastFailed(cast);
                 return false;
@@ -338,15 +337,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool HasSpell(int id) => Character.Spells.HasSpell(id);
 
-        public bool IsSlaveTurn()
-        {
-            var summon = (Fight.TimeLine.Current as SummonedFighter);
-
-            if (summon == null)
-                return false;
-
-            return summon.Controller == this;
-        }
+        public bool IsSlaveTurn() => (Fight.TimeLine.Current as SummonedFighter)?.Controller == this;
 
         public SummonedFighter GetSlave()
         {

@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             foreach (var actor in GetAffectedActors().OrderByDescending(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)))
             {
-                if (!actor.CanBePushed() || actor.HasState((int)SpellStatesEnum.INEBRANLABLE_157))
+                if (!actor.CanBePushed())
                     continue;
 
                 var referenceCell = TargetedCell.Id == actor.Cell.Id ? CastPoint : TargetedPoint;

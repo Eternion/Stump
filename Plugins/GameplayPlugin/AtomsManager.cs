@@ -13,7 +13,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace ArkalysPlugin
+namespace GameplayPlugin
 {
     public class AtomsManager : DataManager<AtomsManager>
     {

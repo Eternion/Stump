@@ -44,6 +44,9 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         [WorldHandler(ZaapRespawnSaveRequestMessage.Id)]
         public static void HandleZaapRespawnSaveRequestMessage(WorldClient client, ZaapRespawnSaveRequestMessage message)
         {
+            if (client.Character.Map.Zaap == null)
+                return;
+
             client.Character.SetSpawnPoint(client.Character.Map);
         }
 

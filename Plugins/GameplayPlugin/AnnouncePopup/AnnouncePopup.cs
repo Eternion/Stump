@@ -3,7 +3,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
-namespace ArkalysPlugin.AnnouncePopup
+namespace GameplayPlugin.AnnouncePopup
 {
     public static class AnnouncePopup
     {

@@ -11,7 +11,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using System.Linq;
 
-namespace ArkalysPlugin.Npcs
+namespace GameplayPlugin.Npcs
 {
     internal class NpcAlignement
     {
