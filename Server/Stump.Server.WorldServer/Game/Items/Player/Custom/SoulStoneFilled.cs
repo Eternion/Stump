@@ -16,7 +16,26 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
     [ItemType(ItemTypeEnum.PIERRE_D_ÂME_PLEINE)]
     public class SoulStoneFilled : BasePlayerItem
     {
-        public static int[] FIGHT_MAPS = {11796994, 4981250}; // Brakmar and bonta arenas
+        public static int[] FIGHT_MAPS = {
+            4981250,
+            4981762,
+            4981761,
+            4981760,
+            4981248,
+            4981249,
+            4980738,
+            4980737,
+            4980736,
+            11796480,
+            11796481,
+            11796482,
+            11796992,
+            11796993,
+            11796994,
+            11797504,
+            11797505,
+            11797506
+        }; // Brakmar and bonta arenas
 
         public SoulStoneFilled(Character owner, PlayerItemRecord record)
             : base(owner, record)
