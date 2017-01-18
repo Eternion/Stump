@@ -20,18 +20,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void NotifySuccess()
         {
-            var handler = Success;
-            if (handler != null)
-                handler(this);
+            Success?.Invoke(this);
         }
 
         public event Action<ReadyChecker, CharacterFighter[]> Timeout;
 
         private void NotifyTimeout(CharacterFighter[] laggers)
         {
-            var handler = Timeout;
-            if (handler != null)
-                handler(this, laggers);
+            Timeout?.Invoke(this, laggers);
         }
 
         private readonly List<CharacterFighter> m_fighters;

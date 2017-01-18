@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FakeClients.Handlers;
-using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Plugins;
-using Stump.Server.WorldServer;
 
 namespace FakeClients
 {
@@ -30,7 +24,7 @@ namespace FakeClients
 
         public override string Author
         {
-            get { return "Bouh2"; }
+            get { return "Azote"; }
         }
 
         public override bool AllowConfigUpdate

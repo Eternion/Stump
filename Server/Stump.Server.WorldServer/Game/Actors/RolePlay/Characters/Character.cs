@@ -1482,9 +1482,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (EquippedMount != null)
             {
-                if (!Dismount())
-                    return;
-
                 if (EquippedMount.Harness != null)
                 {
                     Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
@@ -1493,6 +1490,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
                 }
 
+                Dismount();
                 EquippedMount = null;
                 MountHandler.SendMountUnSetMessage(Client);
 

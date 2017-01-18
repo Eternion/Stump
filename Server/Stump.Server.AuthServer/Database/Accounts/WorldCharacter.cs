@@ -1,5 +1,6 @@
 ﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace Stump.Server.AuthServer.Database
 {
@@ -13,23 +14,19 @@ namespace Stump.Server.AuthServer.Database
     {
         // Primitive properties
 
-        public long Id
-        {
-            get;
-            set;
-        }
-
         [PrimaryKey("CharacterId", false)]
         public int CharacterId
         {
             get;
             set;
         }
+
         public int AccountId
         {
             get;
             set;
         }
+
         public int WorldId
         {
             get;

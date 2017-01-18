@@ -315,7 +315,6 @@
     <Compile Include="IPC\Messages\ChangeStateMessage.cs" />
     <Compile Include="IPC\Messages\CreateAccountMessage.cs" />
     <Compile Include="IPC\Messages\DeleteAccountMessage.cs" />
-    <Compile Include="IPC\Messages\DeleteCharacterMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectClientMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectedClientMessage.cs" />
     <Compile Include="IPC\Messages\GroupAddMessage.cs" />

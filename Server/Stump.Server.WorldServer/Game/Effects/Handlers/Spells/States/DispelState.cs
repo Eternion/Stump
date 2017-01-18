@@ -4,7 +4,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using System.Linq;
 

@@ -23,7 +23,6 @@ using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Database.Accounts;
-using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
@@ -33,8 +32,6 @@ namespace Stump.Server.AuthServer.IPC
     public class IPCOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-
         private readonly Dictionary<Type, Action<object, IPCMessage>> m_handlers = new Dictionary<Type, Action<object, IPCMessage>>();
 
         public IPCOperations(IPCClient ipcClient)
@@ -62,7 +59,7 @@ namespace Stump.Server.AuthServer.IPC
             set;
         }
 
-        private AccountManager AccountManager
+        private Managers.AccountManager AccountManager
         {
             get;
             set;
@@ -96,7 +93,7 @@ namespace Stump.Server.AuthServer.IPC
 
             Database.OpenSharedConnection();
 
-            AccountManager = new AccountManager();
+            AccountManager = new Managers.AccountManager();
             AccountManager.ChangeDataSource(Database);
             AccountManager.Initialize();
         }
@@ -118,13 +115,13 @@ namespace Stump.Server.AuthServer.IPC
             if (!string.IsNullOrEmpty(message.Ticket))
             {
                 // no DB action here
-                var account = AccountManager.Instance.FindCachedAccountByTicket(message.Ticket);
+                var account = Managers.AccountManager.Instance.FindCachedAccountByTicket(message.Ticket);
                 if (account == null)
                 {
                     Client.SendError(string.Format("Account not found with ticket {0}", message.Ticket), message);
                     return;
                 }
-                AccountManager.Instance.UnCacheAccount(account);
+                Managers.AccountManager.Instance.UnCacheAccount(account);
 
                 Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
             }
@@ -192,7 +189,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(ChangeStateMessage message)
         {
-            WorldServerManager.Instance.ChangeWorldState(WorldServer, message.State);
+            Managers.WorldServerManager.Instance.ChangeWorldState(WorldServer, message.State);
             Client.ReplyRequest(new CommonOKMessage(), message);
         }
 
@@ -209,13 +206,13 @@ namespace Stump.Server.AuthServer.IPC
             if (WorldServer.CharsCount >= WorldServer.CharCapacity &&
                 WorldServer.Status == ServerStatusEnum.ONLINE)
             {
-                WorldServerManager.Instance.ChangeWorldState(WorldServer, ServerStatusEnum.FULL);
+                Managers.WorldServerManager.Instance.ChangeWorldState(WorldServer, ServerStatusEnum.FULL);
             }
 
             if (WorldServer.CharsCount < WorldServer.CharCapacity &&
                 WorldServer.Status == ServerStatusEnum.FULL)
             {
-                WorldServerManager.Instance.ChangeWorldState(WorldServer, ServerStatusEnum.ONLINE);
+                Managers.WorldServerManager.Instance.ChangeWorldState(WorldServer, ServerStatusEnum.ONLINE);
             }
 
             Database.Update(WorldServer);
@@ -241,7 +238,7 @@ namespace Stump.Server.AuthServer.IPC
                 Email = accountData.Email
             };
 
-            if (AccountManager.CreateAccount(account))
+            if (Managers.AccountManager.Instance.CreateAccount(account))
                 Client.ReplyRequest(new CommonOKMessage(), message);
             else
                 Client.SendError(string.Format("Login {0} already exists", accountData.Login), message);
@@ -286,7 +283,7 @@ namespace Stump.Server.AuthServer.IPC
                 return;
             }
 
-            AccountManager.Instance.DisconnectClientsUsingAccount(account);
+            Managers.AccountManager.Instance.DisconnectClientsUsingAccount(account);
 
             if (AccountManager.DeleteAccount(account))
                 Client.ReplyRequest(new CommonOKMessage(), message);
@@ -308,22 +305,6 @@ namespace Stump.Server.AuthServer.IPC
                 Client.ReplyRequest(new CommonOKMessage(), message);
             else
                 Client.SendError(string.Format("Cannot add {0} character to {1} account", message.CharacterId, message.AccountId), message);
-        }
-
-        private void Handle(DeleteCharacterMessage message)
-        {
-            var account = AccountManager.FindAccountById(message.AccountId);
-
-            if (account == null)
-            {
-                Client.SendError(string.Format("Account {0} not found", message.AccountId), message);
-                return;
-            }
-
-            if (AccountManager.DeleteAccountCharacter(account, WorldServer, message.CharacterId))
-                Client.ReplyRequest(new CommonOKMessage(), message);
-            else
-                Client.SendError(string.Format("Cannot delete {0} character from {1} account", message.CharacterId, message.AccountId), message);
         }
 
         private void Handle(BanAccountMessage message)
@@ -387,7 +368,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(BanIPMessage message)
         {
-            var ipBan = AccountManager.FindIpBan(message.IPRange);
+            var ipBan = Managers.AccountManager.Instance.FindIpBan(message.IPRange);
             var ip = IPAddressRange.Parse(message.IPRange);
             if (ipBan != null)
             {
@@ -410,7 +391,7 @@ namespace Stump.Server.AuthServer.IPC
                 };
 
                 Database.Insert(record);
-                AccountManager.Instance.AddIPBan(record);
+                Managers.AccountManager.Instance.AddIPBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -418,7 +399,7 @@ namespace Stump.Server.AuthServer.IPC
 
         void Handle(UnBanIPMessage message)
         {
-            var ipBan = AccountManager.FindIpBan(message.IPRange);
+            var ipBan = Managers.AccountManager.Instance.FindIpBan(message.IPRange);
             if (ipBan == null)
             {
                 Client.SendError(string.Format("IP ban {0} not found", message.IPRange), message);
@@ -426,13 +407,15 @@ namespace Stump.Server.AuthServer.IPC
             else
             {
                 Database.Delete(ipBan);
+                Managers.AccountManager.Instance.RemoveIPBan(ipBan);
+
                 Client.ReplyRequest(new CommonOKMessage(), message);
             }
         }
 
         void Handle(BanHardwareIdMessage message)
         {
-            var hardwareIdBan = AccountManager.FindHardwareIdBan(message.HardwareId);
+            var hardwareIdBan = Managers.AccountManager.Instance.FindHardwareIdBan(message.HardwareId);
             if (hardwareIdBan != null)
             {
                 hardwareIdBan.BanReason = message.BanReason;
@@ -452,7 +435,7 @@ namespace Stump.Server.AuthServer.IPC
                 };
 
                 Database.Insert(record);
-                AccountManager.Instance.AddHardwareIdBan(record);
+                Managers.AccountManager.Instance.AddHardwareIdBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -460,7 +443,7 @@ namespace Stump.Server.AuthServer.IPC
 
         void Handle(UnBanHardwareIdMessage message)
         {
-            var hardwareIdBan = AccountManager.FindHardwareIdBan(message.HardwareId);
+            var hardwareIdBan = Managers.AccountManager.Instance.FindHardwareIdBan(message.HardwareId);
             if (hardwareIdBan == null)
             {
                 Client.SendError(string.Format("HardwareId ban {0} not found", message.HardwareId), message);
@@ -468,6 +451,8 @@ namespace Stump.Server.AuthServer.IPC
             else
             {
                 Database.Delete(hardwareIdBan);
+                Managers.AccountManager.Instance.RemoveHardwareIdBan(hardwareIdBan);
+
                 Client.ReplyRequest(new CommonOKMessage(), message);
             }
         }

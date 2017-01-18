@@ -3,10 +3,8 @@ using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
@@ -19,13 +17,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterDeletionRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterDeletionRequestMessage(WorldClient client, CharacterDeletionRequestMessage message)
         {
-            if (!IPCAccessor.Instance.IsConnected)
-            {
-                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
-                client.DisconnectLater(1000);
-                return;
-            }
-
             var character = client.Characters.Find(entry => entry.Id == message.characterId);
 
             /* check null */

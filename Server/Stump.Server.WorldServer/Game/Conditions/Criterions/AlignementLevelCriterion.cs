@@ -15,14 +15,13 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override bool Eval(Character character)
         {
-            return Compare((int)character.AlignmentGrade, Level);
+            return true;
+            //return Compare((int)character.AlignmentValue, Level);
         }
 
         public override void Build()
         {
-            int level;
-
-            if (!int.TryParse(Literal, out level))
+            if (!int.TryParse(Literal, out int level))
                 throw new Exception(string.Format("Cannot build AlignementLevelCriterion, {0} is not a valid alignement level", Literal));
         
             Level = level;
