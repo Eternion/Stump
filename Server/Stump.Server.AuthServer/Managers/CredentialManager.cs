@@ -37,25 +37,6 @@ namespace Stump.Server.AuthServer.Managers
             {
                 account = null;
 
-                /*if (message.useLoginToken)
-                {
-                    var ticket = Encoding.ASCII.GetString(message.lang.Split(',').Select(x => (byte)int.Parse(x)).ToArray());
-
-                    account = AccountManager.Instance.FindCachedAccountByTicket(ticket);
-
-                    return account != null;
-                }
-
-                var split = message.lang.Split('|');
-                if (split.Length != 2)
-                {
-                    logger.Debug("Connection attempt without the patched client");
-                    return false;
-                }
-
-                var username = split[0];
-                var password = split[1];*/
-
                 var username = message.username;
                 var password = message.password;
 

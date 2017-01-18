@@ -789,17 +789,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             SetFightState(FightState.Ended);
 
-            if (m_turnTimer != null)
-                m_turnTimer.Dispose();
-
             EndAllSequences();
 
-            if (ReadyChecker != null)
-            {
-                ReadyChecker.Cancel();
-            }
-
-            ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
+            OnFightEnded();
         }
 
         public event Action<IFight> FightStarted;
@@ -819,7 +811,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnFightEnded()
         {
-            ReadyChecker = null;
+            if (m_turnTimer != null)
+                m_turnTimer.Dispose();
+
+            if (ReadyChecker != null)
+            {
+                ReadyChecker.Cancel();
+                ReadyChecker = null;
+            }
+
             DeterminsWinners();
             GenerateResults();
 
@@ -828,6 +828,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightEndMessage(Clients, this, Results.Select(entry => entry.GetFightResultListEntry()));
 
             ResetFightersProperties();
+
             foreach (var character in GetCharactersAndSpectators())
             {
                 character.RejoinMap();

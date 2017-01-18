@@ -228,7 +228,6 @@
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Database\Accounts\Account.cs" />
     <Compile Include="Database\Accounts\IpBan.cs" />
-    <Compile Include="Database\Accounts\WorldCharacterDeleted.cs" />
     <Compile Include="Database\Accounts\WorldCharacter.cs" />
     <Compile Include="Database\World\WorldServer.cs" />
     <Compile Include="Definitions.cs" />

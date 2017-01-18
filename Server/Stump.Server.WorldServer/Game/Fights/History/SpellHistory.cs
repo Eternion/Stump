@@ -23,10 +23,12 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         public SpellHistory(FightActor owner)
         {
             Owner = owner;
+            InitialRound = CurrentRound;
         }
         public SpellHistory(FightActor owner, IEnumerable<SpellHistoryEntry> entries)
         {
             Owner = owner;
+            InitialRound = CurrentRound;
             m_underlyingStack = new LimitedStack<SpellHistoryEntry>(HistoryEntriesLimit, entries);
         }
 
@@ -34,6 +36,12 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             get;
             private set;
+        }
+
+        private int InitialRound
+        {
+            get;
+            set;
         }
 
         private int CurrentRound
@@ -92,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             var mostRecentEntry = GetMostRecentEntry(spell);
 
             //check initial cooldown
-            if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
+            if (mostRecentEntry == null && (CurrentRound - InitialRound) < spell.InitialCooldown)
                 return false;
 
             if (mostRecentEntry == null)

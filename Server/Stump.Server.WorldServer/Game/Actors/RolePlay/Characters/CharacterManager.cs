@@ -15,18 +15,12 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
-using Stump.Server.WorldServer.Game.Guilds;
-using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public class CharacterManager : DataManager<CharacterManager>
     {
-
-        [Variable]
-        public static int CharacterDeletionDaysDelay = 15;
-
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -63,6 +57,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
             WorldServer.Instance.IOTaskPool.EnsureContext();
+
             if (client.Account.Characters == null ||
                 client.Account.Characters.Count == 0)
                 return new List<CharacterRecord>();
@@ -79,26 +74,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (characters.Count == client.Account.Characters.Count)
                 return characters;
 
-            // delete characters that doesn't exist anymore
-            foreach (var id in characterIds.Where(id => characters.All(character => character.Id != id)).Where(id => IPCAccessor.Instance.IsConnected))
-            {
-                IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
-            }
-
-            foreach (var record in characters.Where(x => x.DeletedDate > DateTime.Now + TimeSpan.FromDays(CharacterDeletionDaysDelay)))
-            {
-                DeleteCharacterOnAccount(record, client);
-            }
-
             return characters;
         }
-
-        /*public CharacterRecord GetCharacterById(int id)
-        {
-            var character = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, id));
-
-            return character.Count == 0 ? null : character.FirstOrDefault();
-        }*/
 
         public bool DoesNameExist(string name)
         {
@@ -231,22 +208,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ;
 
             logger.Debug("Character {0} created", record.Name);
-        }
-
-        public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
-        {
-            WorldServer.Instance.IOTaskPool.EnsureContext();
-            // todo cascade
-            var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
-
-            if (guildMember != null)
-                guildMember.Guild.RemoveMember(guildMember);
-
-            Database.Delete(character);
-            client.Characters.Remove(character);
-
-            // no check needed
-            IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, character.Id));
         }
 
         #region Character Name Random Generation

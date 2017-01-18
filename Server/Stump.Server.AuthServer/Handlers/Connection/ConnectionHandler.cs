@@ -86,11 +86,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             if (client.QueueShowed)
                 SendQueueStatusMessage(client, 0, 0); // close the popup
 
-            /* Get corresponding account */
-            Account account;
-
             /* Invalid password */
-            if (!CredentialManager.Instance.DecryptCredentials(out account, message))
+            if (!CredentialManager.Instance.DecryptCredentials(out var account, message))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
                 client.DisconnectLater(1000);

@@ -1,5 +1,4 @@
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
@@ -35,7 +34,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         [Ignore]
         public MonsterSuperRace SuperRace
         {
-            get { return m_superRace ?? (m_superRace = MonsterManager.Instance.GetSuperRace(SuperRaceId)); }
+            get { return m_superRace ?? (m_superRace = MonsterManager.Instance.GetMonsterSuperRace(SuperRaceId)); }
             set
             {
                 m_superRace = value;

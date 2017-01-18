@@ -19,6 +19,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         private Dictionary<int, MonsterDungeonSpawn> m_monsterDungeonsSpawns;
         private Dictionary<int, DroppableItem> m_droppableItems;
         private Dictionary<int, MonsterGrade> m_monsterGrades;
+        private Dictionary<int, MonsterRace> m_monsterRaces;
         private Dictionary<int, MonsterSuperRace> m_monsterSuperRaces;
         private Dictionary<int, MonsterStaticSpawn> m_monsterStaticSpawns;
         
@@ -42,6 +43,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 (new MonsterDungeonSpawnRelator().Map, MonsterDungeonSpawnRelator.FetchQuery)
                 .ToDictionary(entry => entry.Id);
             m_droppableItems = Database.Query<DroppableItem>(DroppableItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterRaces = Database.Query<MonsterRace>(MonsterRaceRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSuperRaces = Database.Query<MonsterSuperRace>(MonsterSuperRaceRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterStaticSpawns = Database
                 .Query<MonsterStaticSpawn, MonsterStaticSpawnEntity, MonsterGrade, MonsterStaticSpawn>
@@ -74,8 +76,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public List<MonsterSpell> GetMonsterGradeSpells(int id)
         {
-            List<MonsterSpell> list;
-            return m_monsterSpells.TryGetValue(id, out list) ? list : new List<MonsterSpell>();
+            return m_monsterSpells.TryGetValue(id, out var list) ? list : new List<MonsterSpell>();
         }
 
         public List<DroppableItem> GetMonsterDroppableItems(int id)
@@ -83,10 +84,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return m_droppableItems.Where(entry => entry.Value.MonsterOwnerId == id).Select(entry => entry.Value).ToList();
         }
 
-        public MonsterSuperRace GetSuperRace(int id)
+        public MonsterRace GetMonsterRace(int id)
         {
-            MonsterSuperRace result;
-            return !m_monsterSuperRaces.TryGetValue(id, out result) ? null : result;
+            return !m_monsterRaces.TryGetValue(id, out var result) ? null : result;
+        }
+
+        public MonsterSuperRace GetMonsterSuperRace(int id)
+        {
+            return !m_monsterSuperRaces.TryGetValue(id, out var result) ? null : result;
         }
 
         public MonsterTemplate GetTemplate(int id)

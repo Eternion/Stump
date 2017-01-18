@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace GameplayPlugin
@@ -23,10 +20,7 @@ namespace GameplayPlugin
         public static short AtomItemTemplateId = 20000;
 
         public static ItemTemplate AtomItemTemplate;
-
-
         private static List<AtomDropper> m_records;
-
 
         [Initialization(typeof(ItemManager))]
         public override void Initialize()

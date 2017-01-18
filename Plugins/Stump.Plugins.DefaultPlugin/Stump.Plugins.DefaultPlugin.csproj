@@ -149,7 +149,6 @@
     <Compile Include="Code\MonsterIdEnumGeneration.cs" />
     <Compile Include="Code\ItemIdEnumGeneration.cs" />
     <Compile Include="Code\StateEnumGeneration.cs" />
-    <Compile Include="Global\ZaapFinder.cs" />
     <Compile Include="Items\ItemsFix.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
     <Compile Include="Npcs\NpcBank.cs" />
@@ -159,7 +158,6 @@
     <Compile Include="Global\IncarnamSpawningPool.cs" />
     <Compile Include="Global\IncarnamSpawnsFix.cs" />
     <Compile Include="Global\MapsBindingsFix.cs" />
-    <Compile Include="Spells\SpellsFix.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">

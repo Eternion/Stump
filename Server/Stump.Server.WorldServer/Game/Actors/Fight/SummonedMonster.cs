@@ -22,7 +22,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Look = Monster.Template.EntityLook.Clone();
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
-            AdjustStats();
+
+            if (Monster.Template.Race.SuperRaceId == 28) //Invocations
+                AdjustStats();
         }
 
         void AdjustStats()

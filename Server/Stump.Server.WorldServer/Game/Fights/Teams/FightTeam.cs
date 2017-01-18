@@ -398,8 +398,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                                                   false,
                                                   character.Party != null && m_fighters.OfType<CharacterFighter>().Any(x => character.Parties.Any(y => x.Character.Parties.Contains(y))),
                                                   false,
-                                                  (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb)),
-                                                  (int)m_fighters.Average(x => x.Level));
+                                                  (sbyte)m_fighters.Count(x => !x.IsSummoned()),
+                                                  (int)m_fighters.Where(x => !x.IsSummoned()).Average(x => x.Level));
 
     }
 }

@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         private List<MonsterGrade> m_grades;
         private string m_lookAsString;
         private string m_name;
+        private MonsterRace m_monsterRace;
 
         [PrimaryKey("Id", false)]
         public int Id
@@ -49,7 +50,12 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        public int Race
+        public MonsterRace Race
+        {
+            get { return m_monsterRace ?? (m_monsterRace = MonsterManager.Instance.GetMonsterRace(RaceId)); }
+        }
+
+        public int RaceId
         {
             get;
             set;
@@ -171,7 +177,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             Id = monster.id;
             NameId = monster.nameId;
             GfxId = monster.gfxId;
-            Race = monster.race;
+            RaceId = monster.race;
             LookAsString = monster.look;
             UseSummonSlot = monster.useSummonSlot;
             UseBombSlot = monster.useBombSlot;
