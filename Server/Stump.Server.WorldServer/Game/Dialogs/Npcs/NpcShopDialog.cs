@@ -116,11 +116,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             if (Token != null)
             {
-                if (Token.Id == Inventory.TokenTemplate.Id)
-                {
-                    item.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
-                }
-
                 Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
             }
             else

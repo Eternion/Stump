@@ -276,9 +276,6 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             var wrapperItem = ItemManager.Instance.CreatePlayerItem(client.Character, wrapperItemTemplate, 1);
 
-            if (!wrapperItem.Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
-                wrapperItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 1));
-
             client.Character.Inventory.AddItem(wrapperItem);
             client.Character.UpdateLook();
 
