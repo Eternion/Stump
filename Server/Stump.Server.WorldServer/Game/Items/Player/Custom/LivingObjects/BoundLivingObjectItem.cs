@@ -77,9 +77,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
             var livingObject = ItemManager.Instance.CreatePlayerItem(Owner, m_livingObjectTemplate, 1, effectsLiving);
 
-            if (!livingObject.Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
-                livingObject.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 1));
-
             Owner.Inventory.AddItem(livingObject);
 
             Owner.UpdateLook();
