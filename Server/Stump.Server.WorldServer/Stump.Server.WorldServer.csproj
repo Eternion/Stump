@@ -263,6 +263,7 @@
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
+    <Compile Include="Database\Idols\IdolTemplate.cs" />
     <Compile Include="Database\Interactives\ISkillRecord.cs" />
     <Compile Include="Database\Items\BidHouse\BidHouseItemRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
@@ -669,6 +670,9 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
+    <Compile Include="Game\Idols\PlayerIdol.cs" />
+    <Compile Include="Game\Idols\IdolInventory.cs" />
+    <Compile Include="Game\Idols\IdolManager.cs" />
     <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
     <Compile Include="Game\Interactives\Skills\ISkillWithAgeBonus.cs" />
     <Compile Include="Game\Interactives\Skills\SkillAnimate.cs" />

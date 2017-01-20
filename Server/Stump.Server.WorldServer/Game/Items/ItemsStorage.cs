@@ -10,9 +10,7 @@ namespace Stump.Server.WorldServer.Game.Items
         private void NotifyKamasAmountChanged(int kamas)
         {
             OnKamasAmountChanged(kamas);
-
-            var handler = KamasAmountChanged;
-            if (handler != null) handler(this, kamas);
+            KamasAmountChanged?.Invoke(this, kamas);
         }
 
         protected virtual void OnKamasAmountChanged(int amount)

@@ -55,6 +55,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual void OnGetAlive()
         {
+            foreach (var idol in Fight.ActiveIdols)
+            {
+                if (GetType().Name != idol.Template.TargetString)
+                    continue;
+
+                CastAutoSpell(new Spell(idol.Template.IdolSpellId.Value, idol.Template.IdolSpellLevel), Cell);
+            }
+
             GetAlive?.Invoke(this);
         }
 

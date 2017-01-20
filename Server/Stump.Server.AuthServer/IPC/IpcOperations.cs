@@ -238,7 +238,7 @@ namespace Stump.Server.AuthServer.IPC
                 Email = accountData.Email
             };
 
-            if (Managers.AccountManager.Instance.CreateAccount(account))
+            if (AccountManager.CreateAccount(account))
                 Client.ReplyRequest(new CommonOKMessage(), message);
             else
                 Client.SendError(string.Format("Login {0} already exists", accountData.Login), message);

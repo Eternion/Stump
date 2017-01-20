@@ -1159,6 +1159,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         private void InitializeEvents()
         {
         }
+
         private void TeardownEvents()
         {
         }

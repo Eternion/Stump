@@ -1,5 +1,3 @@
-using Stump.Server.WorldServer.Database.Monsters;
-
 namespace Stump.Server.WorldServer.Game.Items
 {
     public class DroppedItem

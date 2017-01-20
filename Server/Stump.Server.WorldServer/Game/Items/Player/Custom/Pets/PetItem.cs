@@ -500,9 +500,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 update = true;
             }
 
-            if (fighter.Fight is FightPvM)
+            if (fighter.Fight is FightPvM fightPvM)
             {
-                foreach(var monster in fighter.OpposedTeam.Fighters.OfType<MonsterFighter>().Where(x => x.IsDead()))
+                foreach(var monster in fightPvM.MonsterTeam.Fighters.OfType<MonsterFighter>().Where(x => x.IsDead()))
                 {
                     var food = PetTemplate.Foods.FirstOrDefault(x => x.FoodType == FoodTypeEnum.MONSTER && x.FoodId == monster.Monster.Template.Id);
 

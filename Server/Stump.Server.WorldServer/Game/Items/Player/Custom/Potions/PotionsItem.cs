@@ -77,6 +77,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             Owner.Record.MandatoryChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
             Owner.Record.PossibleChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
+            Owner.Record.PossibleChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
 
             Owner.SendSystemMessage(58, false);
 

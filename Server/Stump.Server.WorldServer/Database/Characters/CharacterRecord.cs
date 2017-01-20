@@ -74,6 +74,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
             SmileyPacks = new List<SmileyPacksEnum> { SmileyPacksEnum.BASIC_PACK };
             FatalBlows = new List<SpellIdEnum> { SpellIdEnum.COUP_FATAL_BASE };
+            Idols = new List<int>();
         }
 
         #region Record Properties
@@ -102,6 +103,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         private List<SpellIdEnum> m_fatalBlows = new List<SpellIdEnum>();
         private string m_fatalBlowsCSV;
 
+        private List<int> m_idols = new List<int>();
+        private string m_idolsCSV;
 
         // Primitive properties
 
@@ -343,6 +346,34 @@ namespace Stump.Server.WorldServer.Database.Characters
             {
                 m_fatalBlowsCSV = value;
                 m_fatalBlows = !string.IsNullOrEmpty(m_fatalBlowsCSV) ? m_fatalBlowsCSV.FromCSV<short>(",").Select(x => (SpellIdEnum)x).ToList() : new List<SpellIdEnum>();
+            }
+        }
+
+        [Ignore]
+        public List<int> Idols
+        {
+            get
+            {
+                return m_idols;
+            }
+            set
+            {
+                m_idols = value;
+                m_idolsCSV = m_idols.Select(x => (short)x).ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string IdolsCSV
+        {
+            get
+            {
+                return m_idolsCSV;
+            }
+            set
+            {
+                m_idolsCSV = value;
+                m_idols = !string.IsNullOrEmpty(m_idolsCSV) ? m_idolsCSV.FromCSV<int>(",").ToList() : new List<int>();
             }
         }
 
@@ -809,6 +840,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
             m_smileyPacksCSV = m_smileyPacks.Select(x => (short)x).ToCSV(",");
             m_fatalBlowsCSV = m_fatalBlows.Select(x => (short)x).ToCSV(",");
+            m_idolsCSV = m_idols.ToCSV(",");
         }
     }
 }

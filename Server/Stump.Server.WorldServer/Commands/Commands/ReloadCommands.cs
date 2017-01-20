@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Social;
+using Stump.Server.WorldServer.Game.Idols;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -28,7 +29,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {"breeds", BreedManager.Instance.Initialize},
                 {"experiences", ExperienceManager.Instance.Initialize},
                 {"langs", TextManager.Instance.Initialize},
-                {"badwords", ChatManager.Instance.Initialize}
+                {"badwords", ChatManager.Instance.Initialize},
+                {"idols", IdolManager.Instance.Initialize},
             };
 
         public ReloadCommands()
