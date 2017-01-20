@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        public string Descrption
+        public string Description
         {
             get { return m_description ?? (m_description = TextManager.Instance.GetText(DescriptionId)); }
         }

@@ -31,6 +31,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public override void StartFighting()
         {
             m_placementTimer.Dispose();
+            ActiveIdols = PlayerTeam.Leader.Character.IdolInventory.ComputeIdols(this).ToList();
 
             base.StartFighting();
         }
@@ -61,6 +62,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             m_ageBonusDefined = true;
         }
+
+        public FightPlayerTeam PlayerTeam => Teams.FirstOrDefault(x => x.TeamType == TeamTypeEnum.TEAM_TYPE_PLAYER) as FightPlayerTeam;
+
+        public FightMonsterTeam MonsterTeam => Teams.FirstOrDefault(x => x.TeamType == TeamTypeEnum.TEAM_TYPE_MONSTER) as FightMonsterTeam;
 
         public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PvM;
 

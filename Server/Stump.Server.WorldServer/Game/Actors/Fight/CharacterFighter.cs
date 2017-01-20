@@ -117,6 +117,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != this)
                 return;
 
+            //Cast Spells of Items has CastSpell effect
             foreach (var effect in Character.Inventory.GetEquipedItems().SelectMany(x => x.Effects).Where(y => y.EffectId == EffectsEnum.Effect_CastSpell_1175))
                 EffectManager.Instance.GetSpellEffectHandler((EffectDice)effect, this,
                     new DefaultSpellCastHandler(new SpellCastInformations(this, null, Cell)), Cell, false).Apply();

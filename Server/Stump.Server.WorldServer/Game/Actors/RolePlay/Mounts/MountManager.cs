@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.Core.Extensions;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
-using Stump.Server.WorldServer.Game.Maps.Paddocks;
-using Stump.Server.WorldServer.Handlers.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
@@ -53,8 +48,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public MountTemplate GetTemplate(int id)
         {
-            MountTemplate result;
-            return !m_mountTemplates.TryGetValue(id, out result) ? null : result;
+            return !m_mountTemplates.TryGetValue(id, out var result) ? null : result;
         }
 
         public MountTemplate GetTemplateByScrollId(int scrollId)
@@ -92,8 +86,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public MountRecord GetMount(int mountId)
         {
-            MountRecord record;
-            if (!m_mounts.TryGetValue(mountId, out record))
+            if (!m_mounts.TryGetValue(mountId, out var record))
                 return null;
 
             return record;

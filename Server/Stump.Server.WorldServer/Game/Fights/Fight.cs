@@ -36,7 +36,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ServiceStack.Text;
 using Stump.Server.WorldServer.Game.Fights.Sequences;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
+using Stump.Server.WorldServer.Database.Idols;
+using Stump.Server.WorldServer.Handlers.Idols;
+using Stump.Server.WorldServer.Game.Idols;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -186,7 +188,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        FightSequence CurrentRootSequence   
+        FightSequence CurrentRootSequence
         {
             get;
         }
@@ -203,6 +205,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         bool CanKickPlayer
+        {
+            get;
+        }
+
+        List<PlayerIdol> ActiveIdols
         {
             get;
         }
@@ -306,7 +313,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         IEnumerable<Buff> GetBuffs();
 
         void UpdateBuff(Buff buff, bool updateAction = true);
-        
+
         FightSequence StartMoveSequence(FightPath path);
 
         FightSequence StartSequence(SequenceTypeEnum sequenceType);
@@ -338,6 +345,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         void SetChallenge(DefaultChallenge challenge);
 
         int GetChallengeBonus();
+
+        int GetIdolsXPBonus();
+
+        int GetIdolsDropBonus();
 
         IEnumerable<Character> GetAllCharacters();
 
@@ -413,8 +424,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         FightExternalInformations GetFightExternalInformations(Character character);
 
-        IEnumerable<NamedPartyTeam> GetPartiesName(); 
-        IEnumerable<NamedPartyTeamWithOutcome> GetPartiesNameWithOutcome(); 
+        IEnumerable<NamedPartyTeam> GetPartiesName();
+        IEnumerable<NamedPartyTeamWithOutcome> GetPartiesNameWithOutcome();
 
         bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false, WorldObject except = null);
 
@@ -480,6 +491,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             TimeLine = new TimeLine(this);
             m_leavers = new List<FightActor>();
             m_spectators = new List<FightSpectator>();
+
+            ActiveIdols = new List<PlayerIdol>();
 
             DefendersTeam.FighterAdded += OnFighterAdded;
             DefendersTeam.FighterRemoved += OnFighterRemoved;
@@ -601,7 +614,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public FightTeam[] Teams => new FightTeam[] {ChallengersTeam, DefendersTeam};
+        public FightTeam[] Teams => new FightTeam[] { ChallengersTeam, DefendersTeam };
 
         public FightTeam Winners
         {
@@ -681,6 +694,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return true; }
         }
 
+        public List<PlayerIdol> ActiveIdols
+        {
+            get;
+            protected set;
+        }
+
         public bool AIDebugMode
         {
             get;
@@ -731,11 +750,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             IsStarted = true;
 
             HideBlades();
-
             TimeLine.OrderLine();
 
             ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
-            ContextHandler.SendGameFightStartMessage(Clients);
+            ContextHandler.SendGameFightStartMessage(Clients, ActiveIdols.Select(x => x.GetNetworkIdol()));
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             OnFightStarted();
@@ -791,7 +809,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             EndAllSequences();
 
-            OnFightEnded();
+            if (ReadyChecker != null)
+            {
+                ReadyChecker.Cancel();
+            }
+
+            ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
         }
 
         public event Action<IFight> FightStarted;
@@ -1180,8 +1203,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             fighter.Team.RemoveFighter(fighter);
 
-            var characterFighter = fighter as CharacterFighter;
-            if (characterFighter != null)
+            if (fighter is CharacterFighter characterFighter)
             {
                 characterFighter.Character.RejoinMap();
             }
@@ -1260,15 +1282,13 @@ namespace Stump.Server.WorldServer.Game.Fights
                 OnSummonAdded(actor as SummonedFighter);
                 return;
             }
-
-            if (actor is SummonedBomb)
+            else if (actor is SummonedBomb)
             {
                 OnBombAdded(actor as SummonedBomb);
                 return;
             }
 
             TimeLine.Fighters.Add(actor);
-
             BindFighterEvents(actor);
 
             if (State == FightState.Placement)
@@ -1320,6 +1340,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.Placement || State == FightState.NotStarted)
             {
                 ContextHandler.SendGameFightPlacementPossiblePositionsMessage(character.Client, this, (sbyte)fighter.Team.Id);
+
+                if (fighter.Team.Leader is CharacterFighter leader)
+                    IdolHandler.SendIdolFightPreparationUpdate(character.Client, leader.Character.IdolInventory.GetIdols().Select(x => x.GetNetworkIdol()));
             }
 
             foreach (var fightMember in GetAllFighters())
@@ -2107,7 +2130,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         #endregion Buffs
 
         #region Sequences
-        
+
         private int m_nextSequenceId = 1;
         private readonly List<FightSequence> m_sequencesRoot = new List<FightSequence>();
 
@@ -2124,7 +2147,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         public bool IsSequencing => CurrentRootSequence != null && !CurrentRootSequence.Ended;
-        
+
         public DateTime LastSequenceEndTime => m_sequencesRoot.Count > 0 ? m_sequencesRoot.Max(x => x.EndTime) : DateTime.Now;
 
         public FightSequence StartMoveSequence(FightPath path)
@@ -2157,10 +2180,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
             else
                 CurrentSequence.AddChildren(sequence);
-            
+
 
             CurrentSequence = sequence;
-             
+
             // just send the root sequence
             if (sequence.Parent == null)
                 ActionsHandler.SendSequenceStartMessage(Clients, sequence);
@@ -2175,7 +2198,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             CurrentSequence = sequence.Parent;
         }
-        
+
 
         public void EndAllSequences()
         {
@@ -2357,6 +2380,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #endregion Challenges
 
+        #region Idols
+
+        public int GetIdolsXPBonus()
+        {
+            var coef = IdolManager.Instance.GetSynergiesCoef(ActiveIdols);
+            return (int)Math.Round(ActiveIdols.Sum(x => x.ExperienceBonus) * coef);
+        }
+
+        public int GetIdolsDropBonus()
+        {
+            var coef = IdolManager.Instance.GetSynergiesCoef(ActiveIdols);
+            return (int)Math.Round(ActiveIdols.Sum(x => x.DropBonus) * coef);
+        }
+
+        #endregion Idols
+
         #region Triggers
 
         private readonly List<MarkTrigger> m_triggers = new List<MarkTrigger>();
@@ -2364,7 +2403,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public IEnumerable<MarkTrigger> GetTriggers() => m_triggers;
 
         public bool ShouldTriggerOnMove(Cell cell, FightActor actor)
-            => m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement  && entry.ContainsCell(cell) && entry.CanTrigger(actor));
+            => m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement && entry.ContainsCell(cell) && entry.CanTrigger(actor));
 
         public MarkTrigger[] GetTriggersByCell(Cell cell) => m_triggers.Where(entry => entry.ContainsCell(cell)).ToArray();
 
@@ -2763,7 +2802,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var redParty = ChallengersTeam.GetTeamParty();
             var blueParty = DefendersTeam.GetTeamParty();
 
-            var parties = new[] {redParty, blueParty};
+            var parties = new[] { redParty, blueParty };
             return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).Select(x => new NamedPartyTeam((sbyte)x.Item1, x.Item2));
         }
 
@@ -2772,7 +2811,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var redParty = ChallengersTeam.GetTeamParty();
             var blueParty = ChallengersTeam.GetTeamParty();
 
-            var parties = new[] {redParty, blueParty};
+            var parties = new[] { redParty, blueParty };
             return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).
                 Select(x => new NamedPartyTeamWithOutcome(new NamedPartyTeam((sbyte)x.Item1, x.Item2), (short)Teams[x.Item1].GetOutcome()));
         }

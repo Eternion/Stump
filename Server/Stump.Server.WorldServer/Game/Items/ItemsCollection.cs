@@ -88,9 +88,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnItemAdded(item, sendMessage);
 
-            var handler = ItemAdded;
-            if (handler != null)
-                handler(this, item);
+            ItemAdded?.Invoke(this, item);
         }
 
         protected virtual void OnItemAdded(T item, bool sendMessage = true)
@@ -103,9 +101,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnItemRemoved(item, sendMessage);
 
-            var handler = ItemRemoved;
-            if (handler != null)
-                handler(this, item);
+            ItemRemoved?.Invoke(this, item);
         }
 
         protected virtual void OnItemRemoved(T item, bool sendMessage = true)
@@ -118,9 +114,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnItemStackChanged(item, difference);
 
-            var handler = ItemStackChanged;
-            if (handler != null)
-                handler(this, item, difference);
+            ItemStackChanged?.Invoke(this, item, difference);
         }
 
         protected virtual void OnItemStackChanged(T item, int difference)

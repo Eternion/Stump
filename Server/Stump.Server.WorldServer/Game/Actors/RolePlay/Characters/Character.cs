@@ -1,5 +1,4 @@
 using MongoDB.Bson;
-using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
@@ -81,6 +80,7 @@ using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 using Stump.Server.WorldServer.Game.Exchanges.Paddock;
+using Stump.Server.WorldServer.Game.Idols;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -683,6 +683,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion Trade
+
+        #region Idols
+
+        public IdolInventory IdolInventory
+        {
+            get;
+            set;
+        }
+
+        #endregion
 
         #region Titles & Ornaments
 
@@ -3665,6 +3675,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Shortcuts.Save();
                         FriendsBook.Save();
                         Jobs.Save(database);
+                        IdolInventory.Save();
 
                         SaveMounts();
 
@@ -3748,6 +3759,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
             Inventory.LoadPresets();
+
+            IdolInventory = new IdolInventory(this);
 
             Bank = new Bank(this);
             Bank.LoadRecord();
