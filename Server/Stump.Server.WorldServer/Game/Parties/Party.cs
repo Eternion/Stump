@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
+using Stump.Server.WorldServer.Game.Idols;
 
 namespace Stump.Server.WorldServer.Game.Parties
 {
@@ -118,6 +119,7 @@ namespace Stump.Server.WorldServer.Game.Parties
             Id = id;
             RestrictFightToParty = false;
             Name = string.Empty;
+            IdolInventory = new IdolInventory(this);
         }
 
         public int Id
@@ -197,6 +199,12 @@ namespace Stump.Server.WorldServer.Game.Parties
         }
 
         public bool RestrictFightToParty
+        {
+            get;
+            private set;
+        }
+
+        public IdolInventory IdolInventory
         {
             get;
             private set;
@@ -291,7 +299,10 @@ namespace Stump.Server.WorldServer.Game.Parties
                 m_members.Add(guest);
 
             if (Leader == null)
+            {
                 Leader = guest;
+                OnLeaderChanged(Leader);
+            }
 
             OnGuestPromoted(guest);
 
