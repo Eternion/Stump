@@ -622,6 +622,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
                 return false;
 
+            if (Owner.IsInExchange())
+                return false;
+
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return true;
 

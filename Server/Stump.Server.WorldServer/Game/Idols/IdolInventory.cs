@@ -1,9 +1,12 @@
 ﻿using Stump.Core.Attributes;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Handlers.Idols;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,20 +26,33 @@ namespace Stump.Server.WorldServer.Game.Idols
             Owner.Inventory.ItemRemoved += OnInventoryItemRemoved;
         }
 
-        private void OnInventoryItemRemoved(ItemsCollection<BasePlayerItem> sender, BasePlayerItem item)
+        public IdolInventory(Party party)
         {
-            foreach (var idol in ActiveIdols.Where(x => x.Template.IdolItemId == item.Template.Id).ToArray())
-            {
-                if (Owner.Inventory.HasItem(idol.Template.IdolItem))
-                    continue;
+            Party = party;
+            ActiveIdols = new List<PlayerIdol>();
 
-                Remove(idol);
-            }
+            BindEvents(party);
+        }
+
+        private void OnPartyDeleted(Party party)
+        {
+            UnBindEvents(party);
+        }
+
+        public Party Party
+        {
+            get;
+        }
+
+        public bool IsPartyIdols
+        {
+            get { return Party != null; }
         }
 
         public Character Owner
         {
             get;
+            private set;
         }
 
         private List<PlayerIdol> ActiveIdols
@@ -49,7 +65,19 @@ namespace Stump.Server.WorldServer.Game.Idols
 
         public void Add(short idolId)
         {
-            var idol = IdolManager.Instance.CreatePlayerIdol(Owner, idolId);
+            var owner = Owner;
+
+            if (IsPartyIdols)
+            {
+                var partyIdol = GetPartyIdol(idolId);
+
+                if (partyIdol == null)
+                    return;
+
+                owner = Party.GetMember((int)partyIdol.ownersIds.First());
+            }
+
+            var idol = IdolManager.Instance.CreatePlayerIdol(owner, idolId);
 
             if (idol == null)
                 return;
@@ -60,13 +88,13 @@ namespace Stump.Server.WorldServer.Game.Idols
             if (ActiveIdols.Count >= MaxActiveIdols)
                 return;
 
-            if (!Owner.Inventory.HasItem(idol.Template.IdolItem))
+            if (!owner.Inventory.HasItem(idol.Template.IdolItem))
                 return;
 
             ActiveIdols.Add(idol);
-            IdolHandler.SendIdolSelectedMessage(Owner.Client, true, false, (short)idol.Id);
+            IdolHandler.SendIdolSelectedMessage(IsPartyIdols ? Party.Clients : Owner.Client, true, IsPartyIdols, (short)idol.Id);
 
-            if (!Owner.IsInFight() || Owner.Fight.State != FightState.Placement)
+            if (!owner.IsInFight() || owner.Fight.State != FightState.Placement)
                 return;
 
             IdolHandler.SendIdolFightPreparationUpdate(Owner.Fight.Clients, ActiveIdols.Select(x => x.GetNetworkIdol()));
@@ -89,7 +117,7 @@ namespace Stump.Server.WorldServer.Game.Idols
             if (!result)
                 return false;
 
-            IdolHandler.SendIdolSelectedMessage(Owner.Client, false, false, (short)idol.Id);
+            IdolHandler.SendIdolSelectedMessage(IsPartyIdols ? Party.Clients : Owner.Client, false, IsPartyIdols, (short)idol.Id);
 
             if (!Owner.IsInFight() || Owner.Fight.State != FightState.Placement)
                 return true;
@@ -102,6 +130,36 @@ namespace Stump.Server.WorldServer.Game.Idols
         public IEnumerable<PlayerIdol> GetIdols()
         {
             return ActiveIdols.ToArray();
+        }
+
+        public PartyIdol GetPartyIdol(short idolId)
+        {
+            return GetPartyIdols().FirstOrDefault(x => x.id == idolId);
+        }
+
+        public IEnumerable<PartyIdol> GetPartyIdols()
+        {
+            var idolItems = Party.Members.SelectMany(x => x.Inventory.GetItems(y => y.Template.TypeId == (uint)ItemTypeEnum.IDOLE)).ToArray();
+            var partyIdols = new Dictionary<int, PartyIdol>();
+
+            foreach (var idolItem in idolItems)
+            {
+                var template = IdolManager.Instance.GetTemplateByItemId(idolItem.Template.Id);
+                var ownerIds = new List<long>();
+
+                if (partyIdols.TryGetValue(template.Id, out var partyIdol))
+                {
+                    ownerIds.AddRange(partyIdol.ownersIds);
+                    partyIdols.Remove(partyIdol.id);
+                }
+
+                ownerIds.Add(idolItem.Owner.Id);
+                partyIdol = new PartyIdol((short)template.Id, (short)template.ExperienceBonus, (short)template.DropBonus, ownerIds);
+
+                partyIdols.Add(template.Id, partyIdol);
+            }
+
+            return partyIdols.Values;
         }
 
         private bool CanUseIdol(PlayerIdol idol, FightPvM fight)
@@ -138,9 +196,62 @@ namespace Stump.Server.WorldServer.Game.Idols
             return GetIdols();
         }
 
+        #region Events
+
+        private void BindEvents(Party party)
+        {
+            party.LeaderChanged += OnPartyLeaderChanged;
+            party.MemberRemoved += OnPartyMemberRemoved;
+            party.GuestPromoted += OnPartyGuestPromoted;
+            party.PartyDeleted += OnPartyDeleted;
+        }
+
+        private void UnBindEvents(Party party)
+        {
+            party.LeaderChanged -= OnPartyLeaderChanged;
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.GuestPromoted -= OnPartyGuestPromoted;
+            party.PartyDeleted -= OnPartyDeleted;
+        }
+
+        private void OnPartyGuestPromoted(Party party, Character member)
+        {
+            member.Inventory.ItemRemoved += OnInventoryItemRemoved;
+        }
+
+        private void OnPartyMemberRemoved(Party party, Character member, bool kicked)
+        {
+            member.Inventory.ItemRemoved -= OnInventoryItemRemoved;
+        }
+
+        private void OnPartyLeaderChanged(Party party, Character leader)
+        {
+            Owner = leader;
+        }
+
+        private void OnInventoryItemRemoved(ItemsCollection<BasePlayerItem> sender, BasePlayerItem item)
+        {
+            foreach (var idol in ActiveIdols.Where(x => x.Template.IdolItemId == item.Template.Id).ToArray())
+            {
+                if (idol.Owner.Inventory.HasItem(idol.Template.IdolItem))
+                    continue;
+
+                Remove(idol);
+
+                if (IsPartyIdols)
+                    IdolHandler.SendIdolPartyLostMessage(Party.Clients, (short)idol.Id);
+            }
+        }
+
+        #endregion Events
+
+        #region Save
+
         public void Save()
         {
             Owner.Record.Idols = ActiveIdols.Select(x => x.Id).ToList();
         }
+
+        #endregion Save
     }
 }

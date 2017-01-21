@@ -1342,7 +1342,13 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameFightPlacementPossiblePositionsMessage(character.Client, this, (sbyte)fighter.Team.Id);
 
                 if (fighter.Team.Leader is CharacterFighter leader)
-                    IdolHandler.SendIdolFightPreparationUpdate(character.Client, leader.Character.IdolInventory.GetIdols().Select(x => x.GetNetworkIdol()));
+                {
+                    var idols = leader.Character.IdolInventory.GetIdols();
+                    if (leader.Character.IsPartyLeader())
+                        idols = leader.Character.Party.IdolInventory.GetIdols();
+
+                    IdolHandler.SendIdolFightPreparationUpdate(character.Client, idols.Select(x => x.GetNetworkIdol()));
+                }
             }
 
             foreach (var fightMember in GetAllFighters())

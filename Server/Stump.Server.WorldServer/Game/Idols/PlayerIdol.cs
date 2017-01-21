@@ -53,6 +53,11 @@ namespace Stump.Server.WorldServer.Game.Idols
             return new Idol((short)Id, (short)ExperienceBonus, (short)DropBonus);
         }
 
+        public Idol GetNetworkPartyIdol()
+        {
+            return new PartyIdol((short)Id, (short)ExperienceBonus, (short)DropBonus, new long[] { Owner.Id });
+        }
+
         #endregion Network
     }
 }

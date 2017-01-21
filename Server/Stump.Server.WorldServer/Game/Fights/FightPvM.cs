@@ -31,7 +31,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         public override void StartFighting()
         {
             m_placementTimer.Dispose();
-            ActiveIdols = PlayerTeam.Leader.Character.IdolInventory.ComputeIdols(this).ToList();
+            if (PlayerTeam.Leader.Character.IsPartyLeader())
+                ActiveIdols = PlayerTeam.Leader.Character.Party.IdolInventory.ComputeIdols(this).ToList();
+            else
+                ActiveIdols = PlayerTeam.Leader.Character.IdolInventory.ComputeIdols(this).ToList();
 
             base.StartFighting();
         }
