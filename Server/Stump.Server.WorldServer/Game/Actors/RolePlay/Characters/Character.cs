@@ -561,12 +561,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool IsPartyLeader()
         {
-            return IsInParty() && Party.Leader == this;
+            return Party?.Leader == this;
         }
 
         public bool IsPartyLeader(int id)
         {
-            return IsInParty(id) && GetParty(id).Leader == this;
+            return GetParty(id)?.Leader == this;
         }
 
         public Party GetParty(int id)

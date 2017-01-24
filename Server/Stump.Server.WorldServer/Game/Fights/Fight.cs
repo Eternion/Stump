@@ -2381,7 +2381,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (Challenge == null)
                 return 0;
 
-            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 1;
+            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 0;
         }
 
         #endregion Challenges
@@ -2390,14 +2390,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public int GetIdolsXPBonus()
         {
-            var coef = IdolManager.Instance.GetSynergiesCoef(ActiveIdols);
-            return (int)Math.Round(ActiveIdols.Sum(x => x.ExperienceBonus) * coef);
+            return (int)Math.Round(ActiveIdols.Sum(x => x.ExperienceBonus * x.GetSynergy(ActiveIdols)));
         }
 
         public int GetIdolsDropBonus()
         {
-            var coef = IdolManager.Instance.GetSynergiesCoef(ActiveIdols);
-            return (int)Math.Round(ActiveIdols.Sum(x => x.DropBonus) * coef);
+            return (int)Math.Round(ActiveIdols.Sum(x => x.DropBonus * x.GetSynergy(ActiveIdols)));
         }
 
         #endregion Idols

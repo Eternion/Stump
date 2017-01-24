@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.DofusProtocol.Enums;
 
 namespace GameplayPlugin
 {
@@ -46,6 +47,9 @@ namespace GameplayPlugin
         
         private static void OnGeneratingResults(IFight fight)
         {
+            if (fight.Draw || fight.Winners.TeamType != TeamTypeEnum.TEAM_TYPE_PLAYER)
+                return;
+
             var monsters = fight.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             var players = fight.GetAllFighters<CharacterFighter>().ToList();
 

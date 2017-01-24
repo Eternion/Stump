@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
             if (Fighter != fighter)
                 return;
 
-            Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.FEUILLAGE, 1), Fighter.Cell);
+            Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.FEUILLAGE_5567, 1), Fighter.Cell);
             fighter.Team.FighterAdded -= OnFighterAdded;
         }
     }

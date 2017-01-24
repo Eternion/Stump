@@ -805,6 +805,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnDead(this);
         }
 
+        public void Die(FightActor killedBy)
+        {
+            DamageTaken += LifePoints;
+            OnDead(killedBy);
+        }
+
         public int InflictDirectDamage(int damage, FightActor from)
             => InflictDamage(new Damage(damage)
             {

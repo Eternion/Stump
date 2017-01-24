@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 if (monster == null)
                     return false;
 
-                actor.InflictDirectDamage(actor.LifePoints, Caster);
+                actor.Die(Caster);
 
                 var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, actor.Cell) { SummoningEffect = this };
                 ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);

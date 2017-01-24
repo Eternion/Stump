@@ -71,6 +71,12 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        public uint HiddenLevel
+        {
+            get;
+            set;
+        }
+
         public int PaDodge
         {
             get;
@@ -224,6 +230,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             GradeXp = grade.gradeXp;
             MonsterId = grade.monsterId;
             Level = grade.level;
+            HiddenLevel = grade.hiddenLevel;
             PaDodge = grade.paDodge;
             PmDodge = grade.pmDodge;
             EarthResistance = grade.earthResistance;
@@ -235,6 +242,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             ActionPoints = grade.actionPoints;
             MovementPoints = grade.movementPoints;
             Wisdom = (short) grade.wisdom;
+            Vitality = (short)grade.vitality;
         }
 
         #endregion

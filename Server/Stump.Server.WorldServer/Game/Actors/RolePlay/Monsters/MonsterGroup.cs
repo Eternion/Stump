@@ -268,7 +268,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                                                             false,
                                                             false,
                                                             GetGroupMonsterStaticInformations(character),
-                                                            (CreationDate.GetUnixTimeStampLong() + (TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds * 1000)),
+                                                            CreationDate.GetUnixTimeStampLong(),
                                                             (StarsBonusRate * 1000),
                                                             0,
                                                             0);

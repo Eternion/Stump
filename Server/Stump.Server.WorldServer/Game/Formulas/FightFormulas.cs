@@ -47,7 +47,6 @@ namespace Stump.Server.WorldServer.Game.Formulas
             4.7
         };
 
-
         public static int CalculateWinExp(IFightResult fighter, IEnumerable<FightActor> alliesResults, IEnumerable<FightActor> droppersResults)
         {
             var droppers = droppersResults as MonsterFighter[] ?? droppersResults.ToArray();
@@ -59,6 +58,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
             var sumPlayersLevel = allies.Sum(entry => entry.Level);
             var maxPlayerLevel = allies.Max(entry => entry.Level);
             var sumMonstersLevel = droppers.Sum(entry => entry.Level);
+            var sumMonstersHiddenLevel = droppers.OfType<MonsterFighter>().Sum(entry => entry.HiddenLevel == 0 ? entry.Level : entry.HiddenLevel);
             var maxMonsterLevel = droppers.Max(entry => entry.Level);
             var sumMonsterXp = droppers.Sum(entry => entry.GetGivenExperience());
 
@@ -78,11 +78,13 @@ namespace Stump.Server.WorldServer.Game.Formulas
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
             var challengeBonus = fighter.Fight.GetChallengeBonus();
-            var idolsBonus = fighter.Fight.GetIdolsXPBonus();
 
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + fighter.Wisdom)/ 100d) * multiplicator * Rates.XpRate);
+            var idolsBonus = fighter.Fight.GetIdolsXPBonus();
+            var idolsMalus = Math.Pow(Math.Min(4, ((double)sumMonstersHiddenLevel / droppers.Count() / maxPlayerLevel)), 2);
+            var idolsWisdomBonus = Math.Truncate((100 + fighter.Level * 2.5d) * Math.Truncate(idolsBonus * idolsMalus) / 100d);
+
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + Math.Max(fighter.Wisdom + idolsWisdomBonus, 0)) / 100d) * multiplicator * Rates.XpRate);
             xp += (int)Math.Truncate(xp * (challengeBonus / 100d));
-            xp += (int)Math.Truncate(xp * (idolsBonus / 100d));
 
             return InvokeWinXpModifier(fighter, xp);
         }
