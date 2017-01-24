@@ -7,7 +7,7 @@ namespace GameplayPlugin.AnnouncePopup
 {
     public static class AnnouncePopup
     {
-        private static bool m_active = true;
+        private static bool m_active = false;
 
         [Variable(true, DefinableRunning = true)]
         public static bool Active
