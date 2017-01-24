@@ -2,14 +2,12 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Maps;
 using System.Linq;
 
 namespace GameplayPlugin.AnnouncePopup
 {
-    public class MapPopup
+    public class LevelPopup
     {
         private static bool m_active = false;
 
@@ -29,12 +27,10 @@ namespace GameplayPlugin.AnnouncePopup
         }
 
         [Variable(true, DefinableRunning = true)]
-        public static int[] POPUP_MAPS = {
-            162267138
-        };
+        public static string PopupMessage = "";
 
         [Variable(true, DefinableRunning = true)]
-        public static string POPUP_MESSAGE = "";
+        public static int[] PopupLevels = new int[] { 50, 100, 150, 200 };
 
         [Initialization(typeof(World), Silent = true)]
         public static void Initialize()
@@ -54,23 +50,20 @@ namespace GameplayPlugin.AnnouncePopup
 
         private static void OnCharacterJoined(Character character)
         {
-            character.EnterMap += OnEnterMap;
+            character.LevelChanged += OnLevelChanged;
+        }
+
+        private static void OnLevelChanged(Character character, byte currentLevel, int difference)
+        {
+            if (!PopupLevels.Contains(currentLevel))
+                return;
+
+            character.DisplayNotification(PopupMessage, NotificationEnum.INFORMATION);
         }
 
         private static void OnCharacterLeft(Character character)
         {
-            character.EnterMap -= OnEnterMap;
-        }
-
-        private static void OnEnterMap(RolePlayActor actor, Map map)
-        {
-            if (!(actor is Character character))
-                return;
-
-            if (!POPUP_MAPS.Contains(map.Id))
-                return;
-
-            character.DisplayNotification(POPUP_MESSAGE, NotificationEnum.INFORMATION);
+            character.LevelChanged -= OnLevelChanged;
         }
     }
 }

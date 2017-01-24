@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnouncePopup\AnnouncePopup.cs" />
+    <Compile Include="AnnouncePopup\LevelPopup.cs" />
     <Compile Include="AnnouncePopup\MapPopup.cs" />
     <Compile Include="AtomDropper.cs" />
     <Compile Include="AtomsManager.cs" />
