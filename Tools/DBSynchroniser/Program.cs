@@ -618,11 +618,17 @@ namespace DBSynchroniser
                 if (table.TableName == "monsters_grades") // handled by monsters_templates
                     continue;
 
-                Console.WriteLine("Build table '{0}' ...", table.TableName);
+                if (table.TableName == "monsters_templates" && monsterGradeTable != null)
+                {
+                    worldDatabase.Database.Execute($"DELETE FROM {monsterGradeTable.TableName}");
+                    worldDatabase.Database.Execute($"ALTER TABLE {monsterGradeTable.TableName} AUTO_INCREMENT=1");
+                }
+
+                Console.WriteLine($"Build table '{table.TableName}' ...");
 
                 if (!m_tables.ContainsKey(table.ClassName))
                 {
-                    Console.WriteLine("{0} does not contain a table bound to class {1}", DatabaseConfiguration.DbName, table.ClassName);
+                    Console.WriteLine($"{DatabaseConfiguration.DbName} does not contain a table bound to class {table.ClassName}");
                     continue;
                 }
 
@@ -639,8 +645,7 @@ namespace DBSynchroniser
                         var obj = row.CreateObject();
 
                         // monster grades are in an other table
-                        var monster = obj as Monster;
-                        if (monster != null && monsterGradeTable != null)
+                        if (obj is Monster monster && monsterGradeTable != null)
                         {
                             foreach (var monsterGrade in monster.grades)
                             {

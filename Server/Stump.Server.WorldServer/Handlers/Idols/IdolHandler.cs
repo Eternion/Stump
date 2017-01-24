@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
@@ -16,7 +17,7 @@ namespace Stump.Server.WorldServer.Handlers.Idols
             var partyChosenIdols = new PlayerIdol[0];
             var partyIdols = new PartyIdol[0];
 
-            if (client.Character.IsInParty())
+            if (client.Character.IsInParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL))
             {
                 partyIdols = client.Character.Party.IdolInventory.GetPartyIdols().ToArray();
                 partyChosenIdols = client.Character.Party.IdolInventory.GetIdols().ToArray();

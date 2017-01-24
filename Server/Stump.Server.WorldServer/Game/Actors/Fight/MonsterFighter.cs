@@ -35,9 +35,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(Monster.Grade);
             
-
-            Cell cell;
-            Fight.FindRandomFreeCell(this, out cell, false);
+            Fight.FindRandomFreeCell(this, out var cell, false);
             Position = new ObjectPosition(monster.Group.Map, cell, monster.Group.Direction);
         }
 
@@ -66,6 +64,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get
             {
                 return (byte) Monster.Grade.Level;
+            }
+        }
+
+        public byte HiddenLevel
+        {
+            get
+            {
+                return (byte)Monster.Grade.HiddenLevel;
             }
         }
 

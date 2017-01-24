@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
     {
         public static void SendAlmanachCalendarDateMessage(IPacketReceiver client)
         {
-            client.Send(new AlmanachCalendarDateMessage(1));
+            client.Send(new AlmanachCalendarDateMessage(377));
         }
     }
 }

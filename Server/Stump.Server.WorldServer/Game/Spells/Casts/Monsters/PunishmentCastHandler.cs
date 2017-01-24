@@ -1,5 +1,4 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -35,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 
         private void SpellBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
-            var damage = token as Fights.Damage;
+            var damage = token as Damage;
             if (damage == null)
                 return;
 

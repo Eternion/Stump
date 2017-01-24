@@ -41,20 +41,5 @@ namespace Stump.Server.WorldServer.Game.Idols
 
             return new PlayerIdol(owner, template);
         }
-
-        public double GetSynergiesCoef(List<PlayerIdol> idols)
-        {
-            var coef = 0d;
-
-            foreach (var idol in idols)
-            {
-                foreach (var idol2 in idols.Skip(idols.FindIndex(x => x == idol) + 1))
-                {
-                    coef += idol.GetSynergyWith(idol2.Template);
-                }
-            }
-
-            return coef;
-        }
     }
 }

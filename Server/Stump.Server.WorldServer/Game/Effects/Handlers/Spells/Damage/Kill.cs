@@ -4,7 +4,6 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells.Casts;
-using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
@@ -26,8 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 }
                 else
                 {
-                    actor.InflictDirectDamage(int.MaxValue, Caster);
-
+                    actor.Die(Caster);
                 }
             }
 
@@ -36,8 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         void KillTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
-            buff.Target.InflictDirectDamage(int.MaxValue, buff.Caster);
-
+            buff.Target.Die(buff.Caster);
         }
     }
 }
