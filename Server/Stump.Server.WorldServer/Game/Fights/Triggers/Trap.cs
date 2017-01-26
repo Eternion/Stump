@@ -74,9 +74,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                     effectHandler.SetAffectedActors(new[] {trigger});
             }
 
-            handler.Execute();
-
             Remove();
+            handler.Execute();
         }
 
         public override GameActionMark GetHiddenGameActionMark() => new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, -1,

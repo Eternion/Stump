@@ -66,24 +66,26 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
 
-                if (PushDirection == null)
-                    PushDirection = Pull ? actor.Position.Point.OrientationTo(referenceCell) : referenceCell.OrientationTo(actor.Position.Point);
+                var pushDirection = Pull ? actor.Position.Point.OrientationTo(referenceCell) : referenceCell.OrientationTo(actor.Position.Point);
+
+                if (PushDirection != null)
+                    pushDirection = PushDirection.Value;
 
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
                 if (Distance == 0)
-                    Distance = (short)(PushDirection.Value.IsDiagonal() ? Math.Ceiling(integerEffect.Value / 2.0) : integerEffect.Value);
+                    Distance = (short)(pushDirection.IsDiagonal() ? Math.Ceiling(integerEffect.Value / 2.0) : integerEffect.Value);
 
-                var stopCell = startCell.GetCellInDirection(PushDirection.Value, Distance);
+                var stopCell = startCell.GetCellInDirection(pushDirection, Distance);
                 
                 for (var i = 0; i < Distance; i++)
                 {
-                    var nextCell = lastCell.GetNearestCellInDirection(PushDirection.Value);
+                    var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
                     // the next cell is blocking, or an adjacent cell is blocking if it's in diagonal
                     if (IsBlockingCell(nextCell, actor) ||
-                        (PushDirection.Value.IsDiagonal() && PushDirection.Value.GetDiagonalDecomposition().Any(x => IsBlockingCell(lastCell.GetNearestCellInDirection(x), actor))))
+                        (pushDirection.IsDiagonal() && pushDirection.GetDiagonalDecomposition().Any(x => IsBlockingCell(lastCell.GetNearestCellInDirection(x), actor))))
                     {
                         if (nextCell == null)
                         {
@@ -115,7 +117,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 if (!DamagesDisabled)
                 {
-                    var fightersInline = Fight.GetAllFightersInLine(startCell, Distance, PushDirection.Value);
+                    var fightersInline = Fight.GetAllFightersInLine(startCell, Distance, pushDirection);
                     fightersInline.Insert(0, actor);
                     var distance = integerEffect.Value - startCell.ManhattanDistanceTo(stopCell);
                     var targets = 0;

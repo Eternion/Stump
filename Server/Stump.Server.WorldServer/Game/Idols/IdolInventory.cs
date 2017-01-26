@@ -170,6 +170,8 @@ namespace Stump.Server.WorldServer.Game.Idols
                 return false;
             else if (fight.MonsterTeam.Fighters.OfType<MonsterFighter>().Any(x => idol.Template.IncompatibleMonsters.Contains(x.Monster.Template.Id)))
                 return false;
+            else if (fight.MonsterTeam.Fighters.OfType<MonsterFighter>().Any(x => x.Monster.Template.AllIdolsDisabled))
+                return false;
             else if (idol.Template.GroupOnly && (fight.PlayerTeam.Fighters.Count < 4 || fight.MonsterTeam.Fighters.Count < 4))
                 return false;
             else if (!idol.Owner.Inventory.HasItem(idol.Template.IdolItem))

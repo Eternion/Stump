@@ -1937,19 +1937,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor GetCarryingActor() => Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
 
-        public void CarryActor(FightActor target, EffectBase effect, Spell spell, SpellCastHandler castHandler)
+        public bool CarryActor(FightActor target, EffectBase effect, Spell spell, SpellCastHandler castHandler)
         {
             var stateCarried = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTE_8);
             var stateCarrying = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTEUR_3);
 
             if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
-                return;
+                return false;
 
             if (target.HasState((int)SpellStatesEnum.LOURD_63))
-                return;
+                return false;
 
-            if (!target.CanBePushed())
-                return;
+            if (target.GetStates().Where(x => !x.IsDisabled).Any(x => x.State.CantBeMoved))
+                return false;
 
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
@@ -1978,6 +1978,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             m_carriedActor.Dead += OnCarryingActorDead;
             Dead += OnCarryingActorDead;
+
+            return true;
         }
 
         public void ThrowActor(Cell cell, bool drop = false)

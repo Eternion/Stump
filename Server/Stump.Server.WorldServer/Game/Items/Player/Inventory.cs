@@ -398,7 +398,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool sendMessage = true)
         {
             if (item.IsEquiped())
-                MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, true);
             return item.OnRemoveItem() && base.RemoveItem(item, delete, sendMessage);
         }
 
@@ -673,13 +673,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item) => !m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType) ? new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED } : m_itemsPositioningRules[item.Template.Type.SuperType];
 
-        public void MoveItem(BasePlayerItem item, CharacterInventoryPositionEnum position)
+        public bool MoveItem(BasePlayerItem item, CharacterInventoryPositionEnum position, bool forceCanEquip = false)
         {
             if (!HasItem(item))
-                return;
+                return false;
 
             if (position == item.Position)
-                return;
+                return false;
 
             var oldPosition = item.Position;
 
@@ -691,13 +691,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (item.CanDrop(equipedItem) && item.Drop(equipedItem))
                 {
                     UnStackItem(item, 1);
-                    return;
+                    return true;
                 }
 
                 if (equipedItem.CanFeed(item) && equipedItem.Feed(item))
                 {
                     UnStackItem(item, 1);
-                    return;
+                    return true;
                 }
 
                 // if there is one we move it to the inventory
@@ -705,12 +705,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
-            if (!CanEquip(item, position))
-                return;
+            if (!CanEquip(item, position) && !forceCanEquip)
+                return false;
 
             // second check
             if (!HasItem(item))
-                return;
+                return false;
 
             if (position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 UnEquipedDouble(item);
@@ -766,6 +766,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 NotifyItemMoved(item, oldPosition);
             }
+
+            return true;
         }
 
         void UnEquipedDouble(IItem itemToEquip)

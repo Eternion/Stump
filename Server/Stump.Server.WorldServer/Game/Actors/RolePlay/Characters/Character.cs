@@ -2955,6 +2955,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Map.Leave(this);
             StopRegen();
 
+            if (IsInMovement)
+                StopMove();
+
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
@@ -2981,6 +2984,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             NextMap = Map; // we do not leave the map
             Map.Leave(this);
             StopRegen();
+
+            if (IsInMovement)
+                StopMove();
 
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);

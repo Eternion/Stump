@@ -75,9 +75,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             OnEnter(actor);
 
-            var handler = ActorEnter;
-            if (handler != null)
-                handler(this, actor);
+            ActorEnter?.Invoke(this, actor);
         }
 
         public event Action<Map, RolePlayActor> ActorLeave;
@@ -86,9 +84,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             OnLeave(actor);
 
-            var handler = ActorLeave;
-            if (handler != null)
-                handler(this, actor);
+            ActorLeave?.Invoke(this, actor);
         }
 
         public event Action<Map, WorldObjectItem> ObjectItemEnter;
@@ -97,9 +93,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             OnObjectEnter(objectItem);
 
-            var handler = ObjectItemEnter;
-            if (handler != null)
-                handler(this, objectItem);
+            ObjectItemEnter?.Invoke(this, objectItem);
         }
 
         public event Action<Map, WorldObjectItem> ObjectItemLeave;
@@ -108,27 +102,21 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             OnObjectLeave(objectItem);
 
-            var handler = ObjectItemLeave;
-            if (handler != null)
-                handler(this, objectItem);
+            ObjectItemLeave?.Invoke(this, objectItem);
         }
 
         public event Action<Map, IFight> FightCreated;
 
         protected virtual void OnFightCreated(IFight fight)
         {
-            var handler = FightCreated;
-            if (handler != null)
-                handler(this, fight);
+            FightCreated?.Invoke(this, fight);
         }
 
         public event Action<Map, IFight> FightRemoved;
 
         protected virtual void OnFightRemoved(IFight fight)
         {
-            var handler = FightRemoved;
-            if (handler != null)
-                handler(this, fight);
+            FightRemoved?.Invoke(this, fight);
         }
 
         public event Action<Map, InteractiveObject> InteractiveSpawned;
@@ -141,9 +129,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             InteractiveHandler.SendInteractiveUsedMessage(Clients, user, interactive, skill);
 
-            var handler = InteractiveUsed;
-            if (handler != null)
-                handler(this, user, interactive, skill);
+            InteractiveUsed?.Invoke(this, user, interactive, skill);
         }
 
         public event Action<Map, Character, InteractiveObject, Skill> InteractiveUseEnded;
@@ -152,9 +138,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             InteractiveHandler.SendInteractiveUseEndedMessage(Clients, interactive, skill);
 
-            var handler = InteractiveUseEnded;
-            if (handler != null)
-                handler(this, user, interactive, skill);
+            InteractiveUseEnded?.Invoke(this, user, interactive, skill);
         }
 
         #endregion
