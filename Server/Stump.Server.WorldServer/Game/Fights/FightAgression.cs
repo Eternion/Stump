@@ -95,9 +95,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (pvpSeek != null && ChallengersTeam.Fighters.Contains(result.Fighter))
             {
-                var seekEffect = pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) as EffectString;
-
-                if (seekEffect != null)
+                if (pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) is EffectString seekEffect)
                 {
                     var target = result.Fighter.OpposedTeam.GetAllFightersWithLeavers<CharacterFighter>().FirstOrDefault(x => x.Name == seekEffect.Text);
 

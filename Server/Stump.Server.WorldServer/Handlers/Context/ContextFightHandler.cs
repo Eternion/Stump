@@ -269,8 +269,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 return;
             }
 
-            client.Character.StopMove();
-
             if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character) && !client.Character.IsInFight())
             {
                 if (client.Character.Map.Id == ArenaManager.KolizeumMapId)

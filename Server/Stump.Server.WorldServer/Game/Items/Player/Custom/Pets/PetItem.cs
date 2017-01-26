@@ -306,6 +306,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (IsDeleted)
                 return false;
 
+            if (food.Template.Id == (int)ItemIdEnum.POUDRE_DENIRIPSA_2239)
+            {
+                food.Drop(this);
+                return true;
+            }
+
             var possibleFood = PetTemplate.Foods.FirstOrDefault(x => (x.FoodType == FoodTypeEnum.ITEM && x.FoodId == food.Template.Id) ||
                                                             (x.FoodType == FoodTypeEnum.ITEMTYPE && x.FoodId == food.Template.TypeId));
 

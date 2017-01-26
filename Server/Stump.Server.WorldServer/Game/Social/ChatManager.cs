@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Social
         /// <summary>
         /// In seconds
         /// </summary>
-        [Variable] 
+        [Variable]
         public static int AntiFloodTimeBetweenTwoGlobalMessages = 60;
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Social
         /// </summary>
         public readonly Dictionary<ChatActivableChannelsEnum, ChatParserDelegate> ChatHandlers = new Dictionary<ChatActivableChannelsEnum, ChatParserDelegate>();
 
-        private  Dictionary<int, Emote> m_emotes = new Dictionary<int, Emote>();
+        private Dictionary<int, Emote> m_emotes = new Dictionary<int, Emote>();
 
         public IReadOnlyDictionary<int, Emote> Emotes => new ReadOnlyDictionary<int, Emote>(m_emotes);
 
@@ -177,7 +177,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
 
             if (message.StartsWith(CommandPrefix) &&
-                ( message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix )) // ignore processing command whenever there is the preffix twice
+                (message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix)) // ignore processing command whenever there is the preffix twice
             {
                 message = message.Remove(0, CommandPrefix.Length); // remove our prefix
                 WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(UnescapeChatCommand(message)),
@@ -196,7 +196,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 }
 
                 if (client.Character.IsMuted())
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124, (int) client.Character.GetMuteRemainingTime().TotalSeconds);
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124, (int)client.Character.GetMuteRemainingTime().TotalSeconds);
                 else
                 {
                     if (client.Character.ChatHistory.RegisterAndCheckFlood(new ChatEntry(message, channel, DateTime.Now)))
@@ -252,7 +252,7 @@ namespace Stump.Server.WorldServer.Game.Social
                             int id;
                             if (!int.TryParse(str, out id))
                                 continue;
-                            sb.Append((char) id);
+                            sb.Append((char)id);
                             break;
                     }
 
@@ -348,7 +348,8 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
             }
 
-            client.Character.ArenaParty.ForEach(entry => { 
+            client.Character.ArenaParty.ForEach(entry =>
+            {
                 if (objectItems != null)
                     SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA, msg, objectItems);
                 else
@@ -392,13 +393,16 @@ namespace Stump.Server.WorldServer.Game.Social
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK))
                 return;
 
+            if (objectItems != null)
+            {
+                //Impossible d'afficher des objets dans ce canal.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
+                return;
+            }
+
             World.Instance.ForEachCharacter(entry =>
             {
-                if (objectItems != null)
-                    //Impossible d'afficher des objets dans ce canal.
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
-                else
-                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK, msg);
+                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK, msg);
             });
         }
 
@@ -407,12 +411,16 @@ namespace Stump.Server.WorldServer.Game.Social
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SALES))
                 return;
 
+            if (objectItems != null)
+            {
+                //Impossible d'afficher des objets dans ce canal.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
+                return;
+            }
+
             World.Instance.ForEachCharacter(entry =>
             {
-                if (objectItems != null)
-                    SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg, objectItems);
-                else
-                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg);
+                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg);
             });
         }
 

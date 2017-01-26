@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 {
@@ -21,9 +22,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             if (integerEffect == null)
                 return false;
 
+            var affectedActors = GetAffectedActors();
+
+            if (!affectedActors.Any())
+                return false;
+
             var healAmount = (int)(Caster.LifePoints * (integerEffect.Value / 100d));
 
-            foreach (var actor in GetAffectedActors())
+            foreach (var actor in affectedActors)
                 actor.Heal(healAmount, Caster, true);
 
             if (Effect.Duration == 0 && healAmount > 0)

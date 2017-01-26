@@ -55,10 +55,8 @@ namespace GameplayPlugin.AnnouncePopup
 
         private static void OnLevelChanged(Character character, byte currentLevel, int difference)
         {
-            if (!PopupLevels.Contains(currentLevel))
-                return;
-
-            character.DisplayNotification(PopupMessage, NotificationEnum.INFORMATION);
+            if (PopupLevels.Any(x => currentLevel >= x && (currentLevel - difference) < x))
+                character.DisplayNotification(PopupMessage, NotificationEnum.INFORMATION);
         }
 
         private static void OnCharacterLeft(Character character)
