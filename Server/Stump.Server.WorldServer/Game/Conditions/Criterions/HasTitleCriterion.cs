@@ -6,6 +6,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
     public class HasTitleCriterion : Criterion
     {
         public const string Identifier = "HT";
+        public const string Identifier2 = "Ot";
 
         public short Title
         {

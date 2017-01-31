@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public bool IsBusy()
         {
-            return EnumerateCharacters().Any(x => x.CanEnterArena(false));
+            return EnumerateCharacters().Any(x => !x.CanEnterArena(false));
         }
 
         public IEnumerable<Character> EnumerateCharacters()

@@ -338,12 +338,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             return m_fighters.OfType<T>().Where(entry => predicate(entry));
         }
 
-        public FightActor GetLastDeadFighter(bool onlyCharacter = false)
+        public FightActor GetLastDeadFighter()
         {
-            if (onlyCharacter)
-                return m_deadFighters.LastOrDefault(x => x.IsDead() && x is CharacterFighter);
-            else
-                return m_deadFighters.LastOrDefault(x => x.IsDead());
+            return m_deadFighters.LastOrDefault(x => x.IsDead());
         }
 
         public Party GetTeamParty()

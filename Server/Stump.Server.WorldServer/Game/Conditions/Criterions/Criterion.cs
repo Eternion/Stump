@@ -174,10 +174,11 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 case HasItemCriterion.Identifier:
                     return new HasItemCriterion();
 
-                case HasOrnament.Identifier:
-                    return new HasOrnament();
+                case HasOrnamentCriterion.Identifier:
+                    return new HasOrnamentCriterion();
 
                 case HasTitleCriterion.Identifier:
+                case HasTitleCriterion.Identifier2:
                     return new HasTitleCriterion();
 
                 case InteractiveStateCriterion.Identifier:

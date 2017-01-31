@@ -81,6 +81,8 @@ using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 using Stump.Server.WorldServer.Game.Idols;
+using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Database.Items.Templates;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -123,7 +125,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             //Arena
             CheckArenaDailyProperties();
 
-            if (PrestigeRank > 0 && PrestigeManager.Instance.PrestigeEnabled)
+            /*if (PrestigeRank > 0 && PrestigeManager.Instance.PrestigeEnabled)
             {
                 var item = GetPrestigeItem();
                 if (item == null)
@@ -140,7 +142,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var item = GetPrestigeItem();
                 if (item != null)
                     Inventory.RemoveItem(item, true);
-            }
+            }*/
 
             OnPlayerLifeStatusChanged(PlayerLifeStatus);
 
@@ -2011,22 +2013,33 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             PrestigeRank++;
             AddTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
 
+            var atomItem = ItemManager.Instance.TryGetTemplate(30023);
+
             switch (PrestigeRank)
             {
+                case 1:
+                    AddOrnament(16);
+                    break;
+                case 3:
+                    AddOrnament(17);
+                    break;
                 case 5:
-                    AddOrnament(25);
+                    AddOrnament(18);
                     break;
-
+                case 7:
+                    AddOrnament(60);
+                    break;
+                case 9:
+                    AddOrnament(92);
+                    break;
                 case 10:
-                    AddOrnament(49);
-                    break;
-
-                case 15:
-                    AddOrnament(50);
+                    AddOrnament(93);
                     break;
             }
 
-            var item = GetPrestigeItem();
+            Inventory.AddItem(atomItem, 10000 * PrestigeRank);
+
+            /*var item = GetPrestigeItem();
 
             if (item == null)
                 item = CreatePrestigeItem();
@@ -2034,13 +2047,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 item.UpdateEffects();
                 Inventory.RefreshItem(item);
-            }
+            }*/
 
-            OpenPopup(
-                string.Format(
-                    "Vous venez de passer au rang prestige {0}. \r\nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
-                    PrestigeRank, item.Template.Name) +
-                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.", "PRESTIGE", 0);
+            OpenPopup($"Tu es passé prestige {PrestigeRank} ! \r\nTu repasses donc niveau 1. \r\nTu dois te déconnecter et te reconnecter pour voir ton prestige et ton niveau actualisé, bon courage !");
 
             foreach (var equippedItem in Inventory.ToArray())
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);

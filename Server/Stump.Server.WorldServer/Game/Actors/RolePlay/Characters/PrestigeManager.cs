@@ -1,20 +1,4 @@
-﻿#region License GNU GPL
-// PrestigeManager.cs
-// 
-// Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
-
-using System.Linq;
+﻿using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
@@ -35,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         [Variable] public static short[] PrestigeTitles =
         {
-            200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214
+            527, 528, 529, 530, 531, 532, 533, 534, 535, 536
         };
 
         private static readonly EffectInteger[][] m_prestigesBonus =
@@ -89,13 +73,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         [Initialization(typeof (ItemManager), Silent = true)]
         public void Initialize()
         {
-            BonusItem = ItemManager.Instance.TryGetTemplate(ItemForBonus);
+            /*BonusItem = ItemManager.Instance.TryGetTemplate(ItemForBonus);
 
             if (BonusItem != null)
                 return;
 
             logger.Error("Item {0} not found, prestiges disabled", ItemForBonus);
-            m_disabled = true;
+            m_disabled = true;*/
         }
 
         public EffectInteger[] GetPrestigeEffects(int rank)

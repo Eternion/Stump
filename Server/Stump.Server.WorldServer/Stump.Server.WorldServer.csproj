@@ -392,7 +392,7 @@
     <Compile Include="Game\Conditions\Criterions\GuildLevelCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildValidCriterion.cs" />
-    <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
+    <Compile Include="Game\Conditions\Criterions\HasOrnamentCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\InteractiveStateCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\MapCriterion.cs" />

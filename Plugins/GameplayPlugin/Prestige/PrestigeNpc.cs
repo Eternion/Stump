@@ -35,22 +35,22 @@ namespace GameplayPlugin.Prestige
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         [Variable]
-        public static int NpcId = 3003;
+        public static int NpcId = 10030;
 
         [Variable]
-        public static int MessageId = 20016;
+        public static int MessageId = 30039;
 
         [Variable]
-        public static int MessageLevelErrorId = 20019;
+        public static int MessageLevelErrorId = 30040;
 
         [Variable]
-        public static int MessagePrestigeMaxId = 20021;
+        public static int MessagePrestigeMaxId = 30041;
 
         [Variable]
-        public static short ReplyPrestigeAcceptId = 20017;
+        public static short ReplyPrestigeAcceptId = 30042;
 
         [Variable]
-        public static short ReplyPrestigeDenyId = 20018;
+        public static short ReplyPrestigeDenyId = 30043;
 
         public static NpcMessage Message;
         public static NpcMessage MessageError;

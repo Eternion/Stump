@@ -42,6 +42,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             var clone = new StatsMP(owner, ValueBase, Limit)
             {
                 Equiped = Equiped,
+                Given = Given,
+                Context = Context,
+                Additional = Additional,
                 Used = Used
             };
 

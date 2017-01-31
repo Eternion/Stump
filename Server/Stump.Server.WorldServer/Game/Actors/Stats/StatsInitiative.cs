@@ -39,10 +39,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             var clone = new StatsInitiative(owner, (short)ValueBase)
             {
                 Base = Base,
-                Additional = Additional,
-                Context = Context,
                 Equiped = Equiped,
-                Given = Given
+                Given = Given,
+                Context = Context,
+                Additional = Additional
             };
 
             return clone;
