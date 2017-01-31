@@ -96,7 +96,7 @@ namespace GameplayPlugin.Npcs
         {
             base.Open();
 
-            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcDofus.ReplyId });
+            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { (short)NpcDofus.ReplyId });
         }
 
         public override void Reply(short replyId)

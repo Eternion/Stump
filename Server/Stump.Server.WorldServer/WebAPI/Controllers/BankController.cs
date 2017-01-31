@@ -1,8 +1,11 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web.Http;
 
 namespace Stump.Server.WorldServer.WebAPI.Controllers
@@ -39,28 +42,73 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
 
         public IHttpActionResult Post(int accountId, string value) => StatusCode(HttpStatusCode.MethodNotAllowed);
 
-        [Route("Account/{accountId:int}/Bank/{itemId:int}/{amount:int}")]
-        public IHttpActionResult Put(int accountId, int itemId, int amount)
+        [Route("Account/{accountId:int}/Bank/{itemId:int}/{amount:int}/{maxStats:bool?}")]
+        public IHttpActionResult Put(int accountId, int itemId, int amount, bool maxStats = false)
         {
-            var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
+            IHttpActionResult result = null;
+            bool timeout = false;
+            var resetEvent = new ManualResetEventSlim();
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+            {
+                if (timeout)
+                {
+                    return;
+                }
 
-            if (character == null)
-                return NotFound();
+                var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
 
-            var item = ItemManager.Instance.CreateBankItem(character, itemId, amount);
+                if (character == null)
+                {
+                    result = NotFound();
+                    resetEvent.Set();
+                    return;
+                }
 
-            if (item == null)
-                return StatusCode(HttpStatusCode.InternalServerError);
+                var item = ItemManager.Instance.CreateBankItem(character, itemId, amount, maxStats);
 
-            var playerItem = character.Bank.AddItem(item);
+                if (item == null)
+                {
+                    result = StatusCode(HttpStatusCode.InternalServerError);
+                    resetEvent.Set();
+                    return;
+                }
 
-            if (playerItem == null)
-                return StatusCode(HttpStatusCode.InternalServerError);
+                if (item.Template.Id == (int)ItemIdEnum.TokenScroll)
+                {
+                    if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_AddOgrines))
+                    {
+                        item.Effects.Add(new EffectInteger(EffectsEnum.Effect_AddOgrines, (short)amount));
+                        item.Stack = 1;
+                    }
+                }
+                else if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+                {
+                    item.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
+                }
 
-            //Des objets ont été déposés dans votre banque.
-            character.SendSystemMessage(21, true);
+                var playerItem = character.Bank.AddItem(item);
 
-            return Ok();
+                if (playerItem == null)
+                {
+                    result = StatusCode(HttpStatusCode.InternalServerError);
+                    resetEvent.Set();
+                    return;
+                }
+
+                //Des objets ont été déposés dans votre banque.
+                character.SendSystemMessage(21, true);
+
+                result = Ok();
+                resetEvent.Set();
+            });
+
+            if (!resetEvent.Wait(15 * 1000))
+            {
+                timeout = true;
+                return InternalServerError(new TimeoutException());
+            }
+
+            return result;
         }
 
         [Route("Account/{accountId:int}/Bank/{guid:int}/{amount:int}")]

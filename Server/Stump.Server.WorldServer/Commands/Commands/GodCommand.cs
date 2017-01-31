@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 }
                 else
                 {
-                    trigger.ReplyError("Invalid level given. Must be greater then -255 and lesser than 255");
+                    trigger.ReplyError("Invalid level given.");
                 }
             }
         }

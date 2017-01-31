@@ -447,7 +447,17 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             var petLook = PetTemplate?.Look?.Clone();
 
             if (petLook == null)
+            {
+                if (Template.Type.ItemType != ItemTypeEnum.FAMILIER)
+                    return characterLook;
+
+                if (IsEquiped())
+                    characterLook.SetPetSkin((short)Template.AppearanceId, new short[] { 65 });
+                else
+                    characterLook.RemovePets();
+
                 return characterLook;
+            }
 
             switch (Template.Type.ItemType)
             {

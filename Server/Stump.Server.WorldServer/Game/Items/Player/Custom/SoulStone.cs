@@ -61,7 +61,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
                     if (rand.NextDouble() * 100 <= Probability)
                     {
-                        Owner.Inventory.RemoveItem(this);
+                        if (Owner.Inventory.RemoveItem(this, 1) <= 0)
+                            return;
 
                         var fullStone = ItemManager.Instance.CreatePlayerItem(Owner, (int) ItemIdEnum.PIERRE_DAME_PLEINE_7010, 1) as SoulStoneFilled;
 

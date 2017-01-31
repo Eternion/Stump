@@ -23,9 +23,10 @@ namespace GameplayPlugin.Commands
         [Variable(definableByConfig: true, DefinableRunning = true)]
         public static List<TeleportMap> Destinations = new List<TeleportMap>
         {
-                new TeleportMap(88212759, 273, 785),
-                new TeleportMap(72363008, 179, 786),
-                new TeleportMap(72359936, 212, 787)
+                new TeleportMap(162272258, 224, 2000),
+                new TeleportMap(162267138, 51, 2001),
+                new TeleportMap(88212759, 287, 2002),
+                new TeleportMap(84674563, 315, 2003)
         };
 
         public TPCommands()

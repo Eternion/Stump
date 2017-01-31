@@ -1,4 +1,5 @@
 ﻿using Stump.Core.Mathematics;
+using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -30,6 +31,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
             get;
         }
 
+        private TimedTimerEntry Timer
+        {
+            get;
+            set;
+        }
+
         public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.TAXCOLLECTOR;
 
         public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
@@ -45,20 +52,22 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 
             //Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
             Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 5);
-            Character.Area.CallDelayed((5 * 60 * 1000), Close);
+            Timer = Character.Area.CallDelayed((5 * 60 * 1000), Close);
         }
 
         public void Close()
         {
+            Character.Area.UnregisterTimer(Timer);
+
+            Character.CloseDialog(this);
+            TaxCollector.OnDialogClosed(this);
+
             if (TaxCollector.IsDisposed)
                 return;
 
             TaxCollectorHandler.SendGetExchangeGuildTaxCollectorMessage(TaxCollector.Guild.Clients, GetExchangeGuildTaxCollector());
-
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
-            Character.CloseDialog(this);
-            TaxCollector.OnDialogClosed(this);
-            
+
             TaxCollector.Guild.AddXP(TaxCollector.GatheredExperience);
             TaxCollector.Delete();
         }

@@ -6,11 +6,12 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 {
@@ -113,8 +114,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
-            Character.Inventory.AddItem(item);
-
             if (Token != null)
             {
                 Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
@@ -127,6 +126,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 252, item.Template.Id, item.Guid, item.Stack, finalPrice);
             }
 
+            Character.Inventory.AddItem(item);
             Character.Client.Send(new ExchangeBuyOkMessage());
             return true;
         }

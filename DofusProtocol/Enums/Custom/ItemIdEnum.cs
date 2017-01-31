@@ -31662,5 +31662,7 @@
         DAGUES_CACTERRE_18437 = 18437,
         // Item [Level : 130] 
         MARACASSABRE_18438 = 18438,
+
+        TokenScroll = 30001
     }
 }

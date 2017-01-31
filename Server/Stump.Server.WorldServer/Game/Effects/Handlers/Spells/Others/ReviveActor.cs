@@ -32,10 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             if (integerEffect == null)
                 return false;
 
-            if (Spell.Id == (int)SpellIdEnum.LAISSE_SPIRITUELLE_420)
-                LastDeadFighter = Caster.Team.GetLastDeadFighter(true);
-            else
-                LastDeadFighter = Caster.Team.GetLastDeadFighter();
+            LastDeadFighter = Caster.Team.GetLastDeadFighter();
 
             if (LastDeadFighter == null)
                 return false;
