@@ -320,6 +320,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             if (!(Effect is EffectInteger))
                 return false;
 
+            if (Operation == HandlerOperation.NONAPPLY)
+                return false;
+
             EffectComputeHandler handler;
 
             PlayerFields caracteritic;

@@ -696,8 +696,8 @@
     <Compile Include="Game\Items\Player\Bank.cs" />
     <Compile Include="Game\Items\Player\BankItem.cs" />
     <Compile Include="Database\Items\BankItemRecord.cs" />
-    <Compile Include="Game\Items\Player\Custom\BoundWrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\DofusItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\ExoItem.cs" />
     <Compile Include="Game\Items\Player\Custom\GuildShieldItem.cs" />
     <Compile Include="Game\Items\Player\Custom\Mounts\HarnessItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />

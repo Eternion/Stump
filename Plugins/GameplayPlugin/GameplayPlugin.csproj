@@ -146,6 +146,7 @@
     <Compile Include="Npcs\NpcAlignement.cs" />
     <Compile Include="Npcs\NpcDofus.cs" />
     <Compile Include="Prestige\PrestigeNpc.cs" />
+    <Compile Include="SmithMagic\SmithMagicPotionItem.cs" />
     <Compile Include="Votes\VoteChecker.cs" />
     <Compile Include="Npcs\NpcShops.cs" />
     <Compile Include="Plugin.cs" />

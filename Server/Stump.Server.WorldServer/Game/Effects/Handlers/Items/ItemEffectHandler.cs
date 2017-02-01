@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
         {
             APPLY,
             UNAPPLY,
+            NONAPPLY
         }
 
         protected ItemEffectHandler(EffectBase effect, Character target, BasePlayerItem item)

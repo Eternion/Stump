@@ -920,13 +920,22 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void ApplyItemEffects(BasePlayerItem item, bool send = true, ItemEffectHandler.HandlerOperation? force = null, double? efficiency = null)
         {
+            var exoError = false;
             bool? applied = null;
+
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
                 if (force != null)
                     handler.Operation = force.Value;
                 
                 handler.Efficiency = efficiency ?? 1+item.CurrentSubAreaBonus/100d;
+
+                if (GetEquipedItems().Any(x => x != item && x.GetExoEffects().ToList().Exists(y => item.GetExoEffects().Any(z => z.EffectId == y.EffectId)))
+                    && item.GetExoEffects().Any(x => x == handler.Effect))
+                {
+                    exoError = true;
+                    handler.Operation = ItemEffectHandler.HandlerOperation.NONAPPLY;
+                }
 
                 handler.Apply();
 
@@ -938,6 +947,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (send)
                 Owner.RefreshStats();
+
+            if (exoError)
+            {
+                //Impossible de cumuler des bonus de forgemagie supérieurs à 1 PA, 1 PM et 1 PO, ou de dépasser 12 PA, 6 PM ou 6 PO via l'équipement.
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 255);
+            }
         }
         
 
