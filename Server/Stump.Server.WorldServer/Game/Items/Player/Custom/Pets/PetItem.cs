@@ -511,6 +511,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private void OnFightEnded(Character character, CharacterFighter fighter)
         {
+            if (PetTemplate == null)
+                return;
+
             bool update = false;
             if (!fighter.Fight.IsDeathTemporarily && fighter.Fight.Losers == fighter.Team && IsEquiped())
             {

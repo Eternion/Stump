@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
             var lookup = Targets.ToLookup(x => x.GetType());
 
-            return lookup.All(x => x.All(y => y.IsDisjonction) ?
+            return lookup.All(x => x.First().IsDisjonction ?
                 x.Any(y => y.IsTargetValid(actor, this)) : x.All(y => y.IsTargetValid(actor, this)));
         }
 
