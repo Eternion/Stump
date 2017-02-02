@@ -14,7 +14,6 @@ using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Database.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -47,9 +46,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         #endregion
 
         #region Functions
-
-        public EffectBase[] GetExoEffects() => Effects.Where(x => !Template.Effects.Exists(y => x.EffectId == y.EffectId) && Template.Id != MountTemplate.DEFAULT_SCROLL_ITEM)
-            .Where(x => x.EffectId == EffectsEnum.Effect_AddMP_128 || x.EffectId == EffectsEnum.Effect_AddAP_111 || x.EffectId == EffectsEnum.Effect_AddRange_136).ToArray();
 
         public virtual bool AreConditionFilled(Character character)
         {
