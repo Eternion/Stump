@@ -1988,6 +1988,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != null && !drop)
                 return;
 
+            if (m_carriedActor == null)
+                return;
+
             var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int) SpellStatesEnum.PORTEUR_3).FirstOrDefault();
             var targetState = m_carriedActor.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int) SpellStatesEnum.PORTE_8).FirstOrDefault();
 

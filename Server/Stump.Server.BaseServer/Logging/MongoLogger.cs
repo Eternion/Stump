@@ -24,9 +24,7 @@ namespace Stump.Server.BaseServer.Logging
             Password = ""
         };
 
-        private SelfRunningTaskPool m_taskPool; 
-
-        private MongoDatabase m_database;
+        private IMongoDatabase m_database;
 
         [Initialization(InitializationPass.Fourth)]
         public void Initialize()
@@ -38,10 +36,7 @@ namespace Stump.Server.BaseServer.Logging
                 MongoDBConfiguration.User, MongoDBConfiguration.Password, MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName,
                 string.IsNullOrEmpty(MongoDBConfiguration.Password) ? "" : "?authMechanism=SCRAM-SHA-1"));
 
-            var server = client.GetServer();
-            m_database = server.GetDatabase(MongoDBConfiguration.DbName);
-            m_taskPool = new SelfRunningTaskPool(100, "Mongo logger");
-            m_taskPool.Start();
+            m_database = client.GetDatabase(MongoDBConfiguration.DbName);
         }
 
         public bool Insert(string collection, BsonDocument document)
@@ -51,8 +46,6 @@ namespace Stump.Server.BaseServer.Logging
                 if (m_database == null)
                     return false;
 
-                m_taskPool.Stop();
-                m_taskPool = null;
                 m_database = null;
 
                 return false;
@@ -62,7 +55,7 @@ namespace Stump.Server.BaseServer.Logging
                 Initialize();
 
             if (m_database != null)
-                m_taskPool.AddMessage(() => m_database.GetCollection<BsonDocument>(collection).Insert(document));
+                m_database.GetCollection<BsonDocument>(collection).InsertOneAsync(document);
             else
                 return false;
 

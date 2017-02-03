@@ -12,7 +12,8 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.DofusProtocol.Messages;
+using System.IO;
+using Stump.Core.Reflection;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -20,7 +21,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public InfoMapCommand()
         {
-            Aliases = new [] { "map" };
+            Aliases = new[] { "map" };
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a map";
             ParentCommandType = typeof(InfoCommand);
@@ -36,7 +37,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                map = ( trigger as GameTrigger ).Character.Map;
+                map = (trigger as GameTrigger).Character.Map;
             }
 
             if (map == null)
@@ -74,7 +75,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Give informations about an area";
             ParentCommandType = typeof(InfoCommand);
             AddParameter("area", "area", "Target area", isOptional: true, converter: ParametersConverter.AreaConverter);
-            AddParameter<bool>("msgqueue", "msgqueue", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                area = ( trigger as GameTrigger ).Character.Area;
+                area = (trigger as GameTrigger).Character.Area;
             }
 
             if (area == null)
@@ -119,14 +119,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var errors = group.Where(x => x.AdditionalProperties.ContainsKey("exception"));
 
                 trigger.ReplyBold("- {0} {1} ms {2} entries {3} errors", group.Key, average, group.Count(), errors.Count());
-            }
-
-            if (trigger.IsArgumentDefined("msgqueue"))
-            {
-                foreach(var msg in area.MessageQueue.Select(x => x as Stump.Core.Threading.Message))
-                {
-                    trigger.ReplyBold(msg.ToString());
-                }
             }
         }
     }
@@ -185,7 +177,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a fight";
             ParentCommandType = typeof(InfoCommand);
-            AddParameter("fight", "f", "Gives informations about the given fight", converter:ParametersConverter.FightConverter);
+            AddParameter("fight", "f", "Gives informations about the given fight", converter: ParametersConverter.FightConverter);
         }
 
 
