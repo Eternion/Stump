@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor Current => Index == -1 || Index >= Fighters.Count ? null : Fighters[Index];
 
-        public FightActor Next => Index >= Fighters.Count(x => x.IsAlive()) ? Fighters.FirstOrDefault(x => x.IsAlive()) : Fighters.Skip(Index + 1).FirstOrDefault(x => x.IsAlive());
+        public FightActor Next => Index == -1 || (Index + 1) > Fighters.Count ? Fighters.FirstOrDefault(x => x.IsAlive()) : Fighters.Skip(Index + 1).FirstOrDefault(x => x.IsAlive());
 
         public int Index
         {

@@ -500,16 +500,15 @@ namespace Stump.Server.WorldServer.Core.IPC
                 client.Disconnect();
             }
 
-            Character character;
-            if (!isLogged && AccountManager.Instance.IsAccountBlocked(message.AccountId, out character))
+            if (!isLogged && AccountManager.Instance.IsAccountBlocked(message.AccountId, out Character character))
             {
                 logger.Warn("Account {0} blocked, waiting release", message.AccountId);
                 Action<Character> ev = null;
-                    ev = chr =>
-                    {
-                        character.AccountUnblocked -= ev;
-                        ReplyRequest(new DisconnectedClientMessage(true), message);    
-                    };
+                ev = chr =>
+                {
+                    character.AccountUnblocked -= ev;
+                    ReplyRequest(new DisconnectedClientMessage(true), message);
+                };
                 character.AccountUnblocked += ev;
             }
             else if (!isLogged)

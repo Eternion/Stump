@@ -1700,6 +1700,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (rescaleBuff != null)
                 Look.Rescale(rescaleBuff.RescaleFactor);
+            else
+                Look.ResetScales();
 
             ActionsHandler.SendGameActionFightChangeLookMessage(Fight.Clients, source ?? this, this, Look);
         }

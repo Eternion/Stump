@@ -189,7 +189,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set
             {
                 m_incompatibleChallenges = value;
-                m_incompatibleChallengesCSV = m_incompatibleChallengesCSV.ToCSV(",");
+                m_incompatibleChallengesCSV = m_incompatibleChallenges.ToCSV(",");
             }
         }
 
@@ -225,6 +225,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             CanBePushed = monster.canBePushed;
             IsBoss = monster.isBoss;
             AllIdolsDisabled = monster.allIdolsDisabled;
+            IncompatibleChallenges = monster.incompatibleChallenges;
 
             IsActive = true;
         }
