@@ -53,6 +53,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        Guid UniqueId
+        {
+            get;
+        }
+
         Map Map
         {
             get;
@@ -481,6 +486,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected Fight(int id, Map fightMap, TBlueTeam defendersTeam, TRedTeam challengersTeam)
         {
             Id = id;
+            UniqueId = Guid.NewGuid();
             Map = fightMap;
             DefendersTeam = defendersTeam;
             DefendersTeam.Fight = this;
@@ -523,6 +529,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get;
             private set;
+        }
+
+        public Guid UniqueId
+        {
+            get;
         }
 
         public Map Map

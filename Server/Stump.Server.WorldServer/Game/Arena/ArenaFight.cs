@@ -1,4 +1,6 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using MongoDB.Bson;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
@@ -6,6 +8,7 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Arena
@@ -69,12 +72,35 @@ namespace Stump.Server.WorldServer.Game.Arena
             var defendersRank =
                 (int)DefendersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
 
-            return (from fighter in GetFightersAndLeavers().OfType<CharacterFighter>()
+            var results = (from fighter in GetFightersAndLeavers().OfType<CharacterFighter>()
                     let outcome = fighter.GetFighterOutcome()
                     select new ArenaFightResult(fighter, outcome, fighter.Loot,
                         ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
                         fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
                         outcome == FightOutcomeEnum.RESULT_VICTORY)) as IFightResult).ToList();
+
+            foreach (var playerResult in results.OfType<FightPlayerResult>())
+            {
+                var document = new BsonDocument
+                    {
+                        { "FightId", UniqueId.ToString() },
+                        { "FightType", Enum.GetName(typeof(FightTypeEnum), FightType) },
+                        { "Duration", GetFightDuration().TotalMilliseconds },
+                        { "Team", Enum.GetName(typeof(TeamEnum), playerResult.Fighter.Team.Id) },
+                        { "Win", Winners.Id == playerResult.Fighter.Team.Id },
+                        { "AcctId", playerResult.Character.Account.Id },
+                        { "AcctName", playerResult.Character.Account.Login },
+                        { "CharacterId", playerResult.Character.Id },
+                        { "CharacterName", playerResult.Character.Name },
+                        { "IPAddress", playerResult.Character.Client.IP },
+                        { "ClientKey", playerResult.Character.Account.LastHardwareId },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+                MongoLogger.Instance.Insert("fights_results", document);
+            }
+
+            return results;
         }
 
         protected override IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver, out IFightResult leaverResult)
