@@ -463,7 +463,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             {
                 case ItemTypeEnum.FAMILIER:
                     if (IsEquiped())
+                    {
                         characterLook.SetPetSkin(petLook.BonesID, petLook.DefaultScales.ToArray());
+                    }
                     else
                         characterLook.RemovePets();
                     break;
@@ -484,7 +486,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                         }
 
                         if (AppearanceId != 0)
-                            petLook.AddSkin((short)AppearanceId);
+                            petLook.BonesID = (short)AppearanceId;
 
                         characterLook.BonesID = 2;
                         petLook.SetRiderLook(characterLook);
