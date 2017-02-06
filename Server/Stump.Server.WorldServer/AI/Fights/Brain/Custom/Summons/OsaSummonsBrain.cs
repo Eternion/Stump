@@ -16,16 +16,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
         public OsaSummonsBrain(AIFighter fighter)
             : base(fighter)
         {
-            fighter.Team.FighterAdded += OnFighterAdded;
+            fighter.GetAlive += OnGetAlive;
         }
 
-        void OnFighterAdded(FightTeam team, FightActor fighter)
+        void OnGetAlive(FightActor fighter)
         {
-            if (Fighter != fighter)
-                return;
-
             Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.LIEN_ANIMAL, 1), Fighter.Cell);
-            fighter.Team.FighterAdded -= OnFighterAdded;
         }
     }
 }

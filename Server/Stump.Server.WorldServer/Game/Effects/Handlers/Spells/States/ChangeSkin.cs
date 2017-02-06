@@ -91,7 +91,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         driverLook.Look.AddSkin(skinId);
 
                     if (scale != -1)
+                    {
                         driverLook.Look.SetScales(scale);
+                        driverLook.Look.SetDefaultScales(scale);
+                    }
 
                     if (bonesId != -1)
                         driverLook.Look.BonesID = bonesId;
@@ -104,7 +107,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         look.AddSkin(skinId);
 
                     if (scale != -1)
+                    {
                         look.SetScales(scale);
+                        look.SetDefaultScales(scale);
+                    }
 
                     if (bonesId != -1)
                         look.BonesID = bonesId;

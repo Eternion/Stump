@@ -76,10 +76,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             dropOnItem.Effects.AddRange(Effects);
 
-            var newInstance = Owner.Inventory.RefreshItemInstance(dropOnItem);
-            newInstance.OnObjectModified();
+            dropOnItem.Invalidate();
+            Owner.Inventory.RefreshItem(dropOnItem);
+            dropOnItem.OnObjectModified();
 
-            ApplyEffects(newInstance, ItemEffectHandler.HandlerOperation.APPLY);
+            ApplyEffects(dropOnItem, ItemEffectHandler.HandlerOperation.APPLY);
             Owner.RefreshStats();
 
             Owner.SendServerMessage("Votre objet a été amélioré avec succès !");

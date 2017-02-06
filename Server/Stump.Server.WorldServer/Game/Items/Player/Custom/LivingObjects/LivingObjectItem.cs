@@ -50,8 +50,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
             var newInstance = Owner.Inventory.RefreshItemInstance(dropOnItem);
 
-            Owner.UpdateLook();
+            newInstance.Invalidate();
             newInstance.OnObjectModified();
+
+            Owner.UpdateLook();
 
             return true;
         }

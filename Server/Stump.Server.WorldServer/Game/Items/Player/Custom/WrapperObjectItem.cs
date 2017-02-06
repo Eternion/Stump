@@ -45,12 +45,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             dropOnItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_Apparence_Wrapper, (short)Template.Id));
 
-            var newInstance = Owner.Inventory.RefreshItemInstance(dropOnItem);
+            dropOnItem.Invalidate();
+            Owner.Inventory.RefreshItem(dropOnItem);
+            dropOnItem.OnObjectModified();
 
             Owner.UpdateLook();
-            newInstance.OnObjectModified();
 
-            InventoryHandler.SendWrapperObjectAssociatedMessage(Owner.Client, newInstance);
+            InventoryHandler.SendWrapperObjectAssociatedMessage(Owner.Client, dropOnItem);
 
             return true;
         }

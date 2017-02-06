@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var clone = new StatsAP(owner, ValueBase, Limit)
+            var clone = new StatsAP(owner, Base, Limit)
             {
                 Equiped = Equiped,
                 Given = Given,

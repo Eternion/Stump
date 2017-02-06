@@ -170,6 +170,7 @@
     <Compile Include="AI\Fights\Actions\StayInRange.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\ElPikoBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\GivrefouxBrains.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\ObsidiantreBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\ProfesseurXaBrain.cs" />
@@ -762,7 +763,6 @@
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Eniripsa\FriendshipWordCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\MansomonCastHandler.cs" />
@@ -773,7 +773,6 @@
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\RoublabotCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\FeuillageCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\SacrificeSpellCastHandler.cs" />

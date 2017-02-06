@@ -1,9 +1,8 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_AddVitalityPercent)]
@@ -23,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                var bonus = (int)(actor.Stats.Health.TotalMaxWithoutPermanentDamages * (integerEffect.Value / 100.0));
+                var bonus = (int)((actor.Stats.Health.TotalMaxWithoutPermanentDamages - actor.Stats.Health.Context) * (integerEffect.Value / 100.0));
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {

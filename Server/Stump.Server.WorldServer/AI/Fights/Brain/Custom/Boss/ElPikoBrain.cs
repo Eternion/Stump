@@ -4,10 +4,10 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
-    [BrainIdentifier((int)MonsterIdEnum.ROYALMOUTH_2854)]
-    public class RoyalMouthBrain : Brain
+    [BrainIdentifier((int)MonsterIdEnum.EL_PIKO_4609)]
+    public class ElPikoBrain : Brain
     {
-        public RoyalMouthBrain(AIFighter fighter)
+        public ElPikoBrain(AIFighter fighter)
             : base(fighter)
         {
             fighter.GetAlive += OnGetAlive;
@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnGetAlive(FightActor obj)
         {
-            Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.INIMOUTH, 1), Fighter.Cell);
+            Fighter.CastAutoSpell(new Spell((int)SpellIdEnum.GUERILLERO_7199, 1), Fighter.Cell);
         }
     }
 }

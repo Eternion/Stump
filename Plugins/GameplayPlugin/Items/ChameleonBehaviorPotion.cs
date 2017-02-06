@@ -1,7 +1,9 @@
 ﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Handlers.Mounts;
@@ -14,6 +16,12 @@ namespace GameplayPlugin.Items
         public ChameleonBehaviorPotion(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
+        }
+
+        [Initialization(typeof(ItemManager), Silent = true)]
+        public static void Initialize()
+        {
+            ItemManager.Instance.AddItemIdConstructor(typeof(ChameleonBehaviorPotion), (ItemIdEnum)30110);
         }
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)

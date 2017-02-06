@@ -207,9 +207,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public virtual StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var clone = new StatsData(owner, Name, ValueBase, Limit, m_limitEquippedOnly)
+            var clone = new StatsData(owner, Name, Base, Limit, m_limitEquippedOnly)
             {
-                Base = Base,
                 Additional = Additional,
                 Context = Context,
                 Equiped = Equiped,

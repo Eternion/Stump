@@ -47,8 +47,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private void OnGeneratingResults(IFight obj)
         {
-            var fightPvM = Owner.Fighter.Fight as FightPvM;
-            if (fightPvM == obj && fightPvM != null && !fightPvM.IsPvMArenaFight && Owner.Fighter.HasWin() && Owner.Fighter.HasState((int) SpellStatesEnum.CHERCHEUR_DAMES_2))
+            if (Owner.Fighter.Fight is FightPvM fightPvM && fightPvM == obj && !fightPvM.IsPvMArenaFight && Owner.Fighter.HasWin() && Owner.Fighter.HasState((int)SpellStatesEnum.CHERCHEUR_DAMES_2))
             {
                 if (Owner.Fighter.Team.Fighters.Any(x => x.Loot.Items.Any(y => y.Key == (int)ItemIdEnum.PIERRE_DAME_PLEINE_7010)))
                     return;
@@ -64,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                         if (Owner.Inventory.RemoveItem(this, 1) <= 0)
                             return;
 
-                        var fullStone = ItemManager.Instance.CreatePlayerItem(Owner, (int) ItemIdEnum.PIERRE_DAME_PLEINE_7010, 1) as SoulStoneFilled;
+                        var fullStone = ItemManager.Instance.CreatePlayerItem(Owner, (int)ItemIdEnum.PIERRE_DAME_PLEINE_7010, 1) as SoulStoneFilled;
 
                         if (fullStone == null)
                             return;
@@ -73,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
                         Owner.Inventory.AddItem(fullStone);
                         // display purpose
-                        Owner.Fighter.Loot.AddItem(new DroppedItem(fullStone.Template.Id, 1) {IgnoreGeneration = true});
+                        Owner.Fighter.Loot.AddItem(new DroppedItem(fullStone.Template.Id, 1) { IgnoreGeneration = true });
                     }
                 }
             }

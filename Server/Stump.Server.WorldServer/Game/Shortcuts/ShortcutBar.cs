@@ -51,9 +51,10 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
         internal void Load()
         {
             var database = WorldServer.Instance.DBAccessor.Database;
-            m_spellShortcuts = database.Query<SpellShortcut>(string.Format(SpellShortcutRelator.FetchByOwner, Owner.Id)).ToDictionary(x => x.Slot);
-            m_itemShortcuts = database.Query<ItemShortcut>(string.Format(ItemShortcutRelator.FetchByOwner, Owner.Id)).ToDictionary(x => x.Slot);
-            m_presetShortcuts = database.Query<PresetShortcut>(string.Format(PresetShortcutRelator.FetchByOwner, Owner.Id)).ToDictionary(x => x.Slot);
+
+            m_spellShortcuts = database.Query<SpellShortcut>(string.Format(SpellShortcutRelator.FetchByOwner, Owner.Id)).DistinctBy(x => x.Slot).ToDictionary(x => x.Slot);
+            m_itemShortcuts = database.Query<ItemShortcut>(string.Format(ItemShortcutRelator.FetchByOwner, Owner.Id)).DistinctBy(x => x.Slot).ToDictionary(x => x.Slot);
+            m_presetShortcuts = database.Query<PresetShortcut>(string.Format(PresetShortcutRelator.FetchByOwner, Owner.Id)).DistinctBy(x => x.Slot).ToDictionary(x => x.Slot);
         }
 
         public void AddShortcut(ShortcutBarEnum barType, DofusProtocol.Types.Shortcut shortcut)
@@ -241,7 +242,6 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
 
         public IEnumerable<Shortcut> GetShortcuts(ShortcutBarEnum barType)
         {
-
             switch (barType)
             {
                 case ShortcutBarEnum.SPELL_SHORTCUT_BAR:

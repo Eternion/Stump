@@ -452,7 +452,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                     return characterLook;
 
                 if (IsEquiped())
-                    characterLook.SetPetSkin((short)Template.AppearanceId, new short[] { 65 });
+                {
+                    var appareanceId = Template.AppearanceId;
+
+                    if (AppearanceId != 0)
+                        appareanceId = AppearanceId;
+
+                    characterLook.SetPetSkin((short)appareanceId, new short[] { 65 });
+                }
                 else
                     characterLook.RemovePets();
 
@@ -464,6 +471,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 case ItemTypeEnum.FAMILIER:
                     if (IsEquiped())
                     {
+                        if (AppearanceId != 0)
+                            petLook.BonesID = (short)AppearanceId;
+
                         characterLook.SetPetSkin(petLook.BonesID, petLook.DefaultScales.ToArray());
                     }
                     else
