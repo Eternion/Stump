@@ -280,7 +280,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var challenge = ChallengeManager.Instance.GetChallenge(challengeId, fight);
             challenge.Initialize();
 
-            fight.SetChallenge(challenge);
+            fight.AddChallenge(challenge);
 
             trigger.Reply("Force challengeId {0} for current Fight", challenge.Id);
         }

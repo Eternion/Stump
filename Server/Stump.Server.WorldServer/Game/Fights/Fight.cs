@@ -36,7 +36,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ServiceStack.Text;
 using Stump.Server.WorldServer.Game.Fights.Sequences;
-using Stump.Server.WorldServer.Database.Idols;
 using Stump.Server.WorldServer.Handlers.Idols;
 using Stump.Server.WorldServer.Game.Idols;
 
@@ -163,7 +162,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        DefaultChallenge Challenge
+        List<DefaultChallenge> Challenges
         {
             get;
         }
@@ -347,9 +346,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         void FreeTriggerId(int id);
 
-        void SetChallenge(DefaultChallenge challenge);
+        void AddChallenge(DefaultChallenge challenge);
 
-        int GetChallengeBonus();
+        int GetChallengesBonus();
 
         int GetIdolsXPBonus();
 
@@ -498,6 +497,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_leavers = new List<FightActor>();
             m_spectators = new List<FightSpectator>();
 
+            Challenges = new List<DefaultChallenge>();
             ActiveIdols = new List<PlayerIdol>();
 
             DefendersTeam.FighterAdded += OnFighterAdded;
@@ -653,7 +653,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor FighterPlaying => TimeLine.Current;
 
-        public DefaultChallenge Challenge
+        public List<DefaultChallenge> Challenges
         {
             get;
             private set;
@@ -1483,12 +1483,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
-            if (Challenge != null)
+            foreach (var challenge in Challenges)
             {
-                ContextHandler.SendChallengeInfoMessage(spectator.Client, Challenge);
-                if (Challenge.Status != ChallengeStatusEnum.RUNNING)
-                    ContextHandler.SendChallengeResultMessage(spectator.Client, Challenge);
+                ContextHandler.SendChallengeInfoMessage(spectator.Client, challenge);
+                if (challenge.Status != ChallengeStatusEnum.RUNNING)
+                    ContextHandler.SendChallengeResultMessage(spectator.Client, challenge);
             }
+
             if (!spectator.Character.Invisible)
             {
                 // Spectator 'X' joined
@@ -2378,22 +2379,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Challenges
 
-        public void SetChallenge(DefaultChallenge challenge)
+        public void AddChallenge(DefaultChallenge challenge)
         {
-            if (Challenge != null)
-                return;
-
-            Challenge = challenge;
+            Challenges.Add(challenge);        
             ContextHandler.SendChallengeInfoMessage(Clients, challenge);
         }
 
-        public int GetChallengeBonus()
-        {
-            if (Challenge == null)
-                return 0;
-
-            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 0;
-        }
+        public int GetChallengesBonus() => Challenges.Sum(x => x.Status == ChallengeStatusEnum.SUCCESS ? x.Bonus : 0);
 
         #endregion Challenges
 

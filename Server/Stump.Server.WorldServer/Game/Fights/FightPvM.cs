@@ -46,10 +46,19 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!Map.AllowFightChallenges)
                 return;
 
-            var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
-            challenge.Initialize();
+            initChallenge();
 
-            SetChallenge(challenge);
+            if (Map.isDungeon())
+            {
+                initChallenge();
+            }
+
+            void initChallenge()
+            {
+                var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+                challenge.Initialize();
+                AddChallenge(challenge);
+            }
         }
 
         protected override void OnFighterAdded(FightTeam team, FightActor actor)

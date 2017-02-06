@@ -1656,6 +1656,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
+        public bool isDungeon()
+        {
+            return m_spawningPools.Any(x => x is DungeonSpawningPool);
+        }
+
         #region Neighbors
 
         public Map GetNeighbouringMap(MapNeighbour mapNeighbour)

@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
-            var challengeBonus = fighter.Fight.GetChallengeBonus();
+            var challengeBonus = fighter.Fight.GetChallengesBonus();
 
             var idolsBonus = fighter.Fight.GetIdolsXPBonus();
             var idolsMalus = Math.Pow(Math.Min(4, ((double)sumMonstersHiddenLevel / droppers.Count() / maxPlayerLevel)), 2);
@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas, bool kamasRate = true)
         {
-            var challengeBonus = looter.Fight.GetChallengeBonus();
+            var challengeBonus = looter.Fight.GetChallengesBonus();
             var idolsBonus = looter.Fight.GetIdolsDropBonus();
 
             var looterPP = looter.Prospecting + ((looter.Prospecting * (challengeBonus + idolsBonus)) / 100d);
@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static double AdjustDropChance(IFightResult looter, DroppableItem item, Monster dropper, int monsterAgeBonus)
         {
-            var challengeBonus = looter.Fight.GetChallengeBonus();
+            var challengeBonus = looter.Fight.GetChallengesBonus();
             var idolsBonus = looter.Fight.GetIdolsDropBonus();
 
             var looterPP = looter.Prospecting + ((looter.Prospecting * (challengeBonus + idolsBonus)) / 100d);

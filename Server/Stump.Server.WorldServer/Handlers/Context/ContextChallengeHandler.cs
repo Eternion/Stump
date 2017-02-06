@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Fights.Challenges;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -15,12 +16,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
-            var challenge = client.Character.Fight.Challenge;
+            var challenge = client.Character.Fight.Challenges.FirstOrDefault(x => x.Id == message.challengeId);
 
             if (challenge == null)
-                return;
-
-            if (challenge.Id != message.challengeId)
                 return;
 
             if (challenge.Target == null)
