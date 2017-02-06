@@ -91,6 +91,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
             sequence.Parent = this;
             m_children.Add(sequence);
         }
+        
+        public bool IsChild(FightSequence sequence, bool recursive = true)
+        {
+            return m_children.Any(x => x == sequence) && (!recursive || m_children.Any(x => x.IsChild(sequence)));
+        }
 
         public IEnumerable<FightSequence> EnumerateSequences()
         {

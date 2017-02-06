@@ -61,6 +61,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         };
 
         private FightSequence m_lastTriggeredSequence;
+        private Damage m_lastDamageTrigger;
         
         public TriggerBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority,
             TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger = null)
@@ -119,7 +120,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
             // to avoid recursion cannot be triggered twice in the same sequence (spell cast, move, turn end/begin...)
-            if (m_lastTriggeredSequence == fighterTrigger.Fight.CurrentRootSequence)
+
+            if (m_lastTriggeredSequence != null && m_lastTriggeredSequence.IsChild(fighterTrigger.Fight.CurrentSequence))
                 return;
 
             m_lastTriggeredSequence = fighterTrigger.Fight.CurrentRootSequence; 
