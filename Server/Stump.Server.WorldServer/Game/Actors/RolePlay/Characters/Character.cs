@@ -1000,6 +1000,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Fighter.Look = Look.Clone();
                 Fighter.Look.RemoveAuras();
 
+                if (Fighter.IsDead() ||Fighter.HasLeft())
+                    return;
+
                 ContextHandler.SendGameContextRefreshEntityLookMessage(CharacterContainer.Clients, Fighter);
             }
             else
