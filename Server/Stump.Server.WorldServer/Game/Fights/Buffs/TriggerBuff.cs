@@ -71,8 +71,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             ApplyTrigger = applyTrigger;
             RemoveTrigger = removeTrigger;
 
-            var triggerStr = Effect.Triggers.Split('|');
-            Triggers = triggerStr.Select(GetTriggerFromString).ToList();
+            Triggers = Effect.Triggers.Split('|').Select(GetTriggerFromString).ToList();
         }
 
         public object Token
@@ -86,7 +85,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
         }
 
-
         public TriggerBuffApplyHandler ApplyTrigger
         {
             get;
@@ -97,12 +95,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
         }
 
-
         public List<BuffTrigger> Triggers
         {
             get;
             protected set;
         }
+
         public void SetTrigger(BuffTriggerType trigger)
         {
             Triggers = new List<BuffTrigger> { new BuffTrigger(trigger) };
@@ -134,7 +132,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Apply(fighterTrigger, trigger, Token);
         }
         
-
         public override void Dispell()
         {
             base.Dispell();

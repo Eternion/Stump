@@ -21,9 +21,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             EffectHandler = effectHandler;
             Spell = spell;
             Critical = critical;
-            Dispellable = dispelable;
 
             Duration = triggerer != null && EffectFix?.TriggerBuffDuration != null ? (short)EffectFix.TriggerBuffDuration : (short) (EffectHandler.Duration == -1 ? -1000 : Effect.Duration);
+            Dispellable = EffectFix?.Dispellable != null ? (FightDispellableEnum)EffectFix.Dispellable : dispelable;
+
             Delay = (short) EffectHandler.Delay;
             CustomActionId = (short?) EffectFix?.ActionId;
 

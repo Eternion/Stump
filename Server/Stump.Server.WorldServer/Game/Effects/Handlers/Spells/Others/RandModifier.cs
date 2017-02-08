@@ -3,7 +3,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -34,8 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         void RollTrigger(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
-            var @ref = token as Ref<FightSpellCastCriticalEnum>;
-            if (@ref != null)
+            if (token is Ref<FightSpellCastCriticalEnum> @ref)
                 @ref.Target = FightSpellCastCriticalEnum.NORMAL;
         }
 
