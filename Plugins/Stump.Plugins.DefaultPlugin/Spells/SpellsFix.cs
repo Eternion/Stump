@@ -50,6 +50,22 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 4, (level, effect, critical) => effect.ZoneSize = 4);
 
             #endregion HUPPERMAGE
+
+            #region ECAFLIP
+
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 0);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 1);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 2);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 3);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 4);
+
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 0);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 1);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 2);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 3);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 4);
+
+            #endregion ECAFLIP
         }
 
         #region Methods
