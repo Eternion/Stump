@@ -48,14 +48,17 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             initChallenge();
 
-            if (Map.isDungeon())
-            {
+            if (Map.IsDungeon() || IsPvMArenaFight)
                 initChallenge();
-            }
 
             void initChallenge()
             {
                 var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+
+                // no challenge found
+                if (challenge == null)
+                    return;
+
                 challenge.Initialize();
                 AddChallenge(challenge);
             }
@@ -68,8 +71,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!(team is FightMonsterTeam) || m_ageBonusDefined)
                 return;
 
-            var monsterFighter = team.Leader as MonsterFighter;
-            if (monsterFighter != null)
+            if (team.Leader is MonsterFighter monsterFighter)
                 AgeBonus = monsterFighter.Monster.Group.AgeBonus;
 
             m_ageBonusDefined = true;

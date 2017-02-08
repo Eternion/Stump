@@ -33,6 +33,7 @@ namespace GameplayPlugin.Items
                 return 0;
 
             Owner.EquippedMount.AddBehavior(MountBehaviorEnum.Caméléone);
+            Owner.UpdateLook();
 
             MountHandler.SendMountSetMessage(Owner.Client, Owner.EquippedMount.GetMountClientData());
 

@@ -18,10 +18,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             var challenge = client.Character.Fight.Challenges.FirstOrDefault(x => x.Id == message.challengeId);
 
-            if (challenge == null)
+            if (challenge?.Target == null)
                 return;
 
-            if (challenge.Target == null)
+            if (!challenge.Target.IsVisibleFor(client.Character))
                 return;
 
             SendChallengeTargetsListMessage(challenge.Fight.Clients, new[] { (double)challenge.Target.Id }, new[] { challenge.Target.Cell.Id });

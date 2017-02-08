@@ -172,6 +172,7 @@
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\ElPikoBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\GivrefouxBrains.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\KanigroulaBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\ObsidiantreBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\ProfesseurXaBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\KolossoBrain.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Summons\TreeBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
+    <Compile Include="AI\Fights\Brain\InitBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
     <Compile Include="AI\Fights\Spells\SpellCastImpact.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
@@ -251,6 +253,7 @@
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\Accounts\AccountRelation.cs" />
     <Compile Include="Database\Accounts\UserGroup.cs" />
+    <Compile Include="Database\AI\InitBrainRecord.cs" />
     <Compile Include="Database\Arena\ArenaRecord.cs" />
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
