@@ -1,5 +1,7 @@
-﻿using NLog;
+﻿using System.Linq;
+using NLog;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 
 namespace Stump.Plugins.DefaultPlugin.Global
 {
@@ -24,7 +26,9 @@ namespace Stump.Plugins.DefaultPlugin.Global
 
             foreach (var map in area.Maps)
             {
-                map.ClearSpawningPools();
+                map.DisableClassicalMonsterSpawns();
+                foreach (var pool in map.SpawningPools.OfType<ClassicalSpawningPool>().ToArray())
+                    map.RemoveSpawningPool(pool);
 
                 map.AddSpawningPool(new IncarnamSpawningPool(map, map.SubArea.GetMonsterSpawnInterval()));
             }
