@@ -824,7 +824,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void TriggerDamageBuffs(Damage damage)
         {
-            if (damage.School != EffectSchoolEnum.Pushback && !damage.ReflectedDamages && !IsIndirectSpellCast(damage.Spell))
+            //if (damage.School != EffectSchoolEnum.Pushback && !damage.ReflectedDamages && !IsIndirectSpellCast(damage.Spell))
                 TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
 
             TriggerBuffs(damage.Source, damage.Source.IsEnnemyWith(this) ? BuffTriggerType.OnDamagedByEnemy : BuffTriggerType.OnDamagedByAlly, damage);
