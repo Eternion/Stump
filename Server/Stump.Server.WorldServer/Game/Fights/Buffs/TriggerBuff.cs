@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             if (m_lastTriggeredSequence != null && m_lastTriggeredSequence.IsChild(fighterTrigger.Fight.CurrentSequence))
                 return;
 
-            m_lastTriggeredSequence = fighterTrigger.Fight.CurrentRootSequence; 
+            m_lastTriggeredSequence = fighterTrigger.Fight.CurrentSequence; 
             base.Apply();
             ApplyTrigger?.Invoke(this, fighterTrigger, trigger, token);
         }
