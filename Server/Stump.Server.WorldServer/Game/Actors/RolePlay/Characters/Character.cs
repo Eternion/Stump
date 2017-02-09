@@ -1498,7 +1498,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 if (EquippedMount.Harness != null)
                 {
-                    Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                    Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, true);
 
                     // Votre harnachement est déposé dans votre inventaire.
                     BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
@@ -3873,9 +3873,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return new ActorAlignmentInformations(
-                (sbyte)(PvPEnabled ? AlignmentSide : 0),
-                (sbyte)(PvPEnabled ? AlignmentValue : 0),
-                (sbyte)(PvPEnabled ? AlignmentGrade : 0),
+                (sbyte)AlignmentSide,
+                AlignmentValue,
+                PvPEnabled ? AlignmentGrade : (sbyte)0,
                 CharacterPower);
         }
 
@@ -3888,7 +3888,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return new ActorExtendedAlignmentInformations(
                 (sbyte)AlignmentSide,
                 AlignmentValue,
-                AlignmentGrade,
+                PvPEnabled ? AlignmentGrade : (sbyte)0,
                 CharacterPower,
                 (short)Honor,
                 (short)LowerBoundHonor,

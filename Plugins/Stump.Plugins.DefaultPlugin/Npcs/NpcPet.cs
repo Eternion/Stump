@@ -159,10 +159,21 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
 
         protected override void Apply()
         {
+            if (!FirstTrader.Items.All(x =>
+            {
+                var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
+
+                return item != null && item.Stack >= x.Stack && !item.IsEquiped();
+            }))
+            {
+                return;
+            }
+
             foreach (var tradeItem in FirstTrader.Items)
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
-                FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
+                if (FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack) != tradeItem.Stack)
+                    return;
             }
 
             foreach (var tradeItem in SecondTrader.Items)
@@ -215,9 +226,8 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
             if (FirstTrader.Items.Count != 1 || FirstTrader.Items.Any(x => x.Stack != 1))
                 return;
 
-            var pet = FirstTrader.Items.OfType<PlayerTradeItem>().FirstOrDefault(x => x.PlayerItem is PetItem)?.PlayerItem as PetItem;
 
-            if (pet != null)
+            if (FirstTrader.Items.OfType<PlayerTradeItem>().FirstOrDefault(x => x.PlayerItem is PetItem)?.PlayerItem is PetItem pet)
             {
                 Kamas = (int)((DateTime.Now - pet.LastMealDate)?.TotalHours ?? 0);
 
@@ -247,8 +257,8 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
             }
             else
             {
-                var certificate = FirstTrader.Items.OfType<PlayerTradeItem>().FirstOrDefault(x => 
-                    x.Template.Type.ItemType == ItemTypeEnum.CERTIFICAT_DE_FAMILIER || 
+                var certificate = FirstTrader.Items.OfType<PlayerTradeItem>().FirstOrDefault(x =>
+                    x.Template.Type.ItemType == ItemTypeEnum.CERTIFICAT_DE_FAMILIER ||
                     x.Template.Type.ItemType == ItemTypeEnum.CERTIFICAT_DE_MONTILIER);
 
                 if (certificate == null)
@@ -264,9 +274,9 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
                     FirstTrader.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 128, Kamas);
                     return;
                 }
-                
+
                 var petTemplate = PetManager.Instance.Pets.Values.FirstOrDefault(x => x.CertificateItemId == certificate.Template.Id);
-                
+
                 if (petTemplate == null)
                 {
                     logger.Error($"Certificate {certificate.Template.Id} has no matching pet");
@@ -294,10 +304,21 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
 
         protected override void Apply()
         {
+            if (!FirstTrader.Items.All(x =>
+            {
+                var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
+
+                return item != null && item.Stack >= x.Stack && !item.IsEquiped();
+            }))
+            {
+                return;
+            }
+
             foreach (var tradeItem in FirstTrader.Items)
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
-                FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
+                if (FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack) != tradeItem.Stack)
+                    return;
             }
 
             foreach (var tradeItem in SecondTrader.Items)

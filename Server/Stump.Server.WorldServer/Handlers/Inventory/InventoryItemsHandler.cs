@@ -254,7 +254,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(WrapperObjectDissociateRequestMessage.Id)]
         public static void HandleWrapperObjectDissociateRequestMessage(WorldClient client, WrapperObjectDissociateRequestMessage message)
         {
-            if (client.Character.IsInFight())
+            if (client.Character.IsInFight() || client.Character.IsInExchange())
                 return;
 
             var host = client.Character.Inventory.TryGetItem(message.hostUID);

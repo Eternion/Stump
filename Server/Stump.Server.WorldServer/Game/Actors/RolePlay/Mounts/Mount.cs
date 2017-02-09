@@ -129,7 +129,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public void AddBehavior(MountBehaviorEnum behavior)
         {
-            Record.Behaviors.Add((int) behavior);
+            var behaviors = Record.Behaviors.ToList();
+            behaviors.Add((int)behavior);
+
+            Record.Behaviors = behaviors;
+
             IsDirty = true;
         }
 
