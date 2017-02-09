@@ -53,17 +53,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region ECAFLIP
 
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 0);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 1);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 2);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 3);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, 4);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, (x) => x.Delay == 0, false);
 
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 0);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 1);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 2);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 3);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, 4);
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, (x) => x.Delay == 0, false);
 
             #endregion ECAFLIP
         }
@@ -164,6 +156,25 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             fixer(spell, spell.Effects[effectIndex], false);
             if (critical && spell.CriticalEffects.Count > effectIndex)
                 fixer(spell, spell.CriticalEffects[effectIndex], true);
+        }
+
+        public static void RemoveEffectOnAllLevels(int spellId, Predicate<EffectDice> predicate, bool critical = true)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+            {
+                logger.Error($"Cannot apply fix on spell {spellId} : spell do not exists");
+                return;
+            }
+
+            foreach (var level in spellLevels)
+            {
+                level.Effects.RemoveAll(predicate);
+                if (critical)
+                    level.CriticalEffects.RemoveAll(predicate);
+
+            }
         }
 
         public static void RemoveEffectOnAllLevels(int spellId, int effectIndex, bool critical = true)
