@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
         
         public bool IsChild(FightSequence sequence, bool recursive = true)
         {
-            return m_children.Any(x => x == sequence) && (!recursive || m_children.Any(x => x.IsChild(sequence)));
+            return m_children.Any(x => x == sequence) || (!recursive || m_children.Any(x => x.IsChild(sequence)));
         }
 
         public IEnumerable<FightSequence> EnumerateSequences()
