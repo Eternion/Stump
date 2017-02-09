@@ -291,7 +291,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 m_running = false;
 
                 if (wait && m_currentThreadId != 0)
-                    m_stoppedAsync.WaitOne();
+                    m_stoppedAsync.WaitOne(TimeSpan.FromSeconds(5));
 
                 logger.Info("Area '{0}' stopped", this);
             }
@@ -459,8 +459,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                     if (!m_running)
                         m_stoppedAsync.Set();
-
-                    m_currentTask = Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
+                    else
+                        m_currentTask = Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
                 }
                 catch (Exception ex)
                 {

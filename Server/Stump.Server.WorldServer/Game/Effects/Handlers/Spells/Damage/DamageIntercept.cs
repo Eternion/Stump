@@ -25,7 +25,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             foreach (var actor in GetAffectedActors())
             {
                 AddTriggerBuff(actor, TriggerBuffApply);
-                AddTriggerBuff(actor, BuffTriggerType.AfterDamaged, PostTriggerBuffApply);
+                // fixed with trigger buff recursion fix
+                //AddTriggerBuff(actor, BuffTriggerType.AfterDamaged, PostTriggerBuffApply);
             }
 
             return true;
@@ -38,14 +39,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (target == null)
                 return;
 
-            if (target.IsSacrificeProtected)
-                return;
+            // fixed with the trigger buf
+            /*if (target.IsSacrificeProtected)
+                return;*/
 
             var damage = token as Fights.Damage;
             if (damage == null || damage.Amount == 0)
                 return;
 
-            target.IsSacrificeProtected = true;
+            //target.IsSacrificeProtected = true;
 
             damage.IgnoreDamageBoost = true;
             damage.IgnoreDamageReduction = true;
