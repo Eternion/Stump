@@ -149,6 +149,7 @@
     <Compile Include="Code\MonsterIdEnumGeneration.cs" />
     <Compile Include="Code\ItemIdEnumGeneration.cs" />
     <Compile Include="Code\StateEnumGeneration.cs" />
+    <Compile Include="Global\StartupSpawner.cs" />
     <Compile Include="Items\ItemsFix.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
     <Compile Include="Npcs\NpcBank.cs" />
