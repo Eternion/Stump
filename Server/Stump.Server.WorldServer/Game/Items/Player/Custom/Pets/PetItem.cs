@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 LastMealEffect = Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LastMeal);
                 CorpulenceEffect = Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Corpulence);
 
-                m_monsterKilledEffects = Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).ToDictionary(x => (int)x.DiceNum);
+                m_monsterKilledEffects = Effects.OfType<EffectDice>().Where(x => x.EffectId == EffectsEnum.Effect_MonsterKilledCount).DistinctBy(x => x.DiceNum).ToDictionary(x => (int)x.DiceNum);
                 UpdateCorpulence();
             }
         }
