@@ -270,9 +270,10 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             var wrapperItemTemplate = ItemManager.Instance.TryGetTemplate(apparenceWrapper.Value);
 
             host.Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_Apparence_Wrapper);
-            host.Invalidate();
 
+            host.Invalidate();
             client.Character.Inventory.RefreshItem(host);
+            host.OnObjectModified();
 
             var wrapperItem = ItemManager.Instance.CreatePlayerItem(client.Character, wrapperItemTemplate, 1);
 

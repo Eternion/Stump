@@ -1,6 +1,5 @@
 ﻿using System;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -52,9 +51,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnLeft()
         {
-            var handler = Left;
-            if (handler != null)
-                handler(this);
+            Left?.Invoke(this);
         }
     }
 }

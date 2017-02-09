@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
-using Stump.Server.WorldServer.AI.Fights.Spells;
-using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
@@ -41,28 +38,52 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             var handlers = new List<SpellEffectHandler>();
 
             var groups = effects.GroupBy(x => x.Group);
+            double totalRandSum = effects.Sum(entry => entry.Random);
+            var randGroup = random.NextDouble();
+            var stopRandGroup = false;
 
             foreach (var groupEffects in groups)
             {
-                var rand = random.NextDouble();
                 double randSum = groupEffects.Sum(entry => entry.Random);
-                var stopRand = false;
+
+                if (randSum > 0)
+                {
+                    if (stopRandGroup)
+                        continue;
+
+                    if (randGroup > randSum / totalRandSum)
+                    {
+                        // group ignored
+                        randGroup -= randSum / totalRandSum;
+                        continue;
+                    }
+
+                    // random group found, there can be only one
+                    stopRandGroup = true;
+                }
+
+                var randEffect = random.NextDouble();
+                var stopRandEffect = false;
+
                 foreach (var effect in groupEffects)
                 {
-                    if (effect.Random > 0)
+                    if (groups.Count() <= 1)
                     {
-                        if (stopRand)
-                            continue;
-
-                        if (rand > effect.Random / randSum)
+                        if (effect.Random > 0)
                         {
-                            // effect ignored
-                            rand -= effect.Random / randSum;
-                            continue;
-                        }
+                            if (stopRandEffect)
+                                continue;
 
-                        // random effect found, there can be only one
-                        stopRand = true;
+                            if (randEffect > effect.Random / randSum)
+                            {
+                                // effect ignored
+                                randEffect -= effect.Random / randSum;
+                                continue;
+                            }
+
+                            // random effect found, there can be only one
+                            stopRandEffect = true;
+                        }
                     }
 
                     var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, this, TargetedCell, Critical);

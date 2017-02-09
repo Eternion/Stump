@@ -1700,6 +1700,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (rescaleBuff != null)
                 Look.Rescale(rescaleBuff.RescaleFactor);
+            else
+                Look.ResetScales();
 
             ActionsHandler.SendGameActionFightChangeLookMessage(Fight.Clients, source ?? this, this, Look);
         }
@@ -1986,6 +1988,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var actor = Fight.GetOneFighter(cell);
             if (actor != null && !drop)
+                return;
+
+            if (m_carriedActor == null)
                 return;
 
             var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int) SpellStatesEnum.PORTEUR_3).FirstOrDefault();

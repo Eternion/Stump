@@ -183,7 +183,9 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 SpellIdEnum.FOCUS,
                 SpellIdEnum.ROUBLABOT,
                 SpellIdEnum.IVRESSE,
-                SpellIdEnum.BRISE_L_ÂME
+                SpellIdEnum.BRISE_L_ÂME,
+                SpellIdEnum.FOCUS,
+                SpellIdEnum.TRAVERSÉE
             };
 
             specialSpellsList.ForEach(x => character.Spells.UnLearnSpell((int)x));

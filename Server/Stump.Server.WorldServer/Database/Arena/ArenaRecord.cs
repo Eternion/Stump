@@ -27,6 +27,7 @@ namespace Stump.Server.WorldServer.Database.Arena
             set;
         }
 
+        [Ignore]
         public Map Map
         {
             get { return m_map ?? (m_map = Game.World.Instance.GetMap(MapId)); }

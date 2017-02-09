@@ -119,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Spells
                     continue;
                 }
 
-                foreach(var effect in effects.Where((x,i) => fix.EffectId == x.Id && (fix.EffectIndex == null || fix.EffectIndex == i)))
+                foreach(var effect in effects.Where((x,i) => fix.EffectId == null || (fix.EffectId == x.Id && (fix.EffectIndex == null || fix.EffectIndex == i))))
                 {
                     effect.EffectFix = fix;
                 }

@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             Fight.WinnersDetermined += OnWinnersDetermined;
         }
 
-        public virtual bool IsEligible() => true;
+        public virtual bool IsEligible() => Fight.GetAllFighters<MonsterFighter>().All(x => !x.Monster.Template.IncompatibleChallenges.Contains((uint)Id));
 
         public void UpdateStatus(ChallengeStatusEnum status, FightActor from = null)
         {

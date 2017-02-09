@@ -1000,6 +1000,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Fighter.Look = Look.Clone();
                 Fighter.Look.RemoveAuras();
 
+                if (Fighter.IsDead() ||Fighter.HasLeft())
+                    return;
+
                 ContextHandler.SendGameContextRefreshEntityLookMessage(CharacterContainer.Clients, Fighter);
             }
             else
@@ -3031,11 +3034,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
 
-            if (Fight.Challenge != null)
+            foreach (var challenge in Fight.Challenges)
             {
-                ContextHandler.SendChallengeInfoMessage(Client, Fight.Challenge);
-                if (Fight.Challenge.Status != ChallengeStatusEnum.RUNNING)
-                    ContextHandler.SendChallengeResultMessage(Client, Fight.Challenge);
+                ContextHandler.SendChallengeInfoMessage(Client, challenge);
+
+                if (challenge.Status != ChallengeStatusEnum.RUNNING)
+                    ContextHandler.SendChallengeResultMessage(Client, challenge);
             }
 
             return Fighter;

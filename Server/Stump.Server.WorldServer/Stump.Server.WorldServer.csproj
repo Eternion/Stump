@@ -104,21 +104,14 @@
       <HintPath>..\..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MongoDB.Bson.2.3.0\lib\net45\MongoDB.Bson.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MongoDB.Bson, Version=2.4.2.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Bson.2.4.2\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MongoDB.Driver.2.3.0\lib\net45\MongoDB.Driver.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MongoDB.Driver, Version=2.4.2.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Driver.2.4.2\lib\net45\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MongoDB.Driver.Core.2.3.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MongoDB.Driver.Legacy, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\mongocsharpdriver.2.3.0\lib\net45\MongoDB.Driver.Legacy.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MongoDB.Driver.Core, Version=2.4.2.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Driver.Core.2.4.2\lib\net45\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -147,6 +140,9 @@
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -174,24 +170,13 @@
     <Compile Include="AI\Fights\Actions\StayInRange.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\GivrefouxBrains.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\ObsidiantreBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\ProfesseurXaBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\KolossoBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BlockBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\CadranBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\LapinoBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\LivingBagBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\SacrifiedBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SynchroBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\OsaSummonsBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\TreeBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
+    <Compile Include="AI\Fights\Brain\InitBrain.cs" />
+    <Compile Include="AI\Fights\Spells\AISpellEffectAttribute.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
     <Compile Include="AI\Fights\Spells\SpellCastImpact.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
@@ -254,6 +239,7 @@
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\Accounts\AccountRelation.cs" />
     <Compile Include="Database\Accounts\UserGroup.cs" />
+    <Compile Include="Database\AI\InitBrainRecord.cs" />
     <Compile Include="Database\Arena\ArenaRecord.cs" />
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
@@ -766,7 +752,6 @@
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Eniripsa\FriendshipWordCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\MansomonCastHandler.cs" />
@@ -777,7 +762,6 @@
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\RoublabotCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\FeuillageCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\SacrificeSpellCastHandler.cs" />

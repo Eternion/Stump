@@ -143,7 +143,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     }             
                 }
 
-                if (actor.IsCarrying())
+                if (actor.IsCarrying() && stopCell != startCell)
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
                 actor.Position.Cell = Map.Cells[stopCell.CellId];

@@ -18,6 +18,7 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using System.Threading;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
 {
@@ -83,6 +84,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             message.ticket = Encoding.ASCII.GetString(message.ticket.Split(',').Select(x => (byte)int.Parse(x)).ToArray());
 
             logger.Debug("Client request ticket {0}", message.ticket);
+
             IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage { Ticket = message.ticket }, 
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
         }
@@ -108,8 +110,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
         {
-            Character dummy;
-            if (AccountManager.Instance.IsAccountBlocked(message.Account.Id, out dummy))
+            if (AccountManager.Instance.IsAccountBlocked(message.Account.Id, out Character dummy))
             {
                 logger.Error($"{client} - Account({message.Account.Id}) blocked, connection unallowed");
                 client.Disconnect();

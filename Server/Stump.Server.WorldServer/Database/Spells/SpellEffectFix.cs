@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
-        public int EffectId
+        public int? EffectId
         {
             get;
             set;
@@ -44,6 +44,12 @@ namespace Stump.Server.WorldServer.Database.Spells
         }
 
         public int? TriggerBuffDuration
+        {
+            get;
+            set;
+        }
+
+        public int? Dispellable
         {
             get;
             set;

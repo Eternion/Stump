@@ -111,6 +111,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public void SetDefaultScales(params short[] scales)
+        {
+            m_defaultScales = scales.ToList();
+            m_entityLook.Invalidate();
+        }
+
         public void AddScale(short scale)
         {
             m_scales.Add(scale);

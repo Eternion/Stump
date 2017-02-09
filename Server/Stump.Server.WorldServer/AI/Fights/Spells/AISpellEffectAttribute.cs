@@ -28,6 +28,5 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             get;
             set;
         }
-
-        }
+    }
 }

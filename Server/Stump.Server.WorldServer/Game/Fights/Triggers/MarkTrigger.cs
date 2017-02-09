@@ -5,7 +5,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -17,18 +16,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         protected void NotifyTriggered(FightActor target, Spell triggeredSpell)
         {
-            var handler = Triggered;
-            if (handler != null)
-                handler(this, target, triggeredSpell);
+            Triggered?.Invoke(this, target, triggeredSpell);
         }
 
         public event Action<MarkTrigger> Removed;
 
         public void NotifyRemoved()
         {
-            var handler = Removed;
-            if (handler != null)
-                handler(this);
+            Removed?.Invoke(this);
         }
 
         protected MarkTrigger(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, MarkShape shape)
