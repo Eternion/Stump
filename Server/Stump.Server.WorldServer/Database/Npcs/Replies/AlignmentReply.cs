@@ -32,7 +32,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
-
         /// <summary>
         /// Parameter 1
         /// </summary>
@@ -88,13 +87,10 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
 
                 foreach (var itemParameter in parameter.Select(x => x.Split('_')))
                 {
-                    int itemId;
-                    int amount;
-
-                    if (!int.TryParse(itemParameter[0], out itemId))
+                    if (!int.TryParse(itemParameter[0], out int itemId))
                         return false;
 
-                    if (!int.TryParse(itemParameter[1], out amount))
+                    if (!int.TryParse(itemParameter[1], out int amount))
                         return false;
 
                     var template = ItemManager.Instance.TryGetTemplate(itemId);
@@ -127,6 +123,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
 
             character.Inventory.SubKamas(KamasParameter);
+            character.ChangeAlignementSide((AlignmentSideEnum)Side);
 
             return true;
         }
