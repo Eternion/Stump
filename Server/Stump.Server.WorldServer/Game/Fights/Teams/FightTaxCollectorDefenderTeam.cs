@@ -23,7 +23,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public override FighterRefusedReasonEnum CanJoin(Character character)
         {
+            if (Fighters.Count >= FightPvT.PvTMaxFightersSlots)
+                return FighterRefusedReasonEnum.TEAM_FULL;
+
             return character.Guild != Leader.TaxCollectorNpc.Guild ? FighterRefusedReasonEnum.WRONG_GUILD : base.CanJoin(character);
+        }
+
+        public override FightOutcomeEnum GetOutcome()
+        {
+            if ((Fight as FightPvT).TaxCollector.IsDead())
+                return FightOutcomeEnum.RESULT_LOST;
+
+            return FightOutcomeEnum.RESULT_VICTORY;
         }
     }
 }

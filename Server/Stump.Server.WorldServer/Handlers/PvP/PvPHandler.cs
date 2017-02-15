@@ -1,6 +1,8 @@
-﻿using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.PvP
 {
@@ -12,9 +14,21 @@ namespace Stump.Server.WorldServer.Handlers.PvP
             client.Character.TogglePvPMode(message.enable);
         }
 
-        public static void SendAlignmentRankUpdateMessage(IPacketReceiver client)
+        public static void SendAlignmentRankUpdateMessage(IPacketReceiver client, Character character)
         {
-            client.Send(new AlignmentRankUpdateMessage(1, false));
+            var alignmentRank = 0;
+
+            switch(character.AlignmentSide)
+            {
+                case AlignmentSideEnum.ALIGNMENT_ANGEL:
+                    alignmentRank = 1;
+                    break;
+                case AlignmentSideEnum.ALIGNMENT_EVIL:
+                    alignmentRank = 18;
+                    break;
+            }
+
+            client.Send(new AlignmentRankUpdateMessage((sbyte)alignmentRank, false));
         }
     }
 }

@@ -83,6 +83,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 using Stump.Server.WorldServer.Game.Idols;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Handlers.PvP;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -1000,7 +1001,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Fighter.Look = Look.Clone();
                 Fighter.Look.RemoveAuras();
 
-                if (Fighter.IsDead() ||Fighter.HasLeft())
+                if (Fighter.IsDead() || Fighter.HasLeft())
                     return;
 
                 ContextHandler.SendGameContextRefreshEntityLookMessage(CharacterContainer.Clients, Fighter);
@@ -1217,7 +1218,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private void OnPlayerLifeStatusChanged(PlayerLifeStatusEnum status)
         {
             if (status != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
-                Dismount();
+                ForceDismount();
 
             var phoenixMapId = 0;
 
@@ -1494,21 +1495,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void UnEquipMount()
         {
-            if (EquippedMount != null)
+            if (EquippedMount == null)
+                return;
+
+            ForceDismount();
+
+            if (EquippedMount.Harness != null)
             {
-                if (EquippedMount.Harness != null)
-                {
-                    Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, true);
+                Inventory.MoveItem(EquippedMount.Harness, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, true);
 
-                    // Votre harnachement est déposé dans votre inventaire.
-                    BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
-                }
-
-                Dismount();
-                EquippedMount = null;
-                MountHandler.SendMountUnSetMessage(Client);
-
+                // Votre harnachement est déposé dans votre inventaire.
+                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 661);
             }
+
+            EquippedMount.Save(MountManager.Instance.Database);
+            EquippedMount = null;
+
+            MountHandler.SendMountUnSetMessage(Client);
         }
 
         public bool ReleaseMount()
@@ -1534,6 +1537,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return IsRiding && ToggleRiding();
         }
 
+        public void ForceDismount()
+        {
+            IsRiding = false;
+
+            if (EquippedMount == null)
+                return;
+
+            EquippedMount.UnApplyMountEffects();
+            UpdateLook();
+
+            //Vous descendez de votre monture.
+            BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+            MountHandler.SendMountRidingMessage(Client, IsRiding);
+        }
+
         public bool ToggleRiding()
         {
             if (EquippedMount == null)
@@ -1545,20 +1563,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if ((IsBusy() && !(Dialog is PaddockExchange)) || (IsInFight() && Fight.State != FightState.Placement))
+            if (IsBusy() || (IsInFight() && Fight.State != FightState.Placement))
             {
                 //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
                 return false;
             }
-
-           /* if (!IsRiding && !Map.Outdoor && !Map.SpawningPools.Any(x => x is DungeonSpawningPool))
-            {
-                //Impossible d'être sur une monture à l'intérieur d'une maison.
-                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
-
-                return false;
-            }*/
 
             IsRiding = !IsRiding;
 
@@ -1762,7 +1772,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             PvPToggled?.Invoke(this, PvPEnabled);
         }
 
-        public event Action<Character, AlignmentSideEnum> AligmenentSideChanged;
+        public event Action<Character, AlignmentSideEnum> AlignmnentSideChanged;
 
         private void OnAligmenentSideChanged()
         {
@@ -1772,7 +1782,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Honor = 0;
             Dishonor = 0;
 
-            AligmenentSideChanged?.Invoke(this, AlignmentSide);
+            PvPHandler.SendAlignmentRankUpdateMessage(Client, this);
+
+            AlignmnentSideChanged?.Invoke(this, AlignmentSide);
         }
 
         #endregion Alignment
@@ -2865,6 +2877,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextChanged?.Invoke(this, inFight);
         }
 
+        public void OnCharacterContextReady(int mapId)
+        {
+
+        }
+
         public FighterRefusedReasonEnum CanRequestFight(Character target)
         {
             if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy() || !target.IsAvailable(this, false))
@@ -2914,7 +2931,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Math.Abs(Level - target.Level) > 20)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
-            if (IsGhost() ||target.IsGhost())
+            if (IsGhost() || target.IsGhost())
                 return FighterRefusedReasonEnum.GHOST_REFUSED;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;

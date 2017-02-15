@@ -264,13 +264,7 @@ namespace Stump.Server.WorldServer
 
         private void AnnounceTimeBeforeShutdown(TimeSpan time, bool automatic)
         {
-            var message = automatic ? @"Automatic reboot in <b>{0:mm\:ss}</b>" : @"Reboot in <b>{0:mm\:ss}</b>";
-
-            if (!automatic && !string.IsNullOrEmpty(ScheduledShutdownReason))
-                message += " : " + ScheduledShutdownReason;
-
             World.Instance.SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 15, time.ToString(@"hh\h\ mm\m\ ss\s"));
-
             m_lastAnnouncedTime = DateTime.Now;
         }
 

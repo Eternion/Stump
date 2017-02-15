@@ -109,7 +109,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightDodgePointLossMessage((short)action, source.Id, target.Id, amount));
         }
 
-
         public static void SendGameActionFightReduceDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
         {
             client.Send(new GameActionFightReduceDamagesMessage(105, source.Id, target.Id, amount));

@@ -32,6 +32,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Character.LogIn();
         }
 
+        [WorldHandler(GameContextReadyMessage.Id)]
+        public static void HandleGameContextReadyMessage(WorldClient client, GameContextReadyMessage message)
+        {
+            client.Character.OnCharacterContextReady(message.mapId);
+        }
+
         [WorldHandler(GameMapChangeOrientationRequestMessage.Id)]
         public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client, GameMapChangeOrientationRequestMessage message)
         {

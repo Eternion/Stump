@@ -437,7 +437,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 return base.OnEquipItem(true);
 
             if (Owner.IsRiding)
-                Owner.Dismount();
+                Owner.ForceDismount();
 
             return base.OnEquipItem(false);
         }

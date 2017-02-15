@@ -197,7 +197,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public bool AreAllDead()
         {
-            return m_fighters.Count <= 0 || m_fighters.Where(x => !(x is SummonedFighter) && !(x is SummonedBomb)).
+            return m_fighters.Count <= 0 || m_fighters.Where(x => !x.IsSummoned()).
                 All(entry => entry.IsDead() || (entry.HasLeft() && (!(entry is CharacterFighter) || !((CharacterFighter)entry).IsDisconnected)));
         }
 
@@ -349,7 +349,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             return party != null && Fighters.OfType<CharacterFighter>().Count(x => x.Character.Party == party) == party.MembersCount ? party : null;
         }
 
-        public FightOutcomeEnum GetOutcome()
+        public virtual FightOutcomeEnum GetOutcome()
         {
             var teamDead = AreAllDead();
             var opposedTeamDead = OpposedTeam.AreAllDead();

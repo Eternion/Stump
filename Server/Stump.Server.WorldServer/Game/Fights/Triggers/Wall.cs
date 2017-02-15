@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         }
 
         public override GameActionMarkTypeEnum Type => GameActionMarkTypeEnum.WALL;
-         
+
         public override TriggerType TriggerType => TriggerType.MOVE | TriggerType.OnTurnBegin | TriggerType.OnTurnEnd;
 
         public SummonedBomb[] Bombs => new[] { WallBinding.Bomb1, WallBinding.Bomb2 };
@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
             foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
             {
-                effect.Efficiency = 1 + bonus/100d;
+                effect.Efficiency = 1 + bonus / 100d;
             }
 
             handler.Execute();
@@ -69,20 +69,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             if (bomb == null)
                 return true;
 
-            if ((actor is SummonedBomb))
-            {
-                var triggerBomb = ((SummonedBomb)actor);
-
-                if (bomb.IsFriendlyWith(triggerBomb))
-                    return false;
-
-                if (bomb.MonsterBombTemplate == triggerBomb.MonsterBombTemplate)
-                    return false;
-            }
+            if (actor is SummonedBomb triggerBomb && bomb.IsFriendlyWith(triggerBomb) && bomb.MonsterBombTemplate == triggerBomb.MonsterBombTemplate
+                || actor.HasState((int)SpellStatesEnum.KABOOM_92) && bomb.IsFriendlyWith(actor))
+                return false;
             else if (actor.HasState((int)SpellStatesEnum.KABOOM_92) && bomb.IsFriendlyWith(actor))
                 return false;
-
-            if (Fight.FighterPlaying != actor && Caster.SpellHistory.GetEntries(x => x.Target == actor &&
+            else if (Fight.FighterPlaying != actor && Caster.SpellHistory.GetEntries(x => x.Target == actor &&
                 x.CastRound == Fight.TimeLine.RoundNumber && x.Spell.SpellId == CastedSpell.Id).Any())
                 return false;
 

@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Game.Spells.Casts;
 using System;
 using Stump.DofusProtocol.Enums.Extensions;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
@@ -56,7 +57,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (integerEffect == null)
                 return false;
 
-            foreach (var actor in GetAffectedActors().OrderBy(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)))
+            var actors = new List<FightActor>();
+
+            if (Pull)
+                actors = GetAffectedActors().OrderBy(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)).ToList();
+            else
+                actors = GetAffectedActors().OrderByDescending(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)).ToList();
+
+            foreach (var actor in actors)
             {
                 if (!actor.CanBePushed())
                     continue;

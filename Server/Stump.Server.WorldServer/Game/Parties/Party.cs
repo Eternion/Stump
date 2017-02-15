@@ -485,6 +485,9 @@ namespace Stump.Server.WorldServer.Game.Parties
             // send it after fight has been fully created
             character.Area.AddMessage(() =>
             {
+                if (!character.Fighter.IsTeamLeader())
+                    return;
+
                 var clients = Members.Where(x => x.Fight != character.Fight).ToClients();
                 if (character.Fight is FightAgression)
                 {

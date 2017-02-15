@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public int MaxMembers
         {
-            get { return BaseMaxMembers + (Level / 4); }
+            get { return BaseMaxMembers + (Level / 2); }
         }
 
         public long Experience

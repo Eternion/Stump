@@ -855,6 +855,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             DeterminsWinners();
+
+            foreach (var fighter in Fighters.OfType<CharacterFighter>().Where(x => x.IsDisconnected).ToArray())
+            {
+                if (Winners == fighter.Team)
+                    fighter.Team.RemoveLeaver(fighter);
+                else
+                    fighter.Team.RemoveFighter(fighter);
+            }
+
             GenerateResults();
 
             ApplyResults();
@@ -1999,9 +2008,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
-            if (delta == 0)
-                return;
-
             var loss = (short)(-delta);
 
             if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)

@@ -173,13 +173,13 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public DateTime ScheduledShutdownDate
+        public bool IsNoExitShutdown
         {
             get;
-            protected set;
+            set;
         }
 
-        public string ScheduledShutdownReason
+        public DateTime ScheduledShutdownDate
         {
             get;
             protected set;
@@ -496,12 +496,6 @@ namespace Stump.Server.BaseServer
             IOTaskPool.Stop();
         }
 
-        public virtual void ScheduleShutdown(TimeSpan timeBeforeShuttingDown, string reason)
-        {
-            ScheduledShutdownReason = reason;
-            ScheduleShutdown(timeBeforeShuttingDown);
-        }
-
         public virtual void ScheduleShutdown(TimeSpan timeBeforeShuttingDown)
         {
             IsShutdownScheduled = true;
@@ -517,7 +511,6 @@ namespace Stump.Server.BaseServer
         {
             IsShutdownScheduled = false;
             ScheduledShutdownDate = DateTime.MaxValue;
-            ScheduledShutdownReason = null;
 
             IOTaskPool.RemoveTimer(ScheduledShutdownTimer);
             ScheduledShutdownTimer = null;
@@ -547,13 +540,16 @@ namespace Stump.Server.BaseServer
                 Console.WriteLine("Application is now terminated. Wait " + Definitions.ExitWaitTime +
                                   " seconds to exit ... or press any key to cancel");
 
+                if (IsNoExitShutdown)
+                    Console.ReadKey(true);
+
                 if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime * 1000, 20))
                 {
                     Console.ReadKey(true);
+
                     Thread.Sleep(500);
                     Console.WriteLine("Press now a key to exit...");
                     
-
                     Console.ReadKey(true);
                 }
 

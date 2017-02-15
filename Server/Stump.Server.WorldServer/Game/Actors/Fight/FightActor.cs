@@ -879,6 +879,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var isCloseRangeAttack = damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1;
 
             OnBeforeDamageInflicted(damage);
+
             damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.BeforeAttack, damage);
             TriggerBuffs(damage.Source, BuffTriggerType.BeforeDamaged, damage);
 
@@ -891,15 +892,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
                 TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
+
                 return 0;
             }
 
             if (IsInvulnerable(isCloseRangeAttack))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
+
                 TriggerDamageBuffs(damage);
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
                 TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
+
                 return 0;
             }
 
@@ -922,8 +926,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var permanentDamages = CalculateErosionDamage(damage.Amount);
 
             //Fraction
-            var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
-            if (fractionBuff != null && !(damage is FractionDamage))
+            if (GetBuffs(x => x is FractionBuff).FirstOrDefault() is FractionBuff fractionBuff && !(damage is FractionDamage))
                 return fractionBuff.DispatchDamages(damage);
 
             if (!damage.IgnoreDamageReduction)
@@ -980,6 +983,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             TriggerDamageBuffs(damage);
+
+            if (damage.IgnoreDamageReduction)
+                permanentDamages = CalculateErosionDamage(damage.Amount);
 
             if (damage.Amount <= 0)
                 damage.Amount = 0;
@@ -1289,13 +1295,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int CalculateErosionDamage(int damages)
         {
+            if (damages <= 0)
+                return 0;
+
             var erosion = Stats[PlayerFields.Erosion].TotalSafe;
 
             if (erosion > 50)
                 erosion = 50;
-
-            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.TRÊVE).Any())
-                erosion -= 10;
 
             return (int) (damages * (erosion / 100d));
         }

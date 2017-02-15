@@ -22,8 +22,15 @@ namespace Stump.Server.WorldServer.Game.Fights
     /// </summary>
     public class FightPvT : Fight<FightTaxCollectorDefenderTeam, FightTaxCollectorAttackersTeam>
     {
-        [Variable] public static int PvTAttackersPlacementPhaseTime = 30000;
-        [Variable] public static int PvTDefendersPlacementPhaseTime = 10000;
+        [Variable]
+        public static int PvTAttackersPlacementPhaseTime = 30000;
+
+        [Variable]
+        public static int PvTDefendersPlacementPhaseTime = 10000;
+
+        [Variable]
+        public static int PvTMaxFightersSlots = 5;
+
         bool m_isAttackersPlacementPhase;
 
         readonly List<Character> m_defendersQueue = new List<Character>();
@@ -130,7 +137,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (character.Guild == null || character.Guild.Id != TaxCollector.TaxCollectorNpc.Guild.Id)
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
-            if (m_defendersQueue.Count >= 7)
+            if (m_defendersQueue.Count >= PvTMaxFightersSlots)
                 return FighterRefusedReasonEnum.TEAM_FULL;
 
             if (m_defendersQueue.Any(x => x.Client.IP == character.Client.IP))
@@ -158,7 +165,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return true;
         }
 
-        public int GetDefendersLeftSlot() => 7 - m_defendersQueue.Count > 0 ? 7 - m_defendersQueue.Count : 0;
+        public int GetDefendersLeftSlot() => PvTMaxFightersSlots - m_defendersQueue.Count > 0 ? PvTMaxFightersSlots - m_defendersQueue.Count : 0;
 
         public override bool CanChangePosition(FightActor fighter, Cell cell) => base.CanChangePosition(fighter, cell) &&
                 ((IsAttackersPlacementPhase && fighter.Team == ChallengersTeam) || (IsDefendersPlacementPhase && fighter.Team == DefendersTeam));
@@ -208,14 +215,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void OnFighterRemoved(FightTeam team, FightActor actor)
         {
-            if (State == FightState.Placement && team == ChallengersTeam && actor is CharacterFighter)
+            if (State == FightState.Placement && team == ChallengersTeam && actor is CharacterFighter characterFighter)
             {
                 TaxCollectorHandler.SendGuildFightPlayersEnemyRemoveMessage(
-                    TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc, ((CharacterFighter)actor).Character);
+                    TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc, characterFighter.Character);
             }
 
-            if (actor is TaxCollectorFighter && actor.IsAlive())
-                ((TaxCollectorFighter) actor).TaxCollectorNpc.RejoinMap();
+            if (actor is TaxCollectorFighter taxCollector && taxCollector.IsAlive())
+                taxCollector.TaxCollectorNpc.RejoinMap();
 
             base.OnFighterRemoved(team, actor);
         }

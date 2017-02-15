@@ -772,7 +772,6 @@
     <Compile Include="Game\Jobs\JobsCollection.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandlerAttribute.cs" />
-    <Compile Include="Game\Spells\Casts\Sram\RepulsionCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Xelor\TemporalDustCastHandler.cs" />
     <Compile Include="Game\Spells\SpellCastResult.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />

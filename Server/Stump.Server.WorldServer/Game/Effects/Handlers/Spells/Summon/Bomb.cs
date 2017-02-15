@@ -42,10 +42,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 var bomb = new SummonedBomb(Fight.GetNextContextualId(), Caster.Team, bombSpell, monsterTemplate, Caster,
                     TargetedCell) {SummoningEffect = this};
 
+                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, bomb);
+
                 Caster.AddBomb(bomb);
                 Caster.Team.AddFighter(bomb);
-
-                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, bomb);
 
                 Fight.TriggerMarks(bomb.Cell, bomb, TriggerType.MOVE);
             }

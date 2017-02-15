@@ -230,7 +230,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ContextRoleplayHandler.SendJobExperienceMultiUpdateMessage(client, client.Character);
             ContextRoleplayHandler.SendJobCrafterDirectorySettingsMessage(client, client.Character);
 
-            PvPHandler.SendAlignmentRankUpdateMessage(client);
+            PvPHandler.SendAlignmentRankUpdateMessage(client, client.Character);
 
             ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] { });
             ChatHandler.SendChatSmileyExtraPackListMessage(client, client.Character.SmileyPacks.ToArray());

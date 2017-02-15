@@ -198,8 +198,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
                 !IsCarried() && !bomb.IsCarried() && // bombs are not carried
                 Position.Point.IsOnSameLine(bomb.Position.Point) && // bombs are in alignment
-                Summoner.Bombs.All(x => x == this || x == bomb || MonsterBombTemplate != bomb.MonsterBombTemplate || // there are no others bombs from the same type between them
-                    !x.Position.Point.IsBetween(Position.Point, bomb.Position.Point));
+                Summoner.Bombs.All(x => x == this || x == bomb
+                || !x.Position.Point.IsBetween(Position.Point, bomb.Position.Point)
+                || (x.Position.Point.IsBetween(Position.Point, bomb.Position.Point) && MonsterBombTemplate != x.MonsterBombTemplate)); // there are no others bombs from the same type between them
         }
 
         public bool IsInExplosionZone(SummonedBomb bomb)
@@ -337,7 +338,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !bomb1.IsBoundWith(bomb2))
                         continue;
 
-                    var binding = new WallsBinding(bomb1, bomb2, m_color);
+                    var binding = new WallsBinding(bomb1, bomb2, bomb1.m_color);
                     binding.AdjustWalls();
                     bomb1.AddWallsBinding(binding);
                     bomb2.AddWallsBinding(binding);
