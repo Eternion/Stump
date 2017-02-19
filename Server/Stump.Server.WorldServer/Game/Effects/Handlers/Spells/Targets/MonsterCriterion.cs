@@ -1,6 +1,7 @@
 ﻿using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
+
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
     public class MonsterCriterion : TargetCriterion
     {

@@ -126,7 +126,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             if (min == 0)
                 min = max;
 
-            if (type == EffectGenerationType.MaxEffects)
+            if (type == EffectGenerationType.MaxEffects && Template.Operator == "+")
                 return new EffectInteger(Id, Template.Operator != "-" ? max : min, this);
             if (type == EffectGenerationType.MinEffects)
                 return new EffectInteger(Id, Template.Operator != "-" ? min : max, this);

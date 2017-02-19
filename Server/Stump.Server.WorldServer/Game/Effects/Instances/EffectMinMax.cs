@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             var rand = new AsyncRandom();
 
-            if (type == EffectGenerationType.MaxEffects)
+            if (type == EffectGenerationType.MaxEffects && Template.Operator == "+")
                 return new EffectInteger(Id, Template.Operator != "-" ? ValueMax : ValueMin, this);
             if (type == EffectGenerationType.MinEffects)
                 return new EffectInteger(Id, Template.Operator != "-" ? ValueMin : ValueMax, this);

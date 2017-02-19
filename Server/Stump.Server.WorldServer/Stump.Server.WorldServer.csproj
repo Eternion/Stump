@@ -439,6 +439,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Summon\TakeControl.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\LastAttackerCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GiveOgrines.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GuildPotion.cs" />

@@ -82,6 +82,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                         return new BreedCriterion(int.Parse(str.Remove(0, 1)), caster, false);
                     case 'B':
                         return new BreedCriterion(int.Parse(str.Remove(0, 1)), caster, true);
+                    case 'O':
+                        return new LastAttackerCriterion(true);
+                    case 'o':
+                        return new LastAttackerCriterion(false);
                 }
 
                 return new UnknownCriterion(str);
