@@ -32,9 +32,8 @@ namespace Stump.Server.BaseServer.Logging
             if (!IsMongoLoggerEnabled)
                 return;
 
-            var client = new MongoClient(String.Format("mongodb://{0}:{1}@{2}:{3}/{4}{5}",
-                MongoDBConfiguration.User, MongoDBConfiguration.Password, MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName,
-                string.IsNullOrEmpty(MongoDBConfiguration.Password) ? "" : "?authMechanism=SCRAM-SHA-1"));
+            var client = new MongoClient($"mongodb://{MongoDBConfiguration.User}:{MongoDBConfiguration.Password}@{MongoDBConfiguration.Host}:{MongoDBConfiguration.Port}/" +
+                $"{MongoDBConfiguration.DbName}?authMechanism = SCRAM-SHA-1&maxPoolSize=10000");
 
             m_database = client.GetDatabase(MongoDBConfiguration.DbName);
         }
